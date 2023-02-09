@@ -2,12 +2,21 @@ import React from 'react';
 import useFetchData from '../hooks/useFetchData';
 
 function displaySessions(data) {
+    let table = {};
+    for (let index in data) {
+        let duration = data[index].duration;
+        if (!(duration in table)) {
+            table[duration] = 0
+        };
+        table[duration] += 1;
+    };
+
     return (
-        <>
-            {data.map( (eachSession, index) => (
-                <p key={index}>{JSON.stringify(eachSession)}</p>
+        <table>    
+            {Object.entries(table).map( ([key, value]) => ( 
+                <tr key={key}><td>{key}</td><td>{value}</td></tr>
             ))}
-        </>
+        </table>
     )
 }
 
