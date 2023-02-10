@@ -1,13 +1,13 @@
 import '../styles/App.css';
-import Profile from "./Profile";
-import Sessions from "./Sessions";
+import ProfileCard from "./ProfileCard";
+import SessionsByDuration from './SessionsByDuration';
 
 export default function App() {
   return (
     <>
-      <Profile/>
+      <ProfileCard/>
       <br/>
-      <Sessions/>
+      <SessionsByDuration/>
     </>
   )
 }

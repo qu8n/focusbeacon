@@ -4,7 +4,33 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-function displaySessions(data) {
+export default function SessionsByDuration() {
+    // TODO make dates dynamic
+    const [loading, data] = useFetchData('sessions?start=2022-12-20T12:00:00Z&end=2022-12-29T12:00:00Z', 'sessions');
+    const [rowData, setRowData] = useState();
+    const [columnDefs] = useState([
+        { field: 'duration' },
+        { field: 'sessions' },
+    ]);
+
+    useEffect(() => {
+        if (!loading && data) {
+            setRowData(process(data))
+        }
+    }, [loading, data]);
+
+    if (loading) {
+        return 'Loading...'
+    } else {
+        return (
+            <div className="ag-theme-alpine" style={{ height: 173, width: 402 }}>
+              <AgGridReact rowData={rowData} columnDefs={columnDefs}></AgGridReact>
+            </div>
+        );
+    };
+};
+
+function process(data) {
     let table = {
         '25 minutes': 0,
         '50 minutes': 0,
@@ -25,28 +51,3 @@ function displaySessions(data) {
     return agTableData;
 };
 
-export default function Sessions() {
-    // TODO make dates dynamic
-    const [loading, data] = useFetchData('sessions?start=2022-12-20T12:00:00Z&end=2022-12-29T12:00:00Z', 'sessions');
-    const [rowData, setRowData] = useState();
-    const [columnDefs] = useState([
-        { field: 'duration' },
-        { field: 'sessions' },
-    ]);
-
-    useEffect(() => {
-        if (!loading && data) {
-            setRowData(displaySessions(data))
-        }
-    }, [loading, data]);
-
-    if (loading) {
-        return 'Loading...'
-    } else {
-        return (
-            <div className="ag-theme-alpine" style={{ height: 173, width: 402 }}>
-              <AgGridReact rowData={rowData} columnDefs={columnDefs}></AgGridReact>
-            </div>
-        );
-    }
-}
