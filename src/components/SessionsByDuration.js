@@ -8,9 +8,9 @@ export default function SessionsByDuration() {
     const [loading, data] = useFetchData('sessions?start=2022-01-01T12:00:00Z&end=2023-01-01T12:00:00Z', 'sessions');
     const [rowData, setRowData] = useState();
     const [columnDefs] = useState([
-        { field: 'duration', width: 130 },
-        { field: 'sessions', width: 130, type: 'numericColumn' },
-        { field: 'percentage', width: 130, type: 'numericColumn' }
+        { field: 'duration', width: 130, suppressMovable:true },
+        { field: 'sessions', width: 130, suppressMovable:true, type: 'numericColumn' },
+        { field: 'percentage', width: 130, suppressMovable:true, type: 'numericColumn' }
     ]);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function SessionsByDuration() {
                 return { 'font-weight': 'bold', 'border-top': 'solid lightgray' };
             }
         },
-    }
+    };
 
     if (loading) {
         return 'Loading...'
@@ -63,7 +63,7 @@ function process(data) {
             sessions: value.toLocaleString(),
             percentage: Math.round(value / table.Total * 100) + '%'
         });
-    }
+    };
 
     return agTableData;
 };
