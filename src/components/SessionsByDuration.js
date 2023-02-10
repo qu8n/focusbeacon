@@ -5,12 +5,12 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 export default function SessionsByDuration() {
-    const [loading, data] = useFetchData('sessions?start=2022-12-20T12:00:00Z&end=2022-12-29T12:00:00Z', 'sessions');
+    const [loading, data] = useFetchData('sessions?start=2022-01-01T12:00:00Z&end=2023-01-01T12:00:00Z', 'sessions');
     const [rowData, setRowData] = useState();
     const [columnDefs] = useState([
         { field: 'duration', width: 130 },
-        { field: 'sessions', width: 130 },
-        { field: 'percentage', width: 130 }
+        { field: 'sessions', width: 130, type: 'numericColumn' },
+        { field: 'percentage', width: 130, type: 'numericColumn' }
     ]);
 
     useEffect(() => {
@@ -61,7 +61,7 @@ function process(data) {
     for (const [key, value] of Object.entries(table)) {
         agTableData.push({
             duration: key,
-            sessions: value,
+            sessions: value.toLocaleString(),
             percentage: Math.round(value / table.Total * 100) + '%'
         });
     }
