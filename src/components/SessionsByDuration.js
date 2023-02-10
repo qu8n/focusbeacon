@@ -10,6 +10,7 @@ export default function SessionsByDuration() {
     const [columnDefs] = useState([
         { field: 'duration' },
         { field: 'sessions' },
+        { field: 'percentage' }
     ]);
 
     useEffect(() => {
@@ -18,6 +19,7 @@ export default function SessionsByDuration() {
         }
     }, [loading, data]);
 
+    // Total row styling
     const gridOptions = {
         getRowStyle: params => {
             if (params.node.lastChild) {
@@ -30,7 +32,7 @@ export default function SessionsByDuration() {
         return 'Loading...'
     } else {
         return (
-            <div className="ag-theme-alpine" style={{ height: 230, width: 420 }}>
+            <div className="ag-theme-alpine" style={{ height: 230, width: 650 }}>
                 <AgGridReact 
                     rowData={rowData} 
                     columnDefs={columnDefs} 
@@ -59,7 +61,8 @@ function process(data) {
     for (const [key, value] of Object.entries(table)) {
         agTableData.push({
             duration: key,
-            sessions: value
+            sessions: value,
+            percentage: Math.round(value / table.Total * 100) + '%'
         });
     }
 
