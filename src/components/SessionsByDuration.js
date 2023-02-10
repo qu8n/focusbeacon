@@ -48,12 +48,11 @@ function process(data) {
         '25 minutes': 0,
         '50 minutes': 0,
         '75 minutes': 0,
-        'Total': 0
+        'Total': data.length
     };
 
     for (let index in data) {
         table[`${data[index].duration / 60000} minutes`] += 1;
-        table.Total += 1
     };
 
     const agTableData = [];
