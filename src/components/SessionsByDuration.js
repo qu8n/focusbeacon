@@ -8,9 +8,9 @@ export default function SessionsByDuration() {
     const [loading, data] = useFetchData('sessions?start=2022-12-20T12:00:00Z&end=2022-12-29T12:00:00Z', 'sessions');
     const [rowData, setRowData] = useState();
     const [columnDefs] = useState([
-        { field: 'duration' },
-        { field: 'sessions' },
-        { field: 'percentage' }
+        { field: 'duration', width: 130 },
+        { field: 'sessions', width: 130 },
+        { field: 'percentage', width: 130 }
     ]);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ export default function SessionsByDuration() {
         return 'Loading...'
     } else {
         return (
-            <div className="ag-theme-alpine" style={{ height: 230, width: 650 }}>
+            <div className="ag-theme-alpine" style={{ height: 230, width: 400 }}>
                 <AgGridReact 
                     rowData={rowData} 
                     columnDefs={columnDefs} 
