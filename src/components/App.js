@@ -1,7 +1,7 @@
 import '../styles/App.css';
 import ProfileCard from "./ProfileCard";
 import SessionsByDuration from './SessionsByDuration';
-import TotalStats from './TotalStats';
+import LifetimeMetrics from './LifetimeMetrics';
 
 export default function App() {
   return (
@@ -10,7 +10,7 @@ export default function App() {
       <br/>
       <SessionsByDuration/>
       <br/>
-      <TotalStats/> 
+      <LifetimeMetrics/> 
     </>
   )
 }

@@ -8,8 +8,8 @@ export default function TotalStats() {
     const [loading, data] = useFetchData('sessions?start=2022-01-01T12:00:00Z&end=2023-01-01T12:00:00Z', 'sessions');
     const [rowData, setRowData] = useState();
     const [columnDefs] = useState([
-        { field: 'metric', width: 250, suppressMovable:true },
-        { field: 'value', width: 140, suppressMovable:true, type: 'numericColumn' }
+        { headerName: 'Lifetime Metric', field: 'metric', width: 270, suppressMovable:true },
+        { field: 'value', width: 120, suppressMovable:true, type: 'numericColumn' }
     ]);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function TotalStats() {
         return 'Loading...'
     } else {
         return (
-            <div className="ag-theme-alpine" style={{ height: 270, width: 400 }}>
+            <div className="ag-theme-alpine" style={{ height: 230, width: 400 }}>
                 <AgGridReact 
                     rowData={rowData} 
                     columnDefs={columnDefs} 
@@ -33,30 +33,30 @@ export default function TotalStats() {
 };
 
 function process(data) {
-    const totalSessionsBooked = data.length;
-    let totalSessionsCompleted = 0;
+    let totalSessions = 0;
     let totalHours = 0;
     let uniquePartners = new Set();
-    let currentPartner = '';
-    
-    for (let index in data) {
-        totalHours += Math.round(data[index].duration / 3600000);
-        totalSessionsCompleted += data[index].users[0].completed ? 1 : 0;
 
-        if (typeof data[index].users[1] !== 'undefined') {
-            currentPartner = data[index].users[1].userId;
-            if (!uniquePartners.has(currentPartner)) {
-                uniquePartners.add(currentPartner)       
+    let currentPartner = '';    
+    for (let index in data) {
+        if (data[index].users[0].completed === true) {
+            totalSessions += 1;
+            totalHours += Math.round(data[index].duration / 3600000);
+
+            if (typeof data[index].users[1] !== 'undefined') {
+                currentPartner = data[index].users[1].userId;
+                if (!uniquePartners.has(currentPartner)) {
+                    uniquePartners.add(currentPartner)       
+                }
             }
         }
     };
 
     let table = {
-        'Total Sessions Booked': totalSessionsBooked,
-        'Total Sessions Completed': totalSessionsCompleted,
-        '% Booked Sessions Completed': Math.round(totalSessionsCompleted / totalSessionsBooked * 100) + '%',
+        'Total Sessions': totalSessions,
         'Total Hours of Sessions': totalHours,
-        'Total Partners': uniquePartners.size
+        'Average Session Duration (Minutes)': Math.round(totalHours * 60 / totalSessions),
+        'Total Unique Partners': uniquePartners.size
     };
 
     const agTableData = [];

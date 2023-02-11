@@ -48,12 +48,19 @@ function process(data) {
         '25 minutes': 0,
         '50 minutes': 0,
         '75 minutes': 0,
-        'Total': data.length
+        'Total': 0
     };
 
+    let totalSessions = 0;
+
     for (let index in data) {
-        table[`${data[index].duration / 60000} minutes`] += 1;
+        if (data[index].users[0].completed === true) {
+            totalSessions += 1;
+            table[`${data[index].duration / 60000} minutes`] += 1;
+        }
     };
+
+    table.Total = totalSessions;
 
     const agTableData = [];
 
