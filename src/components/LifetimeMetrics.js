@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import useFetchData from '../hooks/useFetchData';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-export default function TotalStats() {
-    const [loading, data] = useFetchData('sessions?start=2022-01-01T12:00:00Z&end=2023-01-01T12:00:00Z', 'sessions');
+export default function TotalStats(props) {
+    const [loading, data] = props.data;
     const [rowData, setRowData] = useState();
     const [columnDefs] = useState([
         { headerName: 'Lifetime Metric', field: 'metric', width: 270, suppressMovable:true },

@@ -2,15 +2,17 @@ import '../styles/App.css';
 import ProfileCard from "./ProfileCard";
 import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
+import useFetchData from '../hooks/useFetchData';
 
 export default function App() {
+  const [loading, profileData, sessionsData] = useFetchData();
   return (
     <>
-      <ProfileCard/>
+      <ProfileCard data={[loading, profileData]}/>
       <br/>
-      <SessionsByDuration/>
+      <SessionsByDuration data={[loading, sessionsData]}/>
       <br/>
-      <LifetimeMetrics/> 
+      <LifetimeMetrics data={[loading, sessionsData]}/> 
     </>
   )
 }

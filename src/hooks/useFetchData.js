@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
-export default function useFetchData(urlPath, apiEndpointType) {
-    const [data, setData] = useState([]);
+export default function useFetchData() {
+    const [profileData, setProfileData] = useState([]);
+    const [sessionsData, setSessionsData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -14,17 +15,22 @@ export default function useFetchData(urlPath, apiEndpointType) {
         redirect: 'follow'
         };
 
-        fetch(`https://api.focusmate.com/v1/${urlPath}`, requestOptions)
+        fetch(`https://api.focusmate.com/v1/me`, requestOptions)
             .then(response => response.json())
             .then((result) => {
-                if (apiEndpointType === "profile") {
-                    setData(result.user)
-                } else if (apiEndpointType === "sessions") {
-                    setData(result.sessions)
-                };
-                setLoading(false)})
+                setProfileData(result.user);
+            })
             .catch(error => console.log('error', error));
-    }, [urlPath, apiEndpointType]);
+        
+        fetch(`https://api.focusmate.com/v1/sessions?start=2022-01-01T12:00:00Z&end=2023-01-01T12:00:00Z`, requestOptions)
+        .then(response => response.json())
+        .then((result) => {
+            setSessionsData(result.sessions);
+            setLoading(false);              
+        })
+        .catch(error => console.log('error', error));
 
-    return [loading, data];
+    }, []);
+
+    return [loading, profileData, sessionsData];
 }

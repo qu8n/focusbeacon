@@ -1,9 +1,8 @@
 import React from 'react';
-import useFetchData from '../hooks/useFetchData';
 import '../styles/profile.css'
 
-export default function ProfileCard() {
-    const [loading, data] = useFetchData('me', 'profile');
+export default function ProfileCard(props) {
+    const [loading, data] = props.data;
     const {name, totalSessionCount, timeZone, photoUrl} = data;
 
     const profileCard = 
