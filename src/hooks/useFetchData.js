@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function useFetchData() {
+export default function useFetchData(year) {
     const [profileData, setProfileData] = useState([]);
     const [sessionsData, setSessionsData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -22,16 +22,15 @@ export default function useFetchData() {
             })
             .catch(error => console.log('error', error));
         
-        let currentYear = new Date().getFullYear();
-        fetch(`https://api.focusmate.com/v1/sessions?start=${currentYear-1}-01-01T12:00:00Z&end=${currentYear}-01-01T12:00:00Z`, requestOptions)
+        fetch(`https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T12:00:00Z`, requestOptions)
         .then(response => response.json())
         .then((result) => {
             setSessionsData(result.sessions);
-            setLoading(false);          
+            setLoading(false);     
         })
         .catch(error => console.log('error', error));
 
-    }, []);
+    }, [year]);
 
     return [loading, profileData, sessionsData];
 }
