@@ -5,7 +5,7 @@ import LifetimeMetrics from './LifetimeMetrics';
 import useFetchData from '../hooks/useFetchData';
 
 export default function App() {
-  const [loading, profileData, sessionsData] = useFetchData(2022);
+  const [loading, profileData, sessionsData] = useFetchData();
   return (
     <>
       <ProfileCard data={[loading, profileData]}/>
