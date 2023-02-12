@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/profile.css'
+import '../styles/ProfileCard.css'
 
 export default function ProfileCard(props) {
     const [loading, data] = props.data;

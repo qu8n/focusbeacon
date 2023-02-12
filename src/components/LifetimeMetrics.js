@@ -21,7 +21,7 @@ export default function TotalStats(props) {
         return 'Loading...'
     } else {
         return (
-            <div className="ag-theme-alpine" style={{ height: 230, width: 400 }}>
+            <div className="ag-theme-alpine" style={{ height: 220, width: 393, margin: 10 }}>
                 <AgGridReact 
                     rowData={rowData} 
                     columnDefs={columnDefs} 
