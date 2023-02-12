@@ -22,7 +22,7 @@ export default function SessionsByDuration(props) {
     const gridOptions = {
         getRowStyle: params => {
             if (params.node.lastChild) {
-                return { 'font-weight': 'bold', 'border-top': 'solid lightgray' };
+                return { 'fontWeight': 'bold', 'borderTop': 'solid lightgray' };
             }
         },
     };
