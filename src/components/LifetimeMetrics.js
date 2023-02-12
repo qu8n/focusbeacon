@@ -40,7 +40,7 @@ function process(data) {
     for (let index in data) {
         if (data[index].users[0].completed === true) {
             totalSessions += 1;
-            totalHours += Math.round(data[index].duration / 3600000);
+            totalHours += data[index].duration / 3600000;
 
             if (typeof data[index].users[1] !== 'undefined') {
                 currentPartner = data[index].users[1].userId;
@@ -53,7 +53,7 @@ function process(data) {
 
     let table = {
         'Total Sessions': totalSessions,
-        'Total Hours of Sessions': totalHours,
+        'Total Hours of Sessions': Math.round(totalHours),
         'Average Session Duration (Minutes)': Math.round(totalHours * 60 / totalSessions),
         'Total Unique Partners': uniquePartners.size
     };

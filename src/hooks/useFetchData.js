@@ -22,11 +22,12 @@ export default function useFetchData() {
             })
             .catch(error => console.log('error', error));
         
-        fetch(`https://api.focusmate.com/v1/sessions?start=2022-01-01T12:00:00Z&end=2023-01-01T12:00:00Z`, requestOptions)
+        let currentYear = new Date().getFullYear();
+        fetch(`https://api.focusmate.com/v1/sessions?start=${currentYear-1}-01-01T12:00:00Z&end=${currentYear}-01-01T12:00:00Z`, requestOptions)
         .then(response => response.json())
         .then((result) => {
             setSessionsData(result.sessions);
-            setLoading(false);              
+            setLoading(false);          
         })
         .catch(error => console.log('error', error));
 
