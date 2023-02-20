@@ -3,6 +3,8 @@ import ProfileCard from "./ProfileCard";
 import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import useFetchData from '../hooks/useFetchData';
+import Example from './Example';
+import '@tremor/react/dist/esm/tremor.css';
 
 export default function App() {
   const [loading, profileData, sessionsData] = useFetchData();
@@ -13,6 +15,8 @@ export default function App() {
       <SessionsByDuration data={[loading, sessionsData]}/>
       <br/>
       <LifetimeMetrics data={[loading, sessionsData]}/> 
+      <br/>
+      <Example />
     </>
   )
 }
