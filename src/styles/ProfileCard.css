@@ -1,14 +1,8 @@
 .profile-card {
-    margin: 10px;
     padding-top: 80px;
-}
-
-.box {
-    background: #4648a4;
-    border-radius: 5px;
-    width: 250px;
     text-align: center;
-    padding: 1px;
+    display: flex;
+    justify-content: center;
 }
 
 .image {
@@ -24,11 +18,4 @@
 .name {
     margin-top: -75px;
     font-size: 20px;
-    color:white;
-}
-
-.description {
-    margin-top: -10px;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.7);
 }
