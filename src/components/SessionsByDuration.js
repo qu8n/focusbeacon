@@ -1,53 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import React from 'react';
+import { Card, Title, ProgressBar, Text, Flex, Block } from '@tremor/react';
 
-export default function SessionsByDuration(props) {
+export default function Example(props) {
     const [loading, data] = props.data;
-    const [rowData, setRowData] = useState();
-    const [columnDefs] = useState([
-        { field: 'duration', width: 130, suppressMovable:true },
-        { field: 'sessions', width: 130, suppressMovable:true, type: 'numericColumn' },
-        { field: 'percentage', width: 130, suppressMovable:true, type: 'numericColumn' }
-    ]);
 
-    useEffect(() => {
-        if (!loading && data) {
-            setRowData(process(data))
-        }
-    }, [loading, data]);
-
-    // Total row styling
-    const gridOptions = {
-        getRowStyle: params => {
-            if (params.node.lastChild) {
-                return { 'fontWeight': 'bold', 'borderTop': 'solid lightgray' };
-            }
-        },
-    };
+    const tableData = process(data);
 
     if (loading) {
-        return 'Loading...'
+        return 'Loading...';
     } else {
         return (
-            <div className="ag-theme-alpine" style={{ height: 220, width: 393, margin: 10 }}>
-                <AgGridReact 
-                    rowData={rowData} 
-                    columnDefs={columnDefs} 
-                    gridOptions={gridOptions}
-                ></AgGridReact>
-            </div>
+            <Card>
+                <Flex alignItems="items-start">
+                    <Title>Sessions by Duration</Title>
+                </Flex>
+                {tableData.map((item) => (
+                    <Block key={ item.duration } marginTop="mt-4" spaceY="space-y-2">
+                        <Flex>
+                            <Text>{ item.duration }</Text>
+                            <Text>{ `${item.sessions} (${item.percentage}%)` }</Text>
+                        </Flex>
+                        <ProgressBar percentageValue={ item.percentage } />
+                    </Block>
+                ))}
+            </Card>
         );
-    };
-};
+    }
+}
 
 function process(data) {
     let table = {
         '25 minutes': 0,
         '50 minutes': 0,
         '75 minutes': 0,
-        'Total': 0
     };
 
     let totalSessions = 0;
@@ -59,15 +44,13 @@ function process(data) {
         }
     };
 
-    table.Total = totalSessions;
-
     const agTableData = [];
 
     for (const [key, value] of Object.entries(table)) {
         agTableData.push({
             duration: key,
             sessions: value.toLocaleString(),
-            percentage: Math.round(value / table.Total * 100) + '%'
+            percentage: Math.round(value / totalSessions * 100)
         });
     };
 
