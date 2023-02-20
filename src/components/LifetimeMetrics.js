@@ -1,32 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { AgGridReact } from 'ag-grid-react';
+import React from 'react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { Card, Metric, Text, Icon, Flex, Block, ColGrid } from '@tremor/react';
+import { ClockIcon, VideoCameraIcon, UsersIcon } from '@heroicons/react/solid';
 
-export default function TotalStats(props) {
+export default function LifetimeMetrics(props) {
     const [loading, data] = props.data;
-    const [rowData, setRowData] = useState();
-    const [columnDefs] = useState([
-        { headerName: 'Lifetime Metric', field: 'metric', width: 270, suppressMovable:true },
-        { field: 'value', width: 120, suppressMovable:true, type: 'numericColumn' }
-    ]);
 
-    useEffect(() => {
-        if (!loading && data) {
-            setRowData(process(data))
-        }
-    }, [loading, data]);
+    const [totalSessions, totalHours, uniquePartners] = process(data);
+
+    const categories = [
+        {
+            title: 'Total Sessions',
+            metric: totalSessions,
+            icon: VideoCameraIcon,
+            color: 'indigo',
+        },
+        {
+            title: 'Total Hours',
+            metric: totalHours,
+            icon: ClockIcon,
+            color: 'amber',
+        },
+        {
+            title: 'Total Unique Partners',
+            metric: uniquePartners,
+            icon: UsersIcon,
+            color: 'orange',
+        },
+    ];
 
     if (loading) {
         return 'Loading...'
     } else {
         return (
-            <div className="ag-theme-alpine" style={{ height: 220, width: 393, margin: 10 }}>
-                <AgGridReact 
-                    rowData={rowData} 
-                    columnDefs={columnDefs} 
-                ></AgGridReact>
-            </div>
+            <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
+                { categories.map((item) => (
+                    <Card key={ item.title } decoration="top" decorationColor={ item.color }>
+                        <Flex justifyContent="justify-start" spaceX="space-x-4">
+                            <Icon
+                                icon={ item.icon }
+                                variant="light"
+                                size="xl"
+                                color={ item.color }
+                            />
+                            <Block truncate={ true }>
+                                <Text>{ item.title }</Text>
+                                <Metric truncate={ true }>{ item.metric }</Metric>
+                            </Block>
+                        </Flex>
+                    </Card>
+                )) }
+            </ColGrid>
         );
     };
 };
@@ -51,22 +76,10 @@ function process(data) {
         }
     };
 
-    let table = {
-        'Total Sessions': totalSessions,
-        'Total Hours of Sessions': Math.round(totalHours),
-        'Average Session Duration (Minutes)': Math.round(totalHours * 60 / totalSessions),
-        'Total Unique Partners': uniquePartners.size
-    };
-
-    const agTableData = [];
-
-    for (const [key, value] of Object.entries(table)) {
-        agTableData.push({
-            metric: key,
-            value: value.toLocaleString(),
-        });
-    };
-
-    return agTableData;
+    return [
+        totalSessions.toLocaleString(),
+        Math.round(totalHours).toLocaleString(),
+        uniquePartners.size.toLocaleString()
+    ];
 };
 
