@@ -8,12 +8,12 @@ import '@tremor/react/dist/esm/tremor.css';
 export default function App() {
   const [loading, profileData, sessionsData] = useFetchData();
   return (
-    <>
+    <div className={'App'}>
       <ProfileCard data={[loading, profileData]}/>
       <br/>
-      <SessionsByDuration data={[loading, sessionsData]}/>
-      <br/>
       <LifetimeMetrics data={[loading, sessionsData]}/> 
-    </>
+      <br/>
+      <SessionsByDuration data={[loading, sessionsData]}/>
+    </div>
   )
 }
