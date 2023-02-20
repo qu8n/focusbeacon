@@ -45,8 +45,8 @@ export default function LifetimeMetrics(props) {
                                 color={ item.color }
                             />
                             <Block truncate={ true }>
-                                <Text>{ item.title }</Text>
                                 <Metric truncate={ true }>{ item.metric }</Metric>
+                                <Text>{ item.title }</Text>
                             </Block>
                         </Flex>
                     </Card>
