@@ -1,32 +1,57 @@
-import React from 'react';
-import { Card, Title, ProgressBar, Text, Flex, Block } from '@tremor/react';
+import {
+    Card,
+    Flex,
+    List,
+    ListItem,
+    Title,
+    Text,
+    BarChart
+} from '@tremor/react';
 
-export default function Example(props) {
+const valueFormatter = (number) => (
+    `${Intl.NumberFormat('us').format(number).toString()}`
+);
+
+export default function SessionsByDuration(props) {
     const [loading, data] = props.data;
-
-    const tableData = process(data);
+    const [tableData, totalSessions] = process(data);
 
     if (loading) {
         return 'Loading...';
     } else {
         return (
-            <Card>
-                <Flex alignItems="items-start">
+            <Card maxWidth="max-w-md">
+                <Flex spaceX="space-x-8" justifyContent="justify-start" alignItems="items-center">
                     <Title>Sessions by Duration</Title>
                 </Flex>
-                {tableData.map((item) => (
-                    <Block key={ item.duration } marginTop="mt-4" spaceY="space-y-2">
-                        <Flex>
-                            <Text>{ item.duration }</Text>
-                            <Text>{ `${item.sessions} (${item.percentage}%)` }</Text>
-                        </Flex>
-                        <ProgressBar percentageValue={ item.percentage } />
-                    </Block>
-                ))}
+
+                <BarChart
+                    data={ tableData }
+                    dataKey="duration"
+                    categories={ ["sessions"] }
+                    colors={ ["indigo"] }
+                    valueFormatter={ valueFormatter }
+                    marginTop="mt-6"
+                    yAxisWidth="w-12"
+                    showLegend={ false }
+                    height="h-48"
+                />
+
+                <List marginTop="mt-6">
+                    { tableData.map((data) => (
+                        <ListItem key={ data.duration }>
+                            { data.duration }
+                            <Text>
+                                { Intl.NumberFormat('us').format(data.sessions).toString() } sessions
+                                ({ Math.round(data.sessions / totalSessions * 100) }%)
+                            </Text>
+                        </ListItem>
+                    )) }
+                </List>
             </Card>
         );
     }
-}
+};
 
 function process(data) {
     let table = {
@@ -34,8 +59,8 @@ function process(data) {
         '50 minutes': 0,
         '75 minutes': 0,
     };
-
     let totalSessions = 0;
+    const modifiedTable = [];
 
     for (let index in data) {
         if (data[index].users[0].completed === true) {
@@ -44,16 +69,13 @@ function process(data) {
         }
     };
 
-    const agTableData = [];
-
     for (const [key, value] of Object.entries(table)) {
-        agTableData.push({
+        modifiedTable.push({
             duration: key,
-            sessions: value.toLocaleString(),
-            percentage: Math.round(value / totalSessions * 100)
+            sessions: value
         });
     };
 
-    return agTableData;
+    return [modifiedTable, totalSessions];
 };
 
