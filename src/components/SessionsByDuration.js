@@ -20,7 +20,7 @@ export default function SessionsByDuration(props) {
         return 'Loading...';
     } else {
         return (
-            <Card maxWidth="max-w-md">
+            <Card>
                 <Flex spaceX="space-x-8" justifyContent="justify-start" alignItems="items-center">
                     <Title>Sessions by Duration</Title>
                 </Flex>
@@ -34,7 +34,7 @@ export default function SessionsByDuration(props) {
                     marginTop="mt-6"
                     yAxisWidth="w-12"
                     showLegend={ false }
-                    height="h-48"
+                    height="h-56"
                 />
 
                 <List marginTop="mt-6">
