@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Metric, Text, Icon, Flex, Block, ColGrid } from '@tremor/react';
-import { ClockIcon, VideoCameraIcon, UsersIcon } from '@heroicons/react/solid';
+import { ClockIcon, VideoCameraIcon, UsersIcon, FireIcon, AcademicCapIcon, BellIcon } from '@heroicons/react/solid';
 
 export default function LifetimeMetrics(props) {
     const [loading, data] = props.data;
@@ -11,22 +11,38 @@ export default function LifetimeMetrics(props) {
         {
             title: 'Total Sessions',
             metric: totalSessions,
-            icon: VideoCameraIcon,
-            color: 'indigo',
+            icon: VideoCameraIcon
         },
         {
             title: 'Total Hours',
             metric: totalHours,
-            icon: ClockIcon,
-            color: 'amber',
+            icon: ClockIcon
         },
         {
             title: 'Total Unique Partners',
             metric: uniquePartners,
             icon: UsersIcon,
-            color: 'orange',
+        },
+        {
+            title: 'Most Session Minutes in a Day',
+            metric: uniquePartners,
+            icon: FireIcon,
+        },
+        {
+            title: 'Date of First Session',
+            metric: uniquePartners,
+            icon: AcademicCapIcon,
+        },
+        {
+            title: 'Average Minutes per Session',
+            metric: Math.round(totalHours * 60 / totalSessions),
+            icon: BellIcon,
         },
     ];
+
+    categories.forEach((item) => {
+        item.color = 'indigo';
+    });
 
     if (loading) {
         return 'Loading...'
@@ -34,7 +50,7 @@ export default function LifetimeMetrics(props) {
         return (
             <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
                 { categories.map((item) => (
-                    <Card key={ item.title } decoration="top" decorationColor={ item.color }>
+                    <Card key={ item.title }>
                         <Flex justifyContent="justify-start" spaceX="space-x-4">
                             <Icon
                                 icon={ item.icon }
