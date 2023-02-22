@@ -1,11 +1,16 @@
 import React from 'react';
 import { Card, Metric, Text, Icon, Flex, Block, ColGrid } from '@tremor/react';
-import { ClockIcon, VideoCameraIcon, UsersIcon, FireIcon, AcademicCapIcon, BellIcon } from '@heroicons/react/solid';
+import { ClockIcon, VideoCameraIcon, UsersIcon, FireIcon, BellIcon, CakeIcon } from '@heroicons/react/solid';
 
 export default function LifetimeMetrics(props) {
     const [loading, data] = props.data;
 
-    const [totalSessions, totalHours, uniquePartners] = process(data);
+    const [
+        totalSessions, 
+        totalHours, 
+        totalPartners,
+        firstSessionDate
+    ] = process(data);
 
     const categories = [
         {
@@ -19,22 +24,22 @@ export default function LifetimeMetrics(props) {
             icon: ClockIcon
         },
         {
-            title: 'Total Unique Partners',
-            metric: uniquePartners,
+            title: 'Total Partners',
+            metric: totalPartners,
             icon: UsersIcon,
         },
         {
-            title: 'Most Session Minutes in a Day',
-            metric: uniquePartners,
+            title: 'Record Minutes / Day',
+            metric: totalPartners,
             icon: FireIcon,
         },
         {
-            title: 'Date of First Session',
-            metric: uniquePartners,
-            icon: AcademicCapIcon,
+            title: 'First Session',
+            metric: firstSessionDate,
+            icon: CakeIcon,
         },
         {
-            title: 'Average Minutes per Session',
+            title: 'Avg. Minutes / Session',
             metric: Math.round(totalHours * 60 / totalSessions),
             icon: BellIcon,
         },
@@ -75,6 +80,10 @@ function process(data) {
     let totalHours = 0;
     let uniquePartners = new Set();
 
+    data.sort((a, b) => {
+        return new Date(a.startTime) - new Date(b.startTime);
+    });
+
     let currentPartner = '';    
     for (let index in data) {
         if (data[index].users[0].completed === true) {
@@ -93,7 +102,8 @@ function process(data) {
     return [
         totalSessions.toLocaleString(),
         Math.round(totalHours).toLocaleString(),
-        uniquePartners.size.toLocaleString()
+        uniquePartners.size.toLocaleString(),
+        data[0] ? new Date(data[0].startTime).toLocaleString("en-US", { month: "short", year: "numeric" }) : 'N/A',
     ];
 };
 
