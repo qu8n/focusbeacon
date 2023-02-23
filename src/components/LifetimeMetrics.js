@@ -9,39 +9,40 @@ export default function LifetimeMetrics(props) {
         totalSessions, 
         totalHours, 
         totalPartners,
-        firstSessionDate
+        firstSessionDate,
+        maxMinutesADay,
     ] = process(data);
 
     const categories = [
         {
             title: 'Total Sessions',
-            metric: totalSessions,
+            metric: totalSessions + ' sessions',
             icon: VideoCameraIcon
         },
         {
-            title: 'Total Hours',
-            metric: totalHours,
+            title: 'Total Hours of Sessions',
+            metric: totalHours + ' hours',
             icon: ClockIcon
         },
         {
-            title: 'Total Partners',
-            metric: totalPartners,
+            title: 'Average Time per Session',
+            metric: Math.round(totalHours * 60 / totalSessions) + ' minutes',
+            icon: BellIcon,
+        },
+        {
+            title: 'Total Unique Partners',
+            metric: totalPartners + ' partners',
             icon: UsersIcon,
         },
         {
-            title: 'Record Minutes / Day',
-            metric: totalPartners,
+            title: 'Most Session Minutes in a Day',
+            metric: maxMinutesADay + ' minutes',
             icon: FireIcon,
         },
         {
-            title: 'First Session',
+            title: 'First Session Date',
             metric: firstSessionDate,
             icon: CakeIcon,
-        },
-        {
-            title: 'Avg. Minutes / Session',
-            metric: Math.round(totalHours * 60 / totalSessions),
-            icon: BellIcon,
         },
     ];
 
@@ -64,8 +65,8 @@ export default function LifetimeMetrics(props) {
                                 color={ item.color }
                             />
                             <Block truncate={ true }>
-                                <Metric truncate={ true }>{ item.metric }</Metric>
                                 <Text>{ item.title }</Text>
+                                <Metric truncate={ true }>{ item.metric }</Metric>
                             </Block>
                         </Flex>
                     </Card>
@@ -84,11 +85,24 @@ function process(data) {
         return new Date(a.startTime) - new Date(b.startTime);
     });
 
-    let currentPartner = '';    
+    let currentPartner = '';
+    let currentDate = '';
+    let currentMinutesADay = 0;
+    let maxMinutesADay = 0;
     for (let index in data) {
         if (data[index].users[0].completed === true) {
             totalSessions += 1;
             totalHours += data[index].duration / 3600000;
+
+            if (currentDate === data[index].startTime.substring(0, 10)) {
+                currentMinutesADay += data[index].duration / 60000;
+            } else {
+                if (currentMinutesADay > maxMinutesADay) {
+                    maxMinutesADay = currentMinutesADay;
+                };
+                currentMinutesADay = data[index].duration / 60000;
+                currentDate = data[index].startTime.substring(0, 10);
+            };
 
             if (typeof data[index].users[1] !== 'undefined') {
                 currentPartner = data[index].users[1].userId;
@@ -104,6 +118,7 @@ function process(data) {
         Math.round(totalHours).toLocaleString(),
         uniquePartners.size.toLocaleString(),
         data[0] ? new Date(data[0].startTime).toLocaleString("en-US", { month: "short", year: "numeric" }) : 'N/A',
+        maxMinutesADay,
     ];
 };
 
