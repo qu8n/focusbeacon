@@ -13,7 +13,7 @@ export default function LifetimeMetrics(props) {
         maxMinutesADay,
     ] = process(data);
 
-    const categories = [
+    const firstGroup = [
         {
             title: 'Total Sessions',
             metric: totalSessions + ' sessions',
@@ -29,6 +29,9 @@ export default function LifetimeMetrics(props) {
             metric: Math.round(totalHours * 60 / totalSessions) + ' minutes',
             icon: BellIcon,
         },
+    ];
+
+    const secondGroup = [
         {
             title: 'Total Unique Partners',
             metric: totalPartners + ' partners',
@@ -46,17 +49,23 @@ export default function LifetimeMetrics(props) {
         },
     ];
 
-    categories.forEach((item) => {
+
+    firstGroup.forEach((item) => {
         item.color = 'indigo';
+    });
+
+    secondGroup.forEach((item) => {
+        item.color = 'yellow';
     });
 
     if (loading) {
         return 'Loading...'
     } else {
         return (
-            <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
-                { categories.map((item) => (
-                    <Card key={ item.title }>
+            <>
+            <Card>
+                <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
+                    { firstGroup.map((item) => (
                         <Flex justifyContent="justify-start" spaceX="space-x-4">
                             <Icon
                                 icon={ item.icon }
@@ -69,9 +78,29 @@ export default function LifetimeMetrics(props) {
                                 <Metric truncate={ true }>{ item.metric }</Metric>
                             </Block>
                         </Flex>
-                    </Card>
+                    )) }
+                </ColGrid>
+            </Card>
+            <br />
+            <Card>
+            <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
+                { secondGroup.map((item) => (
+                    <Flex justifyContent="justify-start" spaceX="space-x-4">
+                        <Icon
+                            icon={ item.icon }
+                            variant="light"
+                            size="xl"
+                            color={ item.color }
+                        />
+                        <Block truncate={ true }>
+                            <Text>{ item.title }</Text>
+                            <Metric truncate={ true }>{ item.metric }</Metric>
+                        </Block>
+                    </Flex>
                 )) }
             </ColGrid>
+        </Card>
+        </>
         );
     };
 };
