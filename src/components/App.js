@@ -17,7 +17,8 @@ export default function App() {
       totalHours, 
       totalPartners,
       firstSessionDate,
-      maxHoursADay
+      maxHoursADay,
+      sessionsByDurationArr,
     ]
   ] = useProcessData();
   return (
@@ -59,15 +60,14 @@ export default function App() {
           totalHours,
           totalPartners,
           firstSessionDate,
-          maxHoursADay
+          maxHoursADay,
         ]
       ]}/> 
-      {/* <br/>
+      <br/>
       <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
-        <SessionsByDuration data={[loading, sessionsData]}/>
-        <Milestones data={[loading, sessionsData]}/>
-        <Milestones data={[loading, sessionsData]}/>
-      </ColGrid> */}
+        <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
+        {/* <Milestones data={[loading, sessionsData]}/> */}
+      </ColGrid>
     </div>
   )
 }

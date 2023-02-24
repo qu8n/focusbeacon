@@ -6,33 +6,45 @@ export default function useProcessData() {
     let totalSessions = 0;
     let totalHours = 0;
     let uniquePartners = new Set();
+
+    let currentPartner = '';
+    let currentDate = '';
+    
+    let currentHoursADay = 0;
+    let maxHoursADay = 0;
+    
+    let sessionsByDurationArr = [];
+    let sessionsByDurationObj = {
+        '25 minutes': 0,
+        '50 minutes': 0,
+        '75 minutes': 0,
+    };
+
     // let repeatPartners = {};
 
     sessionsData.sort((a, b) => {
         return new Date(a.startTime) - new Date(b.startTime);
     });
 
-    let currentPartner = '';
-    let currentDate = '';
-    let currentHoursADay = 0;
-    let maxHoursADay = 0;
-    // TODO: Do `let session of sessionsData` instead
-    for (let index in sessionsData) {
+    for (let session of sessionsData) {
         totalSessions += 1;
-        totalHours += sessionsData[index].duration / 3600000;
+        totalHours += session.duration / 3600000;
+        sessionsByDurationObj[`${session.duration / 60000} minutes`] += 1;
 
-        if (currentDate === sessionsData[index].startTime.substring(0, 10)) {
-            currentHoursADay += sessionsData[index].duration / 3600000;
+        // `Most Session Time in a Day` calculation
+        if (currentDate === session.startTime.substring(0, 10)) {
+            currentHoursADay += session.duration / 3600000;
         } else {
             if (currentHoursADay > maxHoursADay) {
                 maxHoursADay = currentHoursADay;
             };
-            currentHoursADay = sessionsData[index].duration / 3600000;
-            currentDate = sessionsData[index].startTime.substring(0, 10);
+            currentHoursADay = session.duration / 3600000;
+            currentDate = session.startTime.substring(0, 10);
         };
 
-        if (typeof sessionsData[index].users[1] !== 'undefined') {
-            currentPartner = sessionsData[index].users[1].userId;
+        // `Total Unique Partners` calculation
+        if (session.users[1] !== undefined) {
+            currentPartner = session.users[1].userId;
             if (!uniquePartners.has(currentPartner)) {
                 uniquePartners.add(currentPartner)       
             // } else {
@@ -51,12 +63,23 @@ export default function useProcessData() {
         // console.log(repeatPartnersCount, repeatPartnersSum);
     };
 
+    // `Sessions by Duration` calculation
+    for (const [key, value] of Object.entries(sessionsByDurationObj)) {
+        sessionsByDurationArr.push({
+            duration: key,
+            sessions: value
+        });
+    };
+
     return [
         loading,
-        [totalSessions.toLocaleString(),
-        Math.round(totalHours).toLocaleString(),
-        uniquePartners.size.toLocaleString(),
-        sessionsData[0] ? new Date(sessionsData[0].startTime).toLocaleString("en-US", { day: "numeric", month: "short", year: "numeric" }) : 'N/A',
-        Math.round(maxHoursADay).toLocaleString(),]
+        [
+            totalSessions,
+            Math.round(totalHours).toLocaleString(),
+            uniquePartners.size.toLocaleString(),
+            sessionsData[0] ? new Date(sessionsData[0].startTime).toLocaleString("en-US", { day: "numeric", month: "short", year: "numeric" }) : 'N/A',
+            Math.round(maxHoursADay).toLocaleString(),
+            sessionsByDurationArr,
+        ]
     ];
 };

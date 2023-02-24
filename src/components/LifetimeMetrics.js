@@ -14,7 +14,7 @@ export default function LifetimeMetrics({data}) {
     const firstGroup = [
         {
             title: 'Total Sessions',
-            metric: totalSessions + ' sessions',
+            metric: totalSessions.toLocaleString() + ' sessions',
             icon: VideoCameraIcon
         },
         {

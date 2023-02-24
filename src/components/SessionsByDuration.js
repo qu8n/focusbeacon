@@ -8,13 +8,12 @@ import {
     BarChart
 } from '@tremor/react';
 
-const valueFormatter = (number) => (
-    `${Intl.NumberFormat('us').format(number).toString()}`
-);
+export default function SessionsByDuration({data}) {
+    const [loading, [sessionsByDurationArr, totalSessions]] = data;
 
-export default function SessionsByDuration(props) {
-    const [loading, data] = props.data;
-    const [tableData, totalSessions] = process(data);
+    const valueFormatter = (number) => (
+        `${Intl.NumberFormat('us').format(number).toString()}`
+    );
 
     if (loading) {
         return 'Loading...';
@@ -26,7 +25,7 @@ export default function SessionsByDuration(props) {
                 </Flex>
 
                 <BarChart
-                    data={ tableData }
+                    data={ sessionsByDurationArr }
                     dataKey="duration"
                     categories={ ["sessions"] }
                     colors={ ["indigo"] }
@@ -38,7 +37,7 @@ export default function SessionsByDuration(props) {
                 />
 
                 <List marginTop="mt-6">
-                    { tableData.map((data) => (
+                    { sessionsByDurationArr.map((data) => (
                         <ListItem key={ data.duration }>
                             { data.duration }
                             <Text>
@@ -53,29 +52,4 @@ export default function SessionsByDuration(props) {
     }
 };
 
-function process(data) {
-    let table = {
-        '25 minutes': 0,
-        '50 minutes': 0,
-        '75 minutes': 0,
-    };
-    let totalSessions = 0;
-    const modifiedTable = [];
-
-    for (let index in data) {
-        if (data[index].users[0].completed === true) {
-            totalSessions += 1;
-            table[`${data[index].duration / 60000} minutes`] += 1;
-        }
-    };
-
-    for (const [key, value] of Object.entries(table)) {
-        modifiedTable.push({
-            duration: key,
-            sessions: value
-        });
-    };
-
-    return [modifiedTable, totalSessions];
-};
 
