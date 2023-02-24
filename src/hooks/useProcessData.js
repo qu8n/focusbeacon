@@ -42,7 +42,10 @@ export default function useProcessData() {
     };
     let milestonesArr = [];
 
-    // let repeatPartners = {};
+    let repeatPartners = {}; // list of unique partners and their number of repeat sessions
+    let repeatPartnersCount = {}; // list of number of repeat sessions and their number of partners
+    let repeatPartnersSum = 0; // helps calculate single-session partners
+    let repeatPartnersArr = [];
 
     sessionsData.sort((a, b) => {
         return new Date(a.startTime) - new Date(b.startTime);
@@ -64,31 +67,44 @@ export default function useProcessData() {
             currentDate = session.startTime.substring(0, 10);
         };
 
-        // `Total Unique Partners` calculation
         if (session.users[1] !== undefined) {
             currentPartner = session.users[1].userId;
+            // `Total Unique Partners` calculation
             if (!uniquePartners.has(currentPartner)) {
-                uniquePartners.add(currentPartner)       
-            // } else {
-            //     repeatPartners[currentPartner] = (repeatPartners[currentPartner] || 1) + 1;
+                uniquePartners.add(currentPartner)
+            // `Repeat Session Partners` calculation p1
+            } else {
+                repeatPartners[currentPartner] = (repeatPartners[currentPartner] || 1) + 1;
             };
         };
 
+        // `Milestones` calculation
         if (milestoneSessions.includes(sessionsCounter)) {
             let obj = { milestone: sessionsCounter, date: session.startTime };
             milestonesArr.push(obj);
         };
-
-        // const repeatPartnersCount = {};
-        // Object.values(repeatPartners).forEach((value) => {
-        //     repeatPartnersCount[value] = (repeatPartnersCount[value] || 0) + 1;
-        // });
-        // let repeatPartnersSum = 0;
-        // Object.entries(repeatPartnersCount).forEach(([key, value]) => {
-        //     repeatPartnersSum += (key * value);
-        // });
-        // console.log(repeatPartnersCount, repeatPartnersSum);
     };
+
+    // `Repeat Session Partners` calculation p2
+    Object.values(repeatPartners).forEach((value) => {
+        repeatPartnersCount[value] = (repeatPartnersCount[value] || 0) + 1;
+    });
+    Object.entries(repeatPartnersCount).forEach(([key, value]) => {
+        repeatPartnersSum += (key * value);
+    });
+    for (const [key, value] of Object.entries(repeatPartnersCount)) {
+        repeatPartnersArr.push({
+            sharedSessions: key,
+            partners: value
+        });
+    };
+    repeatPartnersArr.push({
+        sharedSessions: 1,
+        partners: totalSessions - repeatPartnersSum,
+    });
+    repeatPartnersArr.sort((a, b) => {
+        return (b.sharedSessions - a.sharedSessions);
+    });
 
     // `Sessions by Duration` final setup
     for (const [key, value] of Object.entries(sessionsByDurationObj)) {
@@ -111,6 +127,7 @@ export default function useProcessData() {
             Math.round(maxHoursADay).toLocaleString(),
             sessionsByDurationArr,
             milestonesArr.reverse(),
+            repeatPartnersArr
         ]
     ];
 };

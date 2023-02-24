@@ -8,6 +8,7 @@ import { Card, ColGrid } from '@tremor/react';
 import GitHubButton from 'react-github-btn';
 import ProfileCard from './ProfileCard';
 import useProcessData from '../hooks/useProcessData';
+import RepeatPartners from './RepeatPartners';
 
 export default function App() {
   const [
@@ -19,6 +20,7 @@ export default function App() {
       maxHoursADay,
       sessionsByDurationArr,
       milestonesArr,
+      repeatPartnersArr,
     ]
   ] = useProcessData();
   return (
@@ -67,6 +69,7 @@ export default function App() {
       <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
         <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
         <Milestones data={[loading, milestonesArr]}/>
+        <RepeatPartners data={[loading, repeatPartnersArr]}/>
       </ColGrid>
     </div>
   )
