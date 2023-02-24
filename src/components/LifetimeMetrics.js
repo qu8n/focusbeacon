@@ -10,7 +10,7 @@ export default function LifetimeMetrics(props) {
         totalHours, 
         totalPartners,
         firstSessionDate,
-        maxMinutesADay,
+        maxHoursADay,
     ] = process(data);
 
     const firstGroup = [
@@ -38,8 +38,8 @@ export default function LifetimeMetrics(props) {
             icon: UsersIcon,
         },
         {
-            title: 'Most Session Minutes in a Day',
-            metric: maxMinutesADay + ' minutes',
+            title: 'Most Session Time in a Day',
+            metric: maxHoursADay + ' hours',
             icon: FireIcon,
         },
         {
@@ -116,20 +116,20 @@ function process(data) {
 
     let currentPartner = '';
     let currentDate = '';
-    let currentMinutesADay = 0;
-    let maxMinutesADay = 0;
+    let currentHoursADay = 0;
+    let maxHoursADay = 0;
     for (let index in data) {
         if (data[index].users[0].completed === true) {
             totalSessions += 1;
             totalHours += data[index].duration / 3600000;
 
             if (currentDate === data[index].startTime.substring(0, 10)) {
-                currentMinutesADay += data[index].duration / 60000;
+                currentHoursADay += data[index].duration / 3600000;
             } else {
-                if (currentMinutesADay > maxMinutesADay) {
-                    maxMinutesADay = currentMinutesADay;
+                if (currentHoursADay > maxHoursADay) {
+                    maxHoursADay = currentHoursADay;
                 };
-                currentMinutesADay = data[index].duration / 60000;
+                currentHoursADay = data[index].duration / 3600000;
                 currentDate = data[index].startTime.substring(0, 10);
             };
 
@@ -146,8 +146,8 @@ function process(data) {
         totalSessions.toLocaleString(),
         Math.round(totalHours).toLocaleString(),
         uniquePartners.size.toLocaleString(),
-        data[0] ? new Date(data[0].startTime).toLocaleString("en-US", { month: "short", year: "numeric" }) : 'N/A',
-        maxMinutesADay,
+        data[0] ? new Date(data[0].startTime).toLocaleString("en-US", { day: "numeric", month: "short", year: "numeric" }) : 'N/A',
+        Math.round(maxHoursADay).toLocaleString(),
     ];
 };
 
