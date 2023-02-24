@@ -10,7 +10,7 @@ import {
     Icon,
     Flex,
   } from "@tremor/react";
-import { ChatIcon } from '@heroicons/react/solid';
+import { ChatIcon, UserIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/solid';
 
 export default function RepeatPartners({data}) {
     const [loading, repeatPartnersArr] = data;
@@ -24,17 +24,17 @@ export default function RepeatPartners({data}) {
                     <Title>Repeat Session Partners</Title>
                     <Icon
                         icon={ChatIcon}
-                        variant="simple"
+                        variant="light"
                         tooltip="More details available at focusmate.com/people, where you can sort by 'Sessions together'.
                             Note that deleted accounts are counted as one-session partners."
                         color="gray"
                     />
                 </Flex>
-                <Table marginTop="mt-5">
+                <Table marginTop="mt-4">
                     <TableHead>
                         <TableRow>
                             <TableHeaderCell textAlignment="text-left">Shared Sessions</TableHeaderCell>
-                            <TableHeaderCell textAlignment="text-right">Number of Partners</TableHeaderCell>
+                            <TableHeaderCell textAlignment="text-right">No. of Partners</TableHeaderCell>
                         </TableRow>
                     </TableHead>
 
@@ -42,7 +42,9 @@ export default function RepeatPartners({data}) {
                         { repeatPartnersArr.map((sharedSession) => (
                         <TableRow key={ sharedSession.sharedSessions }>
                             <TableCell textAlignment="">{ sharedSession.sharedSessions.toLocaleString() } { sharedSession.sharedSessions > 1 ? 'sessions' : 'session' }</TableCell>
-                            <TableCell textAlignment="text-right">{ sharedSession.partners.toLocaleString() }</TableCell>
+                            <TableCell textAlignment="text-right">
+                                <PartnerIcons sharedSession={sharedSession} />
+                            </TableCell>
                         </TableRow>
                         ))}
                     </TableBody>
@@ -51,5 +53,31 @@ export default function RepeatPartners({data}) {
         );
     }
 };
+
+function PartnerIcons({sharedSession}) {
+    if (sharedSession.partners === 1) {
+        return (
+            <Flex justifyContent="justify-end"  marginTop="-mt-1">
+                1
+                <Icon size={"s"} icon={UserIcon} color={"gray"} variant={"simple"}  marginTop="-mt-1"/>
+            </Flex>
+        );
+    } else if (sharedSession.partners === 2) {
+        return (
+            <Flex justifyContent="justify-end"  marginTop="-mt-1">
+                2
+                <Icon size={"s"} icon={UsersIcon} color={"gray"} variant={"simple"}  marginTop="-mt-1"/>
+            </Flex>
+        );
+    } else {
+        return (
+            <Flex justifyContent="justify-end"  marginTop="-mt-1">
+                {sharedSession.partners}
+                <Icon size={"s"} icon={UserGroupIcon} color={"gray"} variant={"simple"}  marginTop="-mt-1"/>
+            </Flex>
+        );
+    }
+};
+
 
 

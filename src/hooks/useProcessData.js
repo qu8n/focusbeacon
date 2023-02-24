@@ -105,6 +105,9 @@ export default function useProcessData() {
     repeatPartnersArr.sort((a, b) => {
         return (b.sharedSessions - a.sharedSessions);
     });
+    if (repeatPartnersArr.length > 5) {
+        repeatPartnersArr = repeatPartnersArr.slice(0, 5);
+    };
 
     // `Sessions by Duration` final setup
     for (const [key, value] of Object.entries(sessionsByDurationObj)) {

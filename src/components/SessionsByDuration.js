@@ -33,7 +33,7 @@ export default function SessionsByDuration({data}) {
                     marginTop="mt-6"
                     yAxisWidth="w-12"
                     showLegend={ false }
-                    height="h-40"
+                    height="h-44"
                 />
 
                 <List marginTop="mt-6">
