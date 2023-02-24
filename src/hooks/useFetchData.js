@@ -4,7 +4,7 @@ export default function useFetchData() {
     const [loading, setLoading] = useState(true);
     const [profileData, setProfileData] = useState([]);
     const [sessionsData, setSessionsData] = useState([]);
-    const [partnerData, setPartnerData] = useState([]);
+    // const [partnerData, setPartnerData] = useState([]);
 
     function requestOptions() {
         const myHeaders = new Headers();
@@ -17,7 +17,7 @@ export default function useFetchData() {
     }
 
     useEffect(() => {
-        const fetchProfileAndSessionsData = async () => {            
+        const fetchProfileData = async () => {            
             try {
                 const response = await fetch(`https://api.focusmate.com/v1/me`, requestOptions());
                 const result = await response.json();
@@ -25,26 +25,26 @@ export default function useFetchData() {
             } catch (error) {
                 console.log(`Error fetching profile data: ${error.message}`);
             };
-            
+        };
+
+        const fetchSessionsData = async () => {
             const currentYear = new Date().getFullYear();
-            let rawSessionData = [];
+            let rawSessionsData = [];
             // One request for each year because each API call only returns one year of data max
             for (let year = currentYear; year >= 2016; year--) {
                 try {
                     const response = await fetch(`https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T12:00:00Z`, requestOptions());
                     const result = await response.json();
-                    rawSessionData = [...rawSessionData, ...result.sessions];
+                    rawSessionsData = [...rawSessionsData, ...result.sessions];
                 } catch (error) {
                    console.log(`Error fetching data for year ${year}: ${error.message}`);
                 };
             };
-
             // Exclude incomplete sessions because they're not "counted"
-            const filteredSessionData = rawSessionData.filter(
+            const completedSessionsData = rawSessionsData.filter(
                 session => session.users[0].completed === true
             );
-
-            setSessionsData(filteredSessionData);
+            setSessionsData(completedSessionsData);
         };
 
         // const fetchPartnerData = async () => {
@@ -67,9 +67,9 @@ export default function useFetchData() {
         // };
 
         const fetchAllData = async () => {
-            await fetchProfileAndSessionsData();
+            await fetchProfileData();
+            await fetchSessionsData();
             // await fetchPartnerData();
-            
             setLoading(false);
         };
 
