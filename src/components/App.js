@@ -2,7 +2,6 @@ import '../styles/App.css';
 // import ProfileCard from "./ProfileCard";
 import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
-import useFetchData from '../hooks/useFetchData';
 import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
 import { Card, ColGrid } from '@tremor/react';
@@ -19,6 +18,7 @@ export default function App() {
       firstSessionDate,
       maxHoursADay,
       sessionsByDurationArr,
+      milestonesArr,
     ]
   ] = useProcessData();
   return (
@@ -66,7 +66,7 @@ export default function App() {
       <br/>
       <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
         <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
-        {/* <Milestones data={[loading, sessionsData]}/> */}
+        <Milestones data={[loading, milestonesArr]}/>
       </ColGrid>
     </div>
   )
