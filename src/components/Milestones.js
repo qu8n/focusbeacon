@@ -17,7 +17,7 @@ export default function Milestones({data}) {
     } else {
         return (
             <Card>
-            <Title>Session Milestones</Title>
+            <Title>Recent Milestones</Title>
             <Table marginTop="mt-5">
                 <TableHead>
                     <TableRow>
