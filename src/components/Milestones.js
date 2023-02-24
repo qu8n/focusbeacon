@@ -29,7 +29,7 @@ export default function Milestones(props) {
 
                 <TableBody>
                     { tableData.map((data) => (
-                    <TableRow>
+                    <TableRow key={ data.milestone }>
                         <TableCell textAlignment="">{ data.milestone } sessions</TableCell>
                         <TableCell textAlignment="text-right">{ new Date(data.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }</TableCell>
                     </TableRow>

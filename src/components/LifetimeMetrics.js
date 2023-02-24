@@ -64,9 +64,9 @@ export default function LifetimeMetrics(props) {
         return (
             <>
             <Card>
-                <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
+                <ColGrid numColsSm={ 1 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
                     { firstGroup.map((item) => (
-                        <Flex justifyContent="justify-start" spaceX="space-x-4">
+                        <Flex key={ item.title } justifyContent="justify-start" spaceX="space-x-4">
                             <Icon
                                 icon={ item.icon }
                                 variant="light"
@@ -83,9 +83,9 @@ export default function LifetimeMetrics(props) {
             </Card>
             <br />
             <Card>
-            <ColGrid numColsSm={ 3 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
+            <ColGrid numColsSm={ 1 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
                 { secondGroup.map((item) => (
-                    <Flex justifyContent="justify-start" spaceX="space-x-4">
+                    <Flex key={ item.title } justifyContent="justify-start" spaceX="space-x-4">
                         <Icon
                             icon={ item.icon }
                             variant="light"
@@ -120,7 +120,7 @@ function process(data) {
     let currentHoursADay = 0;
     let maxHoursADay = 0;
     for (let index in data) {
-        if (data[index].users[0].completed === true) {
+        // if (data[index].users[0].completed === true) {
             totalSessions += 1;
             totalHours += data[index].duration / 3600000;
 
@@ -151,8 +151,8 @@ function process(data) {
             Object.entries(repeatPartnersCount).forEach(([key, value]) => {
                 repeatPartnersSum += (key * value);
             });
-            console.log(repeatPartnersCount, repeatPartnersSum);
-        };
+            // console.log(repeatPartnersCount, repeatPartnersSum);
+        // };
     };
 
     return [
