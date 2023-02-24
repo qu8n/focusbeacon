@@ -26,18 +26,22 @@ export default function useFetchData() {
             
             // Multiple requests are needed because the API only returns one year of data per request
             const currentYear = new Date().getFullYear();
-            let data = [];
+            let sessionData = [];
             for (let year = currentYear; year >= 2016; year--) {
                 try {
                     const response = await fetch(`https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T12:00:00Z`, requestOptions());
                     const result = await response.json();
-                    data = [...data, ...result.sessions];
+                    sessionData = [...sessionData, ...result.sessions];
                 } catch (error) {
                    console.log(`Error fetching data for year ${year}: ${error.message}`);
                 };
             };
-    
-            setSessionsData(data);
+
+            const filteredSessionData = sessionData.filter(session =>
+                session.users[0].completed === true
+            );
+
+            setSessionsData(filteredSessionData);
             setLoading(false);
         };
 
