@@ -7,6 +7,7 @@ import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
 import { Card, ColGrid } from '@tremor/react';
 import GitHubButton from 'react-github-btn';
+import ProfileCard from './ProfileCard';
 
 export default function App() {
   const [loading, profileData, sessionsData] = useFetchData();

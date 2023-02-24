@@ -17,17 +17,18 @@ export default function useFetchData() {
     }
 
     useEffect(() => {
-        const fetchProfileAndSessionsData = async () => {
-            fetch(`https://api.focusmate.com/v1/me`, requestOptions())
-                .then(response => response.json())
-                .then((result) => {
-                    setProfileData(result.user);
-                })
-                .catch(error => console.log('error', error));
+        const fetchProfileAndSessionsData = async () => {            
+            try {
+                const response = await fetch(`https://api.focusmate.com/v1/me`, requestOptions());
+                const result = await response.json();
+                setProfileData(result.user);
+            } catch (error) {
+                console.log(`Error fetching profile data: ${error.message}`);
+            };
             
-            // Multiple requests are needed because the API only returns one year of data per request
             const currentYear = new Date().getFullYear();
             let rawSessionData = [];
+            // One request for each year because each API call only returns one year of data max
             for (let year = currentYear; year >= 2016; year--) {
                 try {
                     const response = await fetch(`https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T12:00:00Z`, requestOptions());
