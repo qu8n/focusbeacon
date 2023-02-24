@@ -9,6 +9,7 @@ import GitHubButton from 'react-github-btn';
 import ProfileCard from './ProfileCard';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
+import Logo from './Logo';
 
 export default function App() {
   const [
@@ -25,6 +26,7 @@ export default function App() {
   ] = useProcessData();
   return (
     <div className={'App'}>
+      <Logo />
       <Card>
         <p>
           Thanks for visiting! 👋🏼
