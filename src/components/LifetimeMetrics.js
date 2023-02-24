@@ -109,6 +109,7 @@ function process(data) {
     let totalSessions = 0;
     let totalHours = 0;
     let uniquePartners = new Set();
+    let repeatPartners = {};
 
     data.sort((a, b) => {
         return new Date(a.startTime) - new Date(b.startTime);
@@ -137,9 +138,21 @@ function process(data) {
                 currentPartner = data[index].users[1].userId;
                 if (!uniquePartners.has(currentPartner)) {
                     uniquePartners.add(currentPartner)       
-                }
-            }
-        }
+                } else {
+                    repeatPartners[currentPartner] = (repeatPartners[currentPartner] || 1) + 1;
+                };
+            };
+
+            const repeatPartnersCount = {};
+            Object.values(repeatPartners).forEach((value) => {
+                repeatPartnersCount[value] = (repeatPartnersCount[value] || 0) + 1;
+            });
+            let repeatPartnersSum = 0;
+            Object.entries(repeatPartnersCount).forEach(([key, value]) => {
+                repeatPartnersSum += (key * value);
+            });
+            console.log(repeatPartnersCount, repeatPartnersSum);
+        };
     };
 
     return [
