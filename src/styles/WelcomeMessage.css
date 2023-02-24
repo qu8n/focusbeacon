@@ -1,0 +1,6 @@
+@media screen and (min-width: 1350px) {
+    .message {
+        margin-left: 500px;
+        margin-right: 500px;
+    }
+}

@@ -25,7 +25,7 @@ export default function RepeatPartners({data}) {
                     <Icon
                         icon={ChatIcon}
                         variant="light"
-                        tooltip="More details available at focusmate.com/people, where you can sort by 'Sessions together'.
+                        tooltip="View more details at focusmate.com/people, where you can sort by 'Sessions together'.
                             Note that deleted accounts are counted as one-session partners."
                         color="gray"
                     />
