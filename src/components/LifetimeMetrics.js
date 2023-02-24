@@ -2,16 +2,14 @@ import React from 'react';
 import { Card, Metric, Text, Icon, Flex, Block, ColGrid } from '@tremor/react';
 import { ClockIcon, VideoCameraIcon, UsersIcon, FireIcon, BellIcon, CakeIcon } from '@heroicons/react/solid';
 
-export default function LifetimeMetrics(props) {
-    const [loading, data] = props.data;
-
-    const [
+export default function LifetimeMetrics({data}) {
+    const [loading, [
         totalSessions, 
         totalHours, 
         totalPartners,
         firstSessionDate,
         maxHoursADay,
-    ] = process(data);
+    ]] = data;
 
     const firstGroup = [
         {
@@ -48,7 +46,6 @@ export default function LifetimeMetrics(props) {
             icon: CakeIcon,
         },
     ];
-
 
     firstGroup.forEach((item) => {
         item.color = 'indigo';
@@ -104,63 +101,3 @@ export default function LifetimeMetrics(props) {
         );
     };
 };
-
-function process(data) {
-    let totalSessions = 0;
-    let totalHours = 0;
-    let uniquePartners = new Set();
-    let repeatPartners = {};
-
-    data.sort((a, b) => {
-        return new Date(a.startTime) - new Date(b.startTime);
-    });
-
-    let currentPartner = '';
-    let currentDate = '';
-    let currentHoursADay = 0;
-    let maxHoursADay = 0;
-    for (let index in data) {
-        // if (data[index].users[0].completed === true) {
-            totalSessions += 1;
-            totalHours += data[index].duration / 3600000;
-
-            if (currentDate === data[index].startTime.substring(0, 10)) {
-                currentHoursADay += data[index].duration / 3600000;
-            } else {
-                if (currentHoursADay > maxHoursADay) {
-                    maxHoursADay = currentHoursADay;
-                };
-                currentHoursADay = data[index].duration / 3600000;
-                currentDate = data[index].startTime.substring(0, 10);
-            };
-
-            if (typeof data[index].users[1] !== 'undefined') {
-                currentPartner = data[index].users[1].userId;
-                if (!uniquePartners.has(currentPartner)) {
-                    uniquePartners.add(currentPartner)       
-                } else {
-                    repeatPartners[currentPartner] = (repeatPartners[currentPartner] || 1) + 1;
-                };
-            };
-
-            const repeatPartnersCount = {};
-            Object.values(repeatPartners).forEach((value) => {
-                repeatPartnersCount[value] = (repeatPartnersCount[value] || 0) + 1;
-            });
-            let repeatPartnersSum = 0;
-            Object.entries(repeatPartnersCount).forEach(([key, value]) => {
-                repeatPartnersSum += (key * value);
-            });
-            // console.log(repeatPartnersCount, repeatPartnersSum);
-        // };
-    };
-
-    return [
-        totalSessions.toLocaleString(),
-        Math.round(totalHours).toLocaleString(),
-        uniquePartners.size.toLocaleString(),
-        data[0] ? new Date(data[0].startTime).toLocaleString("en-US", { day: "numeric", month: "short", year: "numeric" }) : 'N/A',
-        Math.round(maxHoursADay).toLocaleString(),
-    ];
-};
-

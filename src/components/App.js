@@ -8,9 +8,18 @@ import Milestones from './Milestones';
 import { Card, ColGrid } from '@tremor/react';
 import GitHubButton from 'react-github-btn';
 import ProfileCard from './ProfileCard';
+import useProcessData from '../hooks/useProcessData';
 
 export default function App() {
-  const [loading, profileData, sessionsData] = useFetchData();
+  const [
+    loading, [
+      totalSessions, 
+      totalHours, 
+      totalPartners,
+      firstSessionDate,
+      maxHoursADay
+    ]
+  ] = useProcessData();
   return (
     <div className={'App'}>
       <Card>
@@ -44,13 +53,21 @@ export default function App() {
       </Card>
       {/* <ProfileCard data={[loading, profileData]}/> */}
       <br/>
-      <LifetimeMetrics data={[loading, sessionsData]}/> 
-      <br/>
+      <LifetimeMetrics data={[
+        loading, [
+          totalSessions, 
+          totalHours,
+          totalPartners,
+          firstSessionDate,
+          maxHoursADay
+        ]
+      ]}/> 
+      {/* <br/>
       <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
         <SessionsByDuration data={[loading, sessionsData]}/>
         <Milestones data={[loading, sessionsData]}/>
         <Milestones data={[loading, sessionsData]}/>
-      </ColGrid>
+      </ColGrid> */}
     </div>
   )
 }
