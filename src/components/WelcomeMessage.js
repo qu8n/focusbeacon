@@ -21,7 +21,7 @@ export default function WelcomeMessage() {
             <Text marginTop='mt-3'>
                 Soon, you will be able to sign in and view your own stats.
                 Want to be the first to know when I launch?
-                Provide your email <a href="https://mailchi.mp/32761f8aafc0/focusstats">here</a>. 
+                Provide your email <a className='hyperlink' href="https://mailchi.mp/32761f8aafc0/focusstats">here</a>. 
                 You'll get a one-time email when this website is ready.
             </Text>
             <Flex marginTop='mt-4' justifyContent='justify-start' spaceX='space-x-2'>

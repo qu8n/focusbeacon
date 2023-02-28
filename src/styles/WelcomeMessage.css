@@ -1,6 +1,4 @@
-/* @media screen and (min-width: 1350px) {
-    .message {
-        margin-left: 500px;
-        margin-right: 500px;
-    }
-} */
+.hyperlink {
+    color: #0000FF;
+    text-decoration: underline;
+}
