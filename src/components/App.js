@@ -6,10 +6,10 @@ import Milestones from './Milestones';
 import { ColGrid, Divider } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
-import Logo from './Logo';
 import WelcomeMessage from './WelcomeMessage';
 import LTMSessions from './LTMSessions';
 import LTMHours from './LTMHours';
+import NavBar from './NavBar';
 
 export default function App() {
   const [
@@ -28,7 +28,7 @@ export default function App() {
   ] = useProcessData();
   return (
     <div className={'App'}>
-      <Logo />
+      <NavBar />
       <br/>
       <LifetimeMetrics data={[
         loading, [
