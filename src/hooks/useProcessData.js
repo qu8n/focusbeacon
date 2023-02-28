@@ -3,26 +3,30 @@ import useFetchData from './useFetchData';
 export default function useProcessData() {
     const [loading, profileData, sessionsData] = useFetchData();
 
+    // ----------------- INITIALIZE VARIABLES -----------------
+    
+    // For LifetimeMetrics component
     const totalSessions = sessionsData.length;
-    let sessionsCounter = 0;
     let totalHours = 0;
     let uniquePartners = new Set();
-
     let currentPartner = '';
     let currentDate = '';
-    
     let currentHoursADay = 0;
     let maxHoursADay = 0;
     
+    // For SessionsByDuration component
     let sessionsByDurationArr = [];
     let sessionsByDurationObj = {
         '25 minutes': 0,
         '50 minutes': 0,
         '75 minutes': 0,
     };
-
+    
+    // For Milestones component
+    let sessionsCounter = 0;
     let milestoneSessions = [];
     let currentMilestone = 0;
+    let milestonesArr = [];
     const milestoneLevelsAndUnits = {
         25: 1,
         50: 5,
@@ -40,23 +44,24 @@ export default function useProcessData() {
         milestoneSessions.push(currentMilestone);
         currentMilestone -= unit;
     };
-    let milestonesArr = [];
-
-    let repeatPartners = {}; // list of unique partners and their number of repeat sessions
-    let repeatPartnersCount = {}; // list of number of repeat sessions and their number of partners
-    let repeatPartnersSum = 0; // helps calculate single-session partners
-    let repeatPartnersArr = [];
-
     sessionsData.sort((a, b) => {
         return new Date(a.startTime) - new Date(b.startTime);
     });
+
+    // For RepeatPartners component
+    let repeatPartners = {};
+    let repeatPartnersCount = {}; 
+    let repeatPartnersSum = 0; 
+    let repeatPartnersArr = [];
+
+    // ----------------- LOOP THROUGH EACH SESSION OBJ AND PERFORM CALCS -----------------
 
     for (let session of sessionsData) {
         sessionsCounter += 1;
         totalHours += session.duration / 3600000;
         sessionsByDurationObj[`${session.duration / 60000} minutes`] += 1;
 
-        // `Most Session Time in a Day` calculation
+        // For `Most Session Time in a Day` metric
         if (currentDate === session.startTime.substring(0, 10)) {
             currentHoursADay += session.duration / 3600000;
         } else {
@@ -67,25 +72,26 @@ export default function useProcessData() {
             currentDate = session.startTime.substring(0, 10);
         };
 
+        // For `Total Unique Partners` metric and RepeatPartners component
         if (session.users[1] !== undefined) {
             currentPartner = session.users[1].userId;
-            // `Total Unique Partners` calculation
             if (!uniquePartners.has(currentPartner)) {
                 uniquePartners.add(currentPartner)
-            // `Repeat Session Partners` calculation p1
             } else {
                 repeatPartners[currentPartner] = (repeatPartners[currentPartner] || 1) + 1;
             };
         };
 
-        // `Milestones` calculation
+        // For Milestones component
         if (milestoneSessions.includes(sessionsCounter)) {
             let obj = { milestone: sessionsCounter, date: session.startTime };
             milestonesArr.push(obj);
         };
     };
 
-    // `Repeat Session Partners` calculation p2
+    // ----------------- POST-LOOP CALCULATIONS -----------------
+
+    // For RepeatPartners component
     Object.values(repeatPartners).forEach((value) => {
         repeatPartnersCount[value] = (repeatPartnersCount[value] || 0) + 1;
     });
@@ -109,7 +115,7 @@ export default function useProcessData() {
         repeatPartnersArr = repeatPartnersArr.slice(0, 5);
     };
 
-    // `Sessions by Duration` final setup
+    // For SessionsByDuration component
     for (const [key, value] of Object.entries(sessionsByDurationObj)) {
         sessionsByDurationArr.push({
             duration: key,
