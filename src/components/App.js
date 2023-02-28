@@ -3,7 +3,7 @@ import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
-import { ColGrid } from '@tremor/react';
+import { ColGrid, Divider } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
 import Logo from './Logo';
@@ -29,8 +29,6 @@ export default function App() {
   return (
     <div className={'App'}>
       <Logo />
-      <WelcomeMessage/>
-      <br/>
       <br/>
       <LifetimeMetrics data={[
         loading, [
@@ -52,6 +50,8 @@ export default function App() {
         <Milestones data={[loading, milestonesArr]}/>
         <RepeatPartners data={[loading, repeatPartnersArr]}/>
       </ColGrid>
+      <Divider />
+      <WelcomeMessage/>
     </div>
   )
 }

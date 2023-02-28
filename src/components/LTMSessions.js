@@ -23,7 +23,7 @@ export default function LTMSessions({data}) {
                     colors={["indigo"]}
                     valueFormatter={dataFormatter}
                     marginTop="mt-6"
-                    yAxisWidth="w-12"
+                    yAxisWidth="w-10"
                     showLegend={false}
                     startEndOnly={true}
                 />
