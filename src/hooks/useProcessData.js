@@ -54,7 +54,7 @@ export default function useProcessData() {
     let repeatPartnersSum = 0; 
     let repeatPartnersArr = [];
 
-    // For L12M components
+    // For LTM components
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1;
@@ -66,6 +66,8 @@ export default function useProcessData() {
         lTMSessionsObj[`${year}-${month}`] = 0;
     };
     const lTMSessionsArr = [];
+    const lTMMinutesObj = structuredClone(lTMSessionsObj);
+    const lTMMinutesArr = [];
 
     // ----------------- LOOP THROUGH EACH SESSION OBJ AND PERFORM CALCS -----------------
 
@@ -74,9 +76,11 @@ export default function useProcessData() {
         totalHours += session.duration / 3600000;
         sessionsByDurationObj[`${session.duration / 60000} minutes`] += 1;
 
+        // For LTM components
         const currentMonth = session.startTime.substring(0, 7);
         if (currentMonth in lTMSessionsObj) {
             lTMSessionsObj[currentMonth] += 1;
+            lTMMinutesObj[currentMonth] += session.duration / 60000;
         };
 
         // For `Most Session Time in a Day` metric
@@ -148,6 +152,12 @@ export default function useProcessData() {
             "Number of Sessions": value
         })
     };
+    for (const [key, value] of Object.entries(lTMMinutesObj)) {
+        lTMMinutesArr.push({
+            "Month": key,
+            "Minutes of Sessions": value
+        })
+    };
 
     return [
         loading,
@@ -164,6 +174,7 @@ export default function useProcessData() {
             milestonesArr.reverse(),
             repeatPartnersArr,
             lTMSessionsArr.reverse(),
+            lTMMinutesArr.reverse(),
         ]
     ];
 };
