@@ -9,7 +9,7 @@ import RepeatPartners from './RepeatPartners';
 import Logo from './Logo';
 import WelcomeMessage from './WelcomeMessage';
 import LTMSessions from './LTMSessions';
-import LTMMinutes from './LTMMinutes';
+import LTMHours from './LTMHours';
 
 export default function App() {
   const [
@@ -23,7 +23,7 @@ export default function App() {
       milestonesArr,
       repeatPartnersArr,
       lTMSessionsArr,
-      lTMMinutesArr,
+      lTMHoursArr,
     ]
   ] = useProcessData();
   return (
@@ -42,9 +42,10 @@ export default function App() {
         ]
       ]}/> 
       <br/>
-      <LTMSessions data={[loading, lTMSessionsArr]}/>
-      <br/>
-      <LTMMinutes data={[loading, lTMMinutesArr]}/>
+      <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
+        <LTMSessions data={[loading, lTMSessionsArr]}/>
+        <LTMHours data={[loading, lTMHoursArr]}/>
+      </ColGrid>
       <br/>
       <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
         <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>

@@ -66,8 +66,8 @@ export default function useProcessData() {
         lTMSessionsObj[`${year}-${month}`] = 0;
     };
     const lTMSessionsArr = [];
-    const lTMMinutesObj = structuredClone(lTMSessionsObj);
-    const lTMMinutesArr = [];
+    const lTMHoursObj = structuredClone(lTMSessionsObj);
+    const lTMHoursArr = [];
 
     // ----------------- LOOP THROUGH EACH SESSION OBJ AND PERFORM CALCS -----------------
 
@@ -80,7 +80,7 @@ export default function useProcessData() {
         const currentMonth = session.startTime.substring(0, 7);
         if (currentMonth in lTMSessionsObj) {
             lTMSessionsObj[currentMonth] += 1;
-            lTMMinutesObj[currentMonth] += session.duration / 60000;
+            lTMHoursObj[currentMonth] += session.duration / 3600000;
         };
 
         // For `Most Session Time in a Day` metric
@@ -152,10 +152,10 @@ export default function useProcessData() {
             "Number of Sessions": value
         })
     };
-    for (const [key, value] of Object.entries(lTMMinutesObj)) {
-        lTMMinutesArr.push({
+    for (const [key, value] of Object.entries(lTMHoursObj)) {
+        lTMHoursArr.push({
             "Month": key,
-            "Minutes of Sessions": value
+            "Hours of Sessions": Math.round(value)
         })
     };
 
@@ -174,7 +174,7 @@ export default function useProcessData() {
             milestonesArr.reverse(),
             repeatPartnersArr,
             lTMSessionsArr.reverse(),
-            lTMMinutesArr.reverse(),
+            lTMHoursArr.reverse(),
         ]
     ];
 };

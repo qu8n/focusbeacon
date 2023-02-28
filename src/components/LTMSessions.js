@@ -12,9 +12,9 @@ export default function LTMSessions({data}) {
     } else {
         return (
             <Card>
-                <Title>Sessions Volume Trend</Title>
+                <Title>Sessions Trend</Title>
                 <Subtitle>
-                    Number of sessions in the last completed 12 months
+                    Over the last 12 months
                 </Subtitle>
                 <BarChart
                     data={lTMSessionsArr}
@@ -25,6 +25,7 @@ export default function LTMSessions({data}) {
                     marginTop="mt-6"
                     yAxisWidth="w-12"
                     showLegend={false}
+                    startEndOnly={true}
                 />
             </Card>
         );

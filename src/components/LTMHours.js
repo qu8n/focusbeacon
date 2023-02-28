@@ -1,7 +1,7 @@
 import { BarChart, Card, Title, Subtitle } from "@tremor/react";
 
-export default function LTMMinutes({data}) {
-    const [loading, lTMMinutesArr] = data;
+export default function LTMHours({data}) {
+    const [loading, lTMHoursArr] = data;
 
     const dataFormatter = (number) => {
         return Intl.NumberFormat("us").format(number).toString();
@@ -12,19 +12,20 @@ export default function LTMMinutes({data}) {
     } else {
         return (
             <Card>
-                <Title>Minutes of Sessions Trend</Title>
+                <Title>Hours of Sessions Trend</Title>
                 <Subtitle>
-                    Minutes of sessions in the last completed 12 months
+                    Over the last 12 months
                 </Subtitle>
                 <BarChart
-                    data={lTMMinutesArr}
+                    data={lTMHoursArr}
                     dataKey="Month"
-                    categories={["Minutes of Sessions"]}
+                    categories={["Hours of Sessions"]}
                     colors={["indigo"]}
                     valueFormatter={dataFormatter}
                     marginTop="mt-6"
                     yAxisWidth="w-12"
                     showLegend={false}
+                    startEndOnly={true}
                 />
             </Card>
         );
