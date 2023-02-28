@@ -13,22 +13,23 @@ import NavBar from './NavBar';
 
 export default function App() {
   const [
-    loading, [
-      totalSessions, 
-      totalHours, 
-      totalPartners,
-      firstSessionDate,
-      maxHoursADay,
-      sessionsByDurationArr,
-      milestonesArr,
-      repeatPartnersArr,
-      lTMSessionsArr,
-      lTMHoursArr,
-    ]
+    loading,
+    profileData,
+    totalSessions, 
+    totalHours, 
+    totalPartners,
+    firstSessionDate,
+    maxHoursADay,
+    sessionsByDurationArr,
+    milestonesArr,
+    repeatPartnersArr,
+    lTMSessionsArr,
+    lTMHoursArr,
   ] = useProcessData();
+  
   return (
     <>
-      <NavBar />
+      <NavBar data={[loading, profileData]}/>
       <br/>
       <div className={'margin'}>
         <LifetimeMetrics data={[

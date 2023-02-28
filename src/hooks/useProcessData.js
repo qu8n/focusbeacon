@@ -161,20 +161,19 @@ export default function useProcessData() {
 
     return [
         loading,
-        [
-            totalSessions,
-            Math.round(totalHours).toLocaleString(),
-            uniquePartners.size.toLocaleString(),
-            sessionsData[0] ? 
-                new Date(sessionsData[0].startTime).toLocaleString(
-                    "en-US", { day: "numeric", month: "short", year: "numeric" }
-                ) : 'N/A',
-            Math.round(maxHoursADay).toLocaleString(),
-            sessionsByDurationArr,
-            milestonesArr.reverse(),
-            repeatPartnersArr,
-            lTMSessionsArr.reverse(),
-            lTMHoursArr.reverse(),
-        ]
+        profileData,
+        totalSessions,
+        Math.round(totalHours).toLocaleString(),
+        uniquePartners.size.toLocaleString(),
+        sessionsData[0] ? 
+            new Date(sessionsData[0].startTime).toLocaleString(
+                "en-US", { day: "numeric", month: "short", year: "numeric" }
+            ) : 'N/A',
+        Math.round(maxHoursADay).toLocaleString(),
+        sessionsByDurationArr,
+        milestonesArr.reverse(),
+        repeatPartnersArr,
+        lTMSessionsArr.reverse(),
+        lTMHoursArr.reverse(),
     ];
 };
