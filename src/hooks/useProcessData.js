@@ -54,12 +54,30 @@ export default function useProcessData() {
     let repeatPartnersSum = 0; 
     let repeatPartnersArr = [];
 
+    // For L12M components
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const lTMSessionsObj = {};
+    for (let i = 0; i < 12; i++) {
+        const pastMonth = new Date(currentYear, currentMonth - 2 - i, 1);
+        const year = pastMonth.getFullYear();
+        const month = String(pastMonth.getMonth() + 1).padStart(2, '0');
+        lTMSessionsObj[`${year}-${month}`] = 0;
+    };
+    const lTMSessionsArr = [];
+
     // ----------------- LOOP THROUGH EACH SESSION OBJ AND PERFORM CALCS -----------------
 
     for (let session of sessionsData) {
         sessionsCounter += 1;
         totalHours += session.duration / 3600000;
         sessionsByDurationObj[`${session.duration / 60000} minutes`] += 1;
+
+        const currentMonth = session.startTime.substring(0, 7);
+        if (currentMonth in lTMSessionsObj) {
+            lTMSessionsObj[currentMonth] += 1;
+        };
 
         // For `Most Session Time in a Day` metric
         if (currentDate === session.startTime.substring(0, 10)) {
@@ -123,6 +141,14 @@ export default function useProcessData() {
         });
     };
 
+    // For L12M components
+    for (const [key, value] of Object.entries(lTMSessionsObj)) {
+        lTMSessionsArr.push({
+            "Month": key,
+            "Number of Sessions": value
+        })
+    };
+
     return [
         loading,
         [
@@ -136,7 +162,8 @@ export default function useProcessData() {
             Math.round(maxHoursADay).toLocaleString(),
             sessionsByDurationArr,
             milestonesArr.reverse(),
-            repeatPartnersArr
+            repeatPartnersArr,
+            lTMSessionsArr.reverse(),
         ]
     ];
 };

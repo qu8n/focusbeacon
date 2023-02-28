@@ -8,6 +8,7 @@ import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
 import Logo from './Logo';
 import WelcomeMessage from './WelcomeMessage';
+import LTMSessions from './LTMSessions';
 
 export default function App() {
   const [
@@ -20,6 +21,7 @@ export default function App() {
       sessionsByDurationArr,
       milestonesArr,
       repeatPartnersArr,
+      lTMSessionsArr,
     ]
   ] = useProcessData();
   return (
@@ -37,6 +39,8 @@ export default function App() {
           maxHoursADay,
         ]
       ]}/> 
+      <br/>
+      <LTMSessions data={[loading, lTMSessionsArr]}/>
       <br/>
       <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
         <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
