@@ -27,31 +27,37 @@ export default function App() {
     ]
   ] = useProcessData();
   return (
-    <div className={'App'}>
+    <>
       <NavBar />
       <br/>
-      <LifetimeMetrics data={[
-        loading, [
-          totalSessions, 
-          totalHours,
-          totalPartners,
-          firstSessionDate,
-          maxHoursADay,
-        ]
-      ]}/> 
-      <br/>
-      <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
-        <LTMSessions data={[loading, lTMSessionsArr]}/>
-        <LTMHours data={[loading, lTMHoursArr]}/>
-      </ColGrid>
-      <br/>
-      <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
-        <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
-        <Milestones data={[loading, milestonesArr]}/>
-        <RepeatPartners data={[loading, repeatPartnersArr]}/>
-      </ColGrid>
-      <Divider />
-      <WelcomeMessage/>
-    </div>
+      <div className={'margin'}>
+        <LifetimeMetrics data={[
+          loading, [
+            totalSessions, 
+            totalHours,
+            totalPartners,
+            firstSessionDate,
+            maxHoursADay,
+          ]
+        ]}/>
+      </div>
+      <div className={'margin'}>
+        <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
+          <LTMSessions data={[loading, lTMSessionsArr]}/>
+          <LTMHours data={[loading, lTMHoursArr]}/>
+        </ColGrid>
+      </div>
+      <div className={'margin'}>
+        <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
+          <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
+          <Milestones data={[loading, milestonesArr]}/>
+          <RepeatPartners data={[loading, repeatPartnersArr]}/>
+        </ColGrid>
+      </div>
+      <div className={'margin'}>
+        <Divider />
+        <WelcomeMessage/>
+      </div>
+    </>
   )
 }
