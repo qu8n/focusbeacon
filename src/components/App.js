@@ -38,7 +38,9 @@ export default function App() {
     return (
       <>
         <NavBar data={profileData}/>
-        <br/>
+        <div className={'margin'}>
+          <WelcomeMessage/>
+        </div>
         <div className={'margin'}>
           <LifetimeMetrics data={[
               totalSessions, 
@@ -60,10 +62,6 @@ export default function App() {
             <Milestones data={milestonesArr}/>
             <RepeatPartners data={repeatPartnersArr}/>
           </ColGrid>
-        </div>
-        <div className={'margin'}>
-          <Divider />
-          <WelcomeMessage/>
         </div>
       </>
     )

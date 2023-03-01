@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, BellIcon, ArchiveIcon } from '@heroicons/react/outline';
 import { MenuAlt1Icon, MenuAlt2Icon, MenuAlt3Icon, MenuAlt4Icon, PlusIcon, XIcon } from '@heroicons/react/solid';
+import GitHubButton from 'react-github-btn';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -14,7 +15,7 @@ export default function NavBar({data}) {
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <div className="-ml-2 mr-2 flex items-center md:hidden">
@@ -74,6 +75,16 @@ export default function NavBar({data}) {
                   </button>
                 </div> */}
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
+
+                  <div className='mt-1 mr-3'>
+                    <GitHubButton
+                      href="https://github.com/qu8n/focusmate-data" 
+                      data-size="large" 
+                      aria-label="Star qu8n/focusmate-stats on GitHub">
+                          Star project on GitHub
+                    </GitHubButton>
+                  </div>
+
                   {/* <button
                     type="button"
                     className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
