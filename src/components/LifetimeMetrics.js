@@ -3,13 +3,13 @@ import { Card, Metric, Text, Icon, Flex, Block, ColGrid } from '@tremor/react';
 import { ClockIcon, VideoCameraIcon, UsersIcon, FireIcon, BellIcon, CakeIcon } from '@heroicons/react/solid';
 
 export default function LifetimeMetrics({data}) {
-    const [loading, [
+    const [
         totalSessions, 
         totalHours, 
         totalPartners,
         firstSessionDate,
         maxHoursADay,
-    ]] = data;
+    ] = data;
 
     const firstGroup = [
         {
@@ -55,33 +55,12 @@ export default function LifetimeMetrics({data}) {
         item.color = 'yellow';
     });
 
-    if (loading) {
-        return 'Loading...'
-    } else {
-        return (
-            <>
-            <Card>
-                <ColGrid numColsSm={ 1 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
-                    { firstGroup.map((item) => (
-                        <Flex key={ item.title } justifyContent="justify-start" spaceX="space-x-4">
-                            <Icon
-                                icon={ item.icon }
-                                variant="light"
-                                size="xl"
-                                color={ item.color }
-                            />
-                            <Block truncate={ true }>
-                                <Text>{ item.title }</Text>
-                                <Metric truncate={ true }>{ item.metric }</Metric>
-                            </Block>
-                        </Flex>
-                    )) }
-                </ColGrid>
-            </Card>
-            <br />
-            <Card>
+
+    return (
+        <>
+        <Card>
             <ColGrid numColsSm={ 1 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
-                { secondGroup.map((item) => (
+                { firstGroup.map((item) => (
                     <Flex key={ item.title } justifyContent="justify-start" spaceX="space-x-4">
                         <Icon
                             icon={ item.icon }
@@ -97,7 +76,25 @@ export default function LifetimeMetrics({data}) {
                 )) }
             </ColGrid>
         </Card>
-        </>
-        );
-    };
+        <br />
+        <Card>
+        <ColGrid numColsSm={ 1 } numColsLg={ 3 } gapX="gap-x-10" gapY="gap-y-10">
+            { secondGroup.map((item) => (
+                <Flex key={ item.title } justifyContent="justify-start" spaceX="space-x-4">
+                    <Icon
+                        icon={ item.icon }
+                        variant="light"
+                        size="xl"
+                        color={ item.color }
+                    />
+                    <Block truncate={ true }>
+                        <Text>{ item.title }</Text>
+                        <Metric truncate={ true }>{ item.metric }</Metric>
+                    </Block>
+                </Flex>
+            )) }
+        </ColGrid>
+    </Card>
+    </>
+    );
 };

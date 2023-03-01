@@ -13,45 +13,41 @@ import {
 import { ChatIcon, UserIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/solid';
 
 export default function RepeatPartners({data}) {
-    const [loading, repeatPartnersArr] = data;
+    const repeatPartnersArr = data;
 
-    if (loading) {
-        return 'Loading...';
-    } else {
-        return (
-            <Card>
-                <Flex alignItems="align-top">
-                    <Title>Top Recurring Partners</Title>
-                    <Icon
-                        icon={ChatIcon}
-                        variant="light"
-                        tooltip="View more details at focusmate.com/people, where you can sort by 'Sessions together'.
-                            Note that deleted accounts are counted as one-session partners."
-                        color="gray"
-                    />
-                </Flex>
-                <Table marginTop="mt-4">
-                    <TableHead>
-                        <TableRow>
-                            <TableHeaderCell textAlignment="text-left">Shared Sessions</TableHeaderCell>
-                            <TableHeaderCell textAlignment="text-right">No. of Partners</TableHeaderCell>
-                        </TableRow>
-                    </TableHead>
+    return (
+        <Card>
+            <Flex alignItems="align-top">
+                <Title>Top Recurring Partners</Title>
+                <Icon
+                    icon={ChatIcon}
+                    variant="light"
+                    tooltip="View more details at focusmate.com/people, where you can sort by 'Sessions together'.
+                        Note that deleted accounts are counted as one-session partners."
+                    color="gray"
+                />
+            </Flex>
+            <Table marginTop="mt-4">
+                <TableHead>
+                    <TableRow>
+                        <TableHeaderCell textAlignment="text-left">Shared Sessions</TableHeaderCell>
+                        <TableHeaderCell textAlignment="text-right">No. of Partners</TableHeaderCell>
+                    </TableRow>
+                </TableHead>
 
-                    <TableBody>
-                        { repeatPartnersArr.map((sharedSession) => (
-                        <TableRow key={ sharedSession.sharedSessions }>
-                            <TableCell textAlignment="">{ sharedSession.sharedSessions.toLocaleString() } { sharedSession.sharedSessions > 1 ? 'sessions' : 'session' }</TableCell>
-                            <TableCell textAlignment="text-right">
-                                <PartnerIcons sharedSession={sharedSession} />
-                            </TableCell>
-                        </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Card>
-        );
-    }
+                <TableBody>
+                    { repeatPartnersArr.map((sharedSession) => (
+                    <TableRow key={ sharedSession.sharedSessions }>
+                        <TableCell textAlignment="">{ sharedSession.sharedSessions.toLocaleString() } { sharedSession.sharedSessions > 1 ? 'sessions' : 'session' }</TableCell>
+                        <TableCell textAlignment="text-right">
+                            <PartnerIcons sharedSession={sharedSession} />
+                        </TableCell>
+                    </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </Card>
+    );
 };
 
 function PartnerIcons({sharedSession}) {

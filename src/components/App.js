@@ -10,6 +10,7 @@ import WelcomeMessage from './WelcomeMessage';
 import LTMSessions from './LTMSessions';
 import LTMHours from './LTMHours';
 import NavBar from './NavBar';
+import LoaderSpinner from './LoaderSpinner';
 
 export default function App() {
   const [
@@ -27,38 +28,44 @@ export default function App() {
     lTMHoursArr,
   ] = useProcessData();
   
-  return (
-    <>
-      <NavBar data={[loading, profileData]}/>
-      <br/>
-      <div className={'margin'}>
-        <LifetimeMetrics data={[
-          loading, [
-            totalSessions, 
-            totalHours,
-            totalPartners,
-            firstSessionDate,
-            maxHoursADay,
-          ]
-        ]}/>
+  if (loading) {
+    return (
+      <div className='center'>
+        <LoaderSpinner/>
       </div>
-      <div className={'margin'}>
-        <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
-          <LTMSessions data={[loading, lTMSessionsArr]}/>
-          <LTMHours data={[loading, lTMHoursArr]}/>
-        </ColGrid>
-      </div>
-      <div className={'margin'}>
-        <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
-          <SessionsByDuration data={[loading, [sessionsByDurationArr, totalSessions]]}/>
-          <Milestones data={[loading, milestonesArr]}/>
-          <RepeatPartners data={[loading, repeatPartnersArr]}/>
-        </ColGrid>
-      </div>
-      <div className={'margin'}>
-        <Divider />
-        <WelcomeMessage/>
-      </div>
-    </>
-  )
+    )
+  } else {
+    return (
+      <>
+        <NavBar data={profileData}/>
+        <br/>
+        <div className={'margin'}>
+          <LifetimeMetrics data={[
+              totalSessions, 
+              totalHours,
+              totalPartners,
+              firstSessionDate,
+              maxHoursADay,
+          ]}/>
+        </div>
+        <div className={'margin'}>
+          <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
+            <LTMSessions data={lTMSessionsArr}/>
+            <LTMHours data={lTMHoursArr}/>
+          </ColGrid>
+        </div>
+        <div className={'margin'}>
+          <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
+            <SessionsByDuration data={[sessionsByDurationArr, totalSessions]}/>
+            <Milestones data={milestonesArr}/>
+            <RepeatPartners data={repeatPartnersArr}/>
+          </ColGrid>
+        </div>
+        <div className={'margin'}>
+          <Divider />
+          <WelcomeMessage/>
+        </div>
+      </>
+    )
+  }
 }
