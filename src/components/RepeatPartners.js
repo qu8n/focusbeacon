@@ -21,7 +21,7 @@ export default function RepeatPartners({data}) {
         return (
             <Card>
                 <Flex alignItems="align-top">
-                    <Title>Repeat Session Partners</Title>
+                    <Title>Top Recurring Partners</Title>
                     <Icon
                         icon={ChatIcon}
                         variant="light"
