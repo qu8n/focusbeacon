@@ -19,7 +19,7 @@ export default function LifetimeMetrics({data}) {
         },
         {
             title: 'Total Hours of Sessions',
-            metric: totalHours + ' hours',
+            metric: Math.round(totalHours).toLocaleString() + ' hours',
             icon: ClockIcon
         },
         {
@@ -32,12 +32,12 @@ export default function LifetimeMetrics({data}) {
     const secondGroup = [
         {
             title: 'Total Unique Partners',
-            metric: totalPartners + ' partners',
+            metric: totalPartners.toLocaleString() + ' partners',
             icon: UsersIcon,
         },
         {
             title: 'Most Session Time in a Day',
-            metric: maxHoursADay + ' hours',
+            metric: Math.round(maxHoursADay).toLocaleString() + ' hours',
             icon: FireIcon,
         },
         {

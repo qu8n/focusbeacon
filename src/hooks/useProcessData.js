@@ -44,7 +44,7 @@ export default function useProcessData() {
         milestoneSessions.push(currentMilestone);
         currentMilestone -= unit;
     };
-    sessionsData.sort((a, b) => {
+    sessionsData.sort((a, b) => { // Also for `First Session Date` metric
         return new Date(a.startTime) - new Date(b.startTime);
     });
 
@@ -159,17 +159,19 @@ export default function useProcessData() {
         })
     };
 
+    const firstSessionDate = sessionsData[0] 
+        ? new Date(sessionsData[0].startTime).toLocaleString(
+            "en-US", { day: "numeric", month: "short", year: "numeric" }) 
+        : 'N/A';
+
     return [
         loading,
         profileData,
         totalSessions,
-        Math.round(totalHours).toLocaleString(),
-        uniquePartners.size.toLocaleString(),
-        sessionsData[0] ? 
-            new Date(sessionsData[0].startTime).toLocaleString(
-                "en-US", { day: "numeric", month: "short", year: "numeric" }
-            ) : 'N/A',
-        Math.round(maxHoursADay).toLocaleString(),
+        totalHours,
+        uniquePartners.size,
+        firstSessionDate,
+        maxHoursADay,
         sessionsByDurationArr,
         milestonesArr.reverse(),
         repeatPartnersArr,
