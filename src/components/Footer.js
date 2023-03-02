@@ -5,7 +5,7 @@ export default function Footer() {
     return (
         <>
             <Divider/>
-            <div className={'mt-8 mb-8 flex justify-center'}>
+            <div className={'mt-8 mb-12 flex justify-center'}>
                 <Text>
                     Made with 🧋 by&nbsp;
                     <a className="hyperlink" href="https://github.com/qu8n" target="_blank" rel="noreferrer">

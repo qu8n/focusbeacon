@@ -78,9 +78,9 @@ export default function NavBar({data}) {
 
                   <div className='mt-1 mr-3'>
                     <GitHubButton
-                      href="https://github.com/qu8n/focusmate-data" 
+                      href="https://github.com/qu8n/focusbeacon" 
                       data-size="large" 
-                      aria-label="Star qu8n/focusmate-stats on GitHub">
+                      aria-label="Star qu8n/focusbeacon on GitHub">
                           Star project on GitHub
                     </GitHubButton>
                   </div>

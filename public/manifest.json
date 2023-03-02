@@ -1,6 +1,6 @@
 {
-  "short_name": "FocusmateData",
-  "name": "FocusmateData",
+  "short_name": "FocusBeacon",
+  "name": "FocusBeacon",
   "icons": [
     {
       "src": "favicon.ico",
