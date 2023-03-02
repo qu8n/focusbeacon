@@ -25,7 +25,7 @@ export default function SessionsByDuration({data}) {
                 data={ sessionsByDurationArr }
                 dataKey="duration"
                 categories={ ["sessions"] }
-                colors={ ["yellow"] }
+                colors={ ["orange"] }
                 valueFormatter={ valueFormatter }
                 marginTop="mt-6"
                 yAxisWidth="w-12"
