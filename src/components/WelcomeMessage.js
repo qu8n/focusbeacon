@@ -1,9 +1,8 @@
-import { Text, Flex } from '@tremor/react';
-import '../styles/WelcomeMessage.css';
+import { Text } from '@tremor/react';
 
 export default function WelcomeMessage() {
     return (
-        <div className='message'>
+        <>
             <Text marginTop='mt-3'>
             👋🏼 Hi there! I'm building this (in-progress) website to help us view more stats on our past FocusMate sessions.
             </Text>
@@ -14,6 +13,6 @@ export default function WelcomeMessage() {
             <Text marginTop='mt-3'>
                 Below are my stats. I'm working on adding even more metrics. Stay tuned!
             </Text>
-        </div>
+        </>
     )
 };

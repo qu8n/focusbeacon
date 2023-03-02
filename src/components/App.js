@@ -11,6 +11,7 @@ import LTMSessions from './LTMSessions';
 import LTMHours from './LTMHours';
 import NavBar from './NavBar';
 import LoaderSpinner from './LoaderSpinner';
+import Footer from './Footer';
 
 export default function App() {
   const [
@@ -62,6 +63,9 @@ export default function App() {
             <Milestones data={milestonesArr}/>
             <RepeatPartners data={repeatPartnersArr}/>
           </ColGrid>
+        </div>
+        <div className={'margin'}>
+          <Footer/>
         </div>
       </>
     )
