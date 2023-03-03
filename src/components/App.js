@@ -3,7 +3,7 @@ import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
-import { ColGrid, Divider } from '@tremor/react';
+import { ColGrid } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
 import WelcomeMessage from './WelcomeMessage';
@@ -27,6 +27,7 @@ export default function App() {
     repeatPartnersArr,
     lTMSessionsArr,
     lTMHoursArr,
+    updateTime,
   ] = useProcessData();
   
   if (loading) {
@@ -65,7 +66,7 @@ export default function App() {
           </ColGrid>
         </div>
         <div className={'margin'}>
-          <Footer/>
+          <Footer data={updateTime}/>
         </div>
       </>
     )

@@ -163,6 +163,16 @@ export default function useProcessData() {
         ? new Date(sessionsData[0].startTime).toLocaleString(
             "en-US", { day: "numeric", month: "short", year: "numeric" }) 
         : 'N/A';
+    
+    const updateTime = new Date().toLocaleString(
+        "en-US", { 
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true 
+    });
 
     return [
         loading,
@@ -177,5 +187,6 @@ export default function useProcessData() {
         repeatPartnersArr,
         lTMSessionsArr.reverse(),
         lTMHoursArr.reverse(),
+        updateTime,
     ];
 };
