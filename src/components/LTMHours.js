@@ -17,7 +17,7 @@ export default function LTMHours({data}) {
                 data={lTMHoursArr}
                 categories={["Hours of Sessions"]}
                 dataKey="Month"
-                colors={["sky"]}
+                colors={["blue"]}
                 valueFormatter={dataFormatter}
                 yAxisWidth="w-10"
                 showLegend={false}

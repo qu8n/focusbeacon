@@ -17,7 +17,7 @@ export default function LTMSessions({data}) {
                 data={lTMSessionsArr}
                 dataKey="Month"
                 categories={["Number of Sessions"]}
-                colors={["sky"]}
+                colors={["blue"]}
                 valueFormatter={dataFormatter}
                 marginTop="mt-6"
                 yAxisWidth="w-10"

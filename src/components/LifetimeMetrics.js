@@ -48,7 +48,7 @@ export default function LifetimeMetrics({data}) {
     ];
 
     firstGroup.forEach((item) => {
-        item.color = 'sky';
+        item.color = 'blue';
     });
 
     secondGroup.forEach((item) => {

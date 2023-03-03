@@ -10,7 +10,7 @@ export default function LoaderSpinner() {
             wrapperStyle={{}}
             wrapperClass="comment-wrapper"
             color="#fff"
-            backgroundColor="#0EA5E9"
+            backgroundColor="#f97316"
         />
     )
 };
