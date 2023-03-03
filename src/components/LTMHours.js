@@ -1,4 +1,4 @@
-import { BarChart, Card, Title, Subtitle } from "@tremor/react";
+import { Card, Title, Subtitle, AreaChart } from "@tremor/react";
 
 export default function LTMHours({data}) {
     const lTMHoursArr = data;
@@ -7,22 +7,22 @@ export default function LTMHours({data}) {
         return Intl.NumberFormat("us").format(number).toString();
     };
 
-
     return (
         <Card>
-            <Title>Hours of Sessions Trend</Title>
+            <Title>Monthly Hours of Sessions</Title>
             <Subtitle>
                 Over the last 12 months
             </Subtitle>
-            <BarChart
+            <AreaChart
                 data={lTMHoursArr}
-                dataKey="Month"
                 categories={["Hours of Sessions"]}
+                dataKey="Month"
                 colors={["sky"]}
                 valueFormatter={dataFormatter}
-                marginTop="mt-6"
                 yAxisWidth="w-10"
                 showLegend={false}
+                height="h-80"
+                marginTop="mt-6"
                 startEndOnly={true}
             />
         </Card>

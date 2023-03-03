@@ -26,7 +26,7 @@ export default function Milestones({data}) {
             <TableBody>
                 { milestonesArr.map((milestone) => (
                 <TableRow key={ milestone.milestone }>
-                    <TableCell textAlignment="">{ milestone.milestone } { milestone.milestone > 1 ? 'sessions' : 'session' }</TableCell>
+                    <TableCell textAlignment="">{ milestone.milestone.toLocaleString() } { milestone.milestone > 1 ? 'sessions' : 'session' }</TableCell>
                     <TableCell textAlignment="text-right">{ new Date(milestone.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }</TableCell>
                 </TableRow>
                 ))}

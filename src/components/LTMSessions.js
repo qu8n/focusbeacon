@@ -9,7 +9,7 @@ export default function LTMSessions({data}) {
 
     return (
         <Card>
-            <Title>Sessions Trend</Title>
+            <Title>Monthly Number of Sessions</Title>
             <Subtitle>
                 Over the last 12 months
             </Subtitle>
