@@ -13,6 +13,7 @@ import NavBar from './NavBar';
 import LoaderSpinner from './LoaderSpinner';
 import Footer from './Footer';
 import LTWSessions from './LTWSessions';
+import LTWHours from './LTWHours';
 
 export default function App() {
   const [
@@ -30,6 +31,7 @@ export default function App() {
     lTMHoursArr,
     updateTime,
     lTWSessionsArr,
+    lTWHoursArr,
   ] = useProcessData();
   
   if (loading) {
@@ -63,7 +65,7 @@ export default function App() {
         <div className={'margin'}>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
             <LTWSessions data={lTWSessionsArr}/>
-            {/* <LTMHours data={lTMHoursArr}/> */}
+            <LTWHours data={lTWHoursArr}/>
           </ColGrid>
         </div>
         <div className={'margin'}>

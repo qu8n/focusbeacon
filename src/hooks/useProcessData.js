@@ -84,13 +84,13 @@ export default function useProcessData() {
         startDate.setDate(startDate.getDate() + 1);
     };
     const lTWHoursObj = structuredClone(lTWSessionsObj);
-    const ltWHoursArr = [];
-
-    const lTWWeekOfDates = {};
+    const lTWHoursArr = [];
+    const lTWSessionsWeekOfDates = {};
     for (let i = 0; i < weeksAgo; i++) {
-        lTWWeekOfDates[new Date(startDate2).toLocaleDateString()] = 0;
+        lTWSessionsWeekOfDates[new Date(startDate2).toLocaleDateString()] = 0;
         startDate2.setDate(startDate2.getDate() + 7);
     };
+    const lTWHoursWeekOfDates = structuredClone(lTWSessionsWeekOfDates);
 
     // ----------------- LOOP THROUGH EACH SESSION OBJ AND PERFORM CALCS -----------------
 
@@ -191,17 +191,31 @@ export default function useProcessData() {
 
     // For LTW components
     for (const [key, value] of Object.entries(lTWSessionsObj)) {
-        Object.keys(lTWWeekOfDates).forEach((date) => {
+        Object.keys(lTWSessionsWeekOfDates).forEach((date) => {
             const diffInDays = (new Date(key) - new Date(date)) / 86400000; // ms to days
             if (diffInDays < 7 && diffInDays > 0) {
-                lTWWeekOfDates[date] += value;
+                lTWSessionsWeekOfDates[date] += value;
             };
         });
     };
-    for (const [key, value] of Object.entries(lTWWeekOfDates)) {
+    for (const [key, value] of Object.entries(lTWSessionsWeekOfDates)) {
         lTWSessionsArr.push({
             "Week of": key,
             "Number of Sessions": value
+        })
+    };
+    for (const [key, value] of Object.entries(lTWHoursObj)) {
+        Object.keys(lTWHoursWeekOfDates).forEach((date) => {
+            const diffInDays = (new Date(key) - new Date(date)) / 86400000; // ms to days
+            if (diffInDays < 7 && diffInDays > 0) {
+                lTWHoursWeekOfDates[date] += value;
+            };
+        });
+    };
+    for (const [key, value] of Object.entries(lTWHoursWeekOfDates)) {
+        lTWHoursArr.push({
+            "Week of": key,
+            "Hours of Sessions": Math.round(value)
         })
     };
 
@@ -237,5 +251,6 @@ export default function useProcessData() {
         lTMHoursArr.reverse(),
         updateTime,
         lTWSessionsArr,
+        lTWHoursArr,
     ];
 };
