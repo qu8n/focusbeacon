@@ -1,4 +1,5 @@
-import { BarChart, Card, Title } from "@tremor/react";
+import { InformationCircleIcon } from "@heroicons/react/outline";
+import { BarChart, Card, Flex, Icon, Title } from "@tremor/react";
 
 export default function LTWSessions({data}) {
     const lTWSessionsArr = data;
@@ -9,7 +10,15 @@ export default function LTWSessions({data}) {
 
     return (
         <Card>
-            <Title>Number of Sessions</Title>
+            <Flex alignItems="align-top">
+                <Title>Number of Sessions</Title>
+                <Icon
+                    icon={InformationCircleIcon}
+                    variant="simple"
+                    tooltip="Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar"
+                    color="slate"
+                />
+            </Flex>
             <BarChart
                 data={lTWSessionsArr}
                 dataKey="Week of"

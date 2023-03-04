@@ -1,4 +1,5 @@
-import { Card, Title, AreaChart } from "@tremor/react";
+import { InformationCircleIcon } from "@heroicons/react/outline";
+import { Card, Title, AreaChart, Icon, Flex } from "@tremor/react";
 
 export default function LTWHours({data}) {
     const lTWHoursArr = data;
@@ -9,7 +10,15 @@ export default function LTWHours({data}) {
 
     return (
         <Card>
-            <Title>Hours of Sessions</Title>
+            <Flex alignItems="align-top">
+                <Title>Hours of Sessions</Title>
+                <Icon
+                    icon={InformationCircleIcon}
+                    variant="simple"
+                    tooltip="Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar"
+                    color="slate"
+                />
+            </Flex>
             <AreaChart
                 data={lTWHoursArr}
                 categories={["Hours of Sessions"]}

@@ -10,7 +10,8 @@ import {
     Icon,
     Flex,
   } from "@tremor/react";
-import { ChatIcon, UserIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/solid';
+import { UserIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/solid';
+import { InformationCircleIcon } from '@heroicons/react/outline';
 
 export default function RepeatPartners({data}) {
     const repeatPartnersArr = data;
@@ -20,11 +21,11 @@ export default function RepeatPartners({data}) {
             <Flex alignItems="align-top">
                 <Title>Top Recurring Partners</Title>
                 <Icon
-                    icon={ChatIcon}
-                    variant="light"
+                    icon={InformationCircleIcon}
+                    variant="simple"
                     tooltip="View more details at focusmate.com/people, where you can sort by 'Sessions together'.
-                        Note that deleted accounts are counted as one-session partners."
-                    color="gray"
+                        Note that deleted accounts are counted as one-session partners"
+                    color="slate"
                 />
             </Flex>
             <Table marginTop="mt-4">
