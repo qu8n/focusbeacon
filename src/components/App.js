@@ -6,7 +6,6 @@ import Milestones from './Milestones';
 import { ColGrid, Metric } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
-import WelcomeMessage from './WelcomeMessage';
 import LTMSessions from './LTMSessions';
 import LTMHours from './LTMHours';
 import NavBar from './NavBar';
@@ -44,11 +43,7 @@ export default function App() {
     return (
       <>
         <NavBar data={profileData}/>
-        <div className={'margin'}>
-          <WelcomeMessage/>
-        </div>
-
-        <Metric textAlignment='text-center' className={'margin'}>All Time</Metric>
+        <Metric textAlignment='text-center' className={'margin'} marginTop='mt-7'>All Time</Metric>
         <div className={'margin'}>
           <LifetimeMetrics data={[
               totalSessions, 

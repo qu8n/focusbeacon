@@ -1,5 +1,6 @@
 import { Text } from '@tremor/react';
 
+// Archived for now
 export default function WelcomeMessage() {
     return (
         <>
