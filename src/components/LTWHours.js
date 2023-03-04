@@ -1,4 +1,4 @@
-import { Card, Title, Subtitle, AreaChart } from "@tremor/react";
+import { Card, Title, AreaChart } from "@tremor/react";
 
 export default function LTWHours({data}) {
     const lTWHoursArr = data;
@@ -9,10 +9,7 @@ export default function LTWHours({data}) {
 
     return (
         <Card>
-            <Title>Weekly Hours of Sessions</Title>
-            <Subtitle>
-                Over the last 12 weeks
-            </Subtitle>
+            <Title>Hours of Sessions</Title>
             <AreaChart
                 data={lTWHoursArr}
                 categories={["Hours of Sessions"]}

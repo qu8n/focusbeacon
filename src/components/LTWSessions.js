@@ -1,4 +1,4 @@
-import { BarChart, Card, Title, Subtitle } from "@tremor/react";
+import { BarChart, Card, Title } from "@tremor/react";
 
 export default function LTWSessions({data}) {
     const lTWSessionsArr = data;
@@ -9,10 +9,7 @@ export default function LTWSessions({data}) {
 
     return (
         <Card>
-            <Title>Weekly Number of Sessions</Title>
-            <Subtitle>
-                Over the last 12 weeks
-            </Subtitle>
+            <Title>Number of Sessions</Title>
             <BarChart
                 data={lTWSessionsArr}
                 dataKey="Week of"

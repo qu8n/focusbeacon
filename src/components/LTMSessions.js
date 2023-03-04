@@ -1,4 +1,4 @@
-import { BarChart, Card, Title, Subtitle } from "@tremor/react";
+import { BarChart, Card, Title } from "@tremor/react";
 
 export default function LTMSessions({data}) {
     const lTMSessionsArr = data;
@@ -9,10 +9,7 @@ export default function LTMSessions({data}) {
 
     return (
         <Card>
-            <Title>Monthly Number of Sessions</Title>
-            <Subtitle>
-                Over the last 12 months
-            </Subtitle>
+            <Title>Number of Sessions</Title>
             <BarChart
                 data={lTMSessionsArr}
                 dataKey="Month"
