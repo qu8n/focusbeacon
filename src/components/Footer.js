@@ -9,14 +9,14 @@ export default function Footer({data}) {
             <Divider/>
             <div className={'mt-5 flex justify-center'}>
                 <Badge
-                    text={updateTime}
-                    color="slate"
+                    text={'Last refreshed on ' + updateTime}
+                    color="yellow"
                     size="sm"
                     icon={RefreshIcon}
                     marginTop="mt-3"
                 />
             </div>
-            <div className={'mt-4 mb-14 flex justify-center'}>
+            <div className={'mt-4 mb-10 flex justify-center'}>
                 <Text>
                     Made with 🧋 by&nbsp;
                     <a className="hyperlink" href="https://github.com/qu8n" target="_blank" rel="noreferrer">

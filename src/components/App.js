@@ -41,7 +41,7 @@ export default function App() {
     )
   } else {
     return (
-      <>
+      <div className='background'>
         <NavBar data={profileData}/>
         <Metric textAlignment='text-center' className={'margin'} marginTop='mt-7'>All Time</Metric>
         <div className={'margin'}>
@@ -80,7 +80,9 @@ export default function App() {
         <div className={'margin'}>
           <Footer data={updateTime}/>
         </div>
-      </>
+        
+        <br/>
+      </div>
     )
   }
 }
