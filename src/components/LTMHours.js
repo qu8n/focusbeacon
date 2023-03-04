@@ -1,4 +1,5 @@
-import { Card, Title, AreaChart } from "@tremor/react";
+import { InformationCircleIcon } from "@heroicons/react/outline";
+import { Card, Title, AreaChart, Text, Flex, Icon } from "@tremor/react";
 
 export default function LTMHours({data}) {
     const lTMHoursArr = data;
@@ -9,19 +10,27 @@ export default function LTMHours({data}) {
 
     return (
         <Card>
-            <Title>Hours of Sessions</Title>
+            <Flex alignItems="align-top">
+                <Title>Hours of Sessions</Title>
+                <Icon
+                    icon={InformationCircleIcon}
+                    variant="simple"
+                    tooltip="Each x-axis marker represents a month and its respective year"
+                    color="slate"
+                />
+            </Flex>
             <AreaChart
                 data={lTMHoursArr}
                 categories={["Hours of Sessions"]}
                 dataKey="Month"
                 colors={["blue"]}
                 valueFormatter={dataFormatter}
-                yAxisWidth="w-10"
+                yAxisWidth="w-8"
                 showLegend={false}
                 height="h-80"
                 marginTop="mt-6"
-                startEndOnly={true}
             />
+            <Text textAlignment='text-center'>Month</Text>
         </Card>
     );
 };

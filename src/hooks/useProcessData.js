@@ -178,13 +178,13 @@ export default function useProcessData() {
     // For LTM components
     for (const [key, value] of Object.entries(lTMSessionsObj)) {
         lTMSessionsArr.push({
-            "Month": key,
+            "Month": new Date(key).toLocaleString('en-us', { month: 'short', year: '2-digit' }),
             "Number of Sessions": value
         })
     };
     for (const [key, value] of Object.entries(lTMHoursObj)) {
         lTMHoursArr.push({
-            "Month": key,
+            "Month": new Date(key).toLocaleString('en-us', { month: 'short', year: '2-digit' }),
             "Hours of Sessions": Math.round(value)
         })
     };
@@ -200,7 +200,7 @@ export default function useProcessData() {
     };
     for (const [key, value] of Object.entries(lTWSessionsWeekOfDates)) {
         lTWSessionsArr.push({
-            "Week of": key,
+            "Week of": new Date(key).toLocaleString("en-US", { month: "short", day: "numeric" }),
             "Number of Sessions": value
         })
     };
@@ -214,7 +214,7 @@ export default function useProcessData() {
     };
     for (const [key, value] of Object.entries(lTWHoursWeekOfDates)) {
         lTWHoursArr.push({
-            "Week of": key,
+            "Week of": new Date(key).toLocaleString("en-US", { month: "short", day: "numeric" }),
             "Hours of Sessions": Math.round(value)
         })
     };

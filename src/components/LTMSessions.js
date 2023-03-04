@@ -1,4 +1,5 @@
-import { BarChart, Card, Title } from "@tremor/react";
+import { InformationCircleIcon } from "@heroicons/react/outline";
+import { BarChart, Card, Flex, Icon, Text, Title } from "@tremor/react";
 
 export default function LTMSessions({data}) {
     const lTMSessionsArr = data;
@@ -9,7 +10,15 @@ export default function LTMSessions({data}) {
 
     return (
         <Card>
-            <Title>Number of Sessions</Title>
+            <Flex alignItems="align-top">
+                <Title>Hours of Sessions</Title>
+                <Icon
+                    icon={InformationCircleIcon}
+                    variant="simple"
+                    tooltip="Each x-axis marker represents a month and its respective year"
+                    color="slate"
+                />
+            </Flex>
             <BarChart
                 data={lTMSessionsArr}
                 dataKey="Month"
@@ -17,10 +26,10 @@ export default function LTMSessions({data}) {
                 colors={["blue"]}
                 valueFormatter={dataFormatter}
                 marginTop="mt-6"
-                yAxisWidth="w-10"
+                yAxisWidth="w-8"
                 showLegend={false}
-                startEndOnly={true}
             />
+            <Text textAlignment='text-center'>Month</Text>
         </Card>
     );
 };

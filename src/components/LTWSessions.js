@@ -1,5 +1,5 @@
 import { InformationCircleIcon } from "@heroicons/react/outline";
-import { BarChart, Card, Flex, Icon, Title } from "@tremor/react";
+import { BarChart, Card, Flex, Icon, Text, Title } from "@tremor/react";
 
 export default function LTWSessions({data}) {
     const lTWSessionsArr = data;
@@ -26,10 +26,10 @@ export default function LTWSessions({data}) {
                 colors={["blue"]}
                 valueFormatter={dataFormatter}
                 marginTop="mt-6"
-                yAxisWidth="w-10"
+                yAxisWidth="w-8"
                 showLegend={false}
-                startEndOnly={true}
             />
+            <Text textAlignment='text-center'>Week of</Text>
         </Card>
     );
 };

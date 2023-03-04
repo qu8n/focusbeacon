@@ -1,5 +1,5 @@
 import { InformationCircleIcon } from "@heroicons/react/outline";
-import { Card, Title, AreaChart, Icon, Flex } from "@tremor/react";
+import { Card, Title, AreaChart, Icon, Flex, Text } from "@tremor/react";
 
 export default function LTWHours({data}) {
     const lTWHoursArr = data;
@@ -25,12 +25,12 @@ export default function LTWHours({data}) {
                 dataKey="Week of"
                 colors={["blue"]}
                 valueFormatter={dataFormatter}
-                yAxisWidth="w-10"
+                yAxisWidth="w-8"
                 showLegend={false}
                 height="h-80"
                 marginTop="mt-6"
-                startEndOnly={true}
             />
+            <Text textAlignment='text-center'>Week of</Text>
         </Card>
     );
 };
