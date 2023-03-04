@@ -7,15 +7,7 @@ export default function Footer({data}) {
     return (
         <>
             <Divider/>
-            <div className={'mt-7 mb-1 flex justify-center'}>
-                <Text>
-                    Made with 🧋 by&nbsp;
-                    <a className="hyperlink" href="https://github.com/qu8n" target="_blank" rel="noreferrer">
-                        Quan Nguyen
-                    </a>
-                </Text>
-            </div>
-            <div className={'mb-10 flex justify-center'}>
+            <div className={'mt-5 flex justify-center'}>
                 <Badge
                     text={updateTime}
                     color="slate"
@@ -23,6 +15,14 @@ export default function Footer({data}) {
                     icon={RefreshIcon}
                     marginTop="mt-3"
                 />
+            </div>
+            <div className={'mt-4 mb-14 flex justify-center'}>
+                <Text>
+                    Made with 🧋 by&nbsp;
+                    <a className="hyperlink" href="https://github.com/qu8n" target="_blank" rel="noreferrer">
+                        Quan Nguyen
+                    </a>
+                </Text>
             </div>
         </>
     )
