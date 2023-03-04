@@ -12,6 +12,7 @@ import LTMHours from './LTMHours';
 import NavBar from './NavBar';
 import LoaderSpinner from './LoaderSpinner';
 import Footer from './Footer';
+import LTWSessions from './LTWSessions';
 
 export default function App() {
   const [
@@ -28,6 +29,7 @@ export default function App() {
     lTMSessionsArr,
     lTMHoursArr,
     updateTime,
+    lTWSessionsArr,
   ] = useProcessData();
   
   if (loading) {
@@ -56,6 +58,12 @@ export default function App() {
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
             <LTMSessions data={lTMSessionsArr}/>
             <LTMHours data={lTMHoursArr}/>
+          </ColGrid>
+        </div>
+        <div className={'margin'}>
+          <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
+            <LTWSessions data={lTWSessionsArr}/>
+            {/* <LTMHours data={lTMHoursArr}/> */}
           </ColGrid>
         </div>
         <div className={'margin'}>

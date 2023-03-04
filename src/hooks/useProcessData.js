@@ -59,15 +59,38 @@ export default function useProcessData() {
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1;
     const lTMSessionsObj = {};
+    const lTMSessionsArr = [];
     for (let i = 0; i < 12; i++) {
         const pastMonth = new Date(currentYear, currentMonth - 2 - i, 1);
         const year = pastMonth.getFullYear();
         const month = String(pastMonth.getMonth() + 1).padStart(2, '0');
         lTMSessionsObj[`${year}-${month}`] = 0;
     };
-    const lTMSessionsArr = [];
     const lTMHoursObj = structuredClone(lTMSessionsObj);
     const lTMHoursArr = [];
+
+    // For LTW components
+    const lTWSessionsObj = {};
+    const lTWSessionsArr = [];
+    const weeksAgo = 12;
+    const startDate = new Date(
+        today.getFullYear(), 
+        today.getMonth(), 
+        today.getDate() - today.getDay() - (weeksAgo * 7)
+    );
+    const startDate2 = structuredClone(startDate);
+    for (let i = 0; i < (weeksAgo * 7); i++) {
+        lTWSessionsObj[new Date(startDate).toLocaleDateString()] = 0;
+        startDate.setDate(startDate.getDate() + 1);
+    };
+    const lTWHoursObj = structuredClone(lTWSessionsObj);
+    const ltWHoursArr = [];
+
+    const lTWWeekOfDates = {};
+    for (let i = 0; i < weeksAgo; i++) {
+        lTWWeekOfDates[new Date(startDate2).toLocaleDateString()] = 0;
+        startDate2.setDate(startDate2.getDate() + 7);
+    };
 
     // ----------------- LOOP THROUGH EACH SESSION OBJ AND PERFORM CALCS -----------------
 
@@ -81,6 +104,13 @@ export default function useProcessData() {
         if (currentMonth in lTMSessionsObj) {
             lTMSessionsObj[currentMonth] += 1;
             lTMHoursObj[currentMonth] += session.duration / 3600000;
+        };
+
+        // For LTW components
+        const startDate = new Date(session.startTime).toLocaleDateString();
+        if (startDate in lTWSessionsObj) {
+            lTWSessionsObj[startDate] += 1;
+            lTWHoursObj[startDate] += session.duration / 3600000;
         };
 
         // For `Most Session Time in a Day` metric
@@ -145,7 +175,7 @@ export default function useProcessData() {
         });
     };
 
-    // For L12M components
+    // For LTM components
     for (const [key, value] of Object.entries(lTMSessionsObj)) {
         lTMSessionsArr.push({
             "Month": key,
@@ -159,11 +189,29 @@ export default function useProcessData() {
         })
     };
 
+    // For LTW components
+    for (const [key, value] of Object.entries(lTWSessionsObj)) {
+        Object.keys(lTWWeekOfDates).forEach((date) => {
+            const diffInDays = (new Date(key) - new Date(date)) / 86400000; // ms to days
+            if (diffInDays < 7 && diffInDays > 0) {
+                lTWWeekOfDates[date] += value;
+            };
+        });
+    };
+    for (const [key, value] of Object.entries(lTWWeekOfDates)) {
+        lTWSessionsArr.push({
+            "Week of": key,
+            "Number of Sessions": value
+        })
+    };
+
+    // `First Session Date` metric
     const firstSessionDate = sessionsData[0] 
         ? new Date(sessionsData[0].startTime).toLocaleString(
             "en-US", { day: "numeric", month: "short", year: "numeric" }) 
         : 'N/A';
     
+    // 'Last Refreshed' badge
     const updateTime = new Date().toLocaleString(
         "en-US", { 
         month: 'long',
@@ -188,5 +236,6 @@ export default function useProcessData() {
         lTMSessionsArr.reverse(),
         lTMHoursArr.reverse(),
         updateTime,
+        lTWSessionsArr,
     ];
 };
