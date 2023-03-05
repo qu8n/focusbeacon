@@ -1,4 +1,4 @@
-import '../styles/App.css';
+import '../styles/index.css';
 import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import '@tremor/react/dist/esm/tremor.css';
@@ -44,11 +44,11 @@ export default function App() {
       <div className='background-color'>
         <NavBar data={profileData}/>
         <Metric textAlignment='text-center' marginTop='mt-7'>
-          <span class="text-gradient">
+          <span className="text-gradient-orange">
             All Time
           </span>
         </Metric>
-        <div className={'margin'}>
+        <div className={'row-margin'}>
           <LifetimeMetrics data={[
               totalSessions, 
               totalHours,
@@ -57,7 +57,7 @@ export default function App() {
               maxHoursADay,
           ]}/>
         </div>
-        <div className={'margin'}>
+        <div className={'row-margin'}>
           <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
             <SessionsByDuration data={[sessionsByDurationArr, totalSessions]}/>
             <Milestones data={milestonesArr}/>
@@ -66,11 +66,11 @@ export default function App() {
         </div>
         
         <Metric textAlignment='text-center' marginTop='mt-7'>
-          <span class="text-gradient">
+          <span className="text-gradient-orange">
             Last 12 Weeks
           </span>
         </Metric>
-        <div className={'margin'}>
+        <div className={'row-margin'}>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
             <LTWSessions data={lTWSessionsArr}/>
             <LTWHours data={lTWHoursArr}/>
@@ -78,18 +78,18 @@ export default function App() {
         </div>
 
         <Metric textAlignment='text-center' marginTop='mt-7'>
-          <span class="text-gradient">
+          <span className="text-gradient-orange">
             Last 12 Months
           </span>
         </Metric>
-        <div className={'margin'}>
+        <div className={'row-margin'}>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
             <LTMSessions data={lTMSessionsArr}/>
             <LTMHours data={lTMHoursArr}/>
           </ColGrid>
         </div>
 
-        <div className={'margin'}>
+        <div className={'row-margin'}>
           <Footer data={updateTime}/>
         </div>
         

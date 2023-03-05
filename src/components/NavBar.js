@@ -3,7 +3,8 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
 import GitHubButton from 'react-github-btn';
-import { Badge } from '@tremor/react';
+import { Badge, Metric } from '@tremor/react';
+import '../styles/index.css';
 
 // for styling the dropdown menu options on desktop
 function classNames(...classes) {
@@ -36,12 +37,17 @@ export default function NavBar({data}) {
                 
                 {/* Logo and status badge */}
                 <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="h-8 w-auto"
-                    src="/navBarLogo.png"
-                    alt="Your Company"
-                  />
-                  &nbsp; &nbsp;
+                  <Metric textAlignment='text-center'>
+                    <span className="text-gradient-blue">
+                      Focus
+                    </span>
+                  </Metric>
+                  <Metric textAlignment='text-center'>
+                    <span className="text-gradient-orange">
+                      Beacon
+                    </span>
+                  </Metric>
+                  <img className="h-8 w-auto -ml-1 mr-2" src="/logo.png" alt="FocusBeacon logo" />
                   <Badge
                     text="pre-alpha"
                     color="yellow"

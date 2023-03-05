@@ -1,6 +1,6 @@
 import { RefreshIcon } from "@heroicons/react/outline";
 import { Badge, Divider, Text } from "@tremor/react";
-import "../styles/Footer.css";
+import "../styles/index.css";
 
 export default function Footer({data}) {
     const updateTime = data;

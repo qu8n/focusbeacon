@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.row-margin {
+    margin: 30px;
+}
+
+.loader-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.background-color {
+    background-color: #f8fafc;
+}
+
+.hyperlink {
+    color: royalblue;
+    text-decoration: none;
+}
+
+/* Lighter var is 2 tints away from orange https://www.color-hex.com/color/e9520e */
+.text-gradient-orange {
+    background: linear-gradient(to right, #E9520E, #ed743e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Lighter var is 2 tints away from blue https://www.color-hex.com/color/3b82f6 */
+.text-gradient-blue {
+    background: linear-gradient(to right, #3b82f6, #629bf7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
