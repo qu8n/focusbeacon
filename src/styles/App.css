@@ -2,7 +2,7 @@
     margin: 30px;
 }
 
-.center {
+.loader-center {
     margin: 0;
     position: absolute;
     top: 50%;
@@ -11,6 +11,12 @@
     transform: translate(-50%, -50%);
 }
 
-.background {
+.background-color {
     background-color: #f8fafc;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #E9520E, #E59000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }

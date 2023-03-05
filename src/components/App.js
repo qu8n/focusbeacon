@@ -35,15 +35,19 @@ export default function App() {
   
   if (loading) {
     return (
-      <div className='center'>
+      <div className='loader-center'>
         <LoaderSpinner/>
       </div>
     )
   } else {
     return (
-      <div className='background'>
+      <div className='background-color'>
         <NavBar data={profileData}/>
-        <Metric textAlignment='text-center' className={'margin'} marginTop='mt-7'>All Time</Metric>
+        <Metric textAlignment='text-center' marginTop='mt-7'>
+          <span class="text-gradient">
+            All Time
+          </span>
+        </Metric>
         <div className={'margin'}>
           <LifetimeMetrics data={[
               totalSessions, 
@@ -61,7 +65,11 @@ export default function App() {
           </ColGrid>
         </div>
         
-        <Metric textAlignment='text-center' className={'margin'}>Last 12 Weeks</Metric>
+        <Metric textAlignment='text-center' marginTop='mt-7'>
+          <span class="text-gradient">
+            Last 12 Weeks
+          </span>
+        </Metric>
         <div className={'margin'}>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
             <LTWSessions data={lTWSessionsArr}/>
@@ -69,7 +77,11 @@ export default function App() {
           </ColGrid>
         </div>
 
-        <Metric textAlignment='text-center' className={'margin'}>Last 12 Months</Metric>
+        <Metric textAlignment='text-center' marginTop='mt-7'>
+          <span class="text-gradient">
+            Last 12 Months
+          </span>
+        </Metric>
         <div className={'margin'}>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
             <LTMSessions data={lTMSessionsArr}/>
