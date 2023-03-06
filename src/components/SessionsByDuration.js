@@ -5,7 +5,8 @@ import {
     ListItem,
     Title,
     Text,
-    DonutChart
+    DonutChart,
+    Legend
 } from '@tremor/react';
 
 export default function SessionsByDuration({data}) {
@@ -21,6 +22,8 @@ export default function SessionsByDuration({data}) {
                 <Title>Sessions by Duration</Title>
             </Flex>
 
+            <Legend categories={ sessionsByDurationArr.map((data) => ( data.duration )) } colors={ ["blue", "orange", "yellow"] } />
+
             <DonutChart
                 data={ sessionsByDurationArr }
                 dataKey="duration"
@@ -35,7 +38,7 @@ export default function SessionsByDuration({data}) {
             <List marginTop="mt-6">
                 { sessionsByDurationArr.map((data) => (
                     <ListItem key={ data.duration }>
-                        { durationColors[data.duration] } &nbsp; { data.duration }
+                        { data.duration }
                         <Text>
                             { Intl.NumberFormat('us').format(data.sessions).toString() } sessions
                             ({ Math.round(data.sessions / totalSessions * 100) }%)
@@ -46,10 +49,3 @@ export default function SessionsByDuration({data}) {
         </Card>
     );
 };
-
-const durationColors = {
-    '25 minutes': "🔵",
-    '50 minutes': "🟠",
-    '75 minutes': "🟡",
-};
-

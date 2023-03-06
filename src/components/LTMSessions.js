@@ -11,7 +11,7 @@ export default function LTMSessions({data}) {
     return (
         <Card>
             <Flex alignItems="align-top">
-                <Title>Monthly Number of Sessions</Title>
+                <Title>Sessions by Month</Title>
                 <Icon
                     icon={InformationCircleIcon}
                     variant="simple"

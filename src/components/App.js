@@ -3,7 +3,7 @@ import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
-import { ColGrid, Metric, Text } from '@tremor/react';
+import { ColGrid, Text } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
 import LTMSessions from './LTMSessions';

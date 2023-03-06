@@ -11,7 +11,7 @@ export default function LTWHours({data}) {
     return (
         <Card>
             <Flex alignItems="align-top">
-                <Title>Weekly Hours of Sessions</Title>
+                <Title>Hours of Sessions by Week</Title>
                 <Icon
                     icon={InformationCircleIcon}
                     variant="simple"

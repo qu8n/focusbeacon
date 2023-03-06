@@ -11,7 +11,7 @@ export default function LTMHours({data}) {
     return (
         <Card>
             <Flex alignItems="align-top">
-                <Title>Monthly Hours of Sessions</Title>
+                <Title>Hours of Sessions by Month</Title>
                 <Icon
                     icon={InformationCircleIcon}
                     variant="simple"

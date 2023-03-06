@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
-import GitHubButton from 'react-github-btn';
 import { Badge, Metric } from '@tremor/react';
 import '../styles/index.css';
 
@@ -58,20 +57,9 @@ export default function NavBar({data}) {
                 </div>
               </div>
               
-              {/* Right side */}
+              {/* Non-mobile profile dropdown */}
               <div className="flex items-center">
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-                  {/* GitHub button */}
-                  {/* <div className='mt-1 mr-3'>
-                    <GitHubButton
-                      href="https://github.com/qu8n/focusbeacon"
-                      data-size="large" 
-                      aria-label="Star project on GitHub">
-                          &nbsp; Star project on GitHub
-                    </GitHubButton>
-                  </div> */}
-
-                  {/* Non-mobile profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">

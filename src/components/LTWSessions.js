@@ -11,7 +11,7 @@ export default function LTWSessions({data}) {
     return (
         <Card>
             <Flex alignItems="align-top">
-                <Title>Weekly Number of Sessions</Title>
+                <Title>Sessions by Week</Title>
                 <Icon
                     icon={InformationCircleIcon}
                     variant="simple"
