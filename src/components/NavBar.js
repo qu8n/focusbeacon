@@ -62,14 +62,14 @@ export default function NavBar({data}) {
               <div className="flex items-center">
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
                   {/* GitHub button */}
-                  <div className='mt-1 mr-3'>
+                  {/* <div className='mt-1 mr-3'>
                     <GitHubButton
                       href="https://github.com/qu8n/focusbeacon"
                       data-size="large" 
                       aria-label="Star project on GitHub">
                           &nbsp; Star project on GitHub
                     </GitHubButton>
-                  </div>
+                  </div> */}
 
                   {/* Non-mobile profile dropdown */}
                   <Menu as="div" className="relative ml-3">

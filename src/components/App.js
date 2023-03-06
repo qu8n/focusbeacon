@@ -3,7 +3,7 @@ import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
-import { ColGrid, Metric } from '@tremor/react';
+import { ColGrid, Metric, Text } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
 import LTMSessions from './LTMSessions';
@@ -13,6 +13,7 @@ import LoaderSpinner from './LoaderSpinner';
 import Footer from './Footer';
 import LTWSessions from './LTWSessions';
 import LTWHours from './LTWHours';
+import GitHubButton from 'react-github-btn';
 
 export default function App() {
   const [
@@ -43,6 +44,28 @@ export default function App() {
     return (
       <div className='background-color'>
         <NavBar data={profileData}/>
+
+        <div className='row-margin'>
+          <Text textAlignment='text-center'>
+            <p>
+              👋🏼 Hi! I'm building this metrics dashboard for FocusMate users.
+            </p>
+            <p>
+              Below are my stats. Soon, you'll be able to sign in and see your own.
+            </p>
+            <p>
+              Star my project on GitHub to stay updated!
+            </p>
+            <div className='mt-3'>
+            <GitHubButton
+              href="https://github.com/qu8n/focusbeacon"
+              data-size="large" 
+              aria-label="Star project on GitHub">
+                  &nbsp; Star project on GitHub
+            </GitHubButton>
+            </div>
+          </Text>
+        </div>
 
         <div className='row-margin'>
           <LifetimeMetrics data={[
