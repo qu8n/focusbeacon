@@ -57,11 +57,11 @@ export default function useProcessData() {
     // For LTM components
     const today = new Date();
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
+    const currentMonth = today.getMonth();
     const lTMSessionsObj = {};
     const lTMSessionsArr = [];
     for (let i = 0; i < 12; i++) {
-        const pastMonth = new Date(currentYear, currentMonth - 2 - i, 1);
+        const pastMonth = new Date(currentYear, currentMonth - 1 - i, 1);
         const year = pastMonth.getFullYear();
         const month = String(pastMonth.getMonth() + 1).padStart(2, '0');
         lTMSessionsObj[`${year}-${month}`] = 0;
@@ -178,13 +178,15 @@ export default function useProcessData() {
     // For LTM components
     for (const [key, value] of Object.entries(lTMSessionsObj)) {
         lTMSessionsArr.push({
-            "Month": new Date(key).toLocaleString('en-us', { month: 'short', year: '2-digit' }),
+            "Month": new Date(key + "-02") // specify 2nd day to prevent DST and time zone conversion issues
+                .toLocaleString('en-us', { month: 'short', year: '2-digit' }),
             "Number of Sessions": value
         })
     };
     for (const [key, value] of Object.entries(lTMHoursObj)) {
         lTMHoursArr.push({
-            "Month": new Date(key).toLocaleString('en-us', { month: 'short', year: '2-digit' }),
+            "Month": new Date(key + "-02")
+                .toLocaleString('en-us', { month: 'short', year: '2-digit' }),
             "Hours of Sessions": Math.round(value)
         })
     };
