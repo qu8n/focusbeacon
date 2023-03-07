@@ -48,13 +48,10 @@ export default function App() {
         <div className='row-margin'>
           <Text textAlignment='text-center'>
             <p>
-              👋🏼 Hi! I'm building this metrics dashboard for FocusMate users.
+              👋🏼 Hi! I'm building this metrics dashboard for FocusMate users. Below are my stats.
             </p>
             <p>
-              Below are my stats. Soon, you'll be able to sign in and see your own.
-            </p>
-            <p>
-              Star my project on GitHub to stay updated!
+              I'm working on adding more stats and letting you sign in to see your own.
             </p>
             <div className='mt-3'>
             <GitHubButton

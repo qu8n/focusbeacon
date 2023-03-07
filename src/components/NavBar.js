@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
-import { Badge, Metric } from '@tremor/react';
+import { Badge, Metric, Text } from '@tremor/react';
 import '../styles/index.css';
 
 // for styling the dropdown menu options on desktop
@@ -60,6 +60,7 @@ export default function NavBar({data}) {
               {/* Non-mobile profile dropdown */}
               <div className="flex items-center">
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
+                  <Text>{profileData.name}</Text>
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
