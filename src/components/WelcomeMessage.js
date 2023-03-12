@@ -1,19 +1,18 @@
-import { Text } from '@tremor/react';
+import GitHubButton from 'react-github-btn';
 
-// Archived for now
 export default function WelcomeMessage() {
     return (
         <>
-            <Text marginTop='mt-3'>
-            👋🏼 Hi there! I'm building this (in-progress) website to help us view more stats on our past FocusMate sessions.
-            </Text>
-            <Text marginTop='mt-3'>
-                FocusMate has been life-changing for me, and I'm hoping that this dashboard will
-                serve as a reminder of our past work and motivate us all towards your goals.
-            </Text>
-            <Text marginTop='mt-3'>
-                Below are my stats. I'm working on adding even more metrics. Stay tuned!
-            </Text>
+            <p className='text-center leading-5'>
+                👋🏼 Hi! I'm building this metrics dashboard for FocusMate users. Below are my stats.<br/>
+                I'm working on adding more stats and letting you sign in to see your own.<br/><br/>
+                <GitHubButton
+                    href="https://github.com/qu8n/focusbeacon"
+                    data-size="large" 
+                    aria-label="Star project on GitHub">
+                        &nbsp; Star project on GitHub
+                </GitHubButton>
+            </p>
         </>
     )
 };

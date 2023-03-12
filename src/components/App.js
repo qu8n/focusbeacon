@@ -3,17 +3,14 @@ import SessionsByDuration from './SessionsByDuration';
 import LifetimeMetrics from './LifetimeMetrics';
 import '@tremor/react/dist/esm/tremor.css';
 import Milestones from './Milestones';
-import { ColGrid, Text } from '@tremor/react';
+import { ColGrid } from '@tremor/react';
 import useProcessData from '../hooks/useProcessData';
 import RepeatPartners from './RepeatPartners';
-import LTMSessions from './LTMSessions';
-import LTMHours from './LTMHours';
+import TimeSeriesChart from './TimeSeriesChart';
 import NavBar from './NavBar';
 import LoaderSpinner from './LoaderSpinner';
 import Footer from './Footer';
-import LTWSessions from './LTWSessions';
-import LTWHours from './LTWHours';
-import GitHubButton from 'react-github-btn';
+import WelcomeMessage from './WelcomeMessage';
 
 export default function App() {
   const [
@@ -33,6 +30,9 @@ export default function App() {
     lTWSessionsArr,
     lTWHoursArr,
   ] = useProcessData();
+
+  const weeklyChartTooltip = "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+  const monthlyChartTooltip = "Each x-axis marker represents a month and its respective year";
   
   if (loading) {
     return (
@@ -46,22 +46,7 @@ export default function App() {
         <NavBar data={profileData}/>
 
         <div className='row-margin'>
-          <Text textAlignment='text-center'>
-            <p>
-              👋🏼 Hi! I'm building this metrics dashboard for FocusMate users. Below are my stats.
-            </p>
-            <p>
-              I'm working on adding more stats and letting you sign in to see your own.
-            </p>
-            <div className='mt-3'>
-            <GitHubButton
-              href="https://github.com/qu8n/focusbeacon"
-              data-size="large" 
-              aria-label="Star project on GitHub">
-                  &nbsp; Star project on GitHub
-            </GitHubButton>
-            </div>
-          </Text>
+          <WelcomeMessage/>
         </div>
 
         <div className='row-margin'>
@@ -84,15 +69,43 @@ export default function App() {
         
         <div className='row-margin'>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
-            <LTWSessions data={lTWSessionsArr}/>
-            <LTWHours data={lTWHoursArr}/>
+            <TimeSeriesChart
+              chartType="bar"
+              title="Sessions by Week"
+              data={lTWSessionsArr}
+              dataKey="Week of"
+              categories={["Number of Sessions"]}
+              tooltip={weeklyChartTooltip}
+            />
+            <TimeSeriesChart
+              chartType="area"
+              title="Hours of Sessions by Week"
+              data={lTWHoursArr}
+              dataKey="Week of"
+              categories={["Hours of Sessions"]}
+              tooltip={weeklyChartTooltip}
+            />
           </ColGrid>
         </div>
 
         <div className='row-margin'>
           <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
-            <LTMSessions data={lTMSessionsArr}/>
-            <LTMHours data={lTMHoursArr}/>
+            <TimeSeriesChart 
+              chartType="bar"
+              title="Sessions by Month"
+              data={lTMSessionsArr}
+              dataKey="Month"
+              categories={["Number of Sessions"]}
+              tooltip={monthlyChartTooltip}
+            />
+            <TimeSeriesChart
+              chartType="area"
+              title="Hours of Sessions by Month"
+              data={lTMHoursArr}
+              dataKey="Month"
+              categories={["Hours of Sessions"]}
+              tooltip={monthlyChartTooltip}
+            />
           </ColGrid>
         </div>
 
