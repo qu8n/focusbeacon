@@ -8,6 +8,7 @@ import {
   Card,
   Title,
 } from "@tremor/react";
+import React from "react";
 
 export default function Milestones({ data }) {
   const milestonesArr = data;

@@ -11,6 +11,7 @@ import NavBar from "./NavBar";
 import LoaderSpinner from "./LoaderSpinner";
 import Footer from "./Footer";
 import WelcomeMessage from "./WelcomeMessage";
+import React from "react";
 
 export default function App() {
   const [

@@ -1,4 +1,5 @@
 import GitHubButton from "react-github-btn";
+import React from "react";
 
 export default function WelcomeMessage() {
   return (

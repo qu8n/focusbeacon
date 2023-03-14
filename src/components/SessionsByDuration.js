@@ -8,6 +8,7 @@ import {
   DonutChart,
   Legend,
 } from "@tremor/react";
+import React from "react";
 
 export default function SessionsByDuration({ data }) {
   const [sessionsByDurationArr, totalSessions] = data;

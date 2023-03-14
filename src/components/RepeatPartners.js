@@ -12,6 +12,7 @@ import {
 } from "@tremor/react";
 import { UserIcon, UsersIcon, UserGroupIcon } from "@heroicons/react/solid";
 import { InformationCircleIcon } from "@heroicons/react/outline";
+import React from "react";
 
 export default function RepeatPartners({ data }) {
   const repeatPartnersArr = data;
