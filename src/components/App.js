@@ -1,23 +1,23 @@
-import '../styles/index.css';
-import SessionsByDuration from './SessionsByDuration';
-import LifetimeMetrics from './LifetimeMetrics';
-import '@tremor/react/dist/esm/tremor.css';
-import Milestones from './Milestones';
-import { ColGrid } from '@tremor/react';
-import useProcessData from '../hooks/useProcessData';
-import RepeatPartners from './RepeatPartners';
-import TimeSeriesChart from './TimeSeriesChart';
-import NavBar from './NavBar';
-import LoaderSpinner from './LoaderSpinner';
-import Footer from './Footer';
-import WelcomeMessage from './WelcomeMessage';
+import "../styles/index.css";
+import SessionsByDuration from "./SessionsByDuration";
+import LifetimeMetrics from "./LifetimeMetrics";
+import "@tremor/react/dist/esm/tremor.css";
+import Milestones from "./Milestones";
+import { ColGrid } from "@tremor/react";
+import useProcessData from "../hooks/useProcessData";
+import RepeatPartners from "./RepeatPartners";
+import TimeSeriesChart from "./TimeSeriesChart";
+import NavBar from "./NavBar";
+import LoaderSpinner from "./LoaderSpinner";
+import Footer from "./Footer";
+import WelcomeMessage from "./WelcomeMessage";
 
 export default function App() {
   const [
     loading,
     profileData,
-    totalSessions, 
-    totalHours, 
+    totalSessions,
+    totalHours,
     totalPartners,
     firstSessionDate,
     maxHoursADay,
@@ -31,44 +31,48 @@ export default function App() {
     lTWHoursArr,
   ] = useProcessData();
 
-  const weeklyChartTooltip = "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-  const monthlyChartTooltip = "Each x-axis marker represents a month and its respective year";
-  
+  const weeklyChartTooltip =
+    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+  const monthlyChartTooltip =
+    "Each x-axis marker represents a month and its respective year";
+
   if (loading) {
     return (
-      <div className='loader-center'>
-        <LoaderSpinner/>
+      <div className="loader-center">
+        <LoaderSpinner />
       </div>
-    )
+    );
   } else {
     return (
-      <div className='background-color'>
-        <NavBar data={profileData}/>
+      <div className="background-color">
+        <NavBar data={profileData} />
 
-        <div className='row-margin'>
-          <WelcomeMessage/>
+        <div className="row-margin">
+          <WelcomeMessage />
         </div>
 
-        <div className='row-margin'>
-          <LifetimeMetrics data={[
-              totalSessions, 
+        <div className="row-margin">
+          <LifetimeMetrics
+            data={[
+              totalSessions,
               totalHours,
               totalPartners,
               firstSessionDate,
               maxHoursADay,
-          ]}/>
+            ]}
+          />
         </div>
 
-        <div className='row-margin'>
-          <ColGrid numColsLg={ 3 } gapX="gap-x-6" gapY="gap-y-6">
-            <SessionsByDuration data={[sessionsByDurationArr, totalSessions]}/>
-            <Milestones data={milestonesArr}/>
-            <RepeatPartners data={repeatPartnersArr}/>
+        <div className="row-margin">
+          <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
+            <SessionsByDuration data={[sessionsByDurationArr, totalSessions]} />
+            <Milestones data={milestonesArr} />
+            <RepeatPartners data={repeatPartnersArr} />
           </ColGrid>
         </div>
-        
-        <div className='row-margin'>
-          <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
+
+        <div className="row-margin">
+          <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
             <TimeSeriesChart
               chartType="bar"
               title="Sessions by Week"
@@ -88,9 +92,9 @@ export default function App() {
           </ColGrid>
         </div>
 
-        <div className='row-margin'>
-          <ColGrid numColsLg={ 2 } gapX="gap-x-6" gapY="gap-y-6">
-            <TimeSeriesChart 
+        <div className="row-margin">
+          <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
+            <TimeSeriesChart
               chartType="bar"
               title="Sessions by Month"
               data={lTMSessionsArr}
@@ -109,11 +113,11 @@ export default function App() {
           </ColGrid>
         </div>
 
-        <div className='row-margin'>
-          <Footer data={updateTime}/>
+        <div className="row-margin">
+          <Footer data={updateTime} />
         </div>
-        <br/>
+        <br />
       </div>
-    )
+    );
   }
 }

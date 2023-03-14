@@ -1,16 +1,16 @@
-import { Fragment } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { MenuIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/solid';
-import { Badge, Metric, Text } from '@tremor/react';
-import '../styles/index.css';
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { MenuIcon, ExclamationCircleIcon } from "@heroicons/react/outline";
+import { XIcon } from "@heroicons/react/solid";
+import { Badge, Metric, Text } from "@tremor/react";
+import "../styles/index.css";
 
 // for styling the dropdown menu options on desktop
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-};
+  return classes.filter(Boolean).join(" ");
+}
 
-export default function NavBar({data}) {
+export default function NavBar({ data }) {
   const profileData = data;
 
   return (
@@ -19,7 +19,6 @@ export default function NavBar({data}) {
         <>
           <div className="mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
-
               {/* Left side */}
               <div className="flex">
                 {/* Mobile menu button */}
@@ -33,20 +32,20 @@ export default function NavBar({data}) {
                     )}
                   </Disclosure.Button>
                 </div>
-                
+
                 {/* Logo and status badge */}
                 <div className="flex flex-shrink-0 items-center">
-                  <Metric textAlignment='text-center'>
-                    <span className="text-gradient-blue">
-                      Focus
-                    </span>
+                  <Metric textAlignment="text-center">
+                    <span className="text-gradient-blue">Focus</span>
                   </Metric>
-                  <Metric textAlignment='text-center'>
-                    <span className="text-gradient-orange">
-                      Beacon
-                    </span>
+                  <Metric textAlignment="text-center">
+                    <span className="text-gradient-orange">Beacon</span>
                   </Metric>
-                  <img className="h-8 w-auto -ml-1 mr-2" src="/logo.png" alt="FocusBeacon logo" />
+                  <img
+                    className="h-8 w-auto -ml-1 mr-2"
+                    src="/logo.png"
+                    alt="FocusBeacon logo"
+                  />
                   <Badge
                     text="pre-alpha"
                     color="yellow"
@@ -56,7 +55,7 @@ export default function NavBar({data}) {
                   />
                 </div>
               </div>
-              
+
               {/* Non-mobile profile dropdown */}
               <div className="flex items-center">
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
@@ -86,11 +85,11 @@ export default function NavBar({data}) {
                           {({ active }) => (
                             <a
                               href="https://github.com/qu8n/FocusBeacon/issues"
-                              target="_blank" 
+                              target="_blank"
                               rel="noopener noreferrer"
                               className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm text-gray-700'
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
                               Report a Bug
@@ -102,8 +101,8 @@ export default function NavBar({data}) {
                             <a
                               href="/"
                               className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm text-gray-700'
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
                               Sign Out
@@ -111,14 +110,13 @@ export default function NavBar({data}) {
                           )}
                         </Menu.Item>
                       </Menu.Items>
-                    </Transition>                          
+                    </Transition>
                   </Menu>
                 </div>
               </div>
-
             </div>
           </div>
-          
+
           {/* Mobile menu */}
           <Disclosure.Panel className="md:hidden">
             <div className="border-t border-gray-200 pt-4 pb-3">
@@ -132,7 +130,9 @@ export default function NavBar({data}) {
                   />
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium text-gray-800">{profileData.name}</div>
+                  <div className="text-base font-medium text-gray-800">
+                    {profileData.name}
+                  </div>
                 </div>
               </div>
 
@@ -159,4 +159,4 @@ export default function NavBar({data}) {
       )}
     </Disclosure>
   );
-};
+}
