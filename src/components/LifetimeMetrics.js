@@ -11,7 +11,7 @@ import {
 import PropTypes from "prop-types";
 
 LifetimeMetrics.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.number).isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 export default function LifetimeMetrics({ data }) {

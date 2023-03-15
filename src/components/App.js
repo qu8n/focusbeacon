@@ -12,11 +12,12 @@ import LoaderSpinner from "./LoaderSpinner";
 import Footer from "./Footer";
 import WelcomeMessage from "./WelcomeMessage";
 import React from "react";
+import useFetchData from "../hooks/useFetchData";
 
 export default function App() {
+  const [loading, profileData, sessionsData] = useFetchData();
+
   const [
-    loading,
-    profileData,
     totalSessions,
     totalHours,
     totalPartners,
@@ -30,7 +31,7 @@ export default function App() {
     updateTime,
     lTWSessionsArr,
     lTWHoursArr,
-  ] = useProcessData();
+  ] = useProcessData(sessionsData);
 
   const weeklyChartTooltip =
     "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";

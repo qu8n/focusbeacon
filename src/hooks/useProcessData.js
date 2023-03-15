@@ -1,8 +1,4 @@
-import useFetchData from "./useFetchData";
-
-export default function useProcessData() {
-  const [loading, profileData, sessionsData] = useFetchData();
-
+export default function useProcessData(sessionsData) {
   // ----------------- INITIALIZE VARIABLES -----------------
 
   // For LifetimeMetrics component
@@ -253,8 +249,6 @@ export default function useProcessData() {
   });
 
   return [
-    loading,
-    profileData,
     totalSessions,
     totalHours,
     uniquePartners.size,
