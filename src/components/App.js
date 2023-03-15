@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import "../styles/index.css";
 import SessionsByDuration from "./SessionsByDuration";
 import LifetimeMetrics from "./LifetimeMetrics";
@@ -14,42 +15,54 @@ import WelcomeMessage from "./WelcomeMessage";
 import React from "react";
 import useFetchData from "../hooks/useFetchData";
 
+import { useQuery, useQueryClient } from 'react-query';
+import fetchProfileData from '../utils/fetchProfileData';
+
 export default function App() {
-  const [loading, profileData, sessionsData] = useFetchData();
+  // const [loading, profileData, sessionsData] = useFetchData();
 
-  const [
-    totalSessions,
-    totalHours,
-    totalPartners,
-    firstSessionDate,
-    maxHoursADay,
-    sessionsByDurationArr,
-    milestonesArr,
-    repeatPartnersArr,
-    lTMSessionsArr,
-    lTMHoursArr,
-    updateTime,
-    lTWSessionsArr,
-    lTWHoursArr,
-  ] = useProcessData(sessionsData);
+  // const [
+  //   totalSessions,
+  //   totalHours,
+  //   totalPartners,
+  //   firstSessionDate,
+  //   maxHoursADay,
+  //   sessionsByDurationArr,
+  //   milestonesArr,
+  //   repeatPartnersArr,
+  //   lTMSessionsArr,
+  //   lTMHoursArr,
+  //   updateTime,
+  //   lTWSessionsArr,
+  //   lTWHoursArr,
+  // ] = useProcessData(sessionsData);
 
-  const weeklyChartTooltip =
-    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-  const monthlyChartTooltip =
-    "Each x-axis marker represents a month and its respective year";
+  // const weeklyChartTooltip =
+  //   "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+  // const monthlyChartTooltip =
+  //   "Each x-axis marker represents a month and its respective year";
+  
+  const queryClient = useQueryClient();
+  const { isLoading: profileIsLoading, isError: profileIsError, data: profileData , error: profileError } = useQuery('profileData', fetchProfileData);
 
-  if (loading) {
+  if (profileIsLoading) {
     return (
       <div className="loader-center">
         <LoaderSpinner />
       </div>
     );
-  } else {
+  }
+  
+  if (profileIsError) {
+    return <span>Profile data error: {profileError.message}</span>
+  } 
+  
+  // else {
     return (
       <div className="background-color">
-        <NavBar data={profileData} />
+        <NavBar data={profileData.user} />
 
-        <div className="row-margin">
+        {/* <div className="row-margin">
           <WelcomeMessage />
         </div>
 
@@ -118,8 +131,8 @@ export default function App() {
         <div className="row-margin">
           <Footer data={updateTime} />
         </div>
-        <br />
+        <br /> */}
       </div>
     );
-  }
+  // }
 }
