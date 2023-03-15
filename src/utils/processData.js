@@ -1,4 +1,4 @@
-export default function useProcessData(sessionsData) {
+export default function processData(sessionsData) {
   // ----------------- INITIALIZE VARIABLES -----------------
 
   // For LifetimeMetrics component

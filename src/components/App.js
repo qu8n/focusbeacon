@@ -1,21 +1,17 @@
-/* eslint-disable no-unused-vars */
-import "../styles/index.css";
+import React from "react";
+import "@tremor/react/dist/esm/tremor.css";
 import SessionsByDuration from "./SessionsByDuration";
 import LifetimeMetrics from "./LifetimeMetrics";
-import "@tremor/react/dist/esm/tremor.css";
 import Milestones from "./Milestones";
 import { ColGrid } from "@tremor/react";
-import useProcessData from "../hooks/useProcessData";
 import RepeatPartners from "./RepeatPartners";
 import TimeSeriesChart from "./TimeSeriesChart";
 import NavBar from "./NavBar";
 import LoaderSpinner from "./LoaderSpinner";
 import Footer from "./Footer";
 import WelcomeMessage from "./WelcomeMessage";
-import React from "react";
-import useFetchData from "../hooks/useFetchData";
-
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
+import processData from "../utils/processData";
 import fetchProfileData from '../utils/fetchProfileData';
 import fetchSessionsData from "../utils/fetchSessionsData";
 
@@ -26,7 +22,7 @@ export default function App() {
     data: profileData,
     error: profileError 
   } = useQuery('profileData', fetchProfileData);
-  
+
   const { 
     isLoading: sessionsIsLoading, 
     isError: sessionsIsError, 
@@ -34,12 +30,10 @@ export default function App() {
     error: sessionsError 
   } = useQuery('sessionsData', fetchSessionsData);
 
-  // const [loading, profileData, sessionsData] = useFetchData();
-
-  // const weeklyChartTooltip =
-  //   "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-  // const monthlyChartTooltip =
-  //   "Each x-axis marker represents a month and its respective year";
+  const weeklyChartTooltip =
+    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+  const monthlyChartTooltip =
+    "Each x-axis marker represents a month and its respective year";
   
   if (profileIsLoading || sessionsIsLoading) {
     return (
@@ -72,7 +66,7 @@ export default function App() {
     updateTime,
     lTWSessionsArr,
     lTWHoursArr,
-  ] = useProcessData(sessionsData);
+  ] = processData(sessionsData);
 
   return (
     <div className="background-color">
@@ -94,7 +88,7 @@ export default function App() {
         />
       </div>
 
-      {/* <div className="row-margin">
+      <div className="row-margin">
         <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
           <SessionsByDuration data={[sessionsByDurationArr, totalSessions]} />
           <Milestones data={milestonesArr} />
@@ -147,7 +141,7 @@ export default function App() {
       <div className="row-margin">
         <Footer data={updateTime} />
       </div>
-      <br /> */}
+      <br />
     </div>
   );
 

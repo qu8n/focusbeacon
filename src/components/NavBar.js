@@ -3,7 +3,6 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MenuIcon, ExclamationCircleIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
 import { Badge, Metric, Text } from "@tremor/react";
-import "../styles/index.css";
 import React from "react";
 import PropTypes from "prop-types";
 

@@ -1,6 +1,5 @@
 import { RefreshIcon } from "@heroicons/react/outline";
 import { Badge, Divider, Text } from "@tremor/react";
-import "../styles/index.css";
 import React from "react";
 import PropTypes from "prop-types";
 
