@@ -9,6 +9,16 @@ import {
   Title,
 } from "@tremor/react";
 import React from "react";
+import PropTypes from "prop-types";
+
+TimeSeriesChart.propTypes = {
+  chartType: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dataKey: PropTypes.string.isRequired,
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  tooltip: PropTypes.string.isRequired,
+};
 
 export default function TimeSeriesChart({
   chartType,

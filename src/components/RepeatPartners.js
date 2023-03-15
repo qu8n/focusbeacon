@@ -13,6 +13,11 @@ import {
 import { UserIcon, UsersIcon, UserGroupIcon } from "@heroicons/react/solid";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import React from "react";
+import PropTypes from "prop-types";
+
+RepeatPartners.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default function RepeatPartners({ data }) {
   const repeatPartnersArr = data;
@@ -58,6 +63,10 @@ export default function RepeatPartners({ data }) {
     </Card>
   );
 }
+
+PartnerIcons.propTypes = {
+  sharedSession: PropTypes.object.isRequired,
+};
 
 function PartnerIcons({ sharedSession }) {
   if (sharedSession.partners === 1) {

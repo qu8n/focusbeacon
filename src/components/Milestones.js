@@ -9,6 +9,11 @@ import {
   Title,
 } from "@tremor/react";
 import React from "react";
+import PropTypes from "prop-types";
+
+Milestones.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default function Milestones({ data }) {
   const milestonesArr = data;

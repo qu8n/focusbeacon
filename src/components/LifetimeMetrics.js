@@ -8,6 +8,11 @@ import {
   BellIcon,
   CakeIcon,
 } from "@heroicons/react/solid";
+import PropTypes from "prop-types";
+
+LifetimeMetrics.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.number).isRequired,
+};
 
 export default function LifetimeMetrics({ data }) {
   const [

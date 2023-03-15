@@ -9,6 +9,11 @@ import {
   Legend,
 } from "@tremor/react";
 import React from "react";
+import PropTypes from "prop-types";
+
+SessionsByDuration.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default function SessionsByDuration({ data }) {
   const [sessionsByDurationArr, totalSessions] = data;

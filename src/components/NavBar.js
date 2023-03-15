@@ -5,11 +5,16 @@ import { XIcon } from "@heroicons/react/solid";
 import { Badge, Metric, Text } from "@tremor/react";
 import "../styles/index.css";
 import React from "react";
+import PropTypes from "prop-types";
 
 // for styling the dropdown menu options on desktop
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
+NavBar.propTypes = {
+  data: PropTypes.object.isRequired,
+};
 
 export default function NavBar({ data }) {
   const profileData = data;

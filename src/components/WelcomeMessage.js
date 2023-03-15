@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import GitHubButton from "react-github-btn";
 import React from "react";
 
