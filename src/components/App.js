@@ -10,31 +10,26 @@ import NavBar from "./NavBar";
 import LoaderSpinner from "./LoaderSpinner";
 import Footer from "./Footer";
 import WelcomeMessage from "./WelcomeMessage";
-import { useQuery } from 'react-query';
+import { useQuery } from "react-query";
 import processData from "../utils/processData";
-import fetchProfileData from '../utils/fetchProfileData';
+import fetchProfileData from "../utils/fetchProfileData";
 import fetchSessionsData from "../utils/fetchSessionsData";
 
 export default function App() {
-  const { 
-    isLoading: profileIsLoading, 
-    isError: profileIsError, 
+  const {
+    isLoading: profileIsLoading,
+    isError: profileIsError,
     data: profileData,
-    error: profileError 
-  } = useQuery('profileData', fetchProfileData);
+    error: profileError,
+  } = useQuery("profileData", fetchProfileData);
 
-  const { 
-    isLoading: sessionsIsLoading, 
-    isError: sessionsIsError, 
-    data: sessionsData, 
-    error: sessionsError 
-  } = useQuery('sessionsData', fetchSessionsData);
+  const {
+    isLoading: sessionsIsLoading,
+    isError: sessionsIsError,
+    data: sessionsData,
+    error: sessionsError,
+  } = useQuery("sessionsData", fetchSessionsData);
 
-  const weeklyChartTooltip =
-    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-  const monthlyChartTooltip =
-    "Each x-axis marker represents a month and its respective year";
-  
   if (profileIsLoading || sessionsIsLoading) {
     return (
       <div className="loader-center">
@@ -42,16 +37,16 @@ export default function App() {
       </div>
     );
   }
-  
+
   if (profileIsError || sessionsIsError) {
     return (
       <>
         <p>Profile data error: {profileError.message}</p>
         <p>Sessions data error: {sessionsError.message}</p>
       </>
-    )
-  } 
-  
+    );
+  }
+
   const [
     totalSessions,
     totalHours,
@@ -144,5 +139,10 @@ export default function App() {
       <br />
     </div>
   );
-
 }
+
+const weeklyChartTooltip =
+  "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+
+const monthlyChartTooltip =
+  "Each x-axis marker represents a month and its respective year";
