@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { MenuIcon, ExclamationCircleIcon } from "@heroicons/react/outline";
+import { MenuIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
-import { Badge, Metric, Text } from "@tremor/react";
+import { Metric, Text } from "@tremor/react";
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -12,7 +12,7 @@ function classNames(...classes) {
 }
 
 NavBar.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired
 };
 
 export default function NavBar({ data }) {
@@ -38,26 +38,17 @@ export default function NavBar({ data }) {
                   </Disclosure.Button>
                 </div>
 
-                {/* Logo and status badge */}
-                <div className="flex flex-shrink-0 items-center">
-                  <Metric textAlignment="text-center">
-                    <span className="text-gradient-blue">Focus</span>
-                  </Metric>
-                  <Metric textAlignment="text-center">
-                    <span className="text-gradient-orange">Beacon</span>
-                  </Metric>
-                  <img
-                    className="h-8 w-auto -ml-1 mr-2"
-                    src="/logo.png"
-                    alt="FocusBeacon logo"
-                  />
-                  <Badge
-                    text="pre-alpha"
-                    color="yellow"
-                    size="sm"
-                    icon={ExclamationCircleIcon}
-                    tooltip="This dashboard is still in active development. Please report any bugs or feature requests under Issues on the project's GitHub"
-                  />
+                {/* Logo */}
+                <div className="-space-y-1  mt-1.5">
+                  <div className="flex flex-shrink-0 items-center">
+                    <Metric textAlignment="text-center">
+                      <span className="text-gradient-blue">Focus</span>
+                      <span className="text-gradient-orange">Beacon</span>
+                    </Metric>
+                  </div>
+                  <div className="font-medium text-xs text-slate-400">
+                    <span>Unofficial Focusmate Stats App</span>
+                  </div>
                 </div>
               </div>
 
