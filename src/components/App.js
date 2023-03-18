@@ -1,33 +1,39 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+// import { profileData, sessionsData } from "../PRIVATE"; // ignore - mock data for testing
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 import "@tremor/react/dist/esm/tremor.css";
+import { ColGrid } from "@tremor/react";
+import processData from "../utils/processData";
+import fetchProfileData from "../utils/fetchProfileData";
+import fetchSessionsData from "../utils/fetchSessionsData";
 import SessionsByDuration from "./SessionsByDuration";
 import LifetimeMetrics from "./LifetimeMetrics";
 import Milestones from "./Milestones";
-import { ColGrid } from "@tremor/react";
 import RepeatPartners from "./RepeatPartners";
 import TimeSeriesChart from "./TimeSeriesChart";
 import NavBar from "./NavBar";
 import LoaderSpinner from "./LoaderSpinner";
 import Footer from "./Footer";
 import WelcomeMessage from "./WelcomeMessage";
-import { useQuery } from "react-query";
-import processData from "../utils/processData";
-import fetchProfileData from "../utils/fetchProfileData";
-import fetchSessionsData from "../utils/fetchSessionsData";
+import Modal from "./Modal";
 
 export default function App() {
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
   const {
     isLoading: profileIsLoading,
     isError: profileIsError,
     data: profileData,
-    error: profileError,
+    error: profileError
   } = useQuery("profileData", fetchProfileData);
 
   const {
     isLoading: sessionsIsLoading,
     isError: sessionsIsError,
     data: sessionsData,
-    error: sessionsError,
+    error: sessionsError
   } = useQuery("sessionsData", fetchSessionsData);
 
   if (profileIsLoading || sessionsIsLoading) {
@@ -60,12 +66,30 @@ export default function App() {
     lTMHoursArr,
     updateTime,
     lTWSessionsArr,
-    lTWHoursArr,
+    lTWHoursArr
   ] = processData(sessionsData);
+
+  const weeklyChartTooltip =
+    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+
+  const monthlyChartTooltip =
+    "Each x-axis marker represents a month and its respective year";
 
   return (
     <div className="background-color">
-      <NavBar data={profileData.user} />
+      <NavBar
+        data={profileData.user}
+        setShowAboutModal={setShowAboutModal}
+        setShowPrivacyModal={setShowPrivacyModal}
+      />
+
+      {(showAboutModal || showPrivacyModal) && (
+        <Modal
+          modalType={showAboutModal ? "about" : "privacy"}
+          setShowAboutModal={setShowAboutModal}
+          setShowPrivacyModal={setShowPrivacyModal}
+        />
+      )}
 
       <div className="row-margin">
         <WelcomeMessage />
@@ -78,7 +102,7 @@ export default function App() {
             totalHours,
             totalPartners,
             firstSessionDate,
-            maxHoursADay,
+            maxHoursADay
           ]}
         />
       </div>
@@ -140,9 +164,3 @@ export default function App() {
     </div>
   );
 }
-
-const weeklyChartTooltip =
-  "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-
-const monthlyChartTooltip =
-  "Each x-axis marker represents a month and its respective year";

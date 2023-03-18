@@ -10,10 +10,16 @@ function classNames(...classes) {
 }
 
 NavBar.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  setShowAboutModal: PropTypes.func.isRequired,
+  setShowPrivacyModal: PropTypes.func.isRequired
 };
 
-export default function NavBar({ data }) {
+export default function NavBar({
+  data,
+  setShowAboutModal,
+  setShowPrivacyModal
+}) {
   return (
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (
@@ -47,34 +53,31 @@ export default function NavBar({ data }) {
 
                 {/* Desktop menu */}
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <a
-                    href="/"
-                    className="inline-flex items-center border-b-2 border-blue-500 px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    Dashboard
-                  </a>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => setShowAboutModal(true)}
                     className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   >
                     About
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Report Issues
-                  </a>
-                  <a
-                    href="#"
+                  </button>
+                  <button
+                    onClick={() => setShowPrivacyModal(true)}
                     className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   >
                     Privacy Policy
+                  </button>
+                  <a
+                    href="https://forms.gle/mcuSkyP5uguV7FKd7"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  >
+                    Report a Bug
                   </a>
                 </div>
               </div>
+
+              {/* Profile dropdown */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
@@ -147,31 +150,26 @@ export default function NavBar({ data }) {
             <div className="space-y-1 pt-2 pb-4">
               <Disclosure.Button
                 as="a"
-                href="#"
-                className="block border-l-4 border-blue-500 bg-blue-50 py-2 pl-3 pr-4 text-base font-medium text-blue-700"
-              >
-                Dashboard
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="#"
+                onClick={() => setShowAboutModal(true)}
                 className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
               >
                 About
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
-                href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
-              >
-                Report Issues
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="#"
+                onClick={() => setShowPrivacyModal(true)}
                 className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
               >
                 Privacy Policy
+              </Disclosure.Button>
+              <Disclosure.Button
+                as="a"
+                href="https://forms.gle/mcuSkyP5uguV7FKd7"
+                target="_blank"
+                rel="noreferrer"
+                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+              >
+                Report a Bug
               </Disclosure.Button>
             </div>
           </Disclosure.Panel>

@@ -6,13 +6,13 @@ import {
   TableRow,
   TableCell,
   Card,
-  Title,
+  Title
 } from "@tremor/react";
 import React from "react";
 import PropTypes from "prop-types";
 
 Milestones.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default function Milestones({ data }) {
@@ -42,7 +42,7 @@ export default function Milestones({ data }) {
                 {new Date(milestone.date).toLocaleDateString("en-US", {
                   month: "long",
                   day: "numeric",
-                  year: "numeric",
+                  year: "numeric"
                 })}
               </TableCell>
             </TableRow>
