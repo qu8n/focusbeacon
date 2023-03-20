@@ -4,7 +4,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 Footer.propTypes = {
-  data: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired
 };
 
 export default function Footer({ data }) {
@@ -26,7 +26,7 @@ export default function Footer({ data }) {
           Made with 🧋 by&nbsp;
           <a
             className="hyperlink"
-            href="https://github.com/qu8n"
+            href="https://www.quans.org/"
             target="_blank"
             rel="noreferrer"
           >

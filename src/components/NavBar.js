@@ -50,30 +50,30 @@ export default function NavBar({
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Desktop menu */}
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <button
-                    onClick={() => setShowAboutModal(true)}
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    About
-                  </button>
-                  <button
-                    onClick={() => setShowPrivacyModal(true)}
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Privacy Policy
-                  </button>
-                  <a
-                    href="https://forms.gle/mcuSkyP5uguV7FKd7"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Report a Bug
-                  </a>
-                </div>
+              {/* Desktop menu */}
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <button
+                  onClick={() => setShowAboutModal(true)}
+                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                >
+                  About
+                </button>
+                <button
+                  onClick={() => setShowPrivacyModal(true)}
+                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                >
+                  Privacy Policy
+                </button>
+                <a
+                  href="https://forms.gle/mcuSkyP5uguV7FKd7"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                >
+                  Report a Bug
+                </a>
               </div>
 
               {/* Profile dropdown */}
