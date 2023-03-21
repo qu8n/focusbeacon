@@ -40,7 +40,7 @@ export default function NavBar({
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {/* Logo */}
-                <div className="flex flex-shrink-0 items-center mr-5">
+                <a href="/" className="flex flex-shrink-0 items-center mr-5">
                   <div className="-space-y-1.5">
                     <div className="font-semibold text-3xl">
                       <span className="text-gradient-blue">Focus</span>
@@ -50,7 +50,7 @@ export default function NavBar({
                       <span>Unofficial Focusmate Stats App</span>
                     </div>
                   </div>
-                </div>
+                </a>
               </div>
 
               {/* Desktop menu */}
@@ -77,7 +77,12 @@ export default function NavBar({
                 </a>
               </div>
 
-              <button className="inline-flex items-center text-sm h-11 mt-2.5 ml-9 font-medium bg-blue-500 hover:bg-blue-600 text-white px-4 rounded">
+              <button
+                onClick={() => {
+                  window.location.href = `https://www.focusmate.com/oauth/authorize?client_id=${process.env.REACT_APP_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`;
+                }}
+                className="inline-flex items-center text-sm h-11 mt-2.5 ml-9 font-medium bg-blue-500 hover:bg-blue-600 text-white px-4 rounded"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
