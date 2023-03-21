@@ -25,12 +25,12 @@ export default function Footer({ data }) {
         <Text>
           Made with 🧋 by&nbsp;
           <a
-            className="hyperlink"
+            className="text-blue-500 hover:text-blue-600"
             href="https://www.quans.org/"
             target="_blank"
             rel="noreferrer"
           >
-            Quan Nguyen
+            Quan
           </a>
         </Text>
       </div>

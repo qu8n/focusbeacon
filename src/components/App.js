@@ -76,7 +76,7 @@ export default function App() {
     "Each x-axis marker represents a month and its respective year";
 
   return (
-    <div className="background-color">
+    <div className="bg-slate-50">
       <NavBar
         data={profileData.user}
         setShowAboutModal={setShowAboutModal}
@@ -91,11 +91,11 @@ export default function App() {
         />
       )}
 
-      <div className="row-margin">
+      <div className="m-7">
         <WelcomeMessage />
       </div>
 
-      <div className="row-margin">
+      <div className="m-7">
         <LifetimeMetrics
           data={[
             totalSessions,
@@ -107,7 +107,7 @@ export default function App() {
         />
       </div>
 
-      <div className="row-margin">
+      <div className="m-7">
         <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
           <SessionsByDuration data={[sessionsByDurationArr, totalSessions]} />
           <Milestones data={milestonesArr} />
@@ -115,7 +115,7 @@ export default function App() {
         </ColGrid>
       </div>
 
-      <div className="row-margin">
+      <div className="m-7">
         <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
           <TimeSeriesChart
             chartType="bar"
@@ -136,7 +136,7 @@ export default function App() {
         </ColGrid>
       </div>
 
-      <div className="row-margin">
+      <div className="m-7">
         <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
           <TimeSeriesChart
             chartType="bar"
@@ -157,7 +157,7 @@ export default function App() {
         </ColGrid>
       </div>
 
-      <div className="row-margin">
+      <div className="m-7">
         <Footer data={updateTime} />
       </div>
       <br />
