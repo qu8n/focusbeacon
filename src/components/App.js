@@ -27,14 +27,24 @@ export default function App() {
     isError: profileIsError,
     data: profileData,
     error: profileError
-  } = useQuery("profileData", fetchProfileData);
+  } = useQuery({
+    queryKey: ["profileData"],
+    queryFn: fetchProfileData
+  });
+
+  const memberSince = profileData?.user?.memberSince;
 
   const {
     isLoading: sessionsIsLoading,
     isError: sessionsIsError,
     data: sessionsData,
     error: sessionsError
-  } = useQuery("sessionsData", fetchSessionsData);
+  } = useQuery({
+    // if queryFn depends on a var, include it in queryKey (per docs)
+    queryKey: ["sessionsData", memberSince],
+    queryFn: () => fetchSessionsData(memberSince),
+    enabled: !!memberSince
+  });
 
   if (profileIsLoading || sessionsIsLoading) {
     return (
@@ -53,6 +63,12 @@ export default function App() {
     );
   }
 
+  const weeklyChartTooltip =
+    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
+
+  const monthlyChartTooltip =
+    "Each x-axis marker represents a month and its respective year";
+
   const [
     totalSessions,
     totalHours,
@@ -68,12 +84,6 @@ export default function App() {
     lTWSessionsArr,
     lTWHoursArr
   ] = processData(sessionsData);
-
-  const weeklyChartTooltip =
-    "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-
-  const monthlyChartTooltip =
-    "Each x-axis marker represents a month and its respective year";
 
   return (
     <div className="bg-slate-50">
