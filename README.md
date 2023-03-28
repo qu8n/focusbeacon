@@ -103,7 +103,7 @@ I'm in talks with Focusmate to set up OAuth, which would allow any Focusmate use
    ```
 8. Enter your API key in `.env`
    ```
-   REACT_APP_FOCUSMATE_API_KEY="YOUR_API_KEY"
+   NEXT_PUBLIC_FOCUSMATE_API_KEY="YOUR_API_KEY"
    ```
 9. Run the app
    ```sh
