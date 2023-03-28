@@ -79,7 +79,9 @@ export default function NavBar({
 
               <button
                 onClick={() => {
-                  window.location.href = `https://www.focusmate.com/oauth/authorize?client_id=${process.env.REACT_APP_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`;
+                  if (typeof window !== "undefined") {
+                    window.location.href = `https://www.focusmate.com/oauth/authorize?client_id=${process.env.REACT_APP_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`;
+                  }
                 }}
                 className="inline-flex items-center text-sm h-11 mt-2.5 ml-9 font-medium bg-blue-500 hover:bg-blue-500/[.95] text-white px-4 rounded"
               >
