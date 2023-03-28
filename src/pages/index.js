@@ -7,16 +7,16 @@ import { ColGrid } from "@tremor/react";
 import processData from "../utils/processData";
 import fetchProfileData from "../utils/fetchProfileData";
 import fetchSessionsData from "../utils/fetchSessionsData";
-import SessionsByDuration from "./SessionsByDuration";
-import LifetimeMetrics from "./LifetimeMetrics";
-import Milestones from "./Milestones";
-import RepeatPartners from "./RepeatPartners";
-import TimeSeriesChart from "./TimeSeriesChart";
-import NavBar from "./NavBar";
-import LoaderSpinner from "./LoaderSpinner";
-import Footer from "./Footer";
-import WelcomeMessage from "./WelcomeMessage";
-import Modal from "./Modal";
+import SessionsByDuration from "../components/SessionsByDuration";
+import LifetimeMetrics from "../components/LifetimeMetrics";
+import Milestones from "../components/Milestones";
+import RepeatPartners from "../components/RepeatPartners";
+import TimeSeriesChart from "../components/TimeSeriesChart";
+import NavBar from "../components/NavBar";
+import LoaderSpinner from "../components/LoaderSpinner";
+import Footer from "../components/Footer";
+import WelcomeMessage from "../components/WelcomeMessage";
+import Modal from "../components/Modal";
 
 export default function App() {
   const [showAboutModal, setShowAboutModal] = useState(false);
