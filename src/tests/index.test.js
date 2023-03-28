@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import App from "../pages/index";
+import Home from "../pages/index";
 
 test("renders learn react link", () => {
-  render(<App />);
+  render(<Home />);
   const linkElement = screen.getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });

@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../styles/globals.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Head from "next/head";
+import "../styles/globals.css";
 
 App.propTypes = {
   Component: PropTypes.elementType.isRequired,

@@ -18,7 +18,7 @@ import Footer from "../components/Footer";
 import WelcomeMessage from "../components/WelcomeMessage";
 import Modal from "../components/Modal";
 
-export default function App() {
+export default function Home() {
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
