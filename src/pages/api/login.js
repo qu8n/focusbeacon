@@ -1,11 +1,27 @@
 export default function handler(req, res) {
-  // if (req.method === "POST") {
-  //   const { authorizationCode } = JSON.parse(req.body);
-  //   const authorizationCodeCap = authorizationCode.toUpperCase();
-  //   res.status(200).json({ authorizationCodeCap });
-  // } else {
-  //   res.status(405).json({ message: "Method not allowed" });
-  // }
-  res.status(200).json({ name: "John Doe" });
+  const authorizationCode = req.body.authorizationCode;
+
+  const requestBody = new URLSearchParams({
+    client_id: process.env.FOCUSMATE_CLIENT_ID,
+    client_secret: process.env.FOCUSMATE_CLIENT_SECRET,
+    code: authorizationCode,
+    grant_type: "authorization_code"
+  });
+
+  fetch("https://api.focusmate.com/v1/oauth/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: requestBody
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(`Server got ${JSON.stringify(data)} in return`);
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: error });
+    });
 }
-// Next step: try to get the authorization code from the body and send it back, capitalized, to the client
