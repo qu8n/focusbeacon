@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // import { profileData, sessionsData } from "../PRIVATE"; // ignore - mock data for testing
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import "@tremor/react/dist/esm/tremor.css";
 import { ColGrid } from "@tremor/react";
