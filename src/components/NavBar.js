@@ -6,23 +6,17 @@ import { XIcon } from "@heroicons/react/solid";
 import React from "react";
 import PropTypes from "prop-types";
 import Logo from "./Logo";
-import SignInButton from "./SignInButton";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 NavBar.propTypes = {
-  data: PropTypes.object.isRequired,
   setShowAboutModal: PropTypes.func.isRequired,
   setShowPrivacyModal: PropTypes.func.isRequired
 };
 
-export default function NavBar({
-  data,
-  setShowAboutModal,
-  setShowPrivacyModal
-}) {
+export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
   return (
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (

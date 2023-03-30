@@ -13,12 +13,12 @@ export default function Callback() {
         body: JSON.stringify({
           authorizationCode: authorizationCode
         })
-      });
-      // .then((response) => response.json())
-      // .then((data) =>
-      //   console.log(`Client got ${JSON.stringify(data)} in return`)
-      // )
-      // .catch((error) => console.error(error));
+      })
+        .then((response) => response.json())
+        .then((data) =>
+          console.log(`Client got ${JSON.stringify(data)} in return`)
+        )
+        .catch((error) => console.error(error));
     }
   }, []);
 }
