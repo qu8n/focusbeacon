@@ -19,9 +19,6 @@ import WelcomeMessage from "../components/WelcomeMessage";
 import Modal from "../components/Modal";
 
 export default function Home() {
-  const [showAboutModal, setShowAboutModal] = useState(false);
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-
   const {
     isLoading: profileIsLoading,
     isError: profileIsError,
@@ -87,20 +84,6 @@ export default function Home() {
 
   return (
     <div className="bg-slate-50">
-      <NavBar
-        data={profileData.user}
-        setShowAboutModal={setShowAboutModal}
-        setShowPrivacyModal={setShowPrivacyModal}
-      />
-
-      {(showAboutModal || showPrivacyModal) && (
-        <Modal
-          modalType={showAboutModal ? "about" : "privacy"}
-          setShowAboutModal={setShowAboutModal}
-          setShowPrivacyModal={setShowPrivacyModal}
-        />
-      )}
-
       <div className="m-7">
         <WelcomeMessage />
       </div>

@@ -11,7 +11,7 @@ export default function Logo() {
           Beacon
         </span>
       </p>
-      <p className="font-medium text-xs text-gray-400">
+      <p className="font-medium text-xs text-slate-400">
         Unofficial Focusmate Stats App
       </p>
     </div>

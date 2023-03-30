@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Head from "next/head";
 import "../styles/globals.css";
+import NavBar from "../components/NavBar";
+import Modal from "../components/Modal";
 
 App.propTypes = {
   Component: PropTypes.elementType.isRequired,
@@ -12,6 +14,9 @@ App.propTypes = {
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }) {
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
   return (
     <>
       <Head>
@@ -45,9 +50,22 @@ export default function App({ Component, pageProps }) {
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
-      </QueryClientProvider>
+      <div className="h-screen bg-slate-50">
+        <NavBar
+          setShowAboutModal={setShowAboutModal}
+          setShowPrivacyModal={setShowPrivacyModal}
+        />
+        {(showAboutModal || showPrivacyModal) && (
+          <Modal
+            modalType={showAboutModal ? "about" : "privacy"}
+            setShowAboutModal={setShowAboutModal}
+            setShowPrivacyModal={setShowPrivacyModal}
+          />
+        )}
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
+      </div>
     </>
   );
 }
