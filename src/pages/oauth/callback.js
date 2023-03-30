@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import CryptoJS from "crypto-js";
 
 export default function Callback() {
   useEffect(() => {
@@ -15,9 +16,11 @@ export default function Callback() {
         })
       })
         .then((response) => response.json())
-        .then((data) =>
-          console.log(`Client got ${JSON.stringify(data)} in return`)
-        )
+        .then((data) => {
+          const encryptedAccessToken = JSON.stringify(
+            data.encryptedAccessToken
+          );
+        })
         .catch((error) => console.error(error));
     }
   }, []);

@@ -1,3 +1,5 @@
+import CryptoJS from "crypto-js";
+
 export default function handler(req, res) {
   const authorizationCode = req.body.authorizationCode;
 
@@ -19,20 +21,27 @@ export default function handler(req, res) {
     .then((data) => {
       const accessToken = data.access_token;
 
-      const requestOptions = {
-        method: "GET",
-        headers: new Headers({
-          Authorization: `Bearer ${accessToken}`
-        }),
-        redirect: "follow"
-      };
+      const encryptedAccessToken = CryptoJS.AES.encrypt(
+        accessToken,
+        process.env.ACCESS_TOKEN_ENCRYPTION_KEY
+      ).toString();
 
-      fetch("https://api.focusmate.com/v1/me", requestOptions)
-        .then((response) => response.text())
-        .then((result) => {
-          res.status(200).json({ result });
-        })
-        .catch((error) => console.log("error", error));
+      res.status(200).json({ encryptedAccessToken });
+
+      // const requestOptions = {
+      //   method: "GET",
+      //   headers: new Headers({
+      //     Authorization: `Bearer ${accessToken}`
+      //   }),
+      //   redirect: "follow"
+      // };
+
+      // fetch("https://api.focusmate.com/v1/me", requestOptions)
+      //   .then((response) => response.text())
+      //   .then((result) => {
+      //     res.status(200).json({ result });
+      //   })
+      //   .catch((error) => console.log("error", error));
     })
     .catch((error) => {
       console.error(error);
