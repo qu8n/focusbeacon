@@ -17,8 +17,21 @@ export default function handler(req, res) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(`Server got ${JSON.stringify(data)} in return`);
-      res.status(200).json(data);
+      const accessToken = data.access_token;
+
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      fetch("https://api.focusmate.com/v1/me", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
     })
     .catch((error) => {
       console.error(error);
