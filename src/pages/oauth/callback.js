@@ -1,9 +1,14 @@
 import { useEffect } from "react";
-import CryptoJS from "crypto-js";
 
 export default function Callback() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+
+    const error = urlParams.get("error");
+    if (error && typeof window !== "undefined") {
+      window.location.href = "/";
+    }
+
     const authorizationCode = urlParams.get("code");
     if (authorizationCode) {
       fetch("/api/login", {
@@ -16,11 +21,7 @@ export default function Callback() {
         })
       })
         .then((response) => response.json())
-        .then((data) => {
-          const encryptedAccessToken = JSON.stringify(
-            data.encryptedAccessToken
-          );
-        })
+        .then((data) => console.log(data))
         .catch((error) => console.error(error));
     }
   }, []);
