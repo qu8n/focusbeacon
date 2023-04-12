@@ -1,5 +1,5 @@
 import { RefreshIcon } from "@heroicons/react/outline";
-import { Badge, Divider, Text } from "@tremor/react";
+import { Badge, Text } from "@tremor/react";
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -11,8 +11,7 @@ export default function Footer({ data }) {
   const updateTime = data;
   return (
     <>
-      <Divider />
-      <div className={"mt-5 flex justify-center"}>
+      <div className={"mt-16 flex justify-center"}>
         <Badge
           text={"Last refreshed on " + updateTime}
           color="yellow"

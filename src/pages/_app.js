@@ -50,7 +50,7 @@ export default function App({ Component, pageProps }) {
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <div className="h-screen bg-slate-50">
+      <div className="bg-gradient-to-r from-slate-50 to-slate-100">
         <NavBar
           setShowAboutModal={setShowAboutModal}
           setShowPrivacyModal={setShowPrivacyModal}

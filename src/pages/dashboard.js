@@ -80,7 +80,7 @@ export default function Home() {
   ] = processData(sessionsData);
 
   return (
-    <div className="bg-slate-50">
+    <>
       <div className="m-7">
         <LifetimeMetrics
           data={[
@@ -147,6 +147,6 @@ export default function Home() {
         <Footer data={updateTime} />
       </div>
       <br />
-    </div>
+    </>
   );
 }
