@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Logo() {
   return (
-    <div className="-space-y-1">
+    <div className="-space-y-1 mt-1">
       <p className="font-semibold text-3xl">
         <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-blue-400">
           Focus

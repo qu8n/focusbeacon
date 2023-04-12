@@ -2,15 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-.loader-center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
 /* Lighter var is 2 tints away from orange https://www.color-hex.com/color/e9520e */
 .text-gradient-orange {
     background: linear-gradient(to right, #E9520E, #ed743e);

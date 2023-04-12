@@ -41,11 +41,7 @@ export default function Home() {
   });
 
   if (profileIsLoading || sessionsIsLoading) {
-    return (
-      <div className="loader-center">
-        <LoaderSpinner />
-      </div>
-    );
+    return <LoaderSpinner />;
   }
 
   if (profileIsError || sessionsIsError) {
