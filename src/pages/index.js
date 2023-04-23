@@ -5,16 +5,16 @@ export default function Landing() {
   return (
     <div className="flex p-5 h-[calc(100vh-105px)]">
       <div className="m-auto">
-        <p className="-mt-32 text-center text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-slate-500 to-slate-400">
+        <p className="-mt-32 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-500 to-slate-400">
           Unlock your Focusmate stats.
         </p>
-        <p className="mt-2 text-center text-xl font-normal text-slate-400">
+        <p className="mt-2 text-xl font-normal text-center text-slate-400">
           Build better habits. Crush your goals.
         </p>
-        <p className="mt-5 text-center text-slate-400 text-sm">
+        <p className="mt-5 text-sm text-center text-slate-400">
           Tip: sign in to Focusmate before continuing
         </p>
-        <div className="mt-2 flex justify-center">
+        <div className="flex justify-center mt-2">
           <LandingPageButton
             link={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
             icon={
@@ -31,9 +31,9 @@ export default function Landing() {
             theme="inline-flex text-white bg-blue-500 hover:bg-blue-500/[.90]"
           />
         </div>
-        <div className="mt-4 flex justify-center">
+        <div className="flex justify-center mt-4">
           <LandingPageButton
-            link="/dashboard"
+            link="/demo"
             text="View Demo"
             theme="text-slate-500 hover:text-white border-2 border-slate-400 hover:border-slate-500 hover:bg-slate-500"
           />

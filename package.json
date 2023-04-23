@@ -9,6 +9,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@tremor/react": "^1.8.0",
+    "cookie": "^0.5.0",
     "crypto-js": "^4.1.1",
     "next": "^13.2.4",
     "prop-types": "^15.8.1",
