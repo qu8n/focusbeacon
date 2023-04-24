@@ -22,13 +22,15 @@ export default async function handler(req, res) {
     const data = await response.json();
     const accessToken = data.access_token;
 
+    console.log("accessToken: ", accessToken);
+
     // Encrypt access token and set it as a cookie
     const encryptedAccessToken = CryptoJS.AES.encrypt(
       accessToken,
       process.env.ACCESS_TOKEN_ENCRYPTION_KEY
     ).toString();
 
-    console.log("encryptedAccessToken: ", encryptedAccessToken);
+    // console.log("encryptedAccessToken: ", encryptedAccessToken);
 
     let cookieOptions = {
       httpOnly: true,

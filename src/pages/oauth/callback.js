@@ -32,8 +32,11 @@ async function fetchAccessToken(authorizationCode) {
       authorizationCode: authorizationCode
     })
   });
-  const data = await response.json();
-  if (data.message === "Cookie set") {
+  if (response.status === 200) {
     window.location.href = "/dashboard";
+  } else {
+    const data = await response.json();
+    console.error(data.error);
+    window.location.href = "/";
   }
 }
