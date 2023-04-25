@@ -15,3 +15,7 @@ export default function Dashboard() {
     </div>
   );
 }
+
+// TODO
+// export async function getServerSideProps() {
+// }
