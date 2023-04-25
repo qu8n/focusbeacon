@@ -1,35 +1,13 @@
-function requestOptions(accessToken, isDemo) {
-  let headers = new Headers({
-    Authorization: `Bearer ${accessToken}`
-  });
-
-  if (isDemo) {
-    headers = new Headers({
-      "X-API-KEY": process.env.FOCUSMATE_API_KEY
-    });
-  }
-
-  return {
-    method: "GET",
-    headers: headers,
-    redirect: "follow"
-  };
-}
-
-export async function fetchProfileData(accessToken, isDemo = false) {
+export async function fetchProfileData(headers) {
   const response = await fetch(
     `https://api.focusmate.com/v1/me`,
-    requestOptions(accessToken, isDemo)
+    requestOptions(headers)
   );
 
   return response.json();
 }
 
-export async function fetchSessionsData(
-  memberSince,
-  accessToken,
-  isDemo = false
-) {
+export async function fetchSessionsData(headers, memberSince) {
   const currentYear = new Date().getFullYear();
   const firstYear = new Date(memberSince).getFullYear();
   let rawSessionsData = [];
@@ -38,7 +16,7 @@ export async function fetchSessionsData(
   for (let year = currentYear; year >= firstYear; year--) {
     const response = await fetch(
       `https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T12:00:00Z`,
-      requestOptions(accessToken, isDemo)
+      requestOptions(headers)
     );
     const result = await response.json();
     rawSessionsData = [...rawSessionsData, ...result.sessions];
@@ -50,4 +28,12 @@ export async function fetchSessionsData(
   );
 
   return completedSessionsData;
+}
+
+function requestOptions(headers) {
+  return {
+    method: "GET",
+    headers: headers,
+    redirect: "follow"
+  };
 }
