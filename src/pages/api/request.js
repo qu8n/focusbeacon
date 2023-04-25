@@ -12,10 +12,17 @@ export default async function handler(req, res) {
     process.env.ACCESS_TOKEN_ENCRYPTION_KEY
   ).toString(CryptoJS.enc.Utf8);
 
-  // Use access token to fetch data
-  const headers = new Headers({
+  // Set headers for API request
+  let headers = new Headers({
     Authorization: `Bearer ${accessToken}`
   });
+  if (req.query.isDemo === "true") {
+    headers = new Headers({
+      "X-API-KEY": process.env.DEMO_FOCUSMATE_API_KEY
+    });
+  }
+
+  // Fetch data from Focusmate API
   const profileData = await fetchProfileData(headers);
   const sessionsData = await fetchSessionsData(
     headers,

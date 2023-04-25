@@ -1,26 +1,33 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { useQuery } from "react-query";
-import LoaderSpinner from "../components/LoaderSpinner";
+import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
 import "@tremor/react/dist/esm/tremor.css";
 import { ColGrid } from "@tremor/react";
-import SessionsByDuration from "../components/SessionsByDuration";
-import LifetimeMetrics from "../components/LifetimeMetrics";
-import Milestones from "../components/Milestones";
-import RepeatPartners from "../components/RepeatPartners";
-import TimeSeriesChart from "../components/TimeSeriesChart";
-import Footer from "../components/Footer";
+import SessionsByDuration from "./SessionsByDuration";
+import LifetimeMetrics from "./LifetimeMetrics";
+import Milestones from "./Milestones";
+import RepeatPartners from "./RepeatPartners";
+import TimeSeriesChart from "./TimeSeriesChart";
+import Footer from "./Footer";
 import {
   monthlyChartTooltip,
   weeklyChartTooltip
 } from "../constants/textSnippets";
+import PropTypes from "prop-types";
 
-export default function Dashboard() {
+Dashboard.propTypes = {
+  isDemo: PropTypes.bool.isRequired
+};
+
+export default function Dashboard({ isDemo }) {
+  const isDemoFlag = "isDemo=" + (isDemo ? "true" : "false");
+
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["focusmateData"],
     queryFn: async () => {
-      const response = await fetch("/api/request");
+      const response = await fetch(`/api/request?${isDemoFlag}`);
       const data = await response.json();
       return data;
     }
