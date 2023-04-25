@@ -5,10 +5,10 @@ export default function Welcome() {
   return (
     <div className="flex p-5 h-[calc(100vh-105px)]">
       <div className="m-auto">
-        <p className="-mt-32 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-500 to-slate-400">
+        <p className="-mt-32 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-600 to-slate-500">
           Unlock your Focusmate stats.
         </p>
-        <p className="mt-2 text-xl font-normal text-center text-slate-400">
+        <p className="mt-2 text-xl font-normal text-center text-slate-500">
           Build better habits. Crush your goals.
         </p>
         <p className="mt-5 text-sm text-center text-slate-400">

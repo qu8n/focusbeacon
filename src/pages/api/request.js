@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { parse } from "cookie";
 import CryptoJS from "crypto-js";
 import { fetchProfileData, fetchSessionsData } from "../../utils/fetchData";
@@ -24,8 +23,7 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error(error);
-      // Using 500 because fetch doesn't recognize 4xx as an error
-      res.status(500).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Unauthorized" });
       return;
     }
   }
