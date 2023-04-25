@@ -28,6 +28,10 @@ export default function Dashboard({ isDemo }) {
     queryKey: ["focusmateData"],
     queryFn: async () => {
       const response = await fetch(`/api/request?${isDemoFlag}`);
+      if (response.status !== 200) {
+        // TODO: update to use router.push() from next/router
+        window.location.href = "/";
+      }
       const data = await response.json();
       return data;
     }
