@@ -6,7 +6,7 @@ export default function Callback() {
 
     const error = urlParams.get("error");
     if (error && typeof window !== "undefined") {
-      window.location.href = "/";
+      window.location.href = "/welcome";
     }
 
     // Send the authorization code to the backend to exchange it for an access token,
@@ -33,10 +33,10 @@ async function fetchAccessToken(authorizationCode) {
     })
   });
   if (response.status === 200) {
-    window.location.href = "/dashboard";
+    window.location.href = "/";
   } else {
     const data = await response.json();
     console.error(data.error);
-    window.location.href = "/";
+    window.location.href = "/welcome";
   }
 }

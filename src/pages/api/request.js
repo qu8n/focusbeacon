@@ -23,7 +23,9 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${accessToken}`
       });
     } catch (error) {
-      res.status(401).json({ message: "Unauthorized" });
+      console.error(error);
+      // Using 500 because fetch doesn't recognize 4xx as an error
+      res.status(500).json({ error: "Unauthorized" });
       return;
     }
   }

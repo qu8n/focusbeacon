@@ -30,7 +30,7 @@ export default function Dashboard({ isDemo }) {
       const response = await fetch(`/api/request?${isDemoFlag}`);
       if (response.status !== 200) {
         // TODO: update to use router.push() from next/router
-        window.location.href = "/";
+        window.location.href = "/welcome";
       }
       const data = await response.json();
       return data;
@@ -63,7 +63,6 @@ export default function Dashboard({ isDemo }) {
     lTWSessionsArr,
     lTWHoursArr
   ] = processData(sessionsData);
-
   return (
     <>
       <div className="m-7">
