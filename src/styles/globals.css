@@ -2,6 +2,12 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@layer base {
+  body {
+    @apply bg-gradient-to-r from-slate-50 to-slate-100;
+  }
+}
+
 /* Lighter var is 2 tints away from orange https://www.color-hex.com/color/e9520e */
 .text-gradient-orange {
     background: linear-gradient(to right, #E9520E, #ed743e);

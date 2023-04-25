@@ -21,20 +21,20 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
     <Disclosure as="nav" className="mb-10">
       {({ open }) => (
         <>
-          <div className="mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 justify-between">
+          <div className="px-4 mx-auto sm:px-6 lg:px-8">
+            <div className="relative flex justify-between h-16">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button */}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <XIcon className="block h-6 w-6" aria-hidden="true" />
+                    <XIcon className="block w-6 h-6" aria-hidden="true" />
                   ) : (
-                    <MenuIcon className="block h-6 w-6" aria-hidden="true" />
+                    <MenuIcon className="block w-6 h-6" aria-hidden="true" />
                   )}
                 </Disclosure.Button>
               </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start">
                 <a href="/" className="flex items-center">
                   <Logo />
                 </a>
@@ -44,13 +44,13 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <button
                   onClick={() => setShowAboutModal(true)}
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
                   About
                 </button>
                 <button
                   onClick={() => setShowPrivacyModal(true)}
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
                   Privacy Policy
                 </button>
@@ -58,7 +58,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                   href="https://forms.gle/mcuSkyP5uguV7FKd7"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
                   Report a Bug
                 </a>
@@ -68,10 +68,10 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               {/* <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <Menu.Button className="flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       <span className="sr-only">Open user menu</span>
                       <img
-                        className="h-10 w-10 rounded-full object-cover"
+                        className="object-cover w-10 h-10 rounded-full"
                         src={data.photoUrl}
                         alt=""
                       />
@@ -86,7 +86,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
                           <a
@@ -109,18 +109,18 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
 
           {/* Mobile menu */}
           <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 pt-2 pb-4">
+            <div className="pt-2 pb-4 space-y-1">
               <Disclosure.Button
                 as="a"
                 onClick={() => setShowAboutModal(true)}
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
+                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
               >
                 About
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
                 onClick={() => setShowPrivacyModal(true)}
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
+                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
               >
                 Privacy Policy
               </Disclosure.Button>
@@ -129,7 +129,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 href="https://forms.gle/mcuSkyP5uguV7FKd7"
                 target="_blank"
                 rel="noreferrer"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
+                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
               >
                 Report a Bug
               </Disclosure.Button>

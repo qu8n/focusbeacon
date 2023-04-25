@@ -50,22 +50,20 @@ export default function App({ Component, pageProps }) {
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <div className="bg-gradient-to-r from-slate-50 to-slate-100">
-        <NavBar
+      <NavBar
+        setShowAboutModal={setShowAboutModal}
+        setShowPrivacyModal={setShowPrivacyModal}
+      />
+      {(showAboutModal || showPrivacyModal) && (
+        <Modal
+          modalType={showAboutModal ? "about" : "privacy"}
           setShowAboutModal={setShowAboutModal}
           setShowPrivacyModal={setShowPrivacyModal}
         />
-        {(showAboutModal || showPrivacyModal) && (
-          <Modal
-            modalType={showAboutModal ? "about" : "privacy"}
-            setShowAboutModal={setShowAboutModal}
-            setShowPrivacyModal={setShowPrivacyModal}
-          />
-        )}
-        <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
-        </QueryClientProvider>
-      </div>
+      )}
+      <QueryClientProvider client={queryClient}>
+        <Component {...pageProps} />
+      </QueryClientProvider>
     </>
   );
 }
