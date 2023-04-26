@@ -121,6 +121,28 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               >
                 Report a Bug
               </Disclosure.Button>
+              {isSignedIn ? (
+                <Disclosure.Button
+                  as="a"
+                  onClick={async () => {
+                    await fetch("/api/logout").then(() => {
+                      setIsSignedIn(false);
+                      router.reload();
+                    });
+                  }}
+                  className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
+                >
+                  Log Out
+                </Disclosure.Button>
+              ) : (
+                <Disclosure.Button
+                  as="a"
+                  href={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
+                  className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
+                >
+                  Log in
+                </Disclosure.Button>
+              )}
             </div>
           </Disclosure.Panel>
         </>

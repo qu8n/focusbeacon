@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       body: new URLSearchParams({
-        client_id: process.env.FOCUSMATE_CLIENT_ID,
+        client_id: process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID,
         client_secret: process.env.FOCUSMATE_CLIENT_SECRET,
         code: authorizationCode,
         grant_type: "authorization_code"
