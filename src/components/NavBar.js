@@ -4,6 +4,7 @@ import { XIcon } from "@heroicons/react/solid";
 import React from "react";
 import PropTypes from "prop-types";
 import Logo from "./Logo";
+import { useRouter } from "next/router";
 
 NavBar.propTypes = {
   setShowAboutModal: PropTypes.func.isRequired,
@@ -11,6 +12,7 @@ NavBar.propTypes = {
 };
 
 export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
+  const router = useRouter();
   return (
     <Disclosure as="nav" className="mb-10">
       {({ open }) => (
@@ -56,6 +58,16 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 >
                   Report a Bug
                 </a>
+                <button
+                  onClick={async () => {
+                    await fetch("/api/logout").then(() => {
+                      router.push("/welcome");
+                    });
+                  }}
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
           </div>
