@@ -10,7 +10,7 @@ ModalLink.propTypes = {
 function ModalLink({ text, href }) {
   return (
     <Link
-      className="text-slate-500 hover:text-slate-700"
+      className="underline text-slate-500 hover:text-slate-700 hover:no-underline"
       href={href}
       target="_blank"
       rel="noreferrer"
@@ -23,7 +23,7 @@ function ModalLink({ text, href }) {
 export function AboutModalContent() {
   return (
     <>
-      <p>🙂 Hi there!</p>
+      <p>Hi there! 😄</p>
       <p className="mt-3">
         If you're here, I assume that you're a{" "}
         <ModalLink text="Focusmate" href="https://www.focusmate.com/" /> fan
@@ -33,15 +33,15 @@ export function AboutModalContent() {
         hoping that you will find it useful as well.
       </p>
       <p className="mt-3">
-        I'm hoping to keep this website 100% free forever. If you enjoy this
-        website and want to support, please consider{" "}
+        I plan to keep this website 100% free forever. If you want to support
+        this website's costs and my time, please consider{" "}
         <ModalLink
           text="buying me a coffee"
           href="https://www.buymeacoffee.com/quans"
         />{" "}
         and (if you're a software person){" "}
         <ModalLink
-          text="starring my project on GitHub"
+          text="starring this project on GitHub"
           href="https://www.github.com/qu8n/focusbeacon"
         />
         .

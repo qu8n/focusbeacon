@@ -1,10 +1,11 @@
 import { Disclosure } from "@headlessui/react";
 import { MenuIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Logo from "./Logo";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 NavBar.propTypes = {
   setShowAboutModal: PropTypes.func.isRequired,
@@ -13,6 +14,18 @@ NavBar.propTypes = {
 
 export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
   const router = useRouter();
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  useEffect(() => {
+    async function checkSignedInStatus() {
+      const response = await fetch("/api/session");
+      const data = await response.json();
+      if (data.signedIn) {
+        setIsSignedIn(true);
+      }
+    }
+    checkSignedInStatus();
+  }, [router]);
+
   return (
     <Disclosure as="nav" className="mb-10">
       {({ open }) => (
@@ -50,30 +63,40 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 >
                   Privacy Policy
                 </button>
-                <a
+                <Link
                   href="https://forms.gle/mcuSkyP5uguV7FKd7"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
                   Report a Bug
-                </a>
-                <button
-                  onClick={async () => {
-                    await fetch("/api/logout").then(() => {
-                      router.push("/welcome");
-                    });
-                  }}
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
-                >
-                  Sign Out
-                </button>
+                </Link>
+                {isSignedIn ? (
+                  <button
+                    onClick={async () => {
+                      await fetch("/api/logout").then(() => {
+                        setIsSignedIn(false);
+                        router.reload();
+                      });
+                    }}
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  >
+                    Log Out
+                  </button>
+                ) : (
+                  <Link
+                    href={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  >
+                    Log in
+                  </Link>
+                )}
               </div>
             </div>
           </div>
 
           {/* Mobile menu */}
-          <Disclosure.Panel className="sm:hidden">
+          <Disclosure.Panel className="border sm:hidden bg-slate-50">
             <div className="pt-2 pb-4 space-y-1">
               <Disclosure.Button
                 as="a"

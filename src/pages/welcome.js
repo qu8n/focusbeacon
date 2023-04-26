@@ -12,16 +12,7 @@ export default function Welcome() {
         <p className="mt-2 font-normal text-center text-md text-slate-500">
           View your milestones, session trends, hours of session, and more.
         </p>
-        <div className="flex justify-center mt-5 text-slate-400">
-          <InformationCircleIcon
-            className="w-4 h-4 mt-[2px] mr-1"
-            aria-hidden="true"
-          />
-          <span className="text-sm">
-            Sign in to Focusmate before continuing
-          </span>
-        </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-5">
           <button className="flex justify-center mt-2 w-72 items-center text-center text-lg h-14 font-normal px-3 rounded text-white bg-blue-500 hover:bg-blue-500/[.90]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -34,9 +25,15 @@ export default function Welcome() {
             <Link
               href={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
             >
-              Continue with Focusmate
+              Log in with Focusmate
             </Link>
           </button>
+        </div>
+        <div className="flex justify-center mt-1 text-slate-400">
+          <InformationCircleIcon className="w-4 h-4 mr-1" aria-hidden="true" />
+          <span className="text-xs tracking-tight">
+            Log in to Focusmate first before logging in here
+          </span>
         </div>
         <div className="flex justify-center mt-4">
           <a

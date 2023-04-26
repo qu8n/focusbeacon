@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       accessToken,
       process.env.ACCESS_TOKEN_ENCRYPTION_KEY
     ).toString();
-
+    // TODO: replace this step with a call to setCookie()
     let cookieOptions = {
       httpOnly: true,
       secure: true,
