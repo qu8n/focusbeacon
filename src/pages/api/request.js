@@ -1,6 +1,7 @@
 import { parse } from "cookie";
 import CryptoJS from "crypto-js";
 import { fetchProfileData, fetchSessionsData } from "../../utils/fetchData";
+import { supabase } from "../../lib/supabaseClient";
 
 export default async function handler(req, res) {
   // Get headers content for Focusmate API requests
@@ -28,10 +29,14 @@ export default async function handler(req, res) {
 
   // Fetch data from Focusmate API
   const profileData = await fetchProfileData(headers);
-  const sessionsData = await fetchSessionsData(
-    headers,
-    profileData.user.memberSince
-  );
+  const { userId, timeZone, memberSince } = profileData.user;
+  const sessionsData = await fetchSessionsData(headers, memberSince);
+
+  // Save data to Supabase
+  await supabase.from("user").upsert({
+    user_id: userId,
+    time_zone: timeZone
+  });
 
   res.status(200).json({ profileData, sessionsData });
 }
