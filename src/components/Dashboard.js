@@ -4,11 +4,11 @@ import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
 import "@tremor/react/dist/esm/tremor.css";
 import { ColGrid } from "@tremor/react";
-import SessionsByDuration from "./SessionsByDuration";
-import LifetimeMetrics from "./LifetimeMetrics";
-import Milestones from "./Milestones";
-import RepeatPartners from "./RepeatPartners";
-import TimeSeriesChart from "./TimeSeriesChart";
+import SessionsByDuration from "./dashboard/SessionsByDuration";
+import LifetimeMetrics from "./dashboard/LifetimeMetrics";
+import Milestones from "./dashboard/Milestones";
+import RepeatPartners from "./dashboard/RepeatPartners";
+import TimeSeriesChart from "./dashboard/TimeSeriesChart";
 import {
   monthlyChartTooltip,
   weeklyChartTooltip
@@ -23,9 +23,10 @@ Dashboard.propTypes = {
 
 export default function Dashboard({ isDemo }) {
   const router = useRouter();
-
   const isDemoFlag = "isDemo=" + (isDemo ? "true" : "false");
 
+  // Fetch data from Focusmate API using TanStack Query through /api/request
+  // Notable defaults: cacheTime = 5 minutes, refetchOnWindowFocus = true
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["focusmateData"],
     queryFn: async () => {
@@ -38,15 +39,16 @@ export default function Dashboard({ isDemo }) {
     }
   });
 
+  // Handle loading and error states
   if (isLoading) {
     return <LoaderSpinner />;
   }
 
   if (isError) {
-    // TODO: add link for user to report error
     return <p>Error: {error.message}</p>;
   }
 
+  // Process data and render dashboard
   // eslint-disable-next-line no-unused-vars
   const { profileData, sessionsData } = data;
 

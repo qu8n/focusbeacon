@@ -11,6 +11,7 @@ Modal.propTypes = {
   setShowPrivacyModal: PropTypes.func.isRequired
 };
 
+// TODO: Refactor this component to be more generic
 export default function Modal({
   modalType,
   setShowAboutModal,

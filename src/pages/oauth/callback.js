@@ -7,6 +7,7 @@ export default function Callback() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
 
+    // Redirect to /welcome if there is an error
     const error = urlParams.get("error");
     if (error && typeof window !== "undefined") {
       router.push("/welcome");

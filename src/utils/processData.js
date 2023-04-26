@@ -1,3 +1,6 @@
+// TODO: Refactor this file to be more modular and readable
+// Alternatively, look into ways to process data more efficiently (e.g. lodash?)
+
 export default function processData(sessionsData) {
   // ----------------- INITIALIZE VARIABLES -----------------
 
