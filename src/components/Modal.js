@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {
   AboutModalContent,
-  privacyModalContent
+  PrivacyModalContent
 } from "../constants/textSnippets";
 
 Modal.propTypes = {
@@ -30,13 +30,15 @@ export default function Modal({
         <div className="max-w-3xl mx-auto my-10">
           <div className="relative flex flex-col w-full bg-white rounded-lg shadow-lg">
             {/* Header */}
-            <div className="flex items-start justify-between p-5 border-b border-gray-200 border-solid rounded-t">
-              <h3 className="text-2xl font-semibold capitalize">{modalType}</h3>
+            <div className="flex items-start justify-between py-5 border-b border-gray-200 border-solid rounded-t">
+              <h3 className="ml-10 text-2xl font-semibold capitalize">
+                {modalType}
+              </h3>
               <button
-                className="float-right text-2xl font-semibold leading-none bg-transparent opacity-25"
+                className="float-right text-2xl font-semibold leading-none bg-transparent opacity-25 hover:opacity-50"
                 onClick={handleCloseClick}
               >
-                <span className="p-5">x</span>
+                <span className="p-10">x</span>
               </button>
             </div>
 
@@ -46,7 +48,7 @@ export default function Modal({
                 {modalType === "about" ? (
                   <AboutModalContent />
                 ) : (
-                  privacyModalContent
+                  <PrivacyModalContent />
                 )}
               </div>
             </div>

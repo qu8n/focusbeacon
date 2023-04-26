@@ -113,14 +113,14 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               <Disclosure.Button
                 as="a"
                 onClick={() => setShowAboutModal(true)}
-                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
+                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
               >
                 About
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
                 onClick={() => setShowPrivacyModal(true)}
-                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
+                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
               >
                 Privacy Policy
               </Disclosure.Button>
@@ -129,7 +129,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 href="https://forms.gle/mcuSkyP5uguV7FKd7"
                 target="_blank"
                 rel="noreferrer"
-                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700"
+                className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
               >
                 Report a Bug
               </Disclosure.Button>

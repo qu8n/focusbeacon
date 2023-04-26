@@ -9,7 +9,12 @@ ModalLink.propTypes = {
 };
 function ModalLink({ text, href }) {
   return (
-    <Link className="text-slate-500 hover:text-slate-700" href={href}>
+    <Link
+      className="text-slate-500 hover:text-slate-700"
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+    >
       {text}
     </Link>
   );
@@ -53,8 +58,33 @@ export function AboutModalContent() {
   );
 }
 
-export const privacyModalContent =
-  "Privacy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+export function PrivacyModalContent() {
+  return (
+    <>
+      <p>
+        FocusBeacon is committed to your privacy and doesn't store nor sell
+        personal data, including IP addresses, cookies, and browsing history.
+        When you sign in, you are redirected to the official Focusmate website,
+        ensuring we don't access your password.
+      </p>
+      <p className="mt-3">
+        We use your data made available to us by the official{" "}
+        <ModalLink text="Focusmate API" href="https://apidocs.focusmate.com/" />{" "}
+        to generate visualizations. These detailed data points are fetched each
+        time you visit FocusBeacon and are not stored in our database.
+        FocusBeacon only stores your Focusmate ID (a non-identifiable random
+        string) and time zone to analyze the overall user demographics.
+      </p>
+      <p className="mt-3">
+        FocusBeacon is an open-source project, which means anyone can inspect
+        the code that runs this website. You can find the source code{" "}
+        <ModalLink text="here" href="https://www.github.com/qu8n/focusbeacon" />
+        . If you have any questions or concerns, please{" "}
+        <ModalLink text="email me here" href="mailto:quanwnn@gmail.com" />.
+      </p>
+    </>
+  );
+}
 
 export const weeklyChartTooltip =
   "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
