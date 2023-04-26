@@ -41,7 +41,7 @@ export default function Welcome() {
         <div className="flex justify-center mt-4">
           <a
             href="/demo"
-            className="text-lg font-medium text-slate-600 hover:text-slate-500"
+            className="text-lg font-medium text-slate-500 hover:text-slate-700"
           >
             View Demo <span aria-hidden="true">→</span>
           </a>
