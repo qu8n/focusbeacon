@@ -2,22 +2,19 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Global background color */
 @layer base {
   body {
     @apply bg-gradient-to-r from-slate-50 to-slate-100;
   }
 }
 
-/* Lighter var is 2 tints away from orange https://www.color-hex.com/color/e9520e */
-.text-gradient-orange {
-    background: linear-gradient(to right, #E9520E, #ed743e);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* Lighter var is 2 tints away from blue https://www.color-hex.com/color/3b82f6 */
-.text-gradient-blue {
-    background: linear-gradient(to right, #3b82f6, #629bf7);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* Welcome page's background animation */
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
 }
