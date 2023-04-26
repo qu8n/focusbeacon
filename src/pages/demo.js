@@ -1,5 +1,5 @@
 import React from "react";
-import Dashboard from "../components/dashboard";
+import Dashboard from "../components/Dashboard";
 import { Callout } from "@tremor/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
 
