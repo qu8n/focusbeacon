@@ -1,28 +1,31 @@
+// TODO: Refactor this file to be more modular and readable
+// Alternatively, look into ways to process data more efficiently (e.g. lodash?)
+
 export default function processData(sessionsData) {
   // ----------------- INITIALIZE VARIABLES -----------------
 
   // For LifetimeMetrics component
   const totalSessions = sessionsData.length;
   let totalHours = 0;
-  let uniquePartners = new Set();
+  const uniquePartners = new Set();
   let currentPartner = "";
   let currentDate = "";
   let currentHoursADay = 0;
   let maxHoursADay = 0;
 
   // For SessionsByDuration component
-  let sessionsByDurationArr = [];
-  let sessionsByDurationObj = {
+  const sessionsByDurationArr = [];
+  const sessionsByDurationObj = {
     "25 minutes": 0,
     "50 minutes": 0,
-    "75 minutes": 0,
+    "75 minutes": 0
   };
 
   // For Milestones component
   let sessionsCounter = 0;
-  let milestoneSessions = [];
+  const milestoneSessions = [];
   let currentMilestone = 0;
-  let milestonesArr = [];
+  const milestonesArr = [];
   const milestoneLevelsAndUnits = {
     25: 1,
     50: 5,
@@ -31,7 +34,7 @@ export default function processData(sessionsData) {
     500: 50,
     1250: 100,
     2500: 250,
-    100000: 500,
+    100000: 500
   };
   const milestoneUpperLevel = Object.keys(milestoneLevelsAndUnits).find(
     (key) => key > totalSessions
@@ -48,8 +51,8 @@ export default function processData(sessionsData) {
   });
 
   // For RepeatPartners component
-  let repeatPartners = {};
-  let repeatPartnersCount = {};
+  const repeatPartners = {};
+  const repeatPartnersCount = {};
   let repeatPartnersSum = 0;
   let repeatPartnersArr = [];
 
@@ -136,7 +139,7 @@ export default function processData(sessionsData) {
 
     // For Milestones component
     if (milestoneSessions.includes(sessionsCounter)) {
-      let obj = { milestone: sessionsCounter, date: session.startTime };
+      const obj = { milestone: sessionsCounter, date: session.startTime };
       milestonesArr.push(obj);
     }
   }
@@ -153,12 +156,12 @@ export default function processData(sessionsData) {
   for (const [key, value] of Object.entries(repeatPartnersCount)) {
     repeatPartnersArr.push({
       sharedSessions: key,
-      partners: value,
+      partners: value
     });
   }
   repeatPartnersArr.push({
     sharedSessions: 1,
-    partners: totalSessions - repeatPartnersSum,
+    partners: totalSessions - repeatPartnersSum
   });
   repeatPartnersArr.sort((a, b) => {
     return b.sharedSessions - a.sharedSessions;
@@ -171,7 +174,7 @@ export default function processData(sessionsData) {
   for (const [key, value] of Object.entries(sessionsByDurationObj)) {
     sessionsByDurationArr.push({
       duration: key,
-      sessions: value,
+      sessions: value
     });
   }
 
@@ -180,16 +183,16 @@ export default function processData(sessionsData) {
     lTMSessionsArr.push({
       Month: new Date(key + "-02") // specify 2nd day to prevent DST and time zone conversion issues
         .toLocaleString("en-us", { month: "short", year: "2-digit" }),
-      "Number of Sessions": value,
+      "Number of Sessions": value
     });
   }
   for (const [key, value] of Object.entries(lTMHoursObj)) {
     lTMHoursArr.push({
       Month: new Date(key + "-02").toLocaleString("en-us", {
         month: "short",
-        year: "2-digit",
+        year: "2-digit"
       }),
-      "Hours of Sessions": Math.round(value),
+      "Hours of Sessions": Math.round(value)
     });
   }
 
@@ -206,9 +209,9 @@ export default function processData(sessionsData) {
     lTWSessionsArr.push({
       "Week of": new Date(key).toLocaleString("en-US", {
         month: "short",
-        day: "numeric",
+        day: "numeric"
       }),
-      "Number of Sessions": value,
+      "Number of Sessions": value
     });
   }
   for (const [key, value] of Object.entries(lTWHoursObj)) {
@@ -223,9 +226,9 @@ export default function processData(sessionsData) {
     lTWHoursArr.push({
       "Week of": new Date(key).toLocaleString("en-US", {
         month: "short",
-        day: "numeric",
+        day: "numeric"
       }),
-      "Hours of Sessions": Math.round(value),
+      "Hours of Sessions": Math.round(value)
     });
   }
 
@@ -234,19 +237,9 @@ export default function processData(sessionsData) {
     ? new Date(sessionsData[0].startTime).toLocaleString("en-US", {
         day: "numeric",
         month: "short",
-        year: "numeric",
+        year: "numeric"
       })
     : "N/A";
-
-  // 'Last Refreshed' badge
-  const updateTime = new Date().toLocaleString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
 
   return [
     totalSessions,
@@ -259,8 +252,7 @@ export default function processData(sessionsData) {
     repeatPartnersArr,
     lTMSessionsArr.reverse(),
     lTMHoursArr.reverse(),
-    updateTime,
     lTWSessionsArr,
-    lTWHoursArr,
+    lTWHoursArr
   ];
 }

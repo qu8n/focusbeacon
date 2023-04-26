@@ -1,39 +1,19 @@
-import { RefreshIcon } from "@heroicons/react/outline";
-import { Badge, Divider, Text } from "@tremor/react";
 import React from "react";
-import PropTypes from "prop-types";
+import GitHubButton from "react-github-btn";
 
-Footer.propTypes = {
-  data: PropTypes.string.isRequired,
-};
-
-export default function Footer({ data }) {
-  const updateTime = data;
+export default function Footer() {
   return (
     <>
-      <Divider />
-      <div className={"mt-5 flex justify-center"}>
-        <Badge
-          text={"Last refreshed on " + updateTime}
-          color="yellow"
-          size="sm"
-          icon={RefreshIcon}
-          marginTop="mt-3"
-        />
-      </div>
-      <div className={"mt-4 mb-10 flex justify-center"}>
-        <Text>
-          Made with 🧋 by&nbsp;
-          <a
-            className="hyperlink"
-            href="https://github.com/qu8n"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Quan Nguyen
-          </a>
-        </Text>
-      </div>
+      <footer className="flex flex-col items-center py-12 mt-4 mb-10 space-y-2 text-xs border-t text-slate-400 m-7 border-gray-900/10">
+        <GitHubButton
+          href="https://github.com/qu8n/focusbeacon"
+          data-size="large"
+          aria-label="Star project on GitHub"
+        >
+          &nbsp; Star project on GitHub
+        </GitHubButton>
+        <p>&copy; {new Date().getFullYear()} FocusBeacon</p>
+      </footer>
     </>
   );
 }

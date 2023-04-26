@@ -1,12 +1,9 @@
-/* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import PropTypes from "prop-types";
-
-const aboutContent =
-  "About: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-const privacyContent =
-  "Privacy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+import {
+  AboutModalContent,
+  PrivacyModalContent
+} from "../constants/textSnippets";
 
 Modal.propTypes = {
   modalType: PropTypes.string.isRequired,
@@ -14,6 +11,7 @@ Modal.propTypes = {
   setShowPrivacyModal: PropTypes.func.isRequired
 };
 
+// TODO: Refactor this component to be more generic
 export default function Modal({
   modalType,
   setShowAboutModal,
@@ -29,29 +27,38 @@ export default function Modal({
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50">
-        <div className="relative w-auto my-6 mx-auto max-w-3xl">
-          <div className="rounded-lg shadow-lg relative flex flex-col w-full bg-white">
-            {/*header*/}
-            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t">
-              <h3 className="text-2xl font-semibold capitalize">{modalType}</h3>
+      <div className="fixed inset-0 z-50 flex items-center">
+        <div className="max-w-3xl mx-auto my-10">
+          <div className="relative flex flex-col w-full bg-white rounded-lg shadow-lg">
+            {/* Header */}
+            <div className="flex items-start justify-between py-5 border-b border-gray-200 border-solid rounded-t">
+              <h3 className="ml-10 text-2xl font-semibold capitalize">
+                {modalType}
+              </h3>
               <button
-                className="bg-transparent opacity-25 float-right text-2xl leading-none font-semibold"
+                className="float-right text-2xl font-semibold leading-none bg-transparent opacity-25 hover:opacity-50"
                 onClick={handleCloseClick}
               >
-                <span>x</span>
+                <span className="p-10">x</span>
               </button>
             </div>
-            {/*body*/}
+
+            {/* Body */}
             <div className="p-10">
-              <p className="my-4 text-gray-500 mb-7">
-                {modalType === "about" ? aboutContent : privacyContent}
-              </p>
+              <div className="text-slate-700 mb-7">
+                {modalType === "about" ? (
+                  <AboutModalContent />
+                ) : (
+                  <PrivacyModalContent />
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+
+      {/* Outlay */}
+      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
     </>
   );
 }

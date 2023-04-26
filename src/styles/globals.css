@@ -1,27 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-.row-margin {
-    margin: 30px;
-}
-
-.loader-center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
-.background-color {
-    background-color: #f8fafc;
-}
-
-.hyperlink {
-    color: royalblue;
-    text-decoration: none;
+@layer base {
+  body {
+    @apply bg-gradient-to-r from-slate-50 to-slate-100;
+  }
 }
 
 /* Lighter var is 2 tints away from orange https://www.color-hex.com/color/e9520e */
