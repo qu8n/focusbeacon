@@ -9,13 +9,13 @@ import LifetimeMetrics from "./LifetimeMetrics";
 import Milestones from "./Milestones";
 import RepeatPartners from "./RepeatPartners";
 import TimeSeriesChart from "./TimeSeriesChart";
-import Footer from "./Footer";
 import {
   monthlyChartTooltip,
   weeklyChartTooltip
 } from "../constants/textSnippets";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
+import Footer from "./Footer";
 
 Dashboard.propTypes = {
   isDemo: PropTypes.bool.isRequired
@@ -62,7 +62,6 @@ export default function Dashboard({ isDemo }) {
       repeatPartnersArr,
       lTMSessionsArr,
       lTMHoursArr,
-      updateTime,
       lTWSessionsArr,
       lTWHoursArr
     ] = processData(sessionsData);
@@ -131,10 +130,7 @@ export default function Dashboard({ isDemo }) {
           </ColGrid>
         </div>
 
-        <div className="m-7">
-          <Footer data={updateTime} />
-        </div>
-        <br />
+        <Footer />
       </>
     );
   }

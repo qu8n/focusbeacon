@@ -4,16 +4,19 @@ import Link from "next/link";
 
 export default function Welcome() {
   return (
-    <div className="flex p-5 h-[calc(100vh-105px)]">
+    <div className="flex p-14 h-[calc(100vh-150px)]">
       <div className="m-auto">
-        <p className="-mt-32 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-600 to-slate-500">
+        <p className="-mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-600 to-slate-500">
           Unlock your Focusmate stats.
         </p>
-        <p className="mt-2 text-xl font-normal text-center text-slate-500">
-          View your milestones, total session hours, and more.
+        <p className="mt-2 font-normal text-center text-md text-slate-500">
+          View your milestones, session trends, hours of session, and more.
         </p>
         <div className="flex justify-center mt-5 text-slate-400">
-          <InformationCircleIcon className="w-4 h-4 mr-1" aria-hidden="true" />
+          <InformationCircleIcon
+            className="w-4 h-4 mt-[2px] mr-1"
+            aria-hidden="true"
+          />
           <span className="text-sm">
             Sign in to Focusmate before continuing
           </span>

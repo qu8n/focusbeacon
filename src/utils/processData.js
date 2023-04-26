@@ -238,16 +238,6 @@ export default function processData(sessionsData) {
       })
     : "N/A";
 
-  // 'Last Refreshed' badge
-  const updateTime = new Date().toLocaleString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true
-  });
-
   return [
     totalSessions,
     totalHours,
@@ -259,7 +249,6 @@ export default function processData(sessionsData) {
     repeatPartnersArr,
     lTMSessionsArr.reverse(),
     lTMHoursArr.reverse(),
-    updateTime,
     lTWSessionsArr,
     lTWHoursArr
   ];
