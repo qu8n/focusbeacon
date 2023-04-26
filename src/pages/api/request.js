@@ -10,22 +10,20 @@ export default async function handler(req, res) {
       "X-API-KEY": process.env.DEMO_FOCUSMATE_API_KEY
     });
   } else {
-    try {
-      // Get access token from cookie and set headers with it
-      const cookies = parse(req.headers.cookie);
-      const encryptedAccessToken = cookies.encrypted_access_token;
-      const accessToken = CryptoJS.AES.decrypt(
-        encryptedAccessToken,
-        process.env.ACCESS_TOKEN_ENCRYPTION_KEY
-      ).toString(CryptoJS.enc.Utf8);
-      headers = new Headers({
-        Authorization: `Bearer ${accessToken}`
-      });
-    } catch (error) {
-      console.error(error);
+    // Get access token from cookie and set headers with it
+    if (!req.headers.cookie) {
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
+    const cookies = parse(req.headers.cookie);
+    const encryptedAccessToken = cookies.encrypted_access_token;
+    const accessToken = CryptoJS.AES.decrypt(
+      encryptedAccessToken,
+      process.env.ACCESS_TOKEN_ENCRYPTION_KEY
+    ).toString(CryptoJS.enc.Utf8);
+    headers = new Headers({
+      Authorization: `Bearer ${accessToken}`
+    });
   }
 
   // Fetch data from Focusmate API
