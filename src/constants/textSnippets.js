@@ -25,20 +25,20 @@ export function AboutModalContent() {
     <>
       <p>Hi there,</p>
       <p className="mt-3">
-        My name is <ModalLink text="Quan" href="https://quans.org/" />. I built
-        FocusBeacon to visualize my past Focusmate sessions and keep myself
-        motivated. I'm hoping that you will find it useful as well.
+        My name is <ModalLink text="Quan" href="https://quans.org/" />, and I
+        built FocusBeacon to visualize my past Focusmate sessions and keep
+        myself motivated. I'm hoping that you will find it useful as well.
       </p>
       <p className="mt-3">
-        I plan to keep this website 100% free forever. If you want to support,
-        you can{" "}
+        I plan to keep this website 100% free forever. If you want to support to
+        keep it going and grow, I'd appreciate a{" "}
         <ModalLink
-          text="buy me a coffee"
+          text="cup of coffee"
           href="https://www.buymeacoffee.com/quans"
         />{" "}
-        and (if you're a software person){" "}
+        and (if you're a software person) a{" "}
         <ModalLink
-          text="star this project on GitHub"
+          text="GitHub star for this project"
           href="https://www.github.com/qu8n/focusbeacon"
         />
         .
@@ -49,7 +49,7 @@ export function AboutModalContent() {
         please{" "}
         <ModalLink text="email me here" href="mailto:quanwnn@gmail.com" />.
       </p>
-      <p className="mt-3">Happy focusing,</p>
+      <p className="mt-3">Happy focusing!</p>
       <p>Quan</p>
     </>
   );

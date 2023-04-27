@@ -75,13 +75,11 @@ export default function Dashboard({ isDemo }) {
       <>
         <div className="m-7">
           <TabList defaultValue="lifetime" onValueChange={setTab}>
-            <Tab value="lifetime" text="Lifetime View" icon={SupportIcon} />
-            <Tab value="weekly" text="Weekly View" icon={ClockIcon} />
-            <Tab value="monthly" text="Monthly View" icon={CalendarIcon} />
+            <Tab value="lifetime" text="Lifetime" icon={SupportIcon} />
+            <Tab value="weekly" text="Weekly" icon={ClockIcon} />
+            <Tab value="monthly" text="Monthly" icon={CalendarIcon} />
           </TabList>
         </div>
-
-        {/* <button onClick={() => console.log(tab)}>HHelo</button> */}
 
         {tab === "lifetime" && (
           <>

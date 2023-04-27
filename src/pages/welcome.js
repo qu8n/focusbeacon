@@ -25,7 +25,7 @@ export default function Welcome() {
             </span>
           </div>
           <div className="flex justify-center">
-            <button className="flex justify-center mt-2 w-80 items-center text-center text-lg h-14 font-normal px-3 rounded text-white bg-blue-500 hover:bg-blue-500/[.90]">
+            <button className="flex items-center justify-center h-16 py-3 mt-2 mb-2 mr-2 text-lg font-medium text-center text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 w-80">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
