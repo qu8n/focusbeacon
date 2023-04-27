@@ -23,25 +23,22 @@ function ModalLink({ text, href }) {
 export function AboutModalContent() {
   return (
     <>
-      <p>Hi there! 😄</p>
+      <p>Hi there,</p>
       <p className="mt-3">
-        If you're here, I assume that you're a{" "}
-        <ModalLink text="Focusmate" href="https://www.focusmate.com/" /> fan
-        like me. My name is <ModalLink text="Quan" href="https://quans.org/" />,
-        and I built this website because I'm a stats nerd who wanted to
-        visualize my past Focusmate sessions and keep myself motivated. I'm
-        hoping that you will find it useful as well.
+        My name is <ModalLink text="Quan" href="https://quans.org/" />. I built
+        FocusBeacon to visualize my past Focusmate sessions and keep myself
+        motivated. I'm hoping that you will find it useful as well.
       </p>
       <p className="mt-3">
-        I plan to keep this website 100% free forever. If you want to support
-        this website's costs and my time, please consider{" "}
+        I plan to keep this website 100% free forever. If you want to support,
+        you can{" "}
         <ModalLink
-          text="buying me a coffee"
+          text="buy me a coffee"
           href="https://www.buymeacoffee.com/quans"
         />{" "}
         and (if you're a software person){" "}
         <ModalLink
-          text="starring this project on GitHub"
+          text="star this project on GitHub"
           href="https://www.github.com/qu8n/focusbeacon"
         />
         .
@@ -52,7 +49,7 @@ export function AboutModalContent() {
         please{" "}
         <ModalLink text="email me here" href="mailto:quanwnn@gmail.com" />.
       </p>
-      <p className="mt-3">Cheers,</p>
+      <p className="mt-3">Happy focusing,</p>
       <p>Quan</p>
     </>
   );

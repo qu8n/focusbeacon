@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
@@ -16,12 +16,15 @@ import {
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import Footer from "./Footer";
+import { TabList, Tab } from "@tremor/react";
+import { SupportIcon, ClockIcon, CalendarIcon } from "@heroicons/react/solid";
 
 Dashboard.propTypes = {
   isDemo: PropTypes.bool.isRequired
 };
 
 export default function Dashboard({ isDemo }) {
+  const [tab, setTab] = useState("lifetime");
   const router = useRouter();
   const isDemoFlag = "isDemo=" + (isDemo ? "true" : "false");
 
@@ -71,66 +74,86 @@ export default function Dashboard({ isDemo }) {
     return (
       <>
         <div className="m-7">
-          <LifetimeMetrics
-            data={[
-              totalSessions,
-              totalHours,
-              totalPartners,
-              firstSessionDate,
-              maxHoursADay
-            ]}
-          />
+          <TabList defaultValue="lifetime" onValueChange={setTab}>
+            <Tab value="lifetime" text="Lifetime View" icon={SupportIcon} />
+            <Tab value="weekly" text="Weekly View" icon={ClockIcon} />
+            <Tab value="monthly" text="Monthly View" icon={CalendarIcon} />
+          </TabList>
         </div>
 
-        <div className="m-7">
-          <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
-            <SessionsByDuration data={[sessionsByDurationArr, totalSessions]} />
-            <Milestones data={milestonesArr} />
-            <RepeatPartners data={repeatPartnersArr} />
-          </ColGrid>
-        </div>
+        {/* <button onClick={() => console.log(tab)}>HHelo</button> */}
 
-        <div className="m-7">
-          <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
-            <TimeSeriesChart
-              chartType="bar"
-              title="Sessions by Week"
-              data={lTWSessionsArr}
-              dataKey="Week of"
-              categories={["Number of Sessions"]}
-              tooltip={weeklyChartTooltip}
-            />
-            <TimeSeriesChart
-              chartType="area"
-              title="Hours of Sessions by Week"
-              data={lTWHoursArr}
-              dataKey="Week of"
-              categories={["Hours of Sessions"]}
-              tooltip={weeklyChartTooltip}
-            />
-          </ColGrid>
-        </div>
+        {tab === "lifetime" && (
+          <>
+            <div className="m-7">
+              <LifetimeMetrics
+                data={[
+                  totalSessions,
+                  totalHours,
+                  totalPartners,
+                  firstSessionDate,
+                  maxHoursADay
+                ]}
+              />
+            </div>
 
-        <div className="m-7">
-          <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
-            <TimeSeriesChart
-              chartType="bar"
-              title="Sessions by Month"
-              data={lTMSessionsArr}
-              dataKey="Month"
-              categories={["Number of Sessions"]}
-              tooltip={monthlyChartTooltip}
-            />
-            <TimeSeriesChart
-              chartType="area"
-              title="Hours of Sessions by Month"
-              data={lTMHoursArr}
-              dataKey="Month"
-              categories={["Hours of Sessions"]}
-              tooltip={monthlyChartTooltip}
-            />
-          </ColGrid>
-        </div>
+            <div className="m-7">
+              <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
+                <SessionsByDuration
+                  data={[sessionsByDurationArr, totalSessions]}
+                />
+                <Milestones data={milestonesArr} />
+                <RepeatPartners data={repeatPartnersArr} />
+              </ColGrid>
+            </div>
+          </>
+        )}
+
+        {tab === "weekly" && (
+          <div className="m-7">
+            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
+              <TimeSeriesChart
+                chartType="bar"
+                title="Sessions by Week"
+                data={lTWSessionsArr}
+                dataKey="Week of"
+                categories={["Number of Sessions"]}
+                tooltip={weeklyChartTooltip}
+              />
+              <TimeSeriesChart
+                chartType="area"
+                title="Hours of Sessions by Week"
+                data={lTWHoursArr}
+                dataKey="Week of"
+                categories={["Hours of Sessions"]}
+                tooltip={weeklyChartTooltip}
+              />
+            </ColGrid>
+          </div>
+        )}
+
+        {tab === "monthly" && (
+          <div className="m-7">
+            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
+              <TimeSeriesChart
+                chartType="bar"
+                title="Sessions by Month"
+                data={lTMSessionsArr}
+                dataKey="Month"
+                categories={["Number of Sessions"]}
+                tooltip={monthlyChartTooltip}
+              />
+              <TimeSeriesChart
+                chartType="area"
+                title="Hours of Sessions by Month"
+                data={lTMHoursArr}
+                dataKey="Month"
+                categories={["Hours of Sessions"]}
+                tooltip={monthlyChartTooltip}
+              />
+            </ColGrid>
+          </div>
+        )}
 
         <Footer />
       </>
