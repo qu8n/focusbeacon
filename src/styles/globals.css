@@ -9,7 +9,7 @@
   }
 }
 
-/* Welcome page's background animation */
+/* Home page's background animation */
 @layer utilities {
   .animation-delay-2000 {
     animation-delay: 2s;

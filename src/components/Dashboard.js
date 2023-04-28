@@ -35,7 +35,7 @@ export default function Dashboard({ isDemo }) {
     queryFn: async () => {
       const response = await fetch(`/api/request?${isDemoFlag}`);
       if (response.status !== 200 && typeof window !== "undefined") {
-        router.push("/welcome");
+        router.push("/");
       }
       const data = await response.json();
       return data;

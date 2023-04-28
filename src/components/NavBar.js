@@ -13,6 +13,8 @@ NavBar.propTypes = {
 };
 
 export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
+  // TODO: This is a hacky way to check if the user is signed in. We should
+  // probably use a context provider instead.
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   useEffect(() => {

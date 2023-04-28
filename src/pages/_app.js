@@ -50,10 +50,12 @@ export default function App({ Component, pageProps }) {
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
       </Head>
+
       <NavBar
         setShowAboutModal={setShowAboutModal}
         setShowPrivacyModal={setShowPrivacyModal}
       />
+
       {(showAboutModal || showPrivacyModal) && (
         <Modal
           modalType={showAboutModal ? "about" : "privacy"}
@@ -61,6 +63,7 @@ export default function App({ Component, pageProps }) {
           setShowPrivacyModal={setShowPrivacyModal}
         />
       )}
+
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
       </QueryClientProvider>

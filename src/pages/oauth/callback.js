@@ -7,10 +7,10 @@ export default function Callback() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
 
-    // Redirect to /welcome if there is an error
+    // Redirect to home if there is an error
     const error = urlParams.get("error");
     if (error && typeof window !== "undefined") {
-      router.push("/welcome");
+      router.push("/");
     }
 
     // Send the authorization code to the backend to exchange it for an access token,
@@ -40,7 +40,7 @@ export default function Callback() {
     } else {
       const data = await response.json();
       console.error(data.error);
-      router.push("/welcome");
+      router.push("/");
     }
   }
 }
