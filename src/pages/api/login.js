@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import { serialize } from "cookie";
+import setCookie from "../../utils/setCookie";
 
 export default async function handler(req, res) {
   const authorizationCode = req.body.authorizationCode;
@@ -26,26 +26,11 @@ export default async function handler(req, res) {
       accessToken,
       process.env.ACCESS_TOKEN_ENCRYPTION_KEY
     ).toString();
-    // TODO: replace this step with a call to setCookie()
-    let cookieOptions = {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      domain: "focusbeacon.vercel.app",
-      path: "/"
-    };
-    if (process.env.NODE_ENV === "development") {
-      cookieOptions = {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-        path: "/"
-      };
-    }
-    const serializedCookie = serialize(
+
+    const serializedCookie = setCookie(
+      process.env.NODE_ENV,
       "encrypted_access_token",
-      encryptedAccessToken,
-      cookieOptions
+      encryptedAccessToken
     );
 
     // Set the encrypted access token as cookie on the client side
