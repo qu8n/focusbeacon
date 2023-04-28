@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
+import LoaderSpinner from "../../components/LoaderSpinner";
 
 export default function Callback() {
   const router = useRouter();
@@ -14,33 +15,30 @@ export default function Callback() {
     }
 
     // Send the authorization code to the backend to exchange it for an access token,
-    // which will be encrypted and set as a cookie on the client
+    // which will be encrypted and set as a HttpOnly cookie on the client
     const authorizationCode = urlParams.get("code");
     if (authorizationCode) {
       try {
-        fetchAccessToken(authorizationCode);
+        getAndSaveAccessToken(authorizationCode);
       } catch (error) {
         console.error(error);
+      } finally {
+        router.push("/dashboard");
       }
+    }
+
+    async function getAndSaveAccessToken(authorizationCode) {
+      await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          authorizationCode: authorizationCode
+        })
+      });
     }
   }, []);
 
-  async function fetchAccessToken(authorizationCode) {
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        authorizationCode: authorizationCode
-      })
-    });
-    if (response.status === 200) {
-      router.push("/");
-    } else {
-      const data = await response.json();
-      console.error(data.error);
-      router.push("/");
-    }
-  }
+  return <LoaderSpinner />;
 }
