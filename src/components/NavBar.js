@@ -90,12 +90,12 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                     }}
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                   >
-                    Log Out
+                    Log out
                   </button>
                 ) : (
                   <Link
                     href={oauthURL}
-                    className="inline-flex items-center h-10 px-5 m-auto text-sm font-semibold rounded-lg text-slate-600 bg-gradient-to-r from-slate-100 to-slate-200 ring-1 ring-inset ring-slate-300 hover:bg-gradient-to-br"
+                    className="inline-flex items-center h-10 px-5 m-auto text-sm font-semibold text-blue-500 rounded-lg ring-2 ring-inset ring-blue-500 hover:ring-0 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600"
                   >
                     Log in
                   </Link>
@@ -119,7 +119,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 onClick={() => setShowPrivacyModal(true)}
                 className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
               >
-                Privacy Policy
+                Privacy
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
@@ -128,7 +128,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 rel="noreferrer"
                 className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
               >
-                Report a Bug
+                Report a bug
               </Disclosure.Button>
               {isSignedIn ? (
                 <Disclosure.Button
@@ -141,7 +141,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                   }}
                   className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
                 >
-                  Log Out
+                  Log out
                 </Disclosure.Button>
               ) : (
                 <Disclosure.Button

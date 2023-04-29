@@ -1,6 +1,8 @@
 import React from "react";
 import Dashboard from "../../components/Dashboard";
 import { ExclamationIcon } from "@heroicons/react/outline";
+import Link from "next/link";
+import { oauthURL } from "../../constants/oauthURL";
 
 export default function Demo() {
   return (
@@ -15,8 +17,14 @@ export default function Demo() {
           </div>
           <div className="ml-3">
             <p className="text-sm text-yellow-700">
-              This dashboard is for demo purposes only. Log in to view your own
-              stats.
+              This dashboard is for demo purposes only.{" "}
+              <Link
+                href={oauthURL}
+                className="text-yellow-600 underline hover:no-underline hover:text-yellow-700"
+              >
+                Log in
+              </Link>{" "}
+              to view your own stats.
             </p>
           </div>
         </div>

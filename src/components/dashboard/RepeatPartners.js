@@ -8,7 +8,7 @@ import {
   Card,
   Title,
   Icon,
-  Flex,
+  Flex
 } from "@tremor/react";
 import { UserIcon, UsersIcon, UserGroupIcon } from "@heroicons/react/solid";
 import { InformationCircleIcon } from "@heroicons/react/outline";
@@ -16,7 +16,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 RepeatPartners.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default function RepeatPartners({ data }) {
@@ -25,7 +25,7 @@ export default function RepeatPartners({ data }) {
   return (
     <Card>
       <Flex alignItems="align-top">
-        <Title>Top Recurring Partners</Title>
+        <Title>Top recurring partners</Title>
         <Icon
           icon={InformationCircleIcon}
           variant="simple"
@@ -38,10 +38,10 @@ export default function RepeatPartners({ data }) {
         <TableHead>
           <TableRow>
             <TableHeaderCell textAlignment="text-left">
-              Shared Sessions
+              Shared sessions
             </TableHeaderCell>
             <TableHeaderCell textAlignment="text-right">
-              No. of Partners
+              No. of partners
             </TableHeaderCell>
           </TableRow>
         </TableHead>
@@ -65,7 +65,7 @@ export default function RepeatPartners({ data }) {
 }
 
 PartnerIcons.propTypes = {
-  sharedSession: PropTypes.object.isRequired,
+  sharedSession: PropTypes.object.isRequired
 };
 
 function PartnerIcons({ sharedSession }) {

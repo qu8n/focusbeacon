@@ -20,7 +20,7 @@ export default function Milestones({ data }) {
 
   return (
     <Card>
-      <Title>Recent Milestones</Title>
+      <Title>Recent milestones</Title>
       <Table marginTop="mt-5">
         <TableHead>
           <TableRow>

@@ -6,13 +6,13 @@ import {
   Title,
   Text,
   DonutChart,
-  Legend,
+  Legend
 } from "@tremor/react";
 import React from "react";
 import PropTypes from "prop-types";
 
 SessionsByDuration.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired
 };
 
 export default function SessionsByDuration({ data }) {
@@ -28,7 +28,7 @@ export default function SessionsByDuration({ data }) {
         justifyContent="justify-start"
         alignItems="items-center"
       >
-        <Title>Sessions by Duration</Title>
+        <Title>Sessions by duration</Title>
       </Flex>
 
       <Legend

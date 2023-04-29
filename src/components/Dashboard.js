@@ -16,15 +16,17 @@ import {
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import Footer from "./Footer";
-import { TabList, Tab } from "@tremor/react";
-import { SupportIcon, ClockIcon, CalendarIcon } from "@heroicons/react/solid";
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 Dashboard.propTypes = {
   isDemo: PropTypes.bool.isRequired
 };
 
 export default function Dashboard({ isDemo }) {
-  const [tab, setTab] = useState("lifetime");
+  const [currentTab, setCurrentTab] = useState("Weekly");
   const router = useRouter();
   const isDemoFlag = "isDemo=" + (isDemo ? "true" : "false");
 
@@ -73,15 +75,75 @@ export default function Dashboard({ isDemo }) {
 
     return (
       <>
-        <div className="m-7">
-          <TabList defaultValue="lifetime" onValueChange={setTab}>
-            <Tab value="lifetime" text="Lifetime" icon={SupportIcon} />
-            <Tab value="weekly" text="Weekly" icon={ClockIcon} />
-            <Tab value="monthly" text="Monthly" icon={CalendarIcon} />
-          </TabList>
+        <div className="pb-5 border-b border-slate-300 m-7">
+          <p className="mb-2 text-lg font-medium text-slate-800">
+            Select a view:
+          </p>
+          <nav className="space-x-2 sm:space-x-4" aria-label="Tabs">
+            {["Weekly", "Monthly", "Yearly", "Lifetime"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setCurrentTab(tab)}
+                className={classNames(
+                  tab === currentTab
+                    ? "bg-blue-100 text-blue-600 ring-blue-500 ring-2"
+                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 ring-slate-300 ring-1 hover:ring-2",
+                  "rounded-md px-4 py-2 text-sm font-medium"
+                )}
+              >
+                {tab}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        {tab === "lifetime" && (
+        {currentTab === "Weekly" && (
+          <div className="m-7">
+            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
+              <TimeSeriesChart
+                chartType="bar"
+                title="Sessions by week"
+                data={lTWSessionsArr}
+                dataKey="Week of"
+                categories={["Number of Sessions"]}
+                tooltip={weeklyChartTooltip}
+              />
+              <TimeSeriesChart
+                chartType="area"
+                title="Hours of sessions by week"
+                data={lTWHoursArr}
+                dataKey="Week of"
+                categories={["Hours of Sessions"]}
+                tooltip={weeklyChartTooltip}
+              />
+            </ColGrid>
+          </div>
+        )}
+
+        {currentTab === "Monthly" && (
+          <div className="m-7">
+            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
+              <TimeSeriesChart
+                chartType="bar"
+                title="Sessions by month"
+                data={lTMSessionsArr}
+                dataKey="Month"
+                categories={["Number of Sessions"]}
+                tooltip={monthlyChartTooltip}
+              />
+              <TimeSeriesChart
+                chartType="area"
+                title="Hours of sessions by month"
+                data={lTMHoursArr}
+                dataKey="Month"
+                categories={["Hours of Sessions"]}
+                tooltip={monthlyChartTooltip}
+              />
+            </ColGrid>
+          </div>
+        )}
+
+        {currentTab === "Lifetime" && (
           <>
             <div className="m-7">
               <LifetimeMetrics
@@ -105,52 +167,6 @@ export default function Dashboard({ isDemo }) {
               </ColGrid>
             </div>
           </>
-        )}
-
-        {tab === "weekly" && (
-          <div className="m-7">
-            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
-              <TimeSeriesChart
-                chartType="bar"
-                title="Sessions by Week"
-                data={lTWSessionsArr}
-                dataKey="Week of"
-                categories={["Number of Sessions"]}
-                tooltip={weeklyChartTooltip}
-              />
-              <TimeSeriesChart
-                chartType="area"
-                title="Hours of Sessions by Week"
-                data={lTWHoursArr}
-                dataKey="Week of"
-                categories={["Hours of Sessions"]}
-                tooltip={weeklyChartTooltip}
-              />
-            </ColGrid>
-          </div>
-        )}
-
-        {tab === "monthly" && (
-          <div className="m-7">
-            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
-              <TimeSeriesChart
-                chartType="bar"
-                title="Sessions by Month"
-                data={lTMSessionsArr}
-                dataKey="Month"
-                categories={["Number of Sessions"]}
-                tooltip={monthlyChartTooltip}
-              />
-              <TimeSeriesChart
-                chartType="area"
-                title="Hours of Sessions by Month"
-                data={lTMHoursArr}
-                dataKey="Month"
-                categories={["Hours of Sessions"]}
-                tooltip={monthlyChartTooltip}
-              />
-            </ColGrid>
-          </div>
         )}
 
         <Footer />

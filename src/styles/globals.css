@@ -8,13 +8,3 @@
     @apply bg-gradient-to-r from-slate-50 to-slate-100;
   }
 }
-
-/* Home page's background animation */
-@layer utilities {
-  .animation-delay-2000 {
-    animation-delay: 2s;
-  }
-  .animation-delay-4000 {
-    animation-delay: 4s;
-  }
-}

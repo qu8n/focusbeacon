@@ -4,7 +4,7 @@ import GitHubButton from "react-github-btn";
 export default function Footer() {
   return (
     <>
-      <footer className="flex flex-col items-center py-12 mt-4 mb-10 space-y-2 text-xs border-t text-slate-400 m-7 border-gray-900/10">
+      <footer className="flex flex-col items-center pt-12 pb-12 space-y-2 text-xs border-t m-7 text-slate-400 border-slate-300">
         <GitHubButton
           href="https://github.com/qu8n/focusbeacon"
           data-size="large"

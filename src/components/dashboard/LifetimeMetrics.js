@@ -6,12 +6,12 @@ import {
   UsersIcon,
   FireIcon,
   BellIcon,
-  CakeIcon,
+  CakeIcon
 } from "@heroicons/react/solid";
 import PropTypes from "prop-types";
 
 LifetimeMetrics.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired
 };
 
 export default function LifetimeMetrics({ data }) {
@@ -20,43 +20,43 @@ export default function LifetimeMetrics({ data }) {
     totalHours,
     totalPartners,
     firstSessionDate,
-    maxHoursADay,
+    maxHoursADay
   ] = data;
 
   const firstGroup = [
     {
-      title: "Total Sessions",
+      title: "Total sessions",
       metric: totalSessions.toLocaleString() + " sessions",
-      icon: VideoCameraIcon,
+      icon: VideoCameraIcon
     },
     {
-      title: "Total Hours of Sessions",
+      title: "Total hours of sessions",
       metric: Math.round(totalHours).toLocaleString() + " hours",
-      icon: ClockIcon,
+      icon: ClockIcon
     },
     {
-      title: "Average Time per Session",
+      title: "Average time per session",
       metric: Math.round((totalHours * 60) / totalSessions) + " minutes",
-      icon: BellIcon,
-    },
+      icon: BellIcon
+    }
   ];
 
   const secondGroup = [
     {
-      title: "Total Unique Partners",
+      title: "Total unique partners",
       metric: totalPartners.toLocaleString() + " partners",
-      icon: UsersIcon,
+      icon: UsersIcon
     },
     {
-      title: "Most Session Time in a Day",
+      title: "Most session time in a day",
       metric: Math.round(maxHoursADay).toLocaleString() + " hours",
-      icon: FireIcon,
+      icon: FireIcon
     },
     {
-      title: "First Session Date",
+      title: "First session date",
       metric: firstSessionDate,
-      icon: CakeIcon,
-    },
+      icon: CakeIcon
+    }
   ];
 
   firstGroup.forEach((item) => {
