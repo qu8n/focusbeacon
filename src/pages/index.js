@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { VideoCameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { oauthURL } from "../constants/oauthURL";
 
 export default function Home() {
   const router = useRouter();
@@ -38,20 +40,21 @@ export default function Home() {
             </span>
           </div>
           <div className="flex justify-center">
-            <button
-              type="button"
-              href={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
+            <Link
+              href={oauthURL}
               className="flex items-center justify-center h-16 py-3 mt-2 mb-2 mr-2 text-lg font-medium text-center text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 w-80"
             >
               <VideoCameraIcon className="w-6 h-6 mr-3" aria-hidden="true" />
               Log in with Focusmate
-            </button>
+            </Link>
           </div>
-          <div className="flex justify-center mt-4 text-lg font-semibold hover:space-x-2 text-slate-700 hover:text-slate-500">
-            <a href="/demo">View demo</a>
-            <span aria-hidden="true" className="ml-1">
-              →
-            </span>
+          <div className="flex justify-center mt-4 text-lg font-semibold text-slate-700 hover:text-slate-500">
+            <Link href="/dashboard/demo">
+              View demo
+              <span aria-hidden="true" className="ml-1">
+                →
+              </span>
+            </Link>
           </div>
         </div>
       </div>

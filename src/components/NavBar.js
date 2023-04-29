@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import Logo from "./Logo";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { oauthURL } from "../constants/oauthURL";
 
 NavBar.propTypes = {
   setShowAboutModal: PropTypes.func.isRequired,
@@ -46,7 +47,10 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 </Disclosure.Button>
               </div>
               <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start">
-                <a href="/" className="flex items-center">
+                <a
+                  href={isSignedIn ? "/dashboard" : "/"}
+                  className="flex items-center"
+                >
                   <Logo />
                 </a>
               </div>
@@ -89,12 +93,12 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                     Log Out
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    className="inline-flex items-center h-10 px-5 m-auto text-sm font-semibold text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300"
+                  <Link
+                    href={oauthURL}
+                    className="inline-flex items-center h-10 px-5 m-auto text-sm font-semibold rounded-lg text-slate-600 bg-gradient-to-r from-slate-100 to-slate-200 ring-1 ring-inset ring-slate-300 hover:bg-gradient-to-br"
                   >
                     Log in
-                  </button>
+                  </Link>
                 )}
               </div>
             </div>
@@ -142,7 +146,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               ) : (
                 <Disclosure.Button
                   as="a"
-                  href={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
+                  href={oauthURL}
                   className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
                 >
                   Log in
