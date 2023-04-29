@@ -54,16 +54,18 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               {/* Desktop menu */}
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <button
+                  type="button"
                   onClick={() => setShowAboutModal(true)}
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
                   About
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowPrivacyModal(true)}
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
-                  Privacy Policy
+                  Privacy
                 </button>
                 <Link
                   href="https://forms.gle/mcuSkyP5uguV7FKd7"
@@ -71,10 +73,11 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                   rel="noreferrer"
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
-                  Report a Bug
+                  Report a bug
                 </Link>
                 {isSignedIn ? (
                   <button
+                    type="button"
                     onClick={async () => {
                       await fetch("/api/logout").then(() => {
                         setIsSignedIn(false);
@@ -86,12 +89,12 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                     Log Out
                   </button>
                 ) : (
-                  <Link
-                    href={`https://www.focusmate.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID}&response_type=code&scope=profile%20sessions`}
-                    className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  <button
+                    type="button"
+                    className="inline-flex items-center h-10 px-5 m-auto text-sm font-semibold text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300"
                   >
                     Log in
-                  </Link>
+                  </button>
                 )}
               </div>
             </div>

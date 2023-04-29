@@ -4,6 +4,7 @@ import {
   AboutModalContent,
   PrivacyModalContent
 } from "../constants/textSnippets";
+import { XIcon } from "@heroicons/react/solid";
 
 Modal.propTypes = {
   modalType: PropTypes.string.isRequired,
@@ -36,10 +37,11 @@ export default function Modal({
                 {modalType}
               </h3>
               <button
+                type="button"
                 className="float-right text-2xl font-semibold leading-none bg-transparent opacity-25 hover:opacity-50"
                 onClick={handleCloseClick}
               >
-                <span className="p-10">x</span>
+                <XIcon className="mr-5 w-7 h-7" aria-hidden="true" />
               </button>
             </div>
 
