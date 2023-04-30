@@ -7,7 +7,7 @@ import { oauthURL } from "../../constants/oauthURL";
 export default function Demo() {
   return (
     <>
-      <div className="p-4 border border-l-4 border-yellow-400 m-7 bg-yellow-50">
+      <div className="p-4 mx-3 mb-10 border border-l-4 border-yellow-400 sm:mx-20 bg-yellow-50">
         <div className="flex">
           <div className="flex-shrink-0">
             <ExclamationIcon

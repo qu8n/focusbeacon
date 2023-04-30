@@ -21,6 +21,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+const cardPadding = "mx-3 space-y-3 sm:mx-20 sm:space-y-7";
+
 Dashboard.propTypes = {
   isDemo: PropTypes.bool.isRequired
 };
@@ -75,9 +77,9 @@ export default function Dashboard({ isDemo }) {
 
     return (
       <>
-        <div className="pb-5 border-b border-slate-300 m-7">
+        <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
           <p className="mb-2 text-lg font-medium text-slate-800">
-            Select a view:
+            Select a time interval:
           </p>
           <nav className="space-x-2 sm:space-x-4" aria-label="Tabs">
             {["Weekly", "Monthly", "Yearly", "Lifetime"].map((tab) => (
@@ -98,54 +100,50 @@ export default function Dashboard({ isDemo }) {
         </div>
 
         {currentTab === "Weekly" && (
-          <div className="m-7">
-            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
-              <TimeSeriesChart
-                chartType="bar"
-                title="Sessions by week"
-                data={lTWSessionsArr}
-                dataKey="Week of"
-                categories={["Number of Sessions"]}
-                tooltip={weeklyChartTooltip}
-              />
-              <TimeSeriesChart
-                chartType="area"
-                title="Hours of sessions by week"
-                data={lTWHoursArr}
-                dataKey="Week of"
-                categories={["Hours of Sessions"]}
-                tooltip={weeklyChartTooltip}
-              />
-            </ColGrid>
+          <div className={cardPadding}>
+            <TimeSeriesChart
+              chartType="bar"
+              title="Sessions by week"
+              data={lTWSessionsArr}
+              dataKey="Week of"
+              categories={["Number of Sessions"]}
+              tooltip={weeklyChartTooltip}
+            />
+            <TimeSeriesChart
+              chartType="area"
+              title="Hours of sessions by week"
+              data={lTWHoursArr}
+              dataKey="Week of"
+              categories={["Hours of Sessions"]}
+              tooltip={weeklyChartTooltip}
+            />
           </div>
         )}
 
         {currentTab === "Monthly" && (
-          <div className="m-7">
-            <ColGrid numColsLg={2} gapX="gap-x-6" gapY="gap-y-6">
-              <TimeSeriesChart
-                chartType="bar"
-                title="Sessions by month"
-                data={lTMSessionsArr}
-                dataKey="Month"
-                categories={["Number of Sessions"]}
-                tooltip={monthlyChartTooltip}
-              />
-              <TimeSeriesChart
-                chartType="area"
-                title="Hours of sessions by month"
-                data={lTMHoursArr}
-                dataKey="Month"
-                categories={["Hours of Sessions"]}
-                tooltip={monthlyChartTooltip}
-              />
-            </ColGrid>
+          <div className={cardPadding}>
+            <TimeSeriesChart
+              chartType="bar"
+              title="Sessions by month"
+              data={lTMSessionsArr}
+              dataKey="Month"
+              categories={["Number of Sessions"]}
+              tooltip={monthlyChartTooltip}
+            />
+            <TimeSeriesChart
+              chartType="area"
+              title="Hours of sessions by month"
+              data={lTMHoursArr}
+              dataKey="Month"
+              categories={["Hours of Sessions"]}
+              tooltip={monthlyChartTooltip}
+            />
           </div>
         )}
 
         {currentTab === "Lifetime" && (
           <>
-            <div className="m-7">
+            <div className={cardPadding}>
               <LifetimeMetrics
                 data={[
                   totalSessions,
@@ -155,9 +153,6 @@ export default function Dashboard({ isDemo }) {
                   maxHoursADay
                 ]}
               />
-            </div>
-
-            <div className="m-7">
               <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
                 <SessionsByDuration
                   data={[sessionsByDurationArr, totalSessions]}

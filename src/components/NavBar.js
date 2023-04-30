@@ -33,8 +33,8 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
     <Disclosure as="nav" className="mb-10">
       {({ open }) => (
         <>
-          <div className="px-4 mx-auto sm:px-6 lg:px-8">
-            <div className="relative flex justify-between h-16">
+          <div className="mx-3 sm:mx-20">
+            <div className="relative flex justify-between h-20">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button */}
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">

@@ -91,7 +91,6 @@ export default function LifetimeMetrics({ data }) {
           ))}
         </ColGrid>
       </Card>
-      <br />
       <Card>
         <ColGrid numColsSm={1} numColsLg={3} gapX="gap-x-10" gapY="gap-y-10">
           {secondGroup.map((item) => (
