@@ -78,11 +78,11 @@ export default function Dashboard({ isDemo }) {
     return (
       <>
         <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
-          <p className="mb-2 text-lg font-medium text-slate-800">
+          <p className="mb-2 text-lg font-medium text-slate-700">
             Select a time interval:
           </p>
           <nav className="space-x-2 sm:space-x-4" aria-label="Tabs">
-            {["Weekly", "Monthly", "Yearly", "Lifetime"].map((tab) => (
+            {["Weekly", "Monthly", "Lifetime"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
