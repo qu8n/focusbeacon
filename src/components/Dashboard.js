@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
-import { Card, ColGrid } from "@tremor/react";
+import { Card, ColGrid, Title } from "@tremor/react";
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
@@ -79,8 +79,16 @@ export default function Dashboard({ isDemo }) {
     // ] = processData(sessionsData);
 
     const { currWeekData, prev12WeeksData } = groupDataByInterval(sessionsData);
-    const { totalSessions, totalHours, totalPartners } =
-      calcTotalMetrics(currWeekData);
+    const {
+      totalSessions: currWeekTotalSessions,
+      totalHours: currWeekTotalHours,
+      totalPartners: currWeekTotalPartners
+    } = calcTotalMetrics(currWeekData);
+    const {
+      totalSessions: prev12WeeksTotalSessions,
+      totalHours: prev12WeeksTotalHours,
+      totalPartners: prev12WeeksTotalPartners
+    } = calcTotalMetrics(prev12WeeksData);
 
     return (
       <>
@@ -107,21 +115,25 @@ export default function Dashboard({ isDemo }) {
           {currentTab === "Weekly" && (
             <>
               <div>
-                <p className="mb-3 text-2xl font-medium text-slate-700">
+                <p className="mb-3 text-3xl font-medium text-slate-500">
                   Current week
                 </p>
                 <TotalMetrics
-                  data={{
-                    totalSessions,
-                    totalHours,
-                    totalPartners
-                  }}
+                  totalSessions={currWeekTotalSessions}
+                  totalHours={currWeekTotalHours}
+                  totalPartners={currWeekTotalPartners}
                 />
               </div>
+              <br />
               <div>
-                <p className="mb-3 text-2xl font-medium text-slate-700">
+                <p className="mb-3 text-3xl font-medium text-slate-500">
                   Previous 12 weeks
                 </p>
+                <TotalMetrics
+                  totalSessions={prev12WeeksTotalSessions}
+                  totalHours={prev12WeeksTotalHours}
+                  totalPartners={prev12WeeksTotalPartners}
+                />
               </div>
             </>
             // <div className={cardPadding}>

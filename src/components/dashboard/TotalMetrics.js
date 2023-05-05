@@ -4,12 +4,12 @@ import { ClockIcon, VideoCameraIcon, UsersIcon } from "@heroicons/react/solid";
 import PropTypes from "prop-types";
 
 TotalMetrics.propTypes = {
-  data: PropTypes.object.isRequired
+  totalSessions: PropTypes.number.isRequired,
+  totalHours: PropTypes.number.isRequired,
+  totalPartners: PropTypes.number.isRequired
 };
 
-export function TotalMetrics({ data }) {
-  const { totalSessions, totalHours, totalPartners } = data;
-
+export function TotalMetrics({ totalSessions, totalHours, totalPartners }) {
   const metrics = [
     {
       title: "Total sessions",
@@ -30,7 +30,7 @@ export function TotalMetrics({ data }) {
 
   return (
     <>
-      <Grid numColsSm={1} numColsMd={2} numColsLg={3} className="gap-3">
+      <Grid numColsSm={1} numColsLg={3} className="gap-3">
         {metrics.map((item) => (
           <Card key={item.title}>
             <Flex justifyContent="start" className="space-x-4">
