@@ -1,11 +1,6 @@
 import React from "react";
-import { Card, Metric, Text, Icon, Flex, Block, ColGrid } from "@tremor/react";
-import {
-  ClockIcon,
-  VideoCameraIcon,
-  UsersIcon,
-  BellIcon
-} from "@heroicons/react/solid";
+import { Card, Metric, Text, Icon, Flex, Grid } from "@tremor/react";
+import { ClockIcon, VideoCameraIcon, UsersIcon } from "@heroicons/react/solid";
 import PropTypes from "prop-types";
 
 TotalMetrics.propTypes = {
@@ -13,59 +8,46 @@ TotalMetrics.propTypes = {
 };
 
 export function TotalMetrics({ data }) {
-  const { totalSessions, totalHours, avgSessionMinutes, totalPartners } = data;
+  const { totalSessions, totalHours, totalPartners } = data;
 
-  const firstGroup = [
+  const metrics = [
     {
       title: "Total sessions",
-      metric: totalSessions.toLocaleString() + " sessions",
+      metric: totalSessions + " sessions",
       icon: VideoCameraIcon
     },
     {
       title: "Total hours of sessions",
-      metric: Math.round(totalHours).toLocaleString() + " hours",
+      metric: Math.round(totalHours) + " hours",
       icon: ClockIcon
     },
     {
-      title: "Average time per session",
-      metric: Math.round(avgSessionMinutes) + " minutes",
-      icon: BellIcon
-    },
-    {
       title: "Total unique partners",
-      metric: totalPartners.toLocaleString() + " partners",
+      metric: totalPartners + " partners",
       icon: UsersIcon
     }
   ];
 
-  firstGroup.forEach((item) => {
-    item.color = "blue";
-  });
-
   return (
     <>
-      <Card>
-        <ColGrid numColsSm={1} numColsLg={4} gapX="gap-x-10" gapY="gap-y-10">
-          {firstGroup.map((item) => (
-            <Flex
-              key={item.title}
-              justifyContent="justify-start"
-              spaceX="space-x-4"
-            >
+      <Grid numColsSm={1} numColsMd={2} numColsLg={3} className="gap-3">
+        {metrics.map((item) => (
+          <Card key={item.title}>
+            <Flex justifyContent="start" className="space-x-4">
               <Icon
                 icon={item.icon}
                 variant="light"
                 size="xl"
                 color={item.color}
               />
-              <Block truncate={true}>
+              <div className="truncate">
                 <Text>{item.title}</Text>
-                <Metric truncate={true}>{item.metric}</Metric>
-              </Block>
+                <Metric className="truncate">{item.metric}</Metric>
+              </div>
             </Flex>
-          ))}
-        </ColGrid>
-      </Card>
+          </Card>
+        ))}
+      </Grid>
     </>
   );
 }

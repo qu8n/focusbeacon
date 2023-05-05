@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
-import "@tremor/react/dist/esm/tremor.css";
-import { ColGrid } from "@tremor/react";
+import { Card, ColGrid } from "@tremor/react";
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
@@ -80,15 +79,12 @@ export default function Dashboard({ isDemo }) {
     // ] = processData(sessionsData);
 
     const { currWeekData, prev12WeeksData } = groupDataByInterval(sessionsData);
-    const { totalSessions, totalHours, avgSessionMinutes, totalPartners } =
+    const { totalSessions, totalHours, totalPartners } =
       calcTotalMetrics(currWeekData);
 
     return (
       <>
         <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
-          <p className="mb-2 text-lg font-medium text-slate-700">
-            Select a time interval:
-          </p>
           <nav className="space-x-2 sm:space-x-4" aria-label="Tabs">
             {["Weekly", "Monthly", "Lifetime"].map((tab) => (
               <button
@@ -109,15 +105,25 @@ export default function Dashboard({ isDemo }) {
 
         <div className={cardPadding}>
           {currentTab === "Weekly" && (
-            <TotalMetrics
-              data={{
-                totalSessions,
-                totalHours,
-                avgSessionMinutes,
-                totalPartners
-              }}
-            />
-
+            <>
+              <div>
+                <p className="mb-3 text-2xl font-medium text-slate-700">
+                  Current week
+                </p>
+                <TotalMetrics
+                  data={{
+                    totalSessions,
+                    totalHours,
+                    totalPartners
+                  }}
+                />
+              </div>
+              <div>
+                <p className="mb-3 text-2xl font-medium text-slate-700">
+                  Previous 12 weeks
+                </p>
+              </div>
+            </>
             // <div className={cardPadding}>
             //   <TimeSeriesChart
             //     chartType="bar"
