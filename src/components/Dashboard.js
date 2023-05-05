@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
@@ -16,6 +17,9 @@ import {
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import Footer from "./Footer";
+import { groupDataByInterval } from "../utils/groupDataByInterval";
+import { calcTotalMetrics } from "../utils/calcTotalMetrics";
+import { TotalMetrics } from "./dashboard/TotalMetrics";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -60,20 +64,24 @@ export default function Dashboard({ isDemo }) {
   const { profileData, sessionsData } = data;
 
   if (sessionsData) {
-    const [
-      totalSessions,
-      totalHours,
-      totalPartners,
-      firstSessionDate,
-      maxHoursADay,
-      sessionsByDurationArr,
-      milestonesArr,
-      repeatPartnersArr,
-      lTMSessionsArr,
-      lTMHoursArr,
-      lTWSessionsArr,
-      lTWHoursArr
-    ] = processData(sessionsData);
+    // const [
+    //   totalSessions,
+    //   totalHours,
+    //   totalPartners,
+    //   firstSessionDate,
+    //   maxHoursADay,
+    //   sessionsByDurationArr,
+    //   milestonesArr,
+    //   repeatPartnersArr,
+    //   lTMSessionsArr,
+    //   lTMHoursArr,
+    //   lTWSessionsArr,
+    //   lTWHoursArr
+    // ] = processData(sessionsData);
+
+    const { currWeekData, prev12WeeksData } = groupDataByInterval(sessionsData);
+    const { totalSessions, totalHours, avgSessionMinutes, totalPartners } =
+      calcTotalMetrics(currWeekData);
 
     return (
       <>
@@ -99,28 +107,38 @@ export default function Dashboard({ isDemo }) {
           </nav>
         </div>
 
-        {currentTab === "Weekly" && (
-          <div className={cardPadding}>
-            <TimeSeriesChart
-              chartType="bar"
-              title="Sessions by week"
-              data={lTWSessionsArr}
-              dataKey="Week of"
-              categories={["Number of Sessions"]}
-              tooltip={weeklyChartTooltip}
+        <div className={cardPadding}>
+          {currentTab === "Weekly" && (
+            <TotalMetrics
+              data={{
+                totalSessions,
+                totalHours,
+                avgSessionMinutes,
+                totalPartners
+              }}
             />
-            <TimeSeriesChart
-              chartType="area"
-              title="Hours of sessions by week"
-              data={lTWHoursArr}
-              dataKey="Week of"
-              categories={["Hours of Sessions"]}
-              tooltip={weeklyChartTooltip}
-            />
-          </div>
-        )}
 
-        {currentTab === "Monthly" && (
+            // <div className={cardPadding}>
+            //   <TimeSeriesChart
+            //     chartType="bar"
+            //     title="Sessions by week"
+            //     data={lTWSessionsArr}
+            //     dataKey="Week of"
+            //     categories={["Number of Sessions"]}
+            //     tooltip={weeklyChartTooltip}
+            //   />
+            //   <TimeSeriesChart
+            //     chartType="area"
+            //     title="Hours of sessions by week"
+            //     data={lTWHoursArr}
+            //     dataKey="Week of"
+            //     categories={["Hours of Sessions"]}
+            //     tooltip={weeklyChartTooltip}
+            //   />
+            // </div>
+          )}
+
+          {/* {currentTab === "Monthly" && (
           <div className={cardPadding}>
             <TimeSeriesChart
               chartType="bar"
@@ -162,7 +180,8 @@ export default function Dashboard({ isDemo }) {
               </ColGrid>
             </div>
           </>
-        )}
+        )} */}
+        </div>
 
         <Footer />
       </>
