@@ -3,7 +3,7 @@ import { InformationCircleIcon } from "@heroicons/react/outline";
 import { VideoCameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { oauthURL } from "../constants/oauthURL";
+import { getOAuthURL } from "../utils/getOAuthURL";
 
 export default function Home() {
   const router = useRouter();
@@ -17,6 +17,7 @@ export default function Home() {
     }
     checkSignedInStatus();
   }, []);
+  const oauthURL = getOAuthURL();
 
   return (
     <div className="flex items-center justify-center h-[calc(100vh-150px)] px-10">

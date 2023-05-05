@@ -15,7 +15,11 @@ export default async function handler(req, res) {
         client_id: process.env.NEXT_PUBLIC_FOCUSMATE_CLIENT_ID,
         client_secret: process.env.FOCUSMATE_CLIENT_SECRET,
         code: authorizationCode,
-        grant_type: "authorization_code"
+        grant_type: "authorization_code",
+        redirect_uri:
+          process.env.NODE_ENV === "production"
+            ? "https://www.focusbeacon.com/oauth/callback"
+            : "http://localhost:3000/oauth/callback"
       })
     });
     const data = await response.json();
