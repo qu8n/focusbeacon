@@ -21,7 +21,10 @@ import { calcTotalMetrics } from "../utils/calcTotalMetrics";
 import { TotalMetrics } from "./dashboard/TotalMetrics";
 import { CustomBarChart } from "./dashboard/CustomBarChart";
 import { createCurrWkChartData } from "../utils/createCurrWkChartData";
-import { getCurrWkDateRange } from "../utils/getCurrWkDateRange";
+import {
+  currWeekDateRange,
+  prev12WeeksDateRange
+} from "../utils/getDateRanges";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -123,7 +126,7 @@ export default function Dashboard({ isDemo }) {
                   Current week
                 </p>
                 <p className="text-sm font-normal text-slate-500">
-                  {getCurrWkDateRange()}
+                  {currWeekDateRange()}
                 </p>
               </div>
               <TotalMetrics
@@ -136,9 +139,14 @@ export default function Dashboard({ isDemo }) {
                 processData={createCurrWkChartData}
               />
               <br />
-              <p className="text-3xl font-semibold text-slate-500">
-                Previous 12 weeks
-              </p>
+              <div>
+                <p className="text-3xl font-semibold text-slate-500">
+                  Previous 12 weeks
+                </p>
+                <p className="text-sm font-normal text-slate-500">
+                  {prev12WeeksDateRange()}
+                </p>
+              </div>
               <TotalMetrics
                 totalSessions={prev12WeeksTotalSessions}
                 totalHours={prev12WeeksTotalHours}
