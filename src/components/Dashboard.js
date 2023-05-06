@@ -21,6 +21,7 @@ import { calcTotalMetrics } from "../utils/calcTotalMetrics";
 import { TotalMetrics } from "./dashboard/TotalMetrics";
 import { CustomBarChart } from "./dashboard/CustomBarChart";
 import { createCurrWkChartData } from "../utils/createCurrWkChartData";
+import { getCurrWkDateRange } from "../utils/getCurrWkDateRange";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -117,9 +118,14 @@ export default function Dashboard({ isDemo }) {
         <div className={cardPadding}>
           {currentTab === "Weekly" && (
             <>
-              <p className="text-3xl font-semibold text-slate-500">
-                Current week
-              </p>
+              <div>
+                <p className="text-3xl font-semibold text-slate-500">
+                  Current week
+                </p>
+                <p className="text-sm font-normal text-slate-500">
+                  {getCurrWkDateRange()}
+                </p>
+              </div>
               <TotalMetrics
                 totalSessions={currWeekTotalSessions}
                 totalHours={currWeekTotalHours}
