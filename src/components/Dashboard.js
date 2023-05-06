@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
-import { Card, ColGrid, Title } from "@tremor/react";
+import { BarChart, Card, ColGrid, Title } from "@tremor/react";
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
@@ -19,7 +19,6 @@ import Footer from "./Footer";
 import { groupDataByInterval } from "../utils/groupDataByInterval";
 import { calcTotalMetrics } from "../utils/calcTotalMetrics";
 import { TotalMetrics } from "./dashboard/TotalMetrics";
-import { CustomBarChart } from "./dashboard/CustomBarChart";
 import { createCurrWkChartData } from "../utils/createCurrWkChartData";
 import {
   currWeekDateRange,
@@ -134,10 +133,15 @@ export default function Dashboard({ isDemo }) {
                 totalHours={currWeekTotalHours}
                 totalPartners={currWeekTotalPartners}
               />
-              <CustomBarChart
-                data={currWeekData}
-                processData={createCurrWkChartData}
-              />
+              <Card>
+                <BarChart
+                  data={createCurrWkChartData(currWeekData)}
+                  index="weekDay"
+                  categories={["Total sessions", "Total hours of sessions"]}
+                  colors={["blue", "orange"]}
+                  yAxisWidth={32}
+                />
+              </Card>
               <br />
               <div>
                 <p className="text-3xl font-semibold text-slate-500">
