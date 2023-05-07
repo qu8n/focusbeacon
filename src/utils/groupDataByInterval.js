@@ -35,25 +35,23 @@
 ]
 */
 
-// Note to self: in the process of reading processData,
-// particularly the LTW section
 export function groupDataByInterval(sessionsData) {
   const today = new Date();
 
   const sundayCurrWeek = getSundayCurrWeek(today);
-  const sunday12WeeksAgo = getSundayWeeksAgo(today, 12);
-
   const currWeekData = sessionsData.filter(
     (session) => new Date(session.startTime) >= sundayCurrWeek
   );
 
-  const prev12WeeksData = sessionsData.filter(
+  // Get sessions data 4 weeks ago, excluding current week
+  const sundayWeeksAgo = getSundayWeeksAgo(today, 4);
+  const prevWeeksData = sessionsData.filter(
     (session) =>
-      new Date(session.startTime) >= sunday12WeeksAgo &&
+      new Date(session.startTime) >= sundayWeeksAgo &&
       new Date(session.startTime) < sundayCurrWeek
   );
 
-  return { currWeekData, prev12WeeksData };
+  return { currWeekData, prevWeeksData };
 }
 
 function getSundayWeeksAgo(today, weeksAgo) {

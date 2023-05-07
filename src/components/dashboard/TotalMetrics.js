@@ -18,7 +18,7 @@ export function TotalMetrics({ totalSessions, totalHours, totalPartners }) {
     },
     {
       title: "Total hours of sessions",
-      metric: totalHours.toFixed(1).replace(/\.0$/, "") + " hours", // shows 1 decimal if exists
+      metric: Math.round(totalHours) + " hours",
       icon: ClockIcon
     },
     {

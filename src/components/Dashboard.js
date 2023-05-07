@@ -20,10 +20,8 @@ import { groupDataByInterval } from "../utils/groupDataByInterval";
 import { calcTotalMetrics } from "../utils/calcTotalMetrics";
 import { TotalMetrics } from "./dashboard/TotalMetrics";
 import { createCurrWkChartData } from "../utils/createCurrWkChartData";
-import {
-  currWeekDateRange,
-  prev12WeeksDateRange
-} from "../utils/getDateRanges";
+import { currWeekDateRange, prevWeeksDateRange } from "../utils/getDateRanges";
+import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -83,7 +81,9 @@ export default function Dashboard({ isDemo }) {
     //   lTWHoursArr
     // ] = processData(sessionsData);
 
-    const { currWeekData, prev12WeeksData } = groupDataByInterval(sessionsData);
+    // TODO: use a single today / `new Date()` for all date calculations
+
+    const { currWeekData, prevWeeksData } = groupDataByInterval(sessionsData);
 
     const {
       totalSessions: currWeekTotalSessions,
@@ -91,10 +91,10 @@ export default function Dashboard({ isDemo }) {
       totalPartners: currWeekTotalPartners
     } = calcTotalMetrics(currWeekData);
     const {
-      totalSessions: prev12WeeksTotalSessions,
-      totalHours: prev12WeeksTotalHours,
-      totalPartners: prev12WeeksTotalPartners
-    } = calcTotalMetrics(prev12WeeksData);
+      totalSessions: prevWeeksTotalSessions,
+      totalHours: prevWeeksTotalHours,
+      totalPartners: prevWeeksTotalPartners
+    } = calcTotalMetrics(prevWeeksData);
 
     return (
       <>
@@ -145,17 +145,27 @@ export default function Dashboard({ isDemo }) {
               <br />
               <div>
                 <p className="text-3xl font-semibold text-slate-500">
-                  Previous 12 weeks
+                  Previous 4 weeks
                 </p>
                 <p className="text-sm font-normal text-slate-500">
-                  {prev12WeeksDateRange()}
+                  {prevWeeksDateRange()}
                 </p>
               </div>
               <TotalMetrics
-                totalSessions={prev12WeeksTotalSessions}
-                totalHours={prev12WeeksTotalHours}
-                totalPartners={prev12WeeksTotalPartners}
+                totalSessions={prevWeeksTotalSessions}
+                totalHours={prevWeeksTotalHours}
+                totalPartners={prevWeeksTotalPartners}
               />
+              <Card>
+                <BarChart
+                  data={createPrevWksChartData(prevWeeksData)}
+                  index="weekOfDate"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                  stack={true}
+                />
+              </Card>
             </>
             // <div className={cardPadding}>
             //   <TimeSeriesChart
