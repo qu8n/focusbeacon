@@ -13,6 +13,7 @@ import {
   Legend,
   List,
   ListItem,
+  Subtitle,
   Text,
   Title
 } from "@tremor/react";
@@ -112,7 +113,8 @@ export default function Dashboard({ isDemo }) {
     const { sessionsChartData, hoursChartData } =
       createPrevWksChartData(prevWeeksData);
 
-    const { sessionsPieChartData } = createPrevWksPieChartsData(prevWeeksData);
+    const { durationPieData, attendancePieData } =
+      createPrevWksPieChartsData(prevWeeksData);
 
     return (
       <>
@@ -151,6 +153,7 @@ export default function Dashboard({ isDemo }) {
                 totalHours={currWeekTotalHours}
                 totalPartners={currWeekTotalPartners}
               />
+
               <Card>
                 <Title>Total sessions and hours</Title>
                 <BarChart
@@ -176,6 +179,67 @@ export default function Dashboard({ isDemo }) {
                 totalHours={prevWeeksTotalHours}
                 totalPartners={prevWeeksTotalPartners}
               />
+              <Grid numColsSm={1} numColsLg={3} className="gap-3">
+                <Card>
+                  <Title>Sessions by duration</Title>
+                  <Legend
+                    categories={["25 minutes", "50 minutes", "75 minutes"]}
+                    colors={["blue", "orange", "yellow"]}
+                  />
+                  <DonutChart
+                    className="mt-3"
+                    data={durationPieData}
+                    category="sessions"
+                    index="duration"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List>
+                    {durationPieData.map((data) => (
+                      <ListItem key={data.duration}>
+                        {data.duration}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevWeeksTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Sessions by attendance</Title>
+                  <Legend
+                    categories={["On time", "Late"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-3"
+                    data={attendancePieData}
+                    category="sessions"
+                    index="attendance"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {attendancePieData.map((data) => (
+                      <ListItem key={data.attendance}>
+                        {data.attendance}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevWeeksTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+              </Grid>
               <Card>
                 <Title>Total sessions by week</Title>
                 <BarChart
@@ -201,38 +265,6 @@ export default function Dashboard({ isDemo }) {
                 />
                 <Text className="text-center">Week of</Text>
               </Card>
-              <Grid numColsSm={1} numColsLg={3} className="gap-2">
-                <Card>
-                  <Title>Total sessions by duration</Title>
-                  <Legend
-                    categories={["25 minutes", "50 minutes", "75 minutes"]}
-                    colors={["blue", "orange", "yellow"]}
-                  />
-                  <DonutChart
-                    className="mt-5"
-                    data={sessionsPieChartData}
-                    category="sessions"
-                    index="duration"
-                    categories={["25 minutes", "50 minutes", "75 minutes"]}
-                    colors={["blue", "orange", "yellow"]}
-                    variant="pie"
-                  />
-                  <List marginTop="mt-6">
-                    {sessionsPieChartData.map((data) => (
-                      <ListItem key={data.duration}>
-                        {data.duration}
-                        <Text>
-                          {data.sessions} sessions (
-                          {Math.round(
-                            (data.sessions / prevWeeksTotalSessions) * 100
-                          )}
-                          %)
-                        </Text>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Card>
-              </Grid>
               {/* <Card>
                 <Title>Total sessions by week</Title>
                 <DonutChart
