@@ -3,6 +3,7 @@ export function createPrevWksChartData(prevWeeksData) {
     (session) => session.users[0].completed === true
   );
 
+  // Create a "shell" to hold data for charting
   const chartDataShell = getSundaysOfPrevWeeks().reduce((acc, weekOfDate) => {
     acc[weekOfDate] = { weekOfDate };
     acc[weekOfDate]["25 minutes"] = 0;
@@ -11,22 +12,28 @@ export function createPrevWksChartData(prevWeeksData) {
     return acc;
   }, {});
 
-  const chartData = completedSessions.reduce((acc, session) => {
+  // Fill in the shell with data, convert it to an array to work with Tremor's charts, and sort it by date
+  const sessionsChartDataObj = completedSessions.reduce((acc, session) => {
     const weekOfDate = getWeekOfDateOfDate(new Date(session.startTime));
     const duration = session.duration / 60000; // ms to minutes
-    if (duration === 25) {
-      acc[weekOfDate]["25 minutes"] += 1;
-    } else if (duration === 50) {
-      acc[weekOfDate]["50 minutes"] += 1;
-    } else if (duration === 75) {
-      acc[weekOfDate]["75 minutes"] += 1;
-    }
+    acc[weekOfDate][`${duration} minutes`] += 1;
     return acc;
-  }, chartDataShell);
-
-  return Object.values(chartData).sort((a, b) => {
+  }, structuredClone(chartDataShell));
+  const sessionsChartData = Object.values(sessionsChartDataObj).sort((a, b) => {
     return new Date(a.weekOfDate) - new Date(b.weekOfDate);
   });
+
+  const hoursChartDataObj = completedSessions.reduce((acc, session) => {
+    const weekOfDate = getWeekOfDateOfDate(new Date(session.startTime));
+    const duration = session.duration / 60000; // ms to minutes
+    acc[weekOfDate][`${duration} minutes`] += duration / 60;
+    return acc;
+  }, structuredClone(chartDataShell));
+  const hoursChartData = Object.values(hoursChartDataObj).sort((a, b) => {
+    return new Date(a.weekOfDate) - new Date(b.weekOfDate);
+  });
+
+  return { sessionsChartData, hoursChartData };
 }
 
 function getWeekOfDateOfDate(date) {

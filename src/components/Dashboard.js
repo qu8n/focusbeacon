@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
-import { BarChart, Card, ColGrid, Text, Title } from "@tremor/react";
+import { AreaChart, BarChart, Card, ColGrid, Text, Title } from "@tremor/react";
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
@@ -96,6 +96,9 @@ export default function Dashboard({ isDemo }) {
       totalPartners: prevWeeksTotalPartners
     } = calcTotalMetrics(prevWeeksData);
 
+    const { sessionsChartData, hoursChartData } =
+      createPrevWksChartData(prevWeeksData);
+
     return (
       <>
         <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
@@ -161,12 +164,25 @@ export default function Dashboard({ isDemo }) {
               <Card>
                 <Title>Total sessions by week</Title>
                 <BarChart
-                  data={createPrevWksChartData(prevWeeksData)}
+                  data={sessionsChartData}
                   index="weekOfDate"
                   categories={["25 minutes", "50 minutes", "75 minutes"]}
                   colors={["blue", "orange", "yellow"]}
                   yAxisWidth={32}
                   stack={true}
+                />
+                <Text className="text-center">Week of</Text>
+              </Card>
+              <Card>
+                <Title>Total hours of sessions by week</Title>
+                <BarChart
+                  data={hoursChartData}
+                  index="weekOfDate"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                  stack={true}
+                  valueFormatter={(value) => Math.round(value * 100) / 100}
                 />
                 <Text className="text-center">Week of</Text>
               </Card>
