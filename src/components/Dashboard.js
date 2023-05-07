@@ -3,7 +3,19 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
-import { AreaChart, BarChart, Card, ColGrid, Text, Title } from "@tremor/react";
+import {
+  AreaChart,
+  BarChart,
+  Card,
+  ColGrid,
+  DonutChart,
+  Grid,
+  Legend,
+  List,
+  ListItem,
+  Text,
+  Title
+} from "@tremor/react";
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
@@ -22,6 +34,7 @@ import { TotalMetrics } from "./dashboard/TotalMetrics";
 import { createCurrWkChartData } from "../utils/createCurrWkChartData";
 import { currWeekDateRange, prevWeeksDateRange } from "../utils/getDateRanges";
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
+import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -99,6 +112,8 @@ export default function Dashboard({ isDemo }) {
     const { sessionsChartData, hoursChartData } =
       createPrevWksChartData(prevWeeksData);
 
+    const { sessionsPieChartData } = createPrevWksPieChartsData(prevWeeksData);
+
     return (
       <>
         <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
@@ -175,7 +190,7 @@ export default function Dashboard({ isDemo }) {
               </Card>
               <Card>
                 <Title>Total hours of sessions by week</Title>
-                <BarChart
+                <AreaChart
                   data={hoursChartData}
                   index="weekOfDate"
                   categories={["25 minutes", "50 minutes", "75 minutes"]}
@@ -186,6 +201,49 @@ export default function Dashboard({ isDemo }) {
                 />
                 <Text className="text-center">Week of</Text>
               </Card>
+              <Grid numColsSm={1} numColsLg={3} className="gap-2">
+                <Card>
+                  <Title>Total sessions by duration</Title>
+                  <Legend
+                    categories={["25 minutes", "50 minutes", "75 minutes"]}
+                    colors={["blue", "orange", "yellow"]}
+                  />
+                  <DonutChart
+                    className="mt-5"
+                    data={sessionsPieChartData}
+                    category="sessions"
+                    index="duration"
+                    categories={["25 minutes", "50 minutes", "75 minutes"]}
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List marginTop="mt-6">
+                    {sessionsPieChartData.map((data) => (
+                      <ListItem key={data.duration}>
+                        {data.duration}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevWeeksTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+              </Grid>
+              {/* <Card>
+                <Title>Total sessions by week</Title>
+                <DonutChart
+                  data={sessionsChartData}
+                  index="weekOfDate"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                />
+                <Text className="text-center">Week of</Text>
+              </Card> */}
             </>
             // <div className={cardPadding}>
             //   <TimeSeriesChart
