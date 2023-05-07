@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import processData from "../utils/processData";
-import { BarChart, Card, ColGrid, Title } from "@tremor/react";
+import { BarChart, Card, ColGrid, Text, Title } from "@tremor/react";
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
@@ -134,6 +134,7 @@ export default function Dashboard({ isDemo }) {
                 totalPartners={currWeekTotalPartners}
               />
               <Card>
+                <Title>Total sessions and hours</Title>
                 <BarChart
                   data={createCurrWkChartData(currWeekData)}
                   index="weekDay"
@@ -141,6 +142,7 @@ export default function Dashboard({ isDemo }) {
                   colors={["blue", "orange"]}
                   yAxisWidth={32}
                 />
+                <Text className="text-center">Day of the current week</Text>
               </Card>
               <br />
               <div>
@@ -157,6 +159,7 @@ export default function Dashboard({ isDemo }) {
                 totalPartners={prevWeeksTotalPartners}
               />
               <Card>
+                <Title>Total sessions by week</Title>
                 <BarChart
                   data={createPrevWksChartData(prevWeeksData)}
                   index="weekOfDate"
@@ -165,6 +168,7 @@ export default function Dashboard({ isDemo }) {
                   yAxisWidth={32}
                   stack={true}
                 />
+                <Text className="text-center">Week of</Text>
               </Card>
             </>
             // <div className={cardPadding}>

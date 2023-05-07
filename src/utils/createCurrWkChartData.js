@@ -1,4 +1,8 @@
-export function createCurrWkChartData(data) {
+export function createCurrWkChartData(currWeekData) {
+  const completedSessions = currWeekData.filter(
+    (session) => session.users[0].completed === true
+  );
+
   const weekDays = [
     "Sunday",
     "Monday",
@@ -18,7 +22,7 @@ export function createCurrWkChartData(data) {
   }, {});
 
   // Add up the sessions and hours for each week day
-  const chartData = data.reduce((acc, session) => {
+  const chartData = completedSessions.reduce((acc, session) => {
     const weekDay = weekDays[new Date(session.startTime).getDay()]; // 0 = Sunday, 1 = Monday, etc.
     acc[weekDay]["Total sessions"] += 1;
     acc[weekDay]["Total hours of sessions"] += session.duration / 3600000;

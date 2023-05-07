@@ -1,4 +1,8 @@
-export function createPrevWksChartData(data) {
+export function createPrevWksChartData(prevWeeksData) {
+  const completedSessions = prevWeeksData.filter(
+    (session) => session.users[0].completed === true
+  );
+
   const chartDataShell = getSundaysOfPrevWeeks().reduce((acc, weekOfDate) => {
     acc[weekOfDate] = { weekOfDate };
     acc[weekOfDate]["25 minutes"] = 0;
@@ -7,14 +11,14 @@ export function createPrevWksChartData(data) {
     return acc;
   }, {});
 
-  const chartData = data.reduce((acc, session) => {
+  const chartData = completedSessions.reduce((acc, session) => {
     const weekOfDate = getWeekOfDateOfDate(new Date(session.startTime));
     const duration = session.duration / 60000; // ms to minutes
     if (duration === 25) {
       acc[weekOfDate]["25 minutes"] += 1;
     } else if (duration === 50) {
       acc[weekOfDate]["50 minutes"] += 1;
-    } else {
+    } else if (duration === 75) {
       acc[weekOfDate]["75 minutes"] += 1;
     }
     return acc;
