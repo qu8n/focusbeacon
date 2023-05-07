@@ -31,5 +31,17 @@ export function createPrevWksPieChartsData(prevWeeksData) {
   }, attendanceShell);
   const attendancePieData = Object.values(attendanceObj);
 
-  return { durationPieData, attendancePieData };
+  const completionShell = {
+    Complete: { completion: "Complete", sessions: 0 },
+    Incomplete: { completion: "Incomplete", sessions: 0 }
+  };
+  const completionObj = prevWeeksData.reduce((acc, session) => {
+    const completion =
+      session.users[0].completed === true ? "Complete" : "Incomplete";
+    acc[completion].sessions += 1;
+    return acc;
+  }, completionShell);
+  const completionPieData = Object.values(completionObj);
+
+  return { durationPieData, attendancePieData, completionPieData };
 }

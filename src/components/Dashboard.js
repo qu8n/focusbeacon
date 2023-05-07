@@ -113,7 +113,7 @@ export default function Dashboard({ isDemo }) {
     const { sessionsChartData, hoursChartData } =
       createPrevWksChartData(prevWeeksData);
 
-    const { durationPieData, attendancePieData } =
+    const { durationPieData, attendancePieData, completionPieData } =
       createPrevWksPieChartsData(prevWeeksData);
 
     return (
@@ -217,7 +217,7 @@ export default function Dashboard({ isDemo }) {
                     colors={["blue", "orange"]}
                   />
                   <DonutChart
-                    className="mt-3"
+                    className="mt-8"
                     data={attendancePieData}
                     category="sessions"
                     index="attendance"
@@ -232,6 +232,36 @@ export default function Dashboard({ isDemo }) {
                           {data.sessions} sessions (
                           {Math.round(
                             (data.sessions / prevWeeksTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Session completion rate</Title>
+                  <Legend
+                    categories={["Complete", "Incomplete"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={completionPieData}
+                    category="sessions"
+                    index="completion"
+                    colors={["blue", "orange"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {completionPieData.map((data) => (
+                      <ListItem key={data.completion}>
+                        {data.completion}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevWeeksData.length) * 100
                           )}
                           %)
                         </Text>
