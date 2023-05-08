@@ -35,6 +35,7 @@
 ]
 */
 
+// TODO: DRYifying date calculations, e.g. use calcs from date range functions here
 export function groupDataByInterval(sessionsData) {
   const today = new Date();
 
@@ -51,7 +52,20 @@ export function groupDataByInterval(sessionsData) {
       new Date(session.startTime) < mondayCurrWeek
   );
 
-  return { currWeekData, prevWeeksData };
+  const firstDayCurrMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const currMonthData = sessionsData.filter(
+    (session) => new Date(session.startTime) >= firstDayCurrMonth
+  );
+
+  // Get sessions data 6 months ago, excluding current month
+  const prevMonthsData = sessionsData.filter(
+    (session) =>
+      new Date(session.startTime) >=
+        new Date(today.getFullYear(), today.getMonth() - 6, 1) &&
+      new Date(session.startTime) < firstDayCurrMonth
+  );
+
+  return { currWeekData, prevWeeksData, currMonthData, prevMonthsData };
 }
 
 function getMondayWeeksAgo(today, weeksAgo) {

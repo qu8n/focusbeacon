@@ -85,35 +85,34 @@ export default function Dashboard({ isDemo }) {
   const { profileData, sessionsData } = data;
 
   if (sessionsData) {
-    // const [
-    //   totalSessions,
-    //   totalHours,
-    //   totalPartners,
-    //   firstSessionDate,
-    //   maxHoursADay,
-    //   sessionsByDurationArr,
-    //   milestonesArr,
-    //   repeatPartnersArr,
-    //   lTMSessionsArr,
-    //   lTMHoursArr,
-    //   lTWSessionsArr,
-    //   lTWHoursArr
-    // ] = processData(sessionsData);
-
     // TODO: use a single today / `new Date()` for all date calculations
 
-    const { currWeekData, prevWeeksData } = groupDataByInterval(sessionsData);
+    const { currWeekData, prevWeeksData, currMonthData, prevMonthsData } =
+      groupDataByInterval(sessionsData);
 
     const {
       totalSessions: currWeekTotalSessions,
       totalHours: currWeekTotalHours,
       totalPartners: currWeekTotalPartners
     } = calcTotalMetrics(currWeekData);
+
     const {
       totalSessions: prevWeeksTotalSessions,
       totalHours: prevWeeksTotalHours,
       totalPartners: prevWeeksTotalPartners
     } = calcTotalMetrics(prevWeeksData);
+
+    const {
+      totalSessions: currMonthTotalSessions,
+      totalHours: currMonthTotalHours,
+      totalPartners: currMonthTotalPartners
+    } = calcTotalMetrics(currMonthData);
+
+    const {
+      totalSessions: prevMonthsTotalSessions,
+      totalHours: prevMonthsTotalHours,
+      totalPartners: prevMonthsTotalPartners
+    } = calcTotalMetrics(prevMonthsData);
 
     const { sessionsChartData, hoursChartData } =
       createPrevWksChartData(prevWeeksData);
@@ -314,10 +313,24 @@ export default function Dashboard({ isDemo }) {
                 <p className="text-sm font-normal">{currMonthDateRange()}</p>
               </div>
 
+              <TotalMetrics
+                totalSessions={currMonthTotalSessions}
+                totalHours={currMonthTotalHours}
+                totalPartners={currMonthTotalPartners}
+              />
+
+              <br />
+
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Previous 6 months</p>
                 <p className="text-sm font-normal">{prevMonthsDateRange()}</p>
               </div>
+
+              <TotalMetrics
+                totalSessions={prevMonthsTotalSessions}
+                totalHours={prevMonthsTotalHours}
+                totalPartners={prevMonthsTotalPartners}
+              />
             </>
           )}
         </div>
