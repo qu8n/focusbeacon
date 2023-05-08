@@ -44,15 +44,12 @@ export function groupDataByInterval(sessionsData) {
   );
 
   // Get sessions data 4 weeks ago, excluding current week
-  const sundayWeeksAgo = getMondayWeeksAgo(today, 4);
+  const mondayWeeksAgo = getMondayWeeksAgo(today, 4);
   const prevWeeksData = sessionsData.filter(
     (session) =>
-      new Date(session.startTime) >= sundayWeeksAgo &&
+      new Date(session.startTime) >= mondayWeeksAgo &&
       new Date(session.startTime) < mondayCurrWeek
   );
-
-  console.log("currWeekData", currWeekData);
-  console.log("prevWeeksData", prevWeeksData);
 
   return { currWeekData, prevWeeksData };
 }

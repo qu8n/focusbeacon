@@ -1,3 +1,30 @@
+export function prevMonthsDateRange() {
+  const today = new Date();
+
+  const firstDayOfCurrentMonth = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    1
+  );
+
+  const firstDayMonthsAgo = new Date(firstDayOfCurrentMonth);
+  firstDayMonthsAgo.setMonth(firstDayOfCurrentMonth.getMonth() - 6);
+
+  const lastDayMonthsAgo = new Date(firstDayOfCurrentMonth);
+  lastDayMonthsAgo.setDate(firstDayOfCurrentMonth.getDate() - 1);
+
+  return formatMonthlyDateRange(firstDayMonthsAgo, lastDayMonthsAgo);
+}
+
+export function currMonthDateRange() {
+  const today = new Date();
+
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  return formatMonthlyDateRange(firstDayOfMonth, lastDayOfMonth);
+}
+
 export function currWeekDateRange() {
   const today = new Date();
 
@@ -11,7 +38,7 @@ export function currWeekDateRange() {
     today.getDate() + (6 - (today.getDay() === 0 ? 6 : today.getDay() - 1))
   );
 
-  return formatDateRange(firstDayOfWeek, lastDayOfWeek);
+  return formatWeeklyDateRange(firstDayOfWeek, lastDayOfWeek);
 }
 
 export function prevWeeksDateRange() {
@@ -28,12 +55,26 @@ export function prevWeeksDateRange() {
   const lastDayWeeksAgo = new Date(firstDayOfCurrentWeek);
   lastDayWeeksAgo.setDate(firstDayOfCurrentWeek.getDate() - 1);
 
-  return formatDateRange(firstDayWeeksAgo, lastDayWeeksAgo);
+  return formatWeeklyDateRange(firstDayWeeksAgo, lastDayWeeksAgo);
 }
 
-function formatDateRange(firstDay, lastDay) {
+function formatWeeklyDateRange(firstDay, lastDay) {
   const options = {
     weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  };
+
+  return (
+    firstDay.toLocaleDateString("en-US", options) +
+    " - " +
+    lastDay.toLocaleDateString("en-US", options)
+  );
+}
+
+function formatMonthlyDateRange(firstDay, lastDay) {
+  const options = {
     year: "numeric",
     month: "long",
     day: "numeric"

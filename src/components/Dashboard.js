@@ -33,7 +33,12 @@ import { groupDataByInterval } from "../utils/groupDataByInterval";
 import { calcTotalMetrics } from "../utils/calcTotalMetrics";
 import { TotalMetrics } from "./dashboard/TotalMetrics";
 import { createCurrWkChartData } from "../utils/createCurrWkChartData";
-import { currWeekDateRange, prevWeeksDateRange } from "../utils/getDateRanges";
+import {
+  currWeekDateRange,
+  prevWeeksDateRange,
+  currMonthDateRange,
+  prevMonthsDateRange
+} from "../utils/getDateRanges";
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
 
@@ -140,14 +145,11 @@ export default function Dashboard({ isDemo }) {
         <div className={cardPadding}>
           {currentTab === "Weekly" && (
             <>
-              <div>
-                <p className="text-3xl font-semibold text-slate-500">
-                  Current week
-                </p>
-                <p className="text-sm font-normal text-slate-500">
-                  {currWeekDateRange()}
-                </p>
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Current week</p>
+                <p className="text-sm font-normal">{currWeekDateRange()}</p>
               </div>
+
               <TotalMetrics
                 totalSessions={currWeekTotalSessions}
                 totalHours={currWeekTotalHours}
@@ -166,13 +168,9 @@ export default function Dashboard({ isDemo }) {
                 <Text className="text-center">Day of the current week</Text>
               </Card>
               <br />
-              <div>
-                <p className="text-3xl font-semibold text-slate-500">
-                  Previous 4 weeks
-                </p>
-                <p className="text-sm font-normal text-slate-500">
-                  {prevWeeksDateRange()}
-                </p>
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Previous 4 weeks</p>
+                <p className="text-sm font-normal">{prevWeeksDateRange()}</p>
               </div>
               <TotalMetrics
                 totalSessions={prevWeeksTotalSessions}
@@ -307,69 +305,21 @@ export default function Dashboard({ isDemo }) {
                 <Text className="text-center">Week of</Text>
               </Card> */}
             </>
-            // <div className={cardPadding}>
-            //   <TimeSeriesChart
-            //     chartType="bar"
-            //     title="Sessions by week"
-            //     data={lTWSessionsArr}
-            //     dataKey="Week of"
-            //     categories={["Number of Sessions"]}
-            //     tooltip={weeklyChartTooltip}
-            //   />
-            //   <TimeSeriesChart
-            //     chartType="area"
-            //     title="Hours of sessions by week"
-            //     data={lTWHoursArr}
-            //     dataKey="Week of"
-            //     categories={["Hours of Sessions"]}
-            //     tooltip={weeklyChartTooltip}
-            //   />
-            // </div>
           )}
 
-          {/* {currentTab === "Monthly" && (
-          <div className={cardPadding}>
-            <TimeSeriesChart
-              chartType="bar"
-              title="Sessions by month"
-              data={lTMSessionsArr}
-              dataKey="Month"
-              categories={["Number of Sessions"]}
-              tooltip={monthlyChartTooltip}
-            />
-            <TimeSeriesChart
-              chartType="area"
-              title="Hours of sessions by month"
-              data={lTMHoursArr}
-              dataKey="Month"
-              categories={["Hours of Sessions"]}
-              tooltip={monthlyChartTooltip}
-            />
-          </div>
-        )}
+          {currentTab === "Monthly" && (
+            <>
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Current month</p>
+                <p className="text-sm font-normal">{currMonthDateRange()}</p>
+              </div>
 
-        {currentTab === "Lifetime" && (
-          <>
-            <div className={cardPadding}>
-              <LifetimeMetrics
-                data={[
-                  totalSessions,
-                  totalHours,
-                  totalPartners,
-                  firstSessionDate,
-                  maxHoursADay
-                ]}
-              />
-              <ColGrid numColsLg={3} gapX="gap-x-6" gapY="gap-y-6">
-                <SessionsByDuration
-                  data={[sessionsByDurationArr, totalSessions]}
-                />
-                <Milestones data={milestonesArr} />
-                <RepeatPartners data={repeatPartnersArr} />
-              </ColGrid>
-            </div>
-          </>
-        )} */}
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Previous 6 months</p>
+                <p className="text-sm font-normal">{prevMonthsDateRange()}</p>
+              </div>
+            </>
+          )}
         </div>
 
         <Footer />
