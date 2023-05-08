@@ -1,5 +1,5 @@
-export function createPrevWksPieChartsData(prevWeeksData) {
-  const completedSessions = prevWeeksData.filter(
+export function createPrevMsPieChartsData(prevMonthsData) {
+  const completedSessions = prevMonthsData.filter(
     (session) => session.users[0].completed === true
   );
 
@@ -15,7 +15,7 @@ export function createPrevWksPieChartsData(prevWeeksData) {
     acc[`${duration} minutes`].sessions += 1;
     return acc;
   }, durationShell);
-  const weeklyDurationPieData = Object.values(durationObj);
+  const monthlyDurationPieData = Object.values(durationObj);
 
   const attendanceShell = {
     "On time": { attendance: "On time", sessions: 0 },
@@ -29,23 +29,23 @@ export function createPrevWksPieChartsData(prevWeeksData) {
     acc[attendance].sessions += 1;
     return acc;
   }, attendanceShell);
-  const weeklyAttendancePieData = Object.values(attendanceObj);
+  const monthlyAttendancePieData = Object.values(attendanceObj);
 
   const completionShell = {
     Complete: { completion: "Complete", sessions: 0 },
     Incomplete: { completion: "Incomplete", sessions: 0 }
   };
-  const completionObj = prevWeeksData.reduce((acc, session) => {
+  const completionObj = prevMonthsData.reduce((acc, session) => {
     const completion =
       session.users[0].completed === true ? "Complete" : "Incomplete";
     acc[completion].sessions += 1;
     return acc;
   }, completionShell);
-  const weeklyCompletionPieData = Object.values(completionObj);
+  const monthlyCompletionPieData = Object.values(completionObj);
 
   return {
-    weeklyDurationPieData,
-    weeklyAttendancePieData,
-    weeklyCompletionPieData
+    monthlyDurationPieData,
+    monthlyAttendancePieData,
+    monthlyCompletionPieData
   };
 }

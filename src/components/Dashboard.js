@@ -42,6 +42,7 @@ import {
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
 import { createPrevMsChartData } from "../utils/createPrevMsChartData";
+import { createPrevMsPieChartsData } from "../utils/createPrevMsPieChartsData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -121,8 +122,17 @@ export default function Dashboard({ isDemo }) {
     const { monthlySessionsChartData, monthlyHoursChartData } =
       createPrevMsChartData(prevMonthsData);
 
-    const { durationPieData, attendancePieData, completionPieData } =
-      createPrevWksPieChartsData(prevWeeksData);
+    const {
+      weeklyDurationPieData,
+      weeklyAttendancePieData,
+      weeklyCompletionPieData
+    } = createPrevWksPieChartsData(prevWeeksData);
+
+    const {
+      monthlyDurationPieData,
+      monthlyAttendancePieData,
+      monthlyCompletionPieData
+    } = createPrevMsPieChartsData(prevMonthsData);
 
     return (
       <>
@@ -175,11 +185,13 @@ export default function Dashboard({ isDemo }) {
                 <p className="text-3xl font-semibold">Previous 4 weeks</p>
                 <p className="text-sm font-normal">{prevWeeksDateRange()}</p>
               </div>
+
               <TotalMetrics
                 totalSessions={prevWeeksTotalSessions}
                 totalHours={prevWeeksTotalHours}
                 totalPartners={prevWeeksTotalPartners}
               />
+
               <Grid numColsSm={1} numColsLg={3} className="gap-3">
                 <Card>
                   <Title>Sessions by duration</Title>
@@ -189,14 +201,14 @@ export default function Dashboard({ isDemo }) {
                   />
                   <DonutChart
                     className="mt-3"
-                    data={durationPieData}
+                    data={weeklyDurationPieData}
                     category="sessions"
                     index="duration"
                     colors={["blue", "orange", "yellow"]}
                     variant="pie"
                   />
                   <List>
-                    {durationPieData.map((data) => (
+                    {weeklyDurationPieData.map((data) => (
                       <ListItem key={data.duration}>
                         {data.duration}
                         <Text>
@@ -219,14 +231,14 @@ export default function Dashboard({ isDemo }) {
                   />
                   <DonutChart
                     className="mt-8"
-                    data={attendancePieData}
+                    data={weeklyAttendancePieData}
                     category="sessions"
                     index="attendance"
                     colors={["blue", "orange", "yellow"]}
                     variant="pie"
                   />
                   <List className="mt-5">
-                    {attendancePieData.map((data) => (
+                    {weeklyAttendancePieData.map((data) => (
                       <ListItem key={data.attendance}>
                         {data.attendance}
                         <Text>
@@ -249,14 +261,14 @@ export default function Dashboard({ isDemo }) {
                   />
                   <DonutChart
                     className="mt-8"
-                    data={completionPieData}
+                    data={weeklyCompletionPieData}
                     category="sessions"
                     index="completion"
                     colors={["blue", "orange"]}
                     variant="pie"
                   />
                   <List className="mt-5">
-                    {completionPieData.map((data) => (
+                    {weeklyCompletionPieData.map((data) => (
                       <ListItem key={data.completion}>
                         {data.completion}
                         <Text>
@@ -271,6 +283,7 @@ export default function Dashboard({ isDemo }) {
                   </List>
                 </Card>
               </Grid>
+
               <Card>
                 <Title>Sessions by week</Title>
                 <BarChart
@@ -324,6 +337,98 @@ export default function Dashboard({ isDemo }) {
                 totalHours={prevMonthsTotalHours}
                 totalPartners={prevMonthsTotalPartners}
               />
+
+              <Grid numColsSm={1} numColsLg={3} className="gap-3">
+                <Card>
+                  <Title>Sessions by duration</Title>
+                  <Legend
+                    categories={["25 minutes", "50 minutes", "75 minutes"]}
+                    colors={["blue", "orange", "yellow"]}
+                  />
+                  <DonutChart
+                    className="mt-3"
+                    data={monthlyDurationPieData}
+                    category="sessions"
+                    index="duration"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List>
+                    {monthlyDurationPieData.map((data) => (
+                      <ListItem key={data.duration}>
+                        {data.duration}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevMonthsTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Sessions by attendance</Title>
+                  <Legend
+                    categories={["On time", "Late"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={monthlyAttendancePieData}
+                    category="sessions"
+                    index="attendance"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {monthlyAttendancePieData.map((data) => (
+                      <ListItem key={data.attendance}>
+                        {data.attendance}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevMonthsTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Session completion rate</Title>
+                  <Legend
+                    categories={["Complete", "Incomplete"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={monthlyCompletionPieData}
+                    category="sessions"
+                    index="completion"
+                    colors={["blue", "orange"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {monthlyCompletionPieData.map((data) => (
+                      <ListItem key={data.completion}>
+                        {data.completion}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevMonthsData.length) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+              </Grid>
 
               <Card>
                 <Title>Sessions by month</Title>
