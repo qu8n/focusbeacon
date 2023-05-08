@@ -38,6 +38,7 @@
 // TODO: DRYifying date calculations, e.g. use calcs from date range functions here
 export function groupDataByInterval(sessionsData) {
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const mondayCurrWeek = getMondayCurrWeek(today);
   const currWeekData = sessionsData.filter(

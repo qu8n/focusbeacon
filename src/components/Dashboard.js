@@ -170,11 +170,11 @@ export default function Dashboard({ isDemo }) {
               />
 
               <Card>
-                <Title>Total sessions and hours</Title>
+                <Title>Sessions by day</Title>
                 <BarChart
                   data={createCurrWkChartData(currWeekData)}
                   index="weekDay"
-                  categories={["Total sessions", "Total hours of sessions"]}
+                  categories={["Total sessions"]}
                   colors={["blue", "orange"]}
                   yAxisWidth={32}
                 />

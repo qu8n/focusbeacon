@@ -17,7 +17,6 @@ export function createCurrWkChartData(currWeekData) {
   const chartDataShell = weekDays.reduce((acc, weekDay) => {
     acc[weekDay] = { weekDay };
     acc[weekDay]["Total sessions"] = 0;
-    acc[weekDay]["Total hours of sessions"] = 0;
     return acc;
   }, {});
 
@@ -27,7 +26,6 @@ export function createCurrWkChartData(currWeekData) {
     const weekDay =
       weekDays[dayOfWeek.getDay() === 0 ? 6 : dayOfWeek.getDay() - 1];
     acc[weekDay]["Total sessions"] += 1;
-    acc[weekDay]["Total hours of sessions"] += session.duration / 3600000;
     return acc;
   }, chartDataShell);
 
