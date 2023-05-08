@@ -38,30 +38,34 @@
 export function groupDataByInterval(sessionsData) {
   const today = new Date();
 
-  const sundayCurrWeek = getSundayCurrWeek(today);
+  const mondayCurrWeek = getMondayCurrWeek(today);
   const currWeekData = sessionsData.filter(
-    (session) => new Date(session.startTime) >= sundayCurrWeek
+    (session) => new Date(session.startTime) >= mondayCurrWeek
   );
 
   // Get sessions data 4 weeks ago, excluding current week
-  const sundayWeeksAgo = getSundayWeeksAgo(today, 4);
+  const sundayWeeksAgo = getMondayWeeksAgo(today, 4);
   const prevWeeksData = sessionsData.filter(
     (session) =>
       new Date(session.startTime) >= sundayWeeksAgo &&
-      new Date(session.startTime) < sundayCurrWeek
+      new Date(session.startTime) < mondayCurrWeek
   );
+
+  console.log("currWeekData", currWeekData);
+  console.log("prevWeeksData", prevWeeksData);
 
   return { currWeekData, prevWeeksData };
 }
 
-function getSundayWeeksAgo(today, weeksAgo) {
-  const daysToSubtract = today.getDay() + weeksAgo * 7;
-  const sundayWeeksAgo = new Date(today);
-  return sundayWeeksAgo.setDate(today.getDate() - daysToSubtract);
+function getMondayWeeksAgo(today, weeksAgo) {
+  const daysToSubtract =
+    (today.getDay() === 0 ? 6 : today.getDay() - 1) + weeksAgo * 7;
+  const mondayWeeksAgo = new Date(today);
+  return mondayWeeksAgo.setDate(today.getDate() - daysToSubtract);
 }
 
-function getSundayCurrWeek(today) {
-  const daysToSubtract = today.getDay();
-  const sundayCurrWeek = new Date(today);
-  return sundayCurrWeek.setDate(today.getDate() - daysToSubtract);
+function getMondayCurrWeek(today) {
+  const daysToSubtract = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const mondayCurrWeek = new Date(today);
+  return mondayCurrWeek.setDate(today.getDate() - daysToSubtract);
 }

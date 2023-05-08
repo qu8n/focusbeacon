@@ -271,7 +271,7 @@ export default function Dashboard({ isDemo }) {
                 </Card>
               </Grid>
               <Card>
-                <Title>Total sessions by week</Title>
+                <Title>Sessions by week</Title>
                 <BarChart
                   data={sessionsChartData}
                   index="weekOfDate"
@@ -283,7 +283,7 @@ export default function Dashboard({ isDemo }) {
                 <Text className="text-center">Week of</Text>
               </Card>
               <Card>
-                <Title>Total hours of sessions by week</Title>
+                <Title>Hours of sessions by week</Title>
                 <AreaChart
                   data={hoursChartData}
                   index="weekOfDate"

@@ -4,7 +4,7 @@ export function createPrevWksChartData(prevWeeksData) {
   );
 
   // Create a "shell" to hold data for charting
-  const chartDataShell = getSundaysOfPrevWeeks().reduce((acc, weekOfDate) => {
+  const chartDataShell = getMondaysOfPrevWeeks().reduce((acc, weekOfDate) => {
     acc[weekOfDate] = { weekOfDate };
     acc[weekOfDate]["25 minutes"] = 0;
     acc[weekOfDate]["50 minutes"] = 0;
@@ -37,27 +37,28 @@ export function createPrevWksChartData(prevWeeksData) {
 }
 
 function getWeekOfDateOfDate(date) {
-  const sunday = new Date(date);
-  sunday.setDate(date.getDate() - date.getDay());
-  return formatDateAsMMMD(sunday);
+  const daysToSubtract = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  const monday = new Date(date);
+  monday.setDate(date.getDate() - daysToSubtract);
+  return formatDateAsMMMD(monday);
 }
 
 function formatDateAsMMMD(date) {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function getSundaysOfPrevWeeks() {
+function getMondaysOfPrevWeeks() {
   let today = new Date();
   let dayOfWeek = today.getDay();
-  let daysSinceLastSunday = (dayOfWeek + 7 - 0) % 7;
-  today.setDate(today.getDate() - daysSinceLastSunday);
+  let daysSinceLastMonday = (dayOfWeek + 7 - 1) % 7;
+  today.setDate(today.getDate() - daysSinceLastMonday);
 
-  const sundays = [];
+  const mondays = [];
   for (let i = 1; i <= 4; i++) {
-    let prevSunday = new Date(today);
-    prevSunday.setDate(today.getDate() - 7 * i);
-    sundays.push(formatDateAsMMMD(prevSunday));
+    let prevMonday = new Date(today);
+    prevMonday.setDate(today.getDate() - 7 * i);
+    mondays.push(formatDateAsMMMD(prevMonday));
   }
 
-  return sundays;
+  return mondays;
 }

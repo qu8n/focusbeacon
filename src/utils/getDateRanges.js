@@ -2,10 +2,14 @@ export function currWeekDateRange() {
   const today = new Date();
 
   const firstDayOfWeek = new Date(today);
-  firstDayOfWeek.setDate(today.getDate() - today.getDay());
+  firstDayOfWeek.setDate(
+    today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1)
+  );
 
   const lastDayOfWeek = new Date(today);
-  lastDayOfWeek.setDate(today.getDate() + (6 - today.getDay()));
+  lastDayOfWeek.setDate(
+    today.getDate() + (6 - (today.getDay() === 0 ? 6 : today.getDay() - 1))
+  );
 
   return formatDateRange(firstDayOfWeek, lastDayOfWeek);
 }
@@ -14,7 +18,9 @@ export function prevWeeksDateRange() {
   const today = new Date();
 
   const firstDayOfCurrentWeek = new Date(today);
-  firstDayOfCurrentWeek.setDate(today.getDate() - today.getDay());
+  firstDayOfCurrentWeek.setDate(
+    today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1)
+  );
 
   const firstDayWeeksAgo = new Date(firstDayOfCurrentWeek);
   firstDayWeeksAgo.setDate(firstDayOfCurrentWeek.getDate() - 4 * 7);
