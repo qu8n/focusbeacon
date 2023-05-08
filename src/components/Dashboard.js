@@ -41,6 +41,7 @@ import {
 } from "../utils/getDateRanges";
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
+import { createPrevMsChartData } from "../utils/createPrevMsChartData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -114,8 +115,11 @@ export default function Dashboard({ isDemo }) {
       totalPartners: prevMonthsTotalPartners
     } = calcTotalMetrics(prevMonthsData);
 
-    const { sessionsChartData, hoursChartData } =
+    const { weeklySessionsChartData, weeklyHoursChartData } =
       createPrevWksChartData(prevWeeksData);
+
+    const { monthlySessionsChartData, monthlyHoursChartData } =
+      createPrevMsChartData(prevMonthsData);
 
     const { durationPieData, attendancePieData, completionPieData } =
       createPrevWksPieChartsData(prevWeeksData);
@@ -270,7 +274,7 @@ export default function Dashboard({ isDemo }) {
               <Card>
                 <Title>Sessions by week</Title>
                 <BarChart
-                  data={sessionsChartData}
+                  data={weeklySessionsChartData}
                   index="weekOfDate"
                   categories={["25 minutes", "50 minutes", "75 minutes"]}
                   colors={["blue", "orange", "yellow"]}
@@ -282,7 +286,7 @@ export default function Dashboard({ isDemo }) {
               <Card>
                 <Title>Hours of sessions by week</Title>
                 <AreaChart
-                  data={hoursChartData}
+                  data={weeklyHoursChartData}
                   index="weekOfDate"
                   categories={["25 minutes", "50 minutes", "75 minutes"]}
                   colors={["blue", "orange", "yellow"]}
@@ -292,17 +296,6 @@ export default function Dashboard({ isDemo }) {
                 />
                 <Text className="text-center">Week of</Text>
               </Card>
-              {/* <Card>
-                <Title>Total sessions by week</Title>
-                <DonutChart
-                  data={sessionsChartData}
-                  index="weekOfDate"
-                  categories={["25 minutes", "50 minutes", "75 minutes"]}
-                  colors={["blue", "orange", "yellow"]}
-                  yAxisWidth={32}
-                />
-                <Text className="text-center">Week of</Text>
-              </Card> */}
             </>
           )}
 
@@ -331,6 +324,32 @@ export default function Dashboard({ isDemo }) {
                 totalHours={prevMonthsTotalHours}
                 totalPartners={prevMonthsTotalPartners}
               />
+
+              <Card>
+                <Title>Sessions by month</Title>
+                <BarChart
+                  data={monthlySessionsChartData}
+                  index="month"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                  stack={true}
+                />
+                <Text className="text-center">Month</Text>
+              </Card>
+              <Card>
+                <Title>Hours of sessions by month</Title>
+                <AreaChart
+                  data={monthlyHoursChartData}
+                  index="month"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                  stack={true}
+                  valueFormatter={(value) => Math.round(value * 100) / 100}
+                />
+                <Text className="text-center">Month</Text>
+              </Card>
             </>
           )}
         </div>
