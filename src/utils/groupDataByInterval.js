@@ -38,7 +38,7 @@
 // TODO: DRYifying date calculations, e.g. use calcs from date range functions here
 export function groupDataByInterval(sessionsData) {
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0); // TODO: make sure hours are accounted for in all filters here
 
   const mondayCurrWeek = getMondayCurrWeek(today);
   const currWeekData = sessionsData.filter(
@@ -66,8 +66,15 @@ export function groupDataByInterval(sessionsData) {
       new Date(session.startTime) < firstDayCurrMonth
   );
 
+  const firstDayCurrYear = new Date(today.getFullYear(), 0, 1);
   const yearToDateData = sessionsData.filter(
-    (session) => new Date(session.startTime) >= new Date(today.getFullYear(), 0)
+    (session) => new Date(session.startTime) >= firstDayCurrYear
+  );
+
+  const prevYearData = sessionsData.filter(
+    (session) =>
+      new Date(session.startTime) >= new Date(today.getFullYear() - 1, 0, 1) &&
+      new Date(session.startTime) < firstDayCurrYear
   );
 
   return {
@@ -75,7 +82,8 @@ export function groupDataByInterval(sessionsData) {
     prevWeeksData,
     currMonthData,
     prevMonthsData,
-    yearToDateData
+    yearToDateData,
+    prevYearData
   };
 }
 

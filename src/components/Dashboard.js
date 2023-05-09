@@ -99,7 +99,8 @@ export default function Dashboard({ isDemo }) {
       prevWeeksData,
       currMonthData,
       prevMonthsData,
-      yearToDateData
+      yearToDateData,
+      prevYearData
     } = groupDataByInterval(sessionsData);
 
     // TODO pass these calcTotalMetrics directly into the component
@@ -133,6 +134,12 @@ export default function Dashboard({ isDemo }) {
       totalPartners: yearToDateTotalPartners
     } = calcTotalMetrics(yearToDateData);
 
+    const {
+      totalSessions: prevYearTotalSessions,
+      totalHours: prevYearTotalHours,
+      totalPartners: prevYearTotalPartners
+    } = calcTotalMetrics(prevYearData);
+
     const { weeklySessionsChartData, weeklyHoursChartData } =
       createPrevWksChartData(prevWeeksData);
 
@@ -155,7 +162,7 @@ export default function Dashboard({ isDemo }) {
       <>
         <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
           <nav className="space-x-2 sm:space-x-4" aria-label="Tabs">
-            {["Weekly", "Monthly", "Yearly"].map((tab) => (
+            {["Weekly", "Monthly", "Yearly", "Lifetime"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
@@ -473,6 +480,7 @@ export default function Dashboard({ isDemo }) {
                 />
                 <Text className="text-center">Month</Text>
               </Card>
+
               <Card>
                 <Title>Hours of sessions by month</Title>
                 <AreaChart
@@ -520,6 +528,131 @@ export default function Dashboard({ isDemo }) {
                 <p className="text-3xl font-semibold">Previous year</p>
                 <p className="font-normal text-md">{prevYearDateRange()}</p>
               </div>
+
+              <TotalMetrics
+                totalSessions={prevYearTotalSessions}
+                totalHours={prevYearTotalHours}
+                totalPartners={prevYearTotalPartners}
+              />
+
+              <Grid numColsSm={1} numColsLg={3} className="gap-3">
+                <Card>
+                  <Title>Sessions by duration</Title>
+                  <Legend
+                    categories={["25 minutes", "50 minutes", "75 minutes"]}
+                    colors={["blue", "orange", "yellow"]}
+                  />
+                  <DonutChart
+                    className="mt-3"
+                    data={monthlyDurationPieData}
+                    category="sessions"
+                    index="duration"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List>
+                    {monthlyDurationPieData.map((data) => (
+                      <ListItem key={data.duration}>
+                        {data.duration}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevMonthsTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Sessions by attendance</Title>
+                  <Legend
+                    categories={["On time", "Late"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={monthlyAttendancePieData}
+                    category="sessions"
+                    index="attendance"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {monthlyAttendancePieData.map((data) => (
+                      <ListItem key={data.attendance}>
+                        {data.attendance}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevMonthsTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Session completion rate</Title>
+                  <Legend
+                    categories={["Complete", "Incomplete"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={monthlyCompletionPieData}
+                    category="sessions"
+                    index="completion"
+                    colors={["blue", "orange"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {monthlyCompletionPieData.map((data) => (
+                      <ListItem key={data.completion}>
+                        {data.completion}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / prevMonthsData.length) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+              </Grid>
+
+              <Card>
+                <Title>Sessions by month</Title>
+                <BarChart
+                  data={monthlySessionsChartData}
+                  index="month"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                  stack={true}
+                />
+                <Text className="text-center">Month</Text>
+              </Card>
+
+              <Card>
+                <Title>Hours of sessions by month</Title>
+                <AreaChart
+                  data={monthlyHoursChartData}
+                  index="month"
+                  categories={["25 minutes", "50 minutes", "75 minutes"]}
+                  colors={["blue", "orange", "yellow"]}
+                  yAxisWidth={32}
+                  stack={true}
+                  valueFormatter={(value) => Math.round(value * 100) / 100}
+                />
+                <Text className="text-center">Month</Text>
+              </Card>
             </>
           )}
         </div>
