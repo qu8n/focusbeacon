@@ -42,12 +42,14 @@ import {
   currYearDateRange,
   prevYearDateRange
 } from "../utils/getDateRanges";
+// refactor these utils to a generic createChartData function?
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
 import { createPrevMsChartData } from "../utils/createPrevMsChartData";
 import { createPrevMsPieChartsData } from "../utils/createPrevMsPieChartsData";
 import { createCurrMChartData } from "../utils/createCurrMChartData";
 import { createYTDChartData } from "../utils/createYTDChartData";
+import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -157,6 +159,12 @@ export default function Dashboard({ isDemo }) {
       monthlyAttendancePieData,
       monthlyCompletionPieData
     } = createPrevMsPieChartsData(prevMonthsData);
+
+    const {
+      yearlyDurationPieData,
+      yearlyAttendancePieData,
+      yearlyCompletionPieData
+    } = createPrevYPieChartsData(prevYearData);
 
     return (
       <>
@@ -544,20 +552,20 @@ export default function Dashboard({ isDemo }) {
                   />
                   <DonutChart
                     className="mt-3"
-                    data={monthlyDurationPieData}
+                    data={yearlyDurationPieData}
                     category="sessions"
                     index="duration"
                     colors={["blue", "orange", "yellow"]}
                     variant="pie"
                   />
                   <List>
-                    {monthlyDurationPieData.map((data) => (
+                    {yearlyDurationPieData.map((data) => (
                       <ListItem key={data.duration}>
                         {data.duration}
                         <Text>
                           {data.sessions} sessions (
                           {Math.round(
-                            (data.sessions / prevMonthsTotalSessions) * 100
+                            (data.sessions / prevYearTotalSessions) * 100
                           )}
                           %)
                         </Text>
@@ -574,20 +582,20 @@ export default function Dashboard({ isDemo }) {
                   />
                   <DonutChart
                     className="mt-8"
-                    data={monthlyAttendancePieData}
+                    data={yearlyAttendancePieData}
                     category="sessions"
                     index="attendance"
                     colors={["blue", "orange", "yellow"]}
                     variant="pie"
                   />
                   <List className="mt-5">
-                    {monthlyAttendancePieData.map((data) => (
+                    {yearlyAttendancePieData.map((data) => (
                       <ListItem key={data.attendance}>
                         {data.attendance}
                         <Text>
                           {data.sessions} sessions (
                           {Math.round(
-                            (data.sessions / prevMonthsTotalSessions) * 100
+                            (data.sessions / prevYearTotalSessions) * 100
                           )}
                           %)
                         </Text>
@@ -604,20 +612,20 @@ export default function Dashboard({ isDemo }) {
                   />
                   <DonutChart
                     className="mt-8"
-                    data={monthlyCompletionPieData}
+                    data={yearlyCompletionPieData}
                     category="sessions"
                     index="completion"
                     colors={["blue", "orange"]}
                     variant="pie"
                   />
                   <List className="mt-5">
-                    {monthlyCompletionPieData.map((data) => (
+                    {yearlyCompletionPieData.map((data) => (
                       <ListItem key={data.completion}>
                         {data.completion}
                         <Text>
                           {data.sessions} sessions (
                           {Math.round(
-                            (data.sessions / prevMonthsData.length) * 100
+                            (data.sessions / prevYearData.length) * 100
                           )}
                           %)
                         </Text>
