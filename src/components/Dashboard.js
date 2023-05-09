@@ -39,7 +39,8 @@ import {
   prevWeeksDateRange,
   currMonthDateRange,
   prevMonthsDateRange,
-  currYearDateRange
+  currYearDateRange,
+  prevYearDateRange
 } from "../utils/getDateRanges";
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
@@ -101,6 +102,7 @@ export default function Dashboard({ isDemo }) {
       yearToDateData
     } = groupDataByInterval(sessionsData);
 
+    // TODO pass these calcTotalMetrics directly into the component
     const {
       totalSessions: currWeekTotalSessions,
       totalHours: currWeekTotalHours,
@@ -124,6 +126,12 @@ export default function Dashboard({ isDemo }) {
       totalHours: prevMonthsTotalHours,
       totalPartners: prevMonthsTotalPartners
     } = calcTotalMetrics(prevMonthsData);
+
+    const {
+      totalSessions: yearToDateTotalSessions,
+      totalHours: yearToDateTotalHours,
+      totalPartners: yearToDateTotalPartners
+    } = calcTotalMetrics(yearToDateData);
 
     const { weeklySessionsChartData, weeklyHoursChartData } =
       createPrevWksChartData(prevWeeksData);
@@ -169,7 +177,7 @@ export default function Dashboard({ isDemo }) {
             <>
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Current week</p>
-                <p className="text-sm font-normal">{currWeekDateRange()}</p>
+                <p className="font-normal text-md">{currWeekDateRange()}</p>
               </div>
 
               <TotalMetrics
@@ -194,7 +202,7 @@ export default function Dashboard({ isDemo }) {
 
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Previous 4 weeks</p>
-                <p className="text-sm font-normal">{prevWeeksDateRange()}</p>
+                <p className="font-normal text-md">{prevWeeksDateRange()}</p>
               </div>
 
               <TotalMetrics
@@ -327,7 +335,7 @@ export default function Dashboard({ isDemo }) {
             <>
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Current month</p>
-                <p className="text-sm font-normal">{currMonthDateRange()}</p>
+                <p className="font-normal text-md">{currMonthDateRange()}</p>
               </div>
 
               <TotalMetrics
@@ -352,7 +360,7 @@ export default function Dashboard({ isDemo }) {
 
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Previous 6 months</p>
-                <p className="text-sm font-normal">{prevMonthsDateRange()}</p>
+                <p className="font-normal text-md">{prevMonthsDateRange()}</p>
               </div>
 
               <TotalMetrics
@@ -485,8 +493,14 @@ export default function Dashboard({ isDemo }) {
             <>
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Current year</p>
-                <p className="text-sm font-normal">{currYearDateRange()}</p>
+                <p className="font-normal text-md">{currYearDateRange()}</p>
               </div>
+
+              <TotalMetrics
+                totalSessions={yearToDateTotalSessions}
+                totalHours={yearToDateTotalHours}
+                totalPartners={yearToDateTotalPartners}
+              />
 
               <Card>
                 <Title>Sessions by month</Title>
@@ -499,6 +513,13 @@ export default function Dashboard({ isDemo }) {
                 />
                 <Text className="text-center">Month</Text>
               </Card>
+
+              <br />
+
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Previous year</p>
+                <p className="font-normal text-md">{prevYearDateRange()}</p>
+              </div>
             </>
           )}
         </div>

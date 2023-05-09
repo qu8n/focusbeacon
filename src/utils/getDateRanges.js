@@ -7,6 +7,15 @@ export function currYearDateRange() {
   return formatMonthlyDateRange(firstDayOfYear, lastDayOfYear);
 }
 
+export function prevYearDateRange() {
+  const today = new Date();
+
+  const firstDayOfPrevYear = new Date(today.getFullYear() - 1, 0);
+  const lastDayOfPrevYear = new Date(today.getFullYear(), 0, 0);
+
+  return formatMonthlyDateRange(firstDayOfPrevYear, lastDayOfPrevYear);
+}
+
 export function prevMonthsDateRange() {
   const today = new Date();
 
@@ -26,12 +35,10 @@ export function prevMonthsDateRange() {
 }
 
 export function currMonthDateRange() {
-  const today = new Date();
-
-  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-  return formatMonthlyDateRange(firstDayOfMonth, lastDayOfMonth);
+  return new Date().toLocaleDateString("en-us", {
+    year: "numeric",
+    month: "long"
+  });
 }
 
 export function currWeekDateRange() {
@@ -70,7 +77,6 @@ export function prevWeeksDateRange() {
 function formatWeeklyDateRange(firstDay, lastDay) {
   const options = {
     weekday: "long",
-    year: "numeric",
     month: "long",
     day: "numeric"
   };
@@ -85,8 +91,7 @@ function formatWeeklyDateRange(firstDay, lastDay) {
 function formatMonthlyDateRange(firstDay, lastDay) {
   const options = {
     year: "numeric",
-    month: "long",
-    day: "numeric"
+    month: "long"
   };
 
   return (
