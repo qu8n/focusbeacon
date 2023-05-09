@@ -43,6 +43,7 @@ import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
 import { createPrevMsChartData } from "../utils/createPrevMsChartData";
 import { createPrevMsPieChartsData } from "../utils/createPrevMsPieChartsData";
+import { createCurrMChartData } from "../utils/createCurrMChartData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -87,7 +88,7 @@ export default function Dashboard({ isDemo }) {
   const { profileData, sessionsData } = data;
 
   if (sessionsData) {
-    // TODO: use a single today / `new Date()` for all date calculations
+    // TODO: use a single today / `new Date()` for all date calculations that use today/new Date()
 
     const { currWeekData, prevWeeksData, currMonthData, prevMonthsData } =
       groupDataByInterval(sessionsData);
@@ -175,12 +176,14 @@ export default function Dashboard({ isDemo }) {
                   data={createCurrWkChartData(currWeekData)}
                   index="weekDay"
                   categories={["Total sessions"]}
-                  colors={["blue", "orange"]}
+                  colors={["blue"]}
                   yAxisWidth={32}
                 />
                 <Text className="text-center">Day of the current week</Text>
               </Card>
+
               <br />
+
               <div className="text-slate-500">
                 <p className="text-3xl font-semibold">Previous 4 weeks</p>
                 <p className="text-sm font-normal">{prevWeeksDateRange()}</p>
@@ -324,6 +327,18 @@ export default function Dashboard({ isDemo }) {
                 totalHours={currMonthTotalHours}
                 totalPartners={currMonthTotalPartners}
               />
+
+              <Card>
+                <Title>Sessions by day</Title>
+                <BarChart
+                  data={createCurrMChartData(currMonthData)}
+                  index="date"
+                  categories={["Total sessions"]}
+                  yAxisWidth={32}
+                  colors={["blue"]}
+                />
+                <Text className="text-center">Day</Text>
+              </Card>
 
               <br />
 
