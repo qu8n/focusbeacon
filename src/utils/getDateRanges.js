@@ -1,3 +1,12 @@
+export function currYearDateRange() {
+  const today = new Date();
+
+  const firstDayOfYear = new Date(today.getFullYear(), 0);
+  const lastDayOfYear = new Date(today.getFullYear() + 1, 0, 0);
+
+  return formatMonthlyDateRange(firstDayOfYear, lastDayOfYear);
+}
+
 export function prevMonthsDateRange() {
   const today = new Date();
 

@@ -11,6 +11,7 @@ import {
   DonutChart,
   Grid,
   Legend,
+  LineChart,
   List,
   ListItem,
   Subtitle,
@@ -37,13 +38,15 @@ import {
   currWeekDateRange,
   prevWeeksDateRange,
   currMonthDateRange,
-  prevMonthsDateRange
+  prevMonthsDateRange,
+  currYearDateRange
 } from "../utils/getDateRanges";
 import { createPrevWksChartData } from "../utils/createPrevWksChartData";
 import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
 import { createPrevMsChartData } from "../utils/createPrevMsChartData";
 import { createPrevMsPieChartsData } from "../utils/createPrevMsPieChartsData";
 import { createCurrMChartData } from "../utils/createCurrMChartData";
+import { createYTDChartData } from "../utils/createYTDChartData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -90,8 +93,13 @@ export default function Dashboard({ isDemo }) {
   if (sessionsData) {
     // TODO: use a single today / `new Date()` for all date calculations that use today/new Date()
 
-    const { currWeekData, prevWeeksData, currMonthData, prevMonthsData } =
-      groupDataByInterval(sessionsData);
+    const {
+      currWeekData,
+      prevWeeksData,
+      currMonthData,
+      prevMonthsData,
+      yearToDateData
+    } = groupDataByInterval(sessionsData);
 
     const {
       totalSessions: currWeekTotalSessions,
@@ -120,14 +128,14 @@ export default function Dashboard({ isDemo }) {
     const { weeklySessionsChartData, weeklyHoursChartData } =
       createPrevWksChartData(prevWeeksData);
 
-    const { monthlySessionsChartData, monthlyHoursChartData } =
-      createPrevMsChartData(prevMonthsData);
-
     const {
       weeklyDurationPieData,
       weeklyAttendancePieData,
       weeklyCompletionPieData
     } = createPrevWksPieChartsData(prevWeeksData);
+
+    const { monthlySessionsChartData, monthlyHoursChartData } =
+      createPrevMsChartData(prevMonthsData);
 
     const {
       monthlyDurationPieData,
@@ -139,7 +147,7 @@ export default function Dashboard({ isDemo }) {
       <>
         <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
           <nav className="space-x-2 sm:space-x-4" aria-label="Tabs">
-            {["Weekly", "Monthly", "Lifetime"].map((tab) => (
+            {["Weekly", "Monthly", "Yearly"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
@@ -467,6 +475,27 @@ export default function Dashboard({ isDemo }) {
                   yAxisWidth={32}
                   stack={true}
                   valueFormatter={(value) => Math.round(value * 100) / 100}
+                />
+                <Text className="text-center">Month</Text>
+              </Card>
+            </>
+          )}
+
+          {currentTab === "Yearly" && (
+            <>
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Current year</p>
+                <p className="text-sm font-normal">{currYearDateRange()}</p>
+              </div>
+
+              <Card>
+                <Title>Sessions by month</Title>
+                <BarChart
+                  data={createYTDChartData(yearToDateData)}
+                  index="month"
+                  categories={["Total sessions"]}
+                  colors={["blue"]}
+                  yAxisWidth={32}
                 />
                 <Text className="text-center">Month</Text>
               </Card>

@@ -66,7 +66,17 @@ export function groupDataByInterval(sessionsData) {
       new Date(session.startTime) < firstDayCurrMonth
   );
 
-  return { currWeekData, prevWeeksData, currMonthData, prevMonthsData };
+  const yearToDateData = sessionsData.filter(
+    (session) => new Date(session.startTime) >= new Date(today.getFullYear(), 0)
+  );
+
+  return {
+    currWeekData,
+    prevWeeksData,
+    currMonthData,
+    prevMonthsData,
+    yearToDateData
+  };
 }
 
 function getMondayWeeksAgo(today, weeksAgo) {
