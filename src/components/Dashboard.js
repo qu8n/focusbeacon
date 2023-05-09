@@ -50,6 +50,7 @@ import { createPrevMsPieChartsData } from "../utils/createPrevMsPieChartsData";
 import { createCurrMChartData } from "../utils/createCurrMChartData";
 import { createYTDChartData } from "../utils/createYTDChartData";
 import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
+import { createPrevYChartData } from "../utils/createPrevYChartData";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -165,6 +166,9 @@ export default function Dashboard({ isDemo }) {
       yearlyAttendancePieData,
       yearlyCompletionPieData
     } = createPrevYPieChartsData(prevYearData);
+
+    const { yearlySessionsChartData, yearlyHoursChartData } =
+      createPrevYChartData(prevYearData);
 
     return (
       <>
@@ -638,7 +642,7 @@ export default function Dashboard({ isDemo }) {
               <Card>
                 <Title>Sessions by month</Title>
                 <BarChart
-                  data={monthlySessionsChartData}
+                  data={yearlySessionsChartData}
                   index="month"
                   categories={["25 minutes", "50 minutes", "75 minutes"]}
                   colors={["blue", "orange", "yellow"]}
@@ -651,7 +655,7 @@ export default function Dashboard({ isDemo }) {
               <Card>
                 <Title>Hours of sessions by month</Title>
                 <AreaChart
-                  data={monthlyHoursChartData}
+                  data={yearlyHoursChartData}
                   index="month"
                   categories={["25 minutes", "50 minutes", "75 minutes"]}
                   colors={["blue", "orange", "yellow"]}
