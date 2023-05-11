@@ -49,6 +49,7 @@ export default function App({ Component, pageProps }) {
         />
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
+        <title>FocusBeacon</title>
       </Head>
 
       <NavBar

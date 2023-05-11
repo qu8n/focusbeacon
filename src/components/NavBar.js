@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import Logo from "./Logo";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { oauthURL } from "../constants/oauthURL";
+import { getOAuthURL } from "../utils/getOAuthURL";
 
 NavBar.propTypes = {
   setShowAboutModal: PropTypes.func.isRequired,
@@ -28,6 +28,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
     }
     checkSignedInStatus();
   }, [router]);
+  const oauthURL = getOAuthURL();
 
   return (
     <Disclosure as="nav" className="mb-10">
