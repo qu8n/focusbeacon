@@ -51,6 +51,7 @@ import { createCurrMChartData } from "../utils/createCurrMChartData";
 import { createYTDChartData } from "../utils/createYTDChartData";
 import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
 import { createPrevYChartData } from "../utils/createPrevYChartData";
+import { createLifetimePieChartsData } from "../utils/createLifetimePieChartsData";
 import { TotalLifetimeMetrics } from "./dashboard/TotalLifetimeMetrics";
 
 function classNames(...classes) {
@@ -177,23 +178,11 @@ export default function Dashboard({ isDemo }) {
     const { yearlySessionsChartData, yearlyHoursChartData } =
       createPrevYChartData(prevYearData);
 
-    const dailyRecordHours = () => {
-      return Math.max(
-        ...Object.values(
-          sessionsData.reduce((acc, curr) => {
-            const dateString = curr.startTime.substring(0, 10);
-
-            if (acc[dateString]) {
-              acc[dateString] += curr.duration;
-            } else {
-              acc[dateString] = curr.duration;
-            }
-
-            return acc;
-          }, {})
-        )
-      );
-    };
+    const {
+      lifetimeDurationPieData,
+      lifetimeAttendancePieData,
+      lifetimeCompletionPieData
+    } = createLifetimePieChartsData(sessionsData);
 
     return (
       <>
@@ -738,6 +727,98 @@ export default function Dashboard({ isDemo }) {
                   ) / 3600000
                 }
               />
+
+              <Grid numColsSm={1} numColsLg={3} className="gap-3">
+                <Card>
+                  <Title>Sessions by duration</Title>
+                  <Legend
+                    categories={["25 minutes", "50 minutes", "75 minutes"]}
+                    colors={["blue", "orange", "yellow"]}
+                  />
+                  <DonutChart
+                    className="mt-3"
+                    data={lifetimeDurationPieData}
+                    category="sessions"
+                    index="duration"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List>
+                    {lifetimeDurationPieData.map((data) => (
+                      <ListItem key={data.duration}>
+                        {data.duration}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / lifetimeTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Sessions by attendance</Title>
+                  <Legend
+                    categories={["On time", "Late"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={lifetimeAttendancePieData}
+                    category="sessions"
+                    index="attendance"
+                    colors={["blue", "orange", "yellow"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {lifetimeAttendancePieData.map((data) => (
+                      <ListItem key={data.attendance}>
+                        {data.attendance}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / lifetimeTotalSessions) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+
+                <Card>
+                  <Title>Session completion rate</Title>
+                  <Legend
+                    categories={["Complete", "Incomplete"]}
+                    colors={["blue", "orange"]}
+                  />
+                  <DonutChart
+                    className="mt-8"
+                    data={lifetimeCompletionPieData}
+                    category="sessions"
+                    index="completion"
+                    colors={["blue", "orange"]}
+                    variant="pie"
+                  />
+                  <List className="mt-5">
+                    {lifetimeCompletionPieData.map((data) => (
+                      <ListItem key={data.completion}>
+                        {data.completion}
+                        <Text>
+                          {data.sessions} sessions (
+                          {Math.round(
+                            (data.sessions / sessionsData.length) * 100
+                          )}
+                          %)
+                        </Text>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
+              </Grid>
             </>
           )}
         </div>
