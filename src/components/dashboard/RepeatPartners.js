@@ -19,12 +19,12 @@ RepeatPartners.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default function RepeatPartners({ data }) {
+export function RepeatPartners({ data }) {
   const repeatPartnersArr = data;
 
   return (
     <Card>
-      <Flex alignItems="align-top">
+      <Flex className="align-top">
         <Title>Top recurring partners</Title>
         <Icon
           icon={InformationCircleIcon}
@@ -34,13 +34,11 @@ export default function RepeatPartners({ data }) {
           color="slate"
         />
       </Flex>
-      <Table marginTop="mt-4">
+      <Table className="mt-4">
         <TableHead>
           <TableRow>
-            <TableHeaderCell textAlignment="text-left">
-              Shared sessions
-            </TableHeaderCell>
-            <TableHeaderCell textAlignment="text-right">
+            <TableHeaderCell>Shared sessions</TableHeaderCell>
+            <TableHeaderCell className="text-right">
               No. of partners
             </TableHeaderCell>
           </TableRow>
@@ -49,11 +47,11 @@ export default function RepeatPartners({ data }) {
         <TableBody>
           {repeatPartnersArr.map((sharedSession) => (
             <TableRow key={sharedSession.sharedSessions}>
-              <TableCell textAlignment="">
+              <TableCell>
                 {sharedSession.sharedSessions.toLocaleString()}{" "}
                 {sharedSession.sharedSessions > 1 ? "sessions" : "session"}
               </TableCell>
-              <TableCell textAlignment="text-right">
+              <TableCell className="text-right">
                 <PartnerIcons sharedSession={sharedSession} />
               </TableCell>
             </TableRow>
@@ -71,40 +69,40 @@ PartnerIcons.propTypes = {
 function PartnerIcons({ sharedSession }) {
   if (sharedSession.partners === 1) {
     return (
-      <Flex justifyContent="justify-end" marginTop="-mt-1">
+      <Flex className="justify-end -mt-1">
         1
         <Icon
-          size={"s"}
+          size={"sm"}
           icon={UserIcon}
           color={"gray"}
           variant={"simple"}
-          marginTop="-mt-1"
+          className="-mt-1"
         />
       </Flex>
     );
   } else if (sharedSession.partners === 2) {
     return (
-      <Flex justifyContent="justify-end" marginTop="-mt-1">
+      <Flex className="justify-end -mt-1">
         2
         <Icon
-          size={"s"}
+          size={"sm"}
           icon={UsersIcon}
           color={"gray"}
           variant={"simple"}
-          marginTop="-mt-1"
+          className="-mt-1"
         />
       </Flex>
     );
   } else {
     return (
-      <Flex justifyContent="justify-end" marginTop="-mt-1">
+      <Flex className="justify-end -mt-1">
         {sharedSession.partners}
         <Icon
-          size={"s"}
+          size={"sm"}
           icon={UserGroupIcon}
           color={"gray"}
           variant={"simple"}
-          marginTop="-mt-1"
+          className="-mt-1"
         />
       </Flex>
     );

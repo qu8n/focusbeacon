@@ -27,7 +27,6 @@ import {
 import SessionsByDuration from "./dashboard/SessionsByDuration";
 import LifetimeMetrics from "./dashboard/LifetimeMetrics";
 import Milestones from "./dashboard/Milestones";
-import RepeatPartners from "./dashboard/RepeatPartners";
 import TimeSeriesChart from "./dashboard/TimeSeriesChart";
 import {
   monthlyChartTooltip,
@@ -59,6 +58,7 @@ import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
 import { createPrevYChartData } from "../utils/createPrevYChartData";
 import { createLifetimePieChartsData } from "../utils/createLifetimePieChartsData";
 import { TotalLifetimeMetrics } from "./dashboard/TotalLifetimeMetrics";
+import { RepeatPartners } from "./dashboard/RepeatPartners";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -217,14 +217,39 @@ export default function Dashboard({ isDemo }) {
     }
     const milestonesArr = sessionsData
       .filter((session) => session.users[0].completed === true)
-      .reverse()
+      .toReversed()
       .reduce((acc, session, sessionsCounter) => {
         if (milestoneSessions.includes(sessionsCounter + 1)) {
           acc.push({ milestone: sessionsCounter + 1, date: session.startTime });
         }
         return acc;
       }, [])
-      .reverse();
+      .toReversed();
+
+    const partnerIdsArr = Object.values(
+      sessionsData.reduce((acc, session) => {
+        if (session.users[1]?.userId && session.users[0].completed === true) {
+          if (acc[session.users[1]?.userId]) {
+            acc[session.users[1]?.userId] += 1;
+          } else {
+            acc[session.users[1]?.userId] = 1;
+          }
+        }
+        return acc;
+      }, {})
+    );
+    const repeatPartnersObj = {};
+    for (let i = 0; i < partnerIdsArr.length; i++) {
+      repeatPartnersObj[partnerIdsArr[i]] =
+        (repeatPartnersObj[partnerIdsArr[i]] || 0) + 1;
+    }
+    const repeatPartnersArr = [];
+    for (let i in repeatPartnersObj) {
+      repeatPartnersArr.push({
+        sharedSessions: parseInt(i),
+        partners: repeatPartnersObj[i]
+      });
+    }
 
     return (
       <>
@@ -897,6 +922,8 @@ export default function Dashboard({ isDemo }) {
                     </TableBody>
                   </Table>
                 </Card>
+
+                <RepeatPartners data={repeatPartnersArr.reverse()} />
               </Grid>
             </>
           )}
