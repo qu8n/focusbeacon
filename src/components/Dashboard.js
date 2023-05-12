@@ -51,6 +51,7 @@ import { createCurrMChartData } from "../utils/createCurrMChartData";
 import { createYTDChartData } from "../utils/createYTDChartData";
 import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
 import { createPrevYChartData } from "../utils/createPrevYChartData";
+import { TotalLifetimeMetrics } from "./dashboard/TotalLifetimeMetrics";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -143,6 +144,12 @@ export default function Dashboard({ isDemo }) {
       totalPartners: prevYearTotalPartners
     } = calcTotalMetrics(prevYearData);
 
+    const {
+      totalSessions: lifetimeTotalSessions,
+      totalHours: lifetimeTotalHours,
+      totalPartners: lifetimeTotalPartners
+    } = calcTotalMetrics(sessionsData);
+
     const { weeklySessionsChartData, weeklyHoursChartData } =
       createPrevWksChartData(prevWeeksData);
 
@@ -169,6 +176,24 @@ export default function Dashboard({ isDemo }) {
 
     const { yearlySessionsChartData, yearlyHoursChartData } =
       createPrevYChartData(prevYearData);
+
+    const dailyRecordHours = () => {
+      return Math.max(
+        ...Object.values(
+          sessionsData.reduce((acc, curr) => {
+            const dateString = curr.startTime.substring(0, 10);
+
+            if (acc[dateString]) {
+              acc[dateString] += curr.duration;
+            } else {
+              acc[dateString] = curr.duration;
+            }
+
+            return acc;
+          }, {})
+        )
+      );
+    };
 
     return (
       <>
@@ -665,6 +690,54 @@ export default function Dashboard({ isDemo }) {
                 />
                 <Text className="text-center">Month</Text>
               </Card>
+            </>
+          )}
+
+          {currentTab === "Lifetime" && (
+            <>
+              <div className="text-slate-500">
+                <p className="text-3xl font-semibold">Lifetime</p>
+              </div>
+
+              <TotalMetrics
+                totalSessions={lifetimeTotalSessions}
+                totalHours={lifetimeTotalHours}
+                totalPartners={lifetimeTotalPartners}
+              />
+
+              <TotalLifetimeMetrics
+                firstSession={
+                  sessionsData[sessionsData.length - 1]
+                    ? new Date(
+                        sessionsData[sessionsData.length - 1].startTime
+                      ).toLocaleString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric"
+                      })
+                    : "N/A"
+                }
+                averageSessionTime={
+                  (lifetimeTotalHours * 60) / lifetimeTotalSessions
+                }
+                dailyRecordHours={
+                  Math.max(
+                    ...Object.values(
+                      sessionsData.reduce((acc, curr) => {
+                        const dateString = curr.startTime.substring(0, 10);
+
+                        if (acc[dateString]) {
+                          acc[dateString] += curr.duration;
+                        } else {
+                          acc[dateString] = curr.duration;
+                        }
+
+                        return acc;
+                      }, {})
+                    )
+                  ) / 3600000
+                }
+              />
             </>
           )}
         </div>
