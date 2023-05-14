@@ -25,13 +25,13 @@ export function AboutModalContent() {
     <>
       <p>Hey there,</p>
       <p className="mt-3">
-        I'm Quan, the maker of FocusBeacon. It all started when I needed a way
-        to keep track of my own Focusmate sessions, and to keep the motivation
-        ball rolling. I hope it works the same magic for you, too.
+        I'm Quan, the creator of FocusBeacon. I built this website to keep track
+        of my own Focusmate sessions, and to keep the motivation ball rolling. I
+        hope it works the same magic for you, too.
       </p>
       <p className="mt-3">
-        I plan to keep this website 100% free forever. If you're feeling
-        generous and want to help keep the lights on, I'd appreciate{" "}
+        This website will be 100% free forever. If you're feeling generous and
+        want to help keep the lights on, I'd appreciate{" "}
         <ModalLink
           text="a cup of coffee"
           href="https://www.buymeacoffee.com/quans"
@@ -44,8 +44,8 @@ export function AboutModalContent() {
         .
       </p>
       <p className="mt-3">
-        More stats and visuals will be added over time. If you've got ideas,
-        want updates, or fancy co-working with me on Focusmate, you can email me{" "}
+        More stats and updates will be added over time. If you have ideas or
+        want to co-work with me on Focusmate, you can email me{" "}
         <ModalLink text="here" href="mailto:quanwnn@gmail.com" />.
       </p>
       <p className="mt-3">Enjoy!</p>

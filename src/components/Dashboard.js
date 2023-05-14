@@ -282,6 +282,7 @@ export default function Dashboard({ isDemo }) {
                   categories={["Total sessions"]}
                   colors={["blue"]}
                   yAxisWidth={32}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Day of the current week</Text>
               </Card>
@@ -400,6 +401,7 @@ export default function Dashboard({ isDemo }) {
                   colors={["blue", "orange", "yellow"]}
                   yAxisWidth={32}
                   stack={true}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Week of</Text>
               </Card>
@@ -413,6 +415,7 @@ export default function Dashboard({ isDemo }) {
                   yAxisWidth={32}
                   stack={true}
                   valueFormatter={(value) => Math.round(value * 100) / 100}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Week of</Text>
               </Card>
@@ -440,6 +443,7 @@ export default function Dashboard({ isDemo }) {
                   categories={["Total sessions"]}
                   yAxisWidth={32}
                   colors={["blue"]}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Day</Text>
               </Card>
@@ -558,6 +562,7 @@ export default function Dashboard({ isDemo }) {
                   colors={["blue", "orange", "yellow"]}
                   yAxisWidth={32}
                   stack={true}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Month</Text>
               </Card>
@@ -572,6 +577,7 @@ export default function Dashboard({ isDemo }) {
                   yAxisWidth={32}
                   stack={true}
                   valueFormatter={(value) => Math.round(value * 100) / 100}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Month</Text>
               </Card>
@@ -599,6 +605,7 @@ export default function Dashboard({ isDemo }) {
                   categories={["Total sessions"]}
                   colors={["blue"]}
                   yAxisWidth={32}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Month</Text>
               </Card>
@@ -717,6 +724,7 @@ export default function Dashboard({ isDemo }) {
                   colors={["blue", "orange", "yellow"]}
                   yAxisWidth={32}
                   stack={true}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Month</Text>
               </Card>
@@ -731,6 +739,7 @@ export default function Dashboard({ isDemo }) {
                   yAxisWidth={32}
                   stack={true}
                   valueFormatter={(value) => Math.round(value * 100) / 100}
+                  allowDecimals={false}
                 />
                 <Text className="text-center">Month</Text>
               </Card>
