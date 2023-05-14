@@ -2,19 +2,15 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
-import processData from "../utils/processData";
 import {
   AreaChart,
   BarChart,
   Card,
-  ColGrid,
   DonutChart,
   Grid,
   Legend,
-  LineChart,
   List,
   ListItem,
-  Subtitle,
   Table,
   TableBody,
   TableCell,
@@ -24,14 +20,6 @@ import {
   Text,
   Title
 } from "@tremor/react";
-import SessionsByDuration from "./dashboard/SessionsByDuration";
-import LifetimeMetrics from "./dashboard/LifetimeMetrics";
-import Milestones from "./dashboard/Milestones";
-import TimeSeriesChart from "./dashboard/TimeSeriesChart";
-import {
-  monthlyChartTooltip,
-  weeklyChartTooltip
-} from "../constants/textSnippets";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import Footer from "./Footer";
@@ -890,7 +878,7 @@ export default function Dashboard({ isDemo }) {
               <Grid numColsSm={1} numColsLg={3} className="gap-3">
                 <Card>
                   <Title>Recent milestones</Title>
-                  <Table>
+                  <Table className="mt-5">
                     <TableHead>
                       <TableRow>
                         <TableHeaderCell>Milestone</TableHeaderCell>

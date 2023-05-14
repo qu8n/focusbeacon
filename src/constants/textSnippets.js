@@ -23,33 +23,32 @@ function ModalLink({ text, href }) {
 export function AboutModalContent() {
   return (
     <>
-      <p>Hi there,</p>
+      <p>Hey there,</p>
       <p className="mt-3">
-        My name is <ModalLink text="Quan" href="https://quans.org/" />, and I
-        built FocusBeacon to visualize my past Focusmate sessions and keep
-        myself motivated. I'm hoping that you will find it useful as well.
+        I'm Quan, the maker of FocusBeacon. It all started when I needed a way
+        to keep track of my own Focusmate sessions, and to keep the motivation
+        ball rolling. I hope it works the same magic for you, too.
       </p>
       <p className="mt-3">
-        I plan to keep this website 100% free forever. If you want to support to
-        keep it going and grow, I'd appreciate a{" "}
+        I plan to keep this website 100% free forever. If you're feeling
+        generous and want to help keep the lights on, I'd appreciate{" "}
         <ModalLink
-          text="cup of coffee"
+          text="a cup of coffee"
           href="https://www.buymeacoffee.com/quans"
         />{" "}
-        and (if you're a software person) a{" "}
+        or (if you're a software person){" "}
         <ModalLink
-          text="GitHub star for this project"
+          text="a GitHub star"
           href="https://www.github.com/qu8n/focusbeacon"
         />
         .
       </p>
       <p className="mt-3">
-        More stats and visuals will be added over time. If you have any
-        suggestions, want to be updated, or want to cowork with me on Focusmate,
-        please{" "}
-        <ModalLink text="email me here" href="mailto:quanwnn@gmail.com" />.
+        More stats and visuals will be added over time. If you've got ideas,
+        want updates, or fancy co-working with me on Focusmate, you can email me{" "}
+        <ModalLink text="here" href="mailto:quanwnn@gmail.com" />.
       </p>
-      <p className="mt-3">Happy focusing!</p>
+      <p className="mt-3">Enjoy!</p>
       <p>Quan</p>
     </>
   );
@@ -82,9 +81,3 @@ export function PrivacyModalContent() {
     </>
   );
 }
-
-export const weeklyChartTooltip =
-  "Each x-axis marker represents a week, which begins on Sunday based on the Gregorian calendar";
-
-export const monthlyChartTooltip =
-  "Each x-axis marker represents a month and its respective year";
