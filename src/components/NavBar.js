@@ -14,10 +14,9 @@ NavBar.propTypes = {
 };
 
 export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
-  // TODO: This is a hacky way to check if the user is signed in. We should
-  // probably use a context provider instead.
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
+
   useEffect(() => {
     async function checkSignedInStatus() {
       const response = await fetch("/api/session");
@@ -28,7 +27,24 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
     }
     checkSignedInStatus();
   }, [router]);
+
   const oauthURL = getOAuthURL();
+
+  async function logOut() {
+    await fetch("/api/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      // Fix for Nextjs/Vercel's bug that prevents cookie being deleted, per https://stackoverflow.com/questions/66747845
+      body: JSON.stringify({
+        key: "static_key"
+      })
+    }).then(() => {
+      setIsSignedIn(false);
+      router.reload();
+    });
+  }
 
   return (
     <Disclosure as="nav" className="mb-10">
@@ -83,20 +99,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                 {isSignedIn ? (
                   <button
                     type="button"
-                    onClick={async () => {
-                      await fetch("/api/logout", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                          key: "static_key"
-                        })
-                      }).then(() => {
-                        setIsSignedIn(false);
-                        router.reload();
-                      });
-                    }}
+                    onClick={logOut}
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                   >
                     Log out
@@ -142,12 +145,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
               {isSignedIn ? (
                 <Disclosure.Button
                   as="a"
-                  onClick={async () => {
-                    await fetch("/api/logout").then(() => {
-                      setIsSignedIn(false);
-                      router.reload();
-                    });
-                  }}
+                  onClick={logOut}
                   className="block py-2 pl-3 pr-4 text-base font-medium border-l-4 border-transparent text-slate-500 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-700"
                 >
                   Log out
