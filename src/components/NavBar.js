@@ -84,7 +84,15 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                   <button
                     type="button"
                     onClick={async () => {
-                      await fetch("/api/logout").then(() => {
+                      await fetch("/api/logout", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                          key: "static_key"
+                        })
+                      }).then(() => {
                         setIsSignedIn(false);
                         router.reload();
                       });

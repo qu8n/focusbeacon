@@ -25,10 +25,7 @@ export default function setCookie(
   }
 
   if (expires) {
-    cookieOptions = {
-      path: "/",
-      expires: new Date(0)
-    };
+    cookieOptions.maxAge = -1;
   }
 
   return serialize(cookieName, cookieValue, cookieOptions);
