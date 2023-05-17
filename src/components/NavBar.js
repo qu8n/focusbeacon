@@ -7,6 +7,7 @@ import Logo from "./Logo";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { getOAuthURL } from "../utils/getOAuthURL";
+import { QueryClient } from "react-query";
 
 NavBar.propTypes = {
   setShowAboutModal: PropTypes.func.isRequired,
@@ -16,6 +17,8 @@ NavBar.propTypes = {
 export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const oauthURL = getOAuthURL();
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     async function checkSignedInStatus() {
@@ -28,8 +31,6 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
     checkSignedInStatus();
   }, [router]);
 
-  const oauthURL = getOAuthURL();
-
   async function logOut() {
     await fetch("/api/logout", {
       method: "POST",
@@ -41,6 +42,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
         key: "static_key"
       })
     }).then(() => {
+      queryClient.clear();
       setIsSignedIn(false);
       router.reload();
     });

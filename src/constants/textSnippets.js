@@ -48,7 +48,7 @@ export function AboutModalContent() {
         want to co-work with me on Focusmate, you can email me{" "}
         <ModalLink text="here" href="mailto:quanwnn@gmail.com" />.
       </p>
-      <p className="mt-3">Enjoy!</p>
+      <p className="mt-3">Enjoy,</p>
       <p>Quan</p>
     </>
   );
@@ -75,8 +75,8 @@ export function PrivacyModalContent() {
         FocusBeacon is an open-source project, which means anyone can inspect
         the code that runs this website. You can find the source code{" "}
         <ModalLink text="here" href="https://www.github.com/qu8n/focusbeacon" />
-        . If you have any questions or concerns, please{" "}
-        <ModalLink text="email me here" href="mailto:quanwnn@gmail.com" />.
+        . If you have any questions or concerns, you can email me{" "}
+        <ModalLink text="here" href="mailto:quanwnn@gmail.com" />.
       </p>
     </>
   );
