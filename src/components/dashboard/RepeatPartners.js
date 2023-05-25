@@ -16,16 +16,44 @@ import React from "react";
 import PropTypes from "prop-types";
 
 RepeatPartners.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired
+  sessionsData: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export function RepeatPartners({ data }) {
-  const repeatPartnersArr = data;
+export function RepeatPartners({ sessionsData }) {
+  const repeatPartnersObj = {};
+  let repeatPartnersArr = [];
+
+  const partnerIdsArr = Object.values(
+    sessionsData.reduce((acc, session) => {
+      if (session.users[1]?.userId && session.users[0].completed === true) {
+        if (acc[session.users[1]?.userId]) {
+          acc[session.users[1]?.userId] += 1;
+        } else {
+          acc[session.users[1]?.userId] = 1;
+        }
+      }
+      return acc;
+    }, {})
+  );
+
+  for (let i = 0; i < partnerIdsArr.length; i++) {
+    repeatPartnersObj[partnerIdsArr[i]] =
+      (repeatPartnersObj[partnerIdsArr[i]] || 0) + 1;
+  }
+
+  for (let i in repeatPartnersObj) {
+    repeatPartnersArr.push({
+      sharedSessions: parseInt(i),
+      partners: repeatPartnersObj[i]
+    });
+  }
+
+  repeatPartnersArr = repeatPartnersArr.toReversed().slice(0, 5);
 
   return (
     <Card>
       <Flex className="align-top">
-        <Title>Top recurring partners</Title>
+        <Title>Top repeat partners</Title>
         <Icon
           icon={InformationCircleIcon}
           variant="simple"

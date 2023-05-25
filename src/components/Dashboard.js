@@ -233,32 +233,6 @@ export default function Dashboard({ isDemo }) {
     }, [])
     .toReversed();
 
-  const partnerIdsArr = Object.values(
-    sessionsData.reduce((acc, session) => {
-      if (session.users[1]?.userId && session.users[0].completed === true) {
-        if (acc[session.users[1]?.userId]) {
-          acc[session.users[1]?.userId] += 1;
-        } else {
-          acc[session.users[1]?.userId] = 1;
-        }
-      }
-      return acc;
-    }, {})
-  );
-  const repeatPartnersObj = {};
-  for (let i = 0; i < partnerIdsArr.length; i++) {
-    repeatPartnersObj[partnerIdsArr[i]] =
-      (repeatPartnersObj[partnerIdsArr[i]] || 0) + 1;
-  }
-  let repeatPartnersArr = [];
-  for (let i in repeatPartnersObj) {
-    repeatPartnersArr.push({
-      sharedSessions: parseInt(i),
-      partners: repeatPartnersObj[i]
-    });
-  }
-  repeatPartnersArr = repeatPartnersArr.toReversed().slice(0, 5);
-
   return (
     <>
       <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
@@ -940,7 +914,7 @@ export default function Dashboard({ isDemo }) {
                 </Table>
               </Card>
 
-              <RepeatPartners data={repeatPartnersArr} />
+              <RepeatPartners sessionsData={sessionsData} />
             </Grid>
           </>
         )}
