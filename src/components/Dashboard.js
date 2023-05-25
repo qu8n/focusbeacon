@@ -250,13 +250,14 @@ export default function Dashboard({ isDemo }) {
     repeatPartnersObj[partnerIdsArr[i]] =
       (repeatPartnersObj[partnerIdsArr[i]] || 0) + 1;
   }
-  const repeatPartnersArr = [];
+  let repeatPartnersArr = [];
   for (let i in repeatPartnersObj) {
     repeatPartnersArr.push({
       sharedSessions: parseInt(i),
       partners: repeatPartnersObj[i]
     });
   }
+  repeatPartnersArr = repeatPartnersArr.toReversed().slice(0, 5);
 
   return (
     <>
@@ -939,7 +940,7 @@ export default function Dashboard({ isDemo }) {
                 </Table>
               </Card>
 
-              <RepeatPartners data={repeatPartnersArr.reverse()} />
+              <RepeatPartners data={repeatPartnersArr} />
             </Grid>
           </>
         )}

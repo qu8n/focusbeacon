@@ -12,10 +12,12 @@ export async function fetchSessionsData(headers, memberSince) {
   const firstYear = new Date(memberSince).getFullYear();
   let sessionsData = [];
 
-  // One year of data per request per API's limit
+  // Limit requests to one year of data at a time following API's restriction.
   for (let year = currentYear; year >= firstYear; year--) {
+    // End the time range at 12:00:00 because anything above results in an error
+    // 'Date range must be smaller than one year'.
     const response = await fetch(
-      `https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T23:59:59Z`,
+      `https://api.focusmate.com/v1/sessions?start=${year}-01-01T12:00:00Z&end=${year}-12-31T12:00:00Z`,
       requestOptions(headers)
     );
     const result = await response.json();
