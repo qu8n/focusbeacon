@@ -1,5 +1,6 @@
-import React from "react";
-import Dashboard from "../../components/Dashboard";
+import React, { Suspense } from "react";
+import DashboardComponent from "../../components/Dashboard";
+import LoaderSpinner from "../../components/LoaderSpinner";
 import { ExclamationIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { getOAuthURL } from "../../utils/getOAuthURL";
@@ -8,7 +9,7 @@ export default function Demo() {
   const oauthURL = getOAuthURL();
 
   return (
-    <>
+    <Suspense fallback={<LoaderSpinner />}>
       <div className="p-4 mx-3 mb-10 border border-l-4 border-yellow-400 sm:mx-20 bg-yellow-50">
         <div className="flex">
           <div className="flex-shrink-0">
@@ -31,7 +32,7 @@ export default function Demo() {
           </div>
         </div>
       </div>
-      <Dashboard isDemo={true} />
-    </>
+      <DashboardComponent isDemo={true} />
+    </Suspense>
   );
 }

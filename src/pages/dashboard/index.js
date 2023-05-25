@@ -1,6 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import DashboardComponent from "../../components/Dashboard";
+import LoaderSpinner from "../../components/LoaderSpinner";
 
 export default function Dashboard() {
-  return <DashboardComponent isDemo={false} />;
+  return (
+    <Suspense fallback={<LoaderSpinner />}>
+      <DashboardComponent isDemo={false} />
+    </Suspense>
+  );
 }

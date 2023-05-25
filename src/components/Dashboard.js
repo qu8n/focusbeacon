@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
-import LoaderSpinner from "./LoaderSpinner";
 import {
   AreaChart,
   BarChart,
@@ -47,6 +45,7 @@ import { createPrevYChartData } from "../utils/createPrevYChartData";
 import { createLifetimePieChartsData } from "../utils/createLifetimePieChartsData";
 import { TotalLifetimeMetrics } from "./dashboard/TotalLifetimeMetrics";
 import { RepeatPartners } from "./dashboard/RepeatPartners";
+import LoaderSpinner from "./LoaderSpinner";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -94,10 +93,11 @@ export default function Dashboard({ isDemo }) {
     return <p>Error: {error.message}</p>;
   }
 
+  // eslint-disable-next-line no-unused-vars
   const { profileData, sessionsData } = data;
 
   if (!sessionsData) {
-    return;
+    return <LoaderSpinner />;
   }
 
   // TODO: use a single today / `new Date()` for all date calculations that use today/new Date()
