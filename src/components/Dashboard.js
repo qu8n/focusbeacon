@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import LoaderSpinner from "./LoaderSpinner";
 import {
@@ -63,14 +63,24 @@ export default function Dashboard({ isDemo }) {
   const router = useRouter();
   const isDemoFlag = "isDemo=" + (isDemo ? "true" : "false");
 
+  useEffect(() => {
+    async function checkSignedInStatus() {
+      const response = await fetch("/api/session");
+      const data = await response.json();
+      if (!data.signedIn) {
+        router.push("/");
+      }
+    }
+    if (!isDemo) {
+      checkSignedInStatus();
+    }
+  }, []);
+
   // Notable defaults: cacheTime = 5 minutes, refetchOnWindowFocus = true
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["focusmateData"],
     queryFn: async () => {
       const response = await fetch(`/api/request?${isDemoFlag}`);
-      if (response.status !== 200 && typeof window !== "undefined") {
-        router.push("/");
-      }
       const data = await response.json();
       return data;
     }
@@ -86,7 +96,7 @@ export default function Dashboard({ isDemo }) {
 
   const { profileData, sessionsData } = data;
 
-  if (!sessionsData && typeof window !== "undefined") {
+  if (!sessionsData) {
     return;
   }
 
