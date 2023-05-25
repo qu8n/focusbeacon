@@ -93,11 +93,20 @@ export default function Dashboard({ isDemo }) {
     return <p>Error: {error.message}</p>;
   }
 
-  // eslint-disable-next-line no-unused-vars
   const { profileData, sessionsData } = data;
 
-  if (!sessionsData) {
+  if (!profileData || !sessionsData) {
     return <LoaderSpinner />;
+  }
+
+  if (profileData.user.totalSessionCount === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-150px)]">
+        <Text className="text-xl text-center">
+          Nothing to see here. Check back after you have had a session 🙂
+        </Text>
+      </div>
+    );
   }
 
   // TODO: use a single today / `new Date()` for all date calculations that use today/new Date()
