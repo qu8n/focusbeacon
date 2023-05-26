@@ -33,6 +33,7 @@ import { LoaderSpinner } from "./LoaderSpinner";
 import { RecentMilestones } from "./dashboard/RecentMilestones";
 import { SessionsAndHours } from "./dashboard/SessionsAndHours";
 import { PieCharts } from "./dashboard/PieCharts";
+import { Heading } from "./dashboard/Heading";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -108,7 +109,7 @@ export default function Dashboard({ isDemo }) {
     prevYearData
   } = groupDataByInterval(sessionsData, today);
 
-  // Calculate total metrics for each time interval
+  // TODO: create a combined TotalMetricsAndPies component
   const {
     totalSessions: prevWeeksTotalSessions,
     totalHours: prevWeeksTotalHours,
@@ -157,10 +158,7 @@ export default function Dashboard({ isDemo }) {
       <div className={cardPadding}>
         {currentTab === "Weekly" && (
           <>
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Current week</p>
-              <p className="font-normal text-md">{currWeekDateRange()}</p>
-            </div>
+            <Heading title="Current week" subtitle={currWeekDateRange()} />
 
             <TotalMetrics data={calcTotalMetrics(currWeekData)} />
 
@@ -179,10 +177,7 @@ export default function Dashboard({ isDemo }) {
 
             <br />
 
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Previous 4 weeks</p>
-              <p className="font-normal text-md">{prevWeeksDateRange()}</p>
-            </div>
+            <Heading title="Previous 4 weeks" subtitle={prevWeeksDateRange()} />
 
             <TotalMetrics
               data={{
@@ -209,10 +204,7 @@ export default function Dashboard({ isDemo }) {
 
         {currentTab === "Monthly" && (
           <>
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Current month</p>
-              <p className="font-normal text-md">{currMonthDateRange()}</p>
-            </div>
+            <Heading title="Current month" subtitle={currMonthDateRange()} />
 
             <TotalMetrics data={calcTotalMetrics(currMonthData)} />
 
@@ -231,10 +223,10 @@ export default function Dashboard({ isDemo }) {
 
             <br />
 
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Previous 6 months</p>
-              <p className="font-normal text-md">{prevMonthsDateRange()}</p>
-            </div>
+            <Heading
+              title="Previous 6 months"
+              subtitle={prevMonthsDateRange()}
+            />
 
             <TotalMetrics
               data={{
@@ -261,10 +253,7 @@ export default function Dashboard({ isDemo }) {
 
         {currentTab === "Yearly" && (
           <>
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Current year</p>
-              <p className="font-normal text-md">{currYearDateRange()}</p>
-            </div>
+            <Heading title="Current year" subtitle={currYearDateRange()} />
 
             <TotalMetrics data={calcTotalMetrics(currYearData)} />
 
@@ -283,10 +272,7 @@ export default function Dashboard({ isDemo }) {
 
             <br />
 
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Previous year</p>
-              <p className="font-normal text-md">{prevYearDateRange()}</p>
-            </div>
+            <Heading title="Previous year" subtitle={prevYearDateRange()} />
 
             <TotalMetrics
               data={{
@@ -313,9 +299,7 @@ export default function Dashboard({ isDemo }) {
 
         {currentTab === "Lifetime" && (
           <>
-            <div className="text-slate-500">
-              <p className="text-3xl font-semibold">Lifetime</p>
-            </div>
+            <Heading title="Lifetime" />
 
             <TotalMetrics
               data={{
