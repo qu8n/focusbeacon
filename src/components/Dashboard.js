@@ -109,7 +109,6 @@ export default function Dashboard({ isDemo }) {
     prevYearData
   } = groupDataByInterval(sessionsData, today);
 
-  // TODO: create a combined TotalMetricsAndPies component
   const {
     totalSessions: prevWeeksTotalSessions,
     totalHours: prevWeeksTotalHours,
@@ -310,37 +309,11 @@ export default function Dashboard({ isDemo }) {
             />
 
             <LifetimeMetrics
-              firstSession={
-                sessionsData[sessionsData.length - 1]
-                  ? new Date(
-                      sessionsData[sessionsData.length - 1].startTime
-                    ).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric"
-                    })
-                  : "N/A"
-              }
-              averageSessionTime={
-                (lifetimeTotalHours * 60) / lifetimeTotalSessions
-              }
-              dailyRecordHours={
-                Math.max(
-                  ...Object.values(
-                    sessionsData.reduce((acc, curr) => {
-                      const dateString = curr.startTime.substring(0, 10);
-
-                      if (acc[dateString]) {
-                        acc[dateString] += curr.duration;
-                      } else {
-                        acc[dateString] = curr.duration;
-                      }
-
-                      return acc;
-                    }, {})
-                  )
-                ) / 3600000
-              }
+              data={{
+                sessionsData,
+                lifetimeTotalHours,
+                lifetimeTotalSessions
+              }}
             />
 
             <PieCharts
