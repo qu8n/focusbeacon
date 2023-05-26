@@ -7,13 +7,13 @@ import {
 } from "@heroicons/react/solid";
 import PropTypes from "prop-types";
 
-TotalLifetimeMetrics.propTypes = {
+LifetimeMetrics.propTypes = {
   firstSession: PropTypes.string.isRequired,
   averageSessionTime: PropTypes.number.isRequired,
   dailyRecordHours: PropTypes.number.isRequired
 };
 
-export function TotalLifetimeMetrics({
+export function LifetimeMetrics({
   firstSession,
   averageSessionTime,
   dailyRecordHours

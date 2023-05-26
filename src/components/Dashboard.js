@@ -38,11 +38,12 @@ import { createYTDChartData } from "../utils/createYTDChartData";
 import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
 import { createPrevYChartData } from "../utils/createPrevYChartData";
 import { createLifetimePieChartsData } from "../utils/createLifetimePieChartsData";
-import { TotalLifetimeMetrics } from "./dashboard/TotalLifetimeMetrics";
+import { LifetimeMetrics } from "./dashboard/LifetimeMetrics";
 import { RepeatPartners } from "./dashboard/RepeatPartners";
 import LoaderSpinner from "./LoaderSpinner";
 import { RecentMilestones } from "./dashboard/RecentMilestones";
 import { SessionsAndHours } from "./dashboard/SessionsAndHours";
+import { SessionsByDuration } from "./dashboard/SessionsByDuration";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -228,35 +229,10 @@ export default function Dashboard({ isDemo }) {
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <Card>
-                <Title>Sessions by duration</Title>
-                <Legend
-                  categories={["25 minutes", "50 minutes", "75 minutes"]}
-                  colors={["blue", "orange", "yellow"]}
-                />
-                <DonutChart
-                  className="mt-3"
-                  data={weeklyDurationPieData}
-                  category="sessions"
-                  index="duration"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List>
-                  {weeklyDurationPieData.map((data) => (
-                    <ListItem key={data.duration}>
-                      {data.duration}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevWeeksTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
+              <SessionsByDuration
+                data={weeklyDurationPieData}
+                totalSessions={prevWeeksTotalSessions}
+              />
 
               <Card>
                 <Title>Sessions by attendance</Title>
@@ -366,35 +342,10 @@ export default function Dashboard({ isDemo }) {
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <Card>
-                <Title>Sessions by duration</Title>
-                <Legend
-                  categories={["25 minutes", "50 minutes", "75 minutes"]}
-                  colors={["blue", "orange", "yellow"]}
-                />
-                <DonutChart
-                  className="mt-3"
-                  data={monthlyDurationPieData}
-                  category="sessions"
-                  index="duration"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List>
-                  {monthlyDurationPieData.map((data) => (
-                    <ListItem key={data.duration}>
-                      {data.duration}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevMonthsTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
+              <SessionsByDuration
+                data={monthlyDurationPieData}
+                totalSessions={prevMonthsTotalSessions}
+              />
 
               <Card>
                 <Title>Sessions by attendance</Title>
@@ -504,35 +455,10 @@ export default function Dashboard({ isDemo }) {
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <Card>
-                <Title>Sessions by duration</Title>
-                <Legend
-                  categories={["25 minutes", "50 minutes", "75 minutes"]}
-                  colors={["blue", "orange", "yellow"]}
-                />
-                <DonutChart
-                  className="mt-3"
-                  data={yearlyDurationPieData}
-                  category="sessions"
-                  index="duration"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List>
-                  {yearlyDurationPieData.map((data) => (
-                    <ListItem key={data.duration}>
-                      {data.duration}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevYearTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
+              <SessionsByDuration
+                data={yearlyDurationPieData}
+                totalSessions={prevYearTotalSessions}
+              />
 
               <Card>
                 <Title>Sessions by attendance</Title>
@@ -618,7 +544,7 @@ export default function Dashboard({ isDemo }) {
               }}
             />
 
-            <TotalLifetimeMetrics
+            <LifetimeMetrics
               firstSession={
                 sessionsData[sessionsData.length - 1]
                   ? new Date(
@@ -653,35 +579,10 @@ export default function Dashboard({ isDemo }) {
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <Card>
-                <Title>Sessions by duration</Title>
-                <Legend
-                  categories={["25 minutes", "50 minutes", "75 minutes"]}
-                  colors={["blue", "orange", "yellow"]}
-                />
-                <DonutChart
-                  className="mt-3"
-                  data={lifetimeDurationPieData}
-                  category="sessions"
-                  index="duration"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List>
-                  {lifetimeDurationPieData.map((data) => (
-                    <ListItem key={data.duration}>
-                      {data.duration}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / lifetimeTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
+              <SessionsByDuration
+                data={lifetimeDurationPieData}
+                totalSessions={lifetimeTotalSessions}
+              />
 
               <Card>
                 <Title>Sessions by attendance</Title>
