@@ -40,7 +40,7 @@ export function createPrevYChartData(prevYearData) {
     }
   );
 
-  return { yearlySessionsChartData, yearlyHoursChartData };
+  return [yearlySessionsChartData, yearlyHoursChartData];
 }
 
 // TODO: remove this useless func

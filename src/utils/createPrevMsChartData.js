@@ -40,7 +40,7 @@ export function createPrevMsChartData(prevMonthsData) {
     }
   );
 
-  return { monthlySessionsChartData, monthlyHoursChartData };
+  return [monthlySessionsChartData, monthlyHoursChartData];
 }
 
 function getMonthOfDate(date) {

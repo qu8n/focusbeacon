@@ -40,7 +40,7 @@ export function createPrevWksChartData(prevWeeksData) {
     }
   );
 
-  return { weeklySessionsChartData, weeklyHoursChartData };
+  return [weeklySessionsChartData, weeklyHoursChartData];
 }
 
 function getWeekOfDateOfDate(date) {

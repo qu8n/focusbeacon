@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import {
@@ -41,6 +42,7 @@ import { TotalLifetimeMetrics } from "./dashboard/TotalLifetimeMetrics";
 import { RepeatPartners } from "./dashboard/RepeatPartners";
 import LoaderSpinner from "./LoaderSpinner";
 import { RecentMilestones } from "./dashboard/RecentMilestones";
+import { SessionsAndHours } from "./dashboard/SessionsAndHours";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -116,13 +118,7 @@ export default function Dashboard({ isDemo }) {
     prevYearData
   } = groupDataByInterval(sessionsData, today);
 
-  // TODO pass these calcTotalMetrics directly into the component
-  const {
-    totalSessions: currWeekTotalSessions,
-    totalHours: currWeekTotalHours,
-    totalPartners: currWeekTotalPartners
-  } = calcTotalMetrics(currWeekData);
-
+  // Calculate total metrics for each time interval
   const {
     totalSessions: prevWeeksTotalSessions,
     totalHours: prevWeeksTotalHours,
@@ -130,22 +126,10 @@ export default function Dashboard({ isDemo }) {
   } = calcTotalMetrics(prevWeeksData);
 
   const {
-    totalSessions: currMonthTotalSessions,
-    totalHours: currMonthTotalHours,
-    totalPartners: currMonthTotalPartners
-  } = calcTotalMetrics(currMonthData);
-
-  const {
     totalSessions: prevMonthsTotalSessions,
     totalHours: prevMonthsTotalHours,
     totalPartners: prevMonthsTotalPartners
   } = calcTotalMetrics(prevMonthsData);
-
-  const {
-    totalSessions: yearToDateTotalSessions,
-    totalHours: yearToDateTotalHours,
-    totalPartners: yearToDateTotalPartners
-  } = calcTotalMetrics(currYearData);
 
   const {
     totalSessions: prevYearTotalSessions,
@@ -159,17 +143,12 @@ export default function Dashboard({ isDemo }) {
     totalPartners: lifetimeTotalPartners
   } = calcTotalMetrics(sessionsData);
 
-  const { weeklySessionsChartData, weeklyHoursChartData } =
-    createPrevWksChartData(prevWeeksData);
-
+  // Create data for pie charts
   const {
     weeklyDurationPieData,
     weeklyAttendancePieData,
     weeklyCompletionPieData
   } = createPrevWksPieChartsData(prevWeeksData);
-
-  const { monthlySessionsChartData, monthlyHoursChartData } =
-    createPrevMsChartData(prevMonthsData);
 
   const {
     monthlyDurationPieData,
@@ -182,9 +161,6 @@ export default function Dashboard({ isDemo }) {
     yearlyAttendancePieData,
     yearlyCompletionPieData
   } = createPrevYPieChartsData(prevYearData);
-
-  const { yearlySessionsChartData, yearlyHoursChartData } =
-    createPrevYChartData(prevYearData);
 
   const {
     lifetimeDurationPieData,
@@ -221,11 +197,7 @@ export default function Dashboard({ isDemo }) {
               <p className="font-normal text-md">{currWeekDateRange()}</p>
             </div>
 
-            <TotalMetrics
-              totalSessions={currWeekTotalSessions}
-              totalHours={currWeekTotalHours}
-              totalPartners={currWeekTotalPartners}
-            />
+            <TotalMetrics data={calcTotalMetrics(currWeekData)} />
 
             <Card>
               <Title>Sessions by day</Title>
@@ -248,9 +220,11 @@ export default function Dashboard({ isDemo }) {
             </div>
 
             <TotalMetrics
-              totalSessions={prevWeeksTotalSessions}
-              totalHours={prevWeeksTotalHours}
-              totalPartners={prevWeeksTotalPartners}
+              data={{
+                totalSessions: prevWeeksTotalSessions,
+                totalHours: prevWeeksTotalHours,
+                totalPartners: prevWeeksTotalPartners
+              }}
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
@@ -345,33 +319,12 @@ export default function Dashboard({ isDemo }) {
               </Card>
             </Grid>
 
-            <Card>
-              <Title>Sessions by week</Title>
-              <BarChart
-                data={weeklySessionsChartData}
-                index="weekOfDate"
-                categories={["25 minutes", "50 minutes", "75 minutes"]}
-                colors={["blue", "orange", "yellow"]}
-                yAxisWidth={32}
-                stack={true}
-                allowDecimals={false}
-              />
-              <Text className="text-center">Week of</Text>
-            </Card>
-            <Card>
-              <Title>Hours of sessions by week</Title>
-              <AreaChart
-                data={weeklyHoursChartData}
-                index="weekOfDate"
-                categories={["25 minutes", "50 minutes", "75 minutes"]}
-                colors={["blue", "orange", "yellow"]}
-                yAxisWidth={32}
-                stack={true}
-                valueFormatter={(value) => Math.round(value * 100) / 100}
-                allowDecimals={false}
-              />
-              <Text className="text-center">Week of</Text>
-            </Card>
+            <SessionsAndHours
+              data={createPrevWksChartData(prevWeeksData)}
+              intervalInTitle="week"
+              chartIndex="weekOfDate"
+              xAxisLabel="Week of"
+            />
           </>
         )}
 
@@ -382,11 +335,7 @@ export default function Dashboard({ isDemo }) {
               <p className="font-normal text-md">{currMonthDateRange()}</p>
             </div>
 
-            <TotalMetrics
-              totalSessions={currMonthTotalSessions}
-              totalHours={currMonthTotalHours}
-              totalPartners={currMonthTotalPartners}
-            />
+            <TotalMetrics data={calcTotalMetrics(currMonthData)} />
 
             <Card>
               <Title>Sessions by day</Title>
@@ -409,9 +358,11 @@ export default function Dashboard({ isDemo }) {
             </div>
 
             <TotalMetrics
-              totalSessions={prevMonthsTotalSessions}
-              totalHours={prevMonthsTotalHours}
-              totalPartners={prevMonthsTotalPartners}
+              data={{
+                totalSessions: prevMonthsTotalSessions,
+                totalHours: prevMonthsTotalHours,
+                totalPartners: prevMonthsTotalPartners
+              }}
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
@@ -506,34 +457,12 @@ export default function Dashboard({ isDemo }) {
               </Card>
             </Grid>
 
-            <Card>
-              <Title>Sessions by month</Title>
-              <BarChart
-                data={monthlySessionsChartData}
-                index="month"
-                categories={["25 minutes", "50 minutes", "75 minutes"]}
-                colors={["blue", "orange", "yellow"]}
-                yAxisWidth={32}
-                stack={true}
-                allowDecimals={false}
-              />
-              <Text className="text-center">Month</Text>
-            </Card>
-
-            <Card>
-              <Title>Hours of sessions by month</Title>
-              <AreaChart
-                data={monthlyHoursChartData}
-                index="month"
-                categories={["25 minutes", "50 minutes", "75 minutes"]}
-                colors={["blue", "orange", "yellow"]}
-                yAxisWidth={32}
-                stack={true}
-                valueFormatter={(value) => Math.round(value * 100) / 100}
-                allowDecimals={false}
-              />
-              <Text className="text-center">Month</Text>
-            </Card>
+            <SessionsAndHours
+              data={createPrevMsChartData(prevMonthsData)}
+              intervalInTitle="month"
+              chartIndex="month"
+              xAxisLabel="Month"
+            />
           </>
         )}
 
@@ -544,11 +473,7 @@ export default function Dashboard({ isDemo }) {
               <p className="font-normal text-md">{currYearDateRange()}</p>
             </div>
 
-            <TotalMetrics
-              totalSessions={yearToDateTotalSessions}
-              totalHours={yearToDateTotalHours}
-              totalPartners={yearToDateTotalPartners}
-            />
+            <TotalMetrics data={calcTotalMetrics(currYearData)} />
 
             <Card>
               <Title>Sessions by month</Title>
@@ -571,9 +496,11 @@ export default function Dashboard({ isDemo }) {
             </div>
 
             <TotalMetrics
-              totalSessions={prevYearTotalSessions}
-              totalHours={prevYearTotalHours}
-              totalPartners={prevYearTotalPartners}
+              data={{
+                totalSessions: prevYearTotalSessions,
+                totalHours: prevYearTotalHours,
+                totalPartners: prevYearTotalPartners
+              }}
             />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
@@ -668,34 +595,12 @@ export default function Dashboard({ isDemo }) {
               </Card>
             </Grid>
 
-            <Card>
-              <Title>Sessions by month</Title>
-              <BarChart
-                data={yearlySessionsChartData}
-                index="month"
-                categories={["25 minutes", "50 minutes", "75 minutes"]}
-                colors={["blue", "orange", "yellow"]}
-                yAxisWidth={32}
-                stack={true}
-                allowDecimals={false}
-              />
-              <Text className="text-center">Month</Text>
-            </Card>
-
-            <Card>
-              <Title>Hours of sessions by month</Title>
-              <AreaChart
-                data={yearlyHoursChartData}
-                index="month"
-                categories={["25 minutes", "50 minutes", "75 minutes"]}
-                colors={["blue", "orange", "yellow"]}
-                yAxisWidth={32}
-                stack={true}
-                valueFormatter={(value) => Math.round(value * 100) / 100}
-                allowDecimals={false}
-              />
-              <Text className="text-center">Month</Text>
-            </Card>
+            <SessionsAndHours
+              data={createPrevYChartData(prevYearData)}
+              intervalInTitle="month"
+              chartIndex="month"
+              xAxisLabel="Month"
+            />
           </>
         )}
 
@@ -706,9 +611,11 @@ export default function Dashboard({ isDemo }) {
             </div>
 
             <TotalMetrics
-              totalSessions={lifetimeTotalSessions}
-              totalHours={lifetimeTotalHours}
-              totalPartners={lifetimeTotalPartners}
+              data={{
+                totalSessions: lifetimeTotalSessions,
+                totalHours: lifetimeTotalHours,
+                totalPartners: lifetimeTotalPartners
+              }}
             />
 
             <TotalLifetimeMetrics

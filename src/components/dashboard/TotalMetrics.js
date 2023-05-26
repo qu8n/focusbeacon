@@ -4,12 +4,16 @@ import { ClockIcon, VideoCameraIcon, UsersIcon } from "@heroicons/react/solid";
 import PropTypes from "prop-types";
 
 TotalMetrics.propTypes = {
-  totalSessions: PropTypes.number.isRequired,
-  totalHours: PropTypes.number.isRequired,
-  totalPartners: PropTypes.number.isRequired
+  data: PropTypes.shape({
+    totalSessions: PropTypes.number,
+    totalHours: PropTypes.number,
+    totalPartners: PropTypes.number
+  })
 };
 
-export function TotalMetrics({ totalSessions, totalHours, totalPartners }) {
+export function TotalMetrics({
+  data: { totalSessions, totalHours, totalPartners }
+}) {
   const metrics = [
     {
       title: "Total sessions",
