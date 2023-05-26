@@ -41,9 +41,9 @@ export function createLifetimePieChartsData(sessionsData) {
   }, completionShell);
   const lifetimeCompletionPieData = Object.values(completionObj);
 
-  return {
+  return [
     lifetimeDurationPieData,
     lifetimeAttendancePieData,
     lifetimeCompletionPieData
-  };
+  ];
 }

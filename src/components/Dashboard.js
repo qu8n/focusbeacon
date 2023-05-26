@@ -1,18 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
-import {
-  AreaChart,
-  BarChart,
-  Card,
-  DonutChart,
-  Grid,
-  Legend,
-  List,
-  ListItem,
-  Text,
-  Title
-} from "@tremor/react";
+import { BarChart, Card, Grid, Text, Title } from "@tremor/react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import Footer from "./Footer";
@@ -40,10 +29,10 @@ import { createPrevYChartData } from "../utils/createPrevYChartData";
 import { createLifetimePieChartsData } from "../utils/createLifetimePieChartsData";
 import { LifetimeMetrics } from "./dashboard/LifetimeMetrics";
 import { RepeatPartners } from "./dashboard/RepeatPartners";
-import LoaderSpinner from "./LoaderSpinner";
+import { LoaderSpinner } from "./LoaderSpinner";
 import { RecentMilestones } from "./dashboard/RecentMilestones";
 import { SessionsAndHours } from "./dashboard/SessionsAndHours";
-import { SessionsByDuration } from "./dashboard/SessionsByDuration";
+import { PieCharts } from "./dashboard/PieCharts";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -144,31 +133,6 @@ export default function Dashboard({ isDemo }) {
     totalPartners: lifetimeTotalPartners
   } = calcTotalMetrics(sessionsData);
 
-  // Create data for pie charts
-  const {
-    weeklyDurationPieData,
-    weeklyAttendancePieData,
-    weeklyCompletionPieData
-  } = createPrevWksPieChartsData(prevWeeksData);
-
-  const {
-    monthlyDurationPieData,
-    monthlyAttendancePieData,
-    monthlyCompletionPieData
-  } = createPrevMsPieChartsData(prevMonthsData);
-
-  const {
-    yearlyDurationPieData,
-    yearlyAttendancePieData,
-    yearlyCompletionPieData
-  } = createPrevYPieChartsData(prevYearData);
-
-  const {
-    lifetimeDurationPieData,
-    lifetimeAttendancePieData,
-    lifetimeCompletionPieData
-  } = createLifetimePieChartsData(sessionsData);
-
   return (
     <>
       <div className="pb-5 mx-3 mb-10 border-b border-slate-300 sm:mx-20">
@@ -228,72 +192,11 @@ export default function Dashboard({ isDemo }) {
               }}
             />
 
-            <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <SessionsByDuration
-                data={weeklyDurationPieData}
-                totalSessions={prevWeeksTotalSessions}
-              />
-
-              <Card>
-                <Title>Sessions by attendance</Title>
-                <Legend
-                  categories={["On time", "Late"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={weeklyAttendancePieData}
-                  category="sessions"
-                  index="attendance"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {weeklyAttendancePieData.map((data) => (
-                    <ListItem key={data.attendance}>
-                      {data.attendance}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevWeeksTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-
-              <Card>
-                <Title>Session completion rate</Title>
-                <Legend
-                  categories={["Complete", "Incomplete"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={weeklyCompletionPieData}
-                  category="sessions"
-                  index="completion"
-                  colors={["blue", "orange"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {weeklyCompletionPieData.map((data) => (
-                    <ListItem key={data.completion}>
-                      {data.completion}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevWeeksData.length) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-            </Grid>
+            <PieCharts
+              data={createPrevWksPieChartsData(prevWeeksData)}
+              totalSessions={prevWeeksTotalSessions}
+              grossSessions={prevWeeksData.length}
+            />
 
             <SessionsAndHours
               data={createPrevWksChartData(prevWeeksData)}
@@ -341,72 +244,11 @@ export default function Dashboard({ isDemo }) {
               }}
             />
 
-            <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <SessionsByDuration
-                data={monthlyDurationPieData}
-                totalSessions={prevMonthsTotalSessions}
-              />
-
-              <Card>
-                <Title>Sessions by attendance</Title>
-                <Legend
-                  categories={["On time", "Late"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={monthlyAttendancePieData}
-                  category="sessions"
-                  index="attendance"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {monthlyAttendancePieData.map((data) => (
-                    <ListItem key={data.attendance}>
-                      {data.attendance}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevMonthsTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-
-              <Card>
-                <Title>Session completion rate</Title>
-                <Legend
-                  categories={["Complete", "Incomplete"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={monthlyCompletionPieData}
-                  category="sessions"
-                  index="completion"
-                  colors={["blue", "orange"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {monthlyCompletionPieData.map((data) => (
-                    <ListItem key={data.completion}>
-                      {data.completion}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevMonthsData.length) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-            </Grid>
+            <PieCharts
+              data={createPrevMsPieChartsData(prevMonthsData)}
+              totalSessions={prevMonthsTotalSessions}
+              grossSessions={prevMonthsData.length}
+            />
 
             <SessionsAndHours
               data={createPrevMsChartData(prevMonthsData)}
@@ -454,72 +296,11 @@ export default function Dashboard({ isDemo }) {
               }}
             />
 
-            <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <SessionsByDuration
-                data={yearlyDurationPieData}
-                totalSessions={prevYearTotalSessions}
-              />
-
-              <Card>
-                <Title>Sessions by attendance</Title>
-                <Legend
-                  categories={["On time", "Late"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={yearlyAttendancePieData}
-                  category="sessions"
-                  index="attendance"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {yearlyAttendancePieData.map((data) => (
-                    <ListItem key={data.attendance}>
-                      {data.attendance}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevYearTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-
-              <Card>
-                <Title>Session completion rate</Title>
-                <Legend
-                  categories={["Complete", "Incomplete"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={yearlyCompletionPieData}
-                  category="sessions"
-                  index="completion"
-                  colors={["blue", "orange"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {yearlyCompletionPieData.map((data) => (
-                    <ListItem key={data.completion}>
-                      {data.completion}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / prevYearData.length) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-            </Grid>
+            <PieCharts
+              data={createPrevYPieChartsData(prevYearData)}
+              totalSessions={prevYearTotalSessions}
+              grossSessions={prevYearData.length}
+            />
 
             <SessionsAndHours
               data={createPrevYChartData(prevYearData)}
@@ -578,72 +359,11 @@ export default function Dashboard({ isDemo }) {
               }
             />
 
-            <Grid numColsSm={1} numColsLg={3} className="gap-3">
-              <SessionsByDuration
-                data={lifetimeDurationPieData}
-                totalSessions={lifetimeTotalSessions}
-              />
-
-              <Card>
-                <Title>Sessions by attendance</Title>
-                <Legend
-                  categories={["On time", "Late"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={lifetimeAttendancePieData}
-                  category="sessions"
-                  index="attendance"
-                  colors={["blue", "orange", "yellow"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {lifetimeAttendancePieData.map((data) => (
-                    <ListItem key={data.attendance}>
-                      {data.attendance}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / lifetimeTotalSessions) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-
-              <Card>
-                <Title>Session completion rate</Title>
-                <Legend
-                  categories={["Complete", "Incomplete"]}
-                  colors={["blue", "orange"]}
-                />
-                <DonutChart
-                  className="mt-8"
-                  data={lifetimeCompletionPieData}
-                  category="sessions"
-                  index="completion"
-                  colors={["blue", "orange"]}
-                  variant="pie"
-                />
-                <List className="mt-5">
-                  {lifetimeCompletionPieData.map((data) => (
-                    <ListItem key={data.completion}>
-                      {data.completion}
-                      <Text>
-                        {data.sessions} sessions (
-                        {Math.round(
-                          (data.sessions / sessionsData.length) * 100
-                        )}
-                        %)
-                      </Text>
-                    </ListItem>
-                  ))}
-                </List>
-              </Card>
-            </Grid>
+            <PieCharts
+              data={createLifetimePieChartsData(sessionsData)}
+              totalSessions={lifetimeTotalSessions}
+              grossSessions={sessionsData.length}
+            />
 
             <Grid numColsSm={1} numColsLg={3} className="gap-3">
               <RecentMilestones

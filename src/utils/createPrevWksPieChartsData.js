@@ -43,9 +43,9 @@ export function createPrevWksPieChartsData(prevWeeksData) {
   }, completionShell);
   const weeklyCompletionPieData = Object.values(completionObj);
 
-  return {
+  return [
     weeklyDurationPieData,
     weeklyAttendancePieData,
     weeklyCompletionPieData
-  };
+  ];
 }

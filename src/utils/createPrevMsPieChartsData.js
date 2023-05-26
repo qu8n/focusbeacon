@@ -43,9 +43,9 @@ export function createPrevMsPieChartsData(prevMonthsData) {
   }, completionShell);
   const monthlyCompletionPieData = Object.values(completionObj);
 
-  return {
+  return [
     monthlyDurationPieData,
     monthlyAttendancePieData,
     monthlyCompletionPieData
-  };
+  ];
 }

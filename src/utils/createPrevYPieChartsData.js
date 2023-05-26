@@ -41,9 +41,9 @@ export function createPrevYPieChartsData(prevYearData) {
   }, completionShell);
   const yearlyCompletionPieData = Object.values(completionObj);
 
-  return {
+  return [
     yearlyDurationPieData,
     yearlyAttendancePieData,
     yearlyCompletionPieData
-  };
+  ];
 }
