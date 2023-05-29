@@ -1,16 +1,19 @@
-export function createPrevWksChartData(prevWeeksData) {
+export function createPrevWksChartData(prevWeeksData, today) {
   const completedSessions = prevWeeksData.filter(
     (session) => session.users[0].completed === true
   );
 
   // Create a "shell" to hold data for charting
-  const chartDataShell = getMondaysOfPrevWeeks().reduce((acc, weekOfDate) => {
-    acc[weekOfDate] = { weekOfDate };
-    acc[weekOfDate]["25 minutes"] = 0;
-    acc[weekOfDate]["50 minutes"] = 0;
-    acc[weekOfDate]["75 minutes"] = 0;
-    return acc;
-  }, {});
+  const chartDataShell = getMondaysOfPrevWeeks(today).reduce(
+    (acc, weekOfDate) => {
+      acc[weekOfDate] = { weekOfDate };
+      acc[weekOfDate]["25 minutes"] = 0;
+      acc[weekOfDate]["50 minutes"] = 0;
+      acc[weekOfDate]["75 minutes"] = 0;
+      return acc;
+    },
+    {}
+  );
 
   // Fill in the shell with data, convert it to an array to work with Tremor's charts, and sort it by date
   const weeklySessionsChartDataObj = completedSessions.reduce(
@@ -54,8 +57,7 @@ function formatDateAsMMMD(date) {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function getMondaysOfPrevWeeks() {
-  let today = new Date();
+function getMondaysOfPrevWeeks(today) {
   let dayOfWeek = today.getDay();
   let daysSinceLastMonday = (dayOfWeek + 7 - 1) % 7;
   today.setDate(today.getDate() - daysSinceLastMonday);

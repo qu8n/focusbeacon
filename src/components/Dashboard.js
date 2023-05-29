@@ -97,7 +97,6 @@ export default function Dashboard({ isDemo }) {
     );
   }
 
-  // TODO: use a single today / `new Date()` for all date calculations that use today/new Date()
   const today = new Date();
 
   const {
@@ -157,7 +156,7 @@ export default function Dashboard({ isDemo }) {
       <div className={cardPadding}>
         {currentTab === "Weekly" && (
           <>
-            <Heading title="Current week" subtitle={currWeekDateRange()} />
+            <Heading title="Current week" subtitle={currWeekDateRange(today)} />
 
             <TotalMetrics data={calcTotalMetrics(currWeekData)} />
 
@@ -176,7 +175,10 @@ export default function Dashboard({ isDemo }) {
 
             <br />
 
-            <Heading title="Previous 4 weeks" subtitle={prevWeeksDateRange()} />
+            <Heading
+              title="Previous 4 weeks"
+              subtitle={prevWeeksDateRange(today)}
+            />
 
             <TotalMetrics
               data={{
@@ -193,7 +195,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <SessionsAndHours
-              data={createPrevWksChartData(prevWeeksData)}
+              data={createPrevWksChartData(prevWeeksData, today)}
               intervalInTitle="week"
               chartIndex="weekOfDate"
               xAxisLabel="Week of"
@@ -203,14 +205,17 @@ export default function Dashboard({ isDemo }) {
 
         {currentTab === "Monthly" && (
           <>
-            <Heading title="Current month" subtitle={currMonthDateRange()} />
+            <Heading
+              title="Current month"
+              subtitle={currMonthDateRange(today)}
+            />
 
             <TotalMetrics data={calcTotalMetrics(currMonthData)} />
 
             <Card>
               <Title>Sessions by day</Title>
               <BarChart
-                data={createCurrMChartData(currMonthData)}
+                data={createCurrMChartData(currMonthData, today)}
                 index="date"
                 categories={["Total sessions"]}
                 yAxisWidth={32}
@@ -224,7 +229,7 @@ export default function Dashboard({ isDemo }) {
 
             <Heading
               title="Previous 6 months"
-              subtitle={prevMonthsDateRange()}
+              subtitle={prevMonthsDateRange(today)}
             />
 
             <TotalMetrics
@@ -242,7 +247,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <SessionsAndHours
-              data={createPrevMsChartData(prevMonthsData)}
+              data={createPrevMsChartData(prevMonthsData, today)}
               intervalInTitle="month"
               chartIndex="month"
               xAxisLabel="Month"
@@ -252,7 +257,7 @@ export default function Dashboard({ isDemo }) {
 
         {currentTab === "Yearly" && (
           <>
-            <Heading title="Current year" subtitle={currYearDateRange()} />
+            <Heading title="Current year" subtitle={currYearDateRange(today)} />
 
             <TotalMetrics data={calcTotalMetrics(currYearData)} />
 
@@ -271,7 +276,10 @@ export default function Dashboard({ isDemo }) {
 
             <br />
 
-            <Heading title="Previous year" subtitle={prevYearDateRange()} />
+            <Heading
+              title="Previous year"
+              subtitle={prevYearDateRange(today)}
+            />
 
             <TotalMetrics
               data={{
@@ -288,7 +296,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <SessionsAndHours
-              data={createPrevYChartData(prevYearData)}
+              data={createPrevYChartData(prevYearData, today)}
               intervalInTitle="month"
               chartIndex="month"
               xAxisLabel="Month"
@@ -333,7 +341,7 @@ export default function Dashboard({ isDemo }) {
         )}
       </div>
 
-      <Footer />
+      <Footer today={today} />
     </>
   );
 }

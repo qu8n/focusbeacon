@@ -1,24 +1,18 @@
-export function currYearDateRange() {
-  const today = new Date();
-
+export function currYearDateRange(today) {
   const firstDayOfYear = new Date(today.getFullYear(), 0);
   const lastDayOfYear = new Date(today.getFullYear() + 1, 0, 0);
 
   return formatMonthlyDateRange(firstDayOfYear, lastDayOfYear);
 }
 
-export function prevYearDateRange() {
-  const today = new Date();
-
+export function prevYearDateRange(today) {
   const firstDayOfPrevYear = new Date(today.getFullYear() - 1, 0);
   const lastDayOfPrevYear = new Date(today.getFullYear(), 0, 0);
 
   return formatMonthlyDateRange(firstDayOfPrevYear, lastDayOfPrevYear);
 }
 
-export function prevMonthsDateRange() {
-  const today = new Date();
-
+export function prevMonthsDateRange(today) {
   const firstDayOfCurrentMonth = new Date(
     today.getFullYear(),
     today.getMonth(),
@@ -34,16 +28,14 @@ export function prevMonthsDateRange() {
   return formatMonthlyDateRange(firstDayMonthsAgo, lastDayMonthsAgo);
 }
 
-export function currMonthDateRange() {
-  return new Date().toLocaleDateString("en-us", {
+export function currMonthDateRange(today) {
+  return today.toLocaleDateString("en-us", {
     year: "numeric",
     month: "long"
   });
 }
 
-export function currWeekDateRange() {
-  const today = new Date();
-
+export function currWeekDateRange(today) {
   const firstDayOfWeek = new Date(today);
   firstDayOfWeek.setDate(
     today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1)
@@ -57,9 +49,7 @@ export function currWeekDateRange() {
   return formatWeeklyDateRange(firstDayOfWeek, lastDayOfWeek);
 }
 
-export function prevWeeksDateRange() {
-  const today = new Date();
-
+export function prevWeeksDateRange(today) {
   const firstDayOfCurrentWeek = new Date(today);
   firstDayOfCurrentWeek.setDate(
     today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1)

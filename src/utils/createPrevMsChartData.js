@@ -1,10 +1,10 @@
-export function createPrevMsChartData(prevMonthsData) {
+export function createPrevMsChartData(prevMonthsData, today) {
   const completedSessions = prevMonthsData.filter(
     (session) => session.users[0].completed === true
   );
 
   // Create a "shell" to hold data for charting
-  const chartDataShell = getPrevMonths().reduce((acc, month) => {
+  const chartDataShell = getPrevMonths(today).reduce((acc, month) => {
     acc[month] = { month };
     acc[month]["25 minutes"] = 0;
     acc[month]["50 minutes"] = 0;
@@ -51,13 +51,12 @@ function formatDateAsMMMYYYY(date) {
   return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-function getPrevMonths() {
-  const today = new Date();
+function getPrevMonths(today) {
   const prevMonths = [];
   for (let i = 6; i > 0; i--) {
-    const prevMonth = new Date(today);
-    prevMonth.setMonth(prevMonth.getMonth() - i);
-    prevMonths.push(formatDateAsMMMYYYY(prevMonth));
+    const month = new Date(today.getFullYear(), today.getMonth(), 1);
+    month.setMonth(month.getMonth() - i);
+    prevMonths.push(formatDateAsMMMYYYY(month));
   }
   return prevMonths;
 }

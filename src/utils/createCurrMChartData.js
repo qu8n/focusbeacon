@@ -1,11 +1,11 @@
-export function createCurrMChartData(currMonthData) {
+export function createCurrMChartData(currMonthData, today) {
   const completedSessions = currMonthData.filter(
     (session) => session.users[0].completed === true
   );
 
   const lastDayCurrMonth = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth() + 1,
+    today.getFullYear(),
+    today.getMonth() + 1,
     0
   ).getDate();
 

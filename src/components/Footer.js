@@ -1,7 +1,12 @@
 import React from "react";
 import GitHubButton from "react-github-btn";
+import PropTypes from "prop-types";
 
-export default function Footer() {
+Footer.propTypes = {
+  today: PropTypes.Date
+};
+
+export default function Footer({ today }) {
   return (
     <>
       <footer className="flex flex-col items-center pt-12 pb-12 mx-3 mt-10 space-y-2 text-xs border-t sm:mx-20 text-slate-400 border-slate-300">
@@ -12,7 +17,7 @@ export default function Footer() {
         >
           &nbsp; Star project on GitHub
         </GitHubButton>
-        <p>&copy; {new Date().getFullYear()} FocusBeacon</p>
+        <p>&copy; {today.getFullYear()} FocusBeacon</p>
       </footer>
     </>
   );
