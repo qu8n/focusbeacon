@@ -1,14 +1,13 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
-import { BarChart, Card, Grid, Text, Title } from "@tremor/react";
-import PropTypes from "prop-types";
 import { useRouter } from "next/router";
+import { BarChart, Card, Grid, Text, Title } from "@tremor/react";
+import { LoaderSpinner } from "./LoaderSpinner";
 import Footer from "./Footer";
+import { Heading } from "./dashboard/Heading";
 import { groupDataByInterval } from "../utils/groupDataByInterval";
 import { calcTotalMetrics } from "../utils/calcTotalMetrics";
 import { TotalMetrics } from "./dashboard/TotalMetrics";
-import { createCurrWkChartData } from "../utils/createCurrWkChartData";
 import {
   currWeekDateRange,
   prevWeeksDateRange,
@@ -17,23 +16,26 @@ import {
   currYearDateRange,
   prevYearDateRange
 } from "../utils/getDateRanges";
-// refactor these utils to a generic createChartData function?
-import { createPrevWksChartData } from "../utils/createPrevWksChartData";
-import { createPrevWksPieChartsData } from "../utils/createPrevWksPieChartsData";
-import { createPrevMsChartData } from "../utils/createPrevMsChartData";
-import { createPrevMsPieChartsData } from "../utils/createPrevMsPieChartsData";
-import { createCurrMChartData } from "../utils/createCurrMChartData";
-import { createYTDChartData } from "../utils/createYTDChartData";
-import { createPrevYPieChartsData } from "../utils/createPrevYPieChartsData";
-import { createPrevYChartData } from "../utils/createPrevYChartData";
-import { createLifetimePieChartsData } from "../utils/createLifetimePieChartsData";
+import {
+  createPrevWksPieChartsData,
+  createPrevMsPieChartsData,
+  createPrevYPieChartsData,
+  createLifetimePieChartsData
+} from "../utils/buildPieData";
+import { PieCharts } from "./dashboard/PieCharts";
+import {
+  createCurrWkChartData,
+  createPrevWksChartData,
+  createPrevMsChartData,
+  createCurrMChartData,
+  createYTDChartData,
+  createPrevYChartData
+} from "../utils/buildChartData";
+import { SessionsAndHours } from "./dashboard/SessionsAndHours";
 import { LifetimeMetrics } from "./dashboard/LifetimeMetrics";
 import { RepeatPartners } from "./dashboard/RepeatPartners";
-import { LoaderSpinner } from "./LoaderSpinner";
 import { RecentMilestones } from "./dashboard/RecentMilestones";
-import { SessionsAndHours } from "./dashboard/SessionsAndHours";
-import { PieCharts } from "./dashboard/PieCharts";
-import { Heading } from "./dashboard/Heading";
+import PropTypes from "prop-types";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

@@ -7,8 +7,11 @@ import {
   ListItem,
   DonutChart,
   Legend,
-  Grid
+  Grid,
+  Flex,
+  Icon
 } from "@tremor/react";
+import { InformationCircleIcon } from "@heroicons/react/outline";
 import PropTypes from "prop-types";
 
 PieCharts.propTypes = {
@@ -78,7 +81,15 @@ export function PieCharts({
       </Card>
 
       <Card>
-        <Title>Session completion rate</Title>
+        <Flex className="align-top">
+          <Title>Session completion rate</Title>
+          <Icon
+            icon={InformationCircleIcon}
+            variant="simple"
+            tooltip="Completed sessions are defined as sessions that were booked and reached the end without cancelling or leaving early. Note that all metrics, except for this card, exclude incomplete sessions."
+            color="slate"
+          />
+        </Flex>
         <Legend
           categories={["Complete", "Incomplete"]}
           colors={["blue", "orange"]}
