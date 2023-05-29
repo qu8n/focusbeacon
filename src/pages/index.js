@@ -26,7 +26,7 @@ export default function Home() {
         <div className="absolute bg-yellow-200 rounded-full opacity-30 -right-16 w-72 h-72 mix-blend-multiply filter blur-xl animate-blob"></div>
         <div className="relative">
           <p className="pb-2 -mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-700 to-slate-500">
-            Unlock your Focusmate stats.
+            Unlock your Focusmate metrics.
           </p>
           <p className="font-normal tracking-tight text-center text-md text-slate-700">
             View your milestones, session trends, hours of session, and more.
@@ -36,8 +36,8 @@ export default function Home() {
               className="w-4 h-4 mr-1"
               aria-hidden="true"
             />
-            <span className="text-xs tracking-tighter w-72">
-              Log into Focusmate first before logging into this website
+            <span className="text-xs w-72">
+              Log into Focusmate first before logging in here
             </span>
           </div>
           <div className="flex justify-center">

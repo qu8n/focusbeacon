@@ -45,7 +45,7 @@ export default function App({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta
           name="description"
-          content="Focusmate.com analytics for building better habits and crushing your goals"
+          content="Unofficial Focusmate metrics dashboard"
         />
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
