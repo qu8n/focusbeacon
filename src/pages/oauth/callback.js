@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import LoaderSpinner from "../../components/LoaderSpinner";
+import { LoaderSpinner } from "../../components/LoaderSpinner";
 
 export default function Callback() {
   const router = useRouter();

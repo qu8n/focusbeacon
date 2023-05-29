@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import DashboardComponent from "../../components/Dashboard";
-import LoaderSpinner from "../../components/LoaderSpinner";
+import { LoaderSpinner } from "../../components/LoaderSpinner";
 
 export default function Dashboard() {
   return (
