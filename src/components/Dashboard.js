@@ -16,12 +16,7 @@ import {
   currYearDateRange,
   prevYearDateRange
 } from "../utils/getDateRanges";
-import {
-  createPrevWksPieChartsData,
-  createPrevMsPieChartsData,
-  createPrevYPieChartsData,
-  createLifetimePieChartsData
-} from "../utils/buildPieData";
+import { buildPieData } from "../utils/buildPieData";
 import { PieCharts } from "./dashboard/PieCharts";
 import {
   createCurrWkChartData,
@@ -191,7 +186,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <PieCharts
-              data={createPrevWksPieChartsData(prevWeeksData)}
+              data={buildPieData(prevWeeksData)}
               totalSessions={prevWeeksTotalSessions}
               grossSessions={prevWeeksData.length}
             />
@@ -243,7 +238,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <PieCharts
-              data={createPrevMsPieChartsData(prevMonthsData)}
+              data={buildPieData(prevMonthsData)}
               totalSessions={prevMonthsTotalSessions}
               grossSessions={prevMonthsData.length}
             />
@@ -292,7 +287,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <PieCharts
-              data={createPrevYPieChartsData(prevYearData)}
+              data={buildPieData(prevYearData)}
               totalSessions={prevYearTotalSessions}
               grossSessions={prevYearData.length}
             />
@@ -327,7 +322,7 @@ export default function Dashboard({ isDemo }) {
             />
 
             <PieCharts
-              data={createLifetimePieChartsData(sessionsData)}
+              data={buildPieData(sessionsData)}
               totalSessions={lifetimeTotalSessions}
               grossSessions={sessionsData.length}
             />
