@@ -3,7 +3,7 @@ import GitHubButton from "react-github-btn";
 import PropTypes from "prop-types";
 
 Footer.propTypes = {
-  today: PropTypes.Date
+  today: PropTypes.instanceOf(Date).isRequired
 };
 
 export default function Footer({ today }) {

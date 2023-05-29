@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import DashboardComponent from "../../components/Dashboard";
-import LoaderSpinner from "../../components/LoaderSpinner";
+import { LoaderSpinner } from "../../components/LoaderSpinner";
 import { ExclamationIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { getOAuthURL } from "../../utils/getOAuthURL";
