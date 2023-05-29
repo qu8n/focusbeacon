@@ -70,24 +70,20 @@ export default function Dashboard({ isDemo }) {
     }
   });
 
-  if (isLoading) {
-    return <LoaderSpinner />;
-  }
-
   if (isError) {
     return <p>Error: {error.message}</p>;
   }
 
-  const { profileData, sessionsData } = data;
-
-  if (!profileData || !sessionsData) {
+  if (isLoading || !data) {
     return <LoaderSpinner />;
   }
+
+  const { profileData, sessionsData } = data;
 
   if (profileData.user.totalSessionCount === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[calc(100vh-150px)]">
-        <Text className="text-xl text-center">
+        <Text className="text-lg text-center">
           Nothing to see here. Check back after you have had a session 🙂
         </Text>
       </div>

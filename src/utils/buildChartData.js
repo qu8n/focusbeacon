@@ -157,7 +157,7 @@ export function createPrevMsChartData(prevMonthsData, today) {
   // Fill in the shell with data, convert it to an array to work with Tremor's charts, and sort it by date
   const monthlySessionsChartDataObj = completedSessions.reduce(
     (acc, session) => {
-      const month = getMonthOfDate(new Date(session.startTime));
+      const month = formatDateAsMMMYYYY(new Date(session.startTime));
       const duration = session.duration / 60000; // ms to minutes
       acc[month][`${duration} minutes`] += 1;
       return acc;
@@ -171,7 +171,7 @@ export function createPrevMsChartData(prevMonthsData, today) {
   });
 
   const monthlyHoursChartDataObj = completedSessions.reduce((acc, session) => {
-    const month = getMonthOfDate(new Date(session.startTime));
+    const month = formatDateAsMMMYYYY(new Date(session.startTime));
     const duration = session.duration / 60000; // ms to minutes
     acc[month][`${duration} minutes`] += duration / 60;
     return acc;
@@ -183,11 +183,6 @@ export function createPrevMsChartData(prevMonthsData, today) {
   );
 
   return [monthlySessionsChartData, monthlyHoursChartData];
-}
-
-// TODO: Delete this function
-function getMonthOfDate(date) {
-  return formatDateAsMMMYYYY(date);
 }
 
 function formatDateAsMMMYYYY(date) {
