@@ -19,9 +19,13 @@
   </p>
 </div>
 
+<br />
+<img src="public/FocusBeaconPreview.jpg" alt="FocusBeacon preview">
+<br />
+
 ## Built with
 
-* Frontend: React, [Tremor](https://tremor.so/), Headless UI, TailwindCSS
+* Frontend: React, Tremor.so, Headless UI, TailwindCSS
 * Backend: Next.js, Supabase's Postgres database, Vercel
 
 ## Getting started locally
