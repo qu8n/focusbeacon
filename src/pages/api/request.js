@@ -40,3 +40,10 @@ export default async function handler(req, res) {
 
   res.status(200).json({ profileData, sessionsData });
 }
+
+// Override Next.js API response's data limit of 4MB
+export const config = {
+  api: {
+    responseLimit: false
+  }
+};
