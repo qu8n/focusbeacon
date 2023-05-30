@@ -18,6 +18,10 @@ LifetimeMetrics.propTypes = {
 export function LifetimeMetrics({
   data: { sessionsData, lifetimeTotalHours, lifetimeTotalSessions }
 }) {
+  sessionsData.sort((a, b) => {
+    return new Date(b.startTime) - new Date(a.startTime);
+  });
+
   const firstSession = sessionsData[sessionsData.length - 1]
     ? new Date(sessionsData[sessionsData.length - 1].startTime).toLocaleString(
         "en-US",
