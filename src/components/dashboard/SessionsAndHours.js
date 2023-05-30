@@ -46,6 +46,7 @@ export function SessionsAndHours({
           stack={true}
           valueFormatter={(value) => Math.round(value * 100) / 100}
           allowDecimals={false}
+          showGradient={false}
         />
         <Text className="text-center">{xAxisLabel}</Text>
       </Card>
