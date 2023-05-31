@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { VideoCameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
@@ -7,6 +7,8 @@ import { getOAuthURL } from "../utils/getOAuthURL";
 
 export default function Home() {
   const router = useRouter();
+  const [totalUsers, setTotalUsers] = useState("other");
+
   useEffect(() => {
     async function checkSignedInStatus() {
       const response = await fetch("/api/session");
@@ -16,7 +18,17 @@ export default function Home() {
       }
     }
     checkSignedInStatus();
+
+    async function getStats() {
+      const response = await fetch("/api/stats");
+      const data = await response.json();
+      setTotalUsers(data.totalUsers);
+    }
+    if (process.env.NODE_ENV === "production") {
+      getStats();
+    }
   }, []);
+
   const oauthURL = getOAuthURL();
 
   return (
@@ -28,9 +40,21 @@ export default function Home() {
           <p className="pb-2 -mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-700 to-slate-500">
             Unlock your Focusmate metrics.
           </p>
-          <p className="font-normal tracking-tight text-center text-md text-slate-700">
-            View your milestones, session trends, hours of session, and more.
-          </p>
+          {process.env.NODE_ENV === "production" ? (
+            <p className="text-lg font-normal text-center text-slate-700">
+              Join{" "}
+              <span className="underline decoration-orange-400 decoration-wavy">
+                {totalUsers} Focusmate users
+              </span>{" "}
+              and get access to your milestones, total partners, session trends,
+              hours of session, and more.
+            </p>
+          ) : (
+            <p className="font-normal text-center text-md text-slate-700">
+              Unlock your milestones, session trends, hours of session, and
+              more.
+            </p>
+          )}
           <div className="flex justify-center mt-10 text-slate-500">
             <InformationCircleIcon
               className="w-4 h-4 mr-1"

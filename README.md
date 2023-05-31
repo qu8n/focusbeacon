@@ -21,7 +21,6 @@
 
 <br />
 <img src="public/FocusBeaconPreview.jpg" alt="FocusBeacon preview">
-<br />
 
 ## Built with
 
