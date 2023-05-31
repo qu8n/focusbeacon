@@ -44,14 +44,14 @@ export function RecentMilestones({ sessionsData, lifetimeTotalSessions }) {
   }
   const milestonesArr = sessionsData
     .filter((session) => session.users[0].completed === true)
-    .toReversed()
+    .reverse()
     .reduce((acc, session, sessionsCounter) => {
       if (milestoneSessions.includes(sessionsCounter + 1)) {
         acc.push({ milestone: sessionsCounter + 1, date: session.startTime });
       }
       return acc;
     }, [])
-    .toReversed();
+    .reverse();
 
   return (
     <Card>

@@ -48,7 +48,7 @@ export function RepeatPartners({ sessionsData }) {
     });
   }
 
-  repeatPartnersArr = repeatPartnersArr.toReversed().slice(0, 5);
+  repeatPartnersArr = structuredClone(repeatPartnersArr).reverse().slice(0, 5);
 
   return (
     <Card>
