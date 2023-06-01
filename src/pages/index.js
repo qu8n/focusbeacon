@@ -7,7 +7,7 @@ import { getOAuthURL } from "../utils/getOAuthURL";
 
 export default function Home() {
   const router = useRouter();
-  const [totalUsers, setTotalUsers] = useState("other");
+  const [totalUsers, setTotalUsers] = useState("__");
 
   useEffect(() => {
     async function checkSignedInStatus() {
@@ -34,25 +34,18 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center h-[calc(100vh-150px)] px-10">
       <div className="relative w-full max-w-xl">
-        <div className="absolute bg-orange-300 rounded-full -bottom-10 opacity-30 -left-16 w-96 h-96 mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute bg-yellow-200 rounded-full opacity-30 -right-16 w-72 h-72 mix-blend-multiply filter blur-xl animate-blob"></div>
         <div className="relative">
           <p className="pb-2 -mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-700 to-slate-500">
             Unlock your Focusmate metrics.
           </p>
-          {process.env.NODE_ENV === "production" ? (
+          {process.env.NODE_ENV === "production" && (
             <p className="text-lg font-normal text-center text-slate-700">
               Join{" "}
               <span className="underline decoration-orange-400 decoration-wavy">
-                {totalUsers} Focusmate users
+                {totalUsers} other Focusmate users
               </span>{" "}
-              and get access to your milestones, total partners, session trends,
-              hours of session, and more.
-            </p>
-          ) : (
-            <p className="font-normal text-center text-md text-slate-700">
-              Unlock your milestones, session trends, hours of session, and
-              more.
+              and get access to your milestones, session trends, hours of
+              session, and more.
             </p>
           )}
           <div className="flex justify-center mt-10 text-slate-500">
