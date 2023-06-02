@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { getOAuthURL } from "../utils/getOAuthURL";
 import FadeIn from "react-fade-in";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Home() {
   const router = useRouter();
@@ -39,18 +40,34 @@ export default function Home() {
           <p className="pb-2 -mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-700 to-slate-500">
             Unlock your Focusmate metrics.
           </p>
-          {process.env.NODE_ENV === "production" && totalUsers > 0 && (
-            <FadeIn transitionDuration={1000}>
-              <p className="text-lg font-normal text-center text-slate-700">
-                Join{" "}
-                <span className="underline decoration-orange-400 decoration-wavy">
-                  {totalUsers} other Focusmate users
-                </span>{" "}
-                and get access to your milestones, session trends, hours of
-                session, and more.
-              </p>
-            </FadeIn>
-          )}
+          {process.env.NODE_ENV === "production" &&
+            (totalUsers > 0 ? (
+              <FadeIn transitionDuration={1000}>
+                <p className="text-lg font-normal text-center text-slate-700">
+                  Join{" "}
+                  <span className="underline decoration-orange-400 decoration-wavy">
+                    {totalUsers} other Focusmate users
+                  </span>{" "}
+                  and get access to your milestones, session trends, hours of
+                  session, and more.
+                </p>
+              </FadeIn>
+            ) : (
+              <div className="flex justify-center">
+                <div>
+                  <ThreeDots
+                    visible={true}
+                    height="50"
+                    width="50"
+                    radius="9"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    color="#b0bec5"
+                  />
+                </div>
+              </div>
+            ))}
           <div className="flex justify-center mt-10 text-slate-500">
             <InformationCircleIcon
               className="w-4 h-4 mr-1"
