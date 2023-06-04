@@ -49,7 +49,15 @@ export default function App({ Component, pageProps }) {
         />
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
-        <title>FocusBeacon</title>
+        <title>
+          FocusBeacon - Focusmate&apos;s Unofficial Metrics & Statistics
+          Dashboard
+        </title>
+        <meta
+          name="description"
+          content="Unlock your Focusmate metrics and stats including milestones, session trends, hours of sessions, and more. 100% free."
+          key="desc"
+        />
       </Head>
 
       <NavBar
