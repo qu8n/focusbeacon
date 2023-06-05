@@ -36,8 +36,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const cardPadding = "mx-3 space-y-3 sm:mx-20 sm:space-y-7";
-
 Dashboard.propTypes = {
   isDemo: PropTypes.bool.isRequired
 };
@@ -147,7 +145,7 @@ export default function Dashboard({ isDemo }) {
           </nav>
         </div>
 
-        <div className={cardPadding}>
+        <div className="mx-3 space-y-3 sm:mx-20 sm:space-y-7">
           {currentTab === "Weekly" && (
             <>
               <Heading

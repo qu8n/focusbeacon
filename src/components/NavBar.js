@@ -44,7 +44,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
     }).then(() => {
       queryClient.clear();
       setIsSignedIn(false);
-      router.reload();
+      router.push("/");
     });
   }
 
