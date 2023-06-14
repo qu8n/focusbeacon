@@ -17,6 +17,7 @@ export default function Footer({ today }) {
         >
           &nbsp; Star project on GitHub
         </GitHubButton>
+        <p>Made in NYC while using Focusmate</p>
         <p>&copy; {today.getFullYear()} FocusBeacon</p>
       </footer>
     </>

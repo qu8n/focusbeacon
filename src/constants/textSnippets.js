@@ -31,8 +31,9 @@ export function AboutModalContent() {
       </p>
       <p className="mt-3">
         This website will be 100% free forever. If you want to support, please
-        let others know about this website and let me know if you encounter any
-        bugs or have any suggestions.{" "}
+        let others know about this website and let me know{" "}
+        <ModalLink text="here" href="https://forms.gle/mcuSkyP5uguV7FKd7" /> if
+        you encounter any bugs or have any suggestions.
       </p>
       <p className="mt-3">
         If you're a software person, I'd appreciate a GitHub star or
@@ -70,8 +71,7 @@ export function PrivacyModalContent() {
         FocusBeacon is an open-source project, which means anyone can inspect
         the code that runs this website. You can find the source code{" "}
         <ModalLink text="here" href="https://www.github.com/qu8n/focusbeacon" />
-        . If you have any questions or concerns, you can email me{" "}
-        <ModalLink text="here" href="mailto:quanwnn@gmail.com" />.
+        .
       </p>
     </>
   );
