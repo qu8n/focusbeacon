@@ -16,9 +16,6 @@ export function LoaderSpinner() {
           color="#b0bec5"
         />
       </div>
-      <p className="absolute text-lg font-normal transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 text-slate-400">
-        Loading...
-      </p>
     </div>
   );
 }
