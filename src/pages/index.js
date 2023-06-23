@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { VideoCameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
@@ -6,13 +6,15 @@ import Link from "next/link";
 import { getOAuthURL } from "../utils/getOAuthURL";
 import FadeIn from "react-fade-in";
 import PropTypes from "prop-types";
+import { LoaderSpinner } from "../components/LoaderSpinner";
 
 Home.propTypes = {
   totalUsers: PropTypes.number
 };
 
-export default function Home({ totalUsers }) {
+export default function Home() {
   const router = useRouter();
+  const [totalUsers, setTotalUsers] = useState();
 
   useEffect(() => {
     async function checkSignedInStatus() {
@@ -23,9 +25,28 @@ export default function Home({ totalUsers }) {
       }
     }
     checkSignedInStatus();
+
+    async function getStats() {
+      const response = await fetch("/api/stats");
+      const data = await response.json();
+      setTimeout(() => {
+        setTotalUsers(data.totalUsers);
+      }, 1000);
+    }
+    if (process.env.NODE_ENV === "production") {
+      getStats();
+    }
   }, []);
 
   const oauthURL = getOAuthURL();
+
+  if (process.env.NODE_ENV === "production" && !totalUsers) {
+    return (
+      <>
+        <LoaderSpinner />
+      </>
+    );
+  }
 
   return (
     <FadeIn transitionDuration={500}>
@@ -35,7 +56,7 @@ export default function Home({ totalUsers }) {
             <p className="pb-2 -mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-700 to-slate-500">
               Unlock your Focusmate metrics.
             </p>
-            {process.env.NODE_ENV === "production" && (
+            {totalUsers && (
               <p className="text-lg font-normal text-center text-slate-700">
                 Join{" "}
                 <span className="underline decoration-orange-400 decoration-wavy">
@@ -76,21 +97,4 @@ export default function Home({ totalUsers }) {
       </div>
     </FadeIn>
   );
-}
-
-export async function getServerSideProps() {
-  const response = await fetch(
-    `${
-      process.env.NODE_ENV === "development"
-        ? process.env.NEXT_PUBLIC_DEV_URL
-        : process.env.NEXT_PUBLIC_PROD_URL
-    }/api/stats`
-  );
-  const data = await response.json();
-  const totalUsers = data.totalUsers;
-  return {
-    props: {
-      totalUsers
-    }
-  };
 }
