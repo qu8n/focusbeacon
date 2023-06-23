@@ -56,7 +56,15 @@ export function PieCharts({
       </Card>
 
       <Card>
-        <Title>Sessions by attendance</Title>
+        <Flex className="align-top">
+          <Title>Sessions timeliness</Title>
+          <Icon
+            icon={InformationCircleIcon}
+            variant="simple"
+            tooltip="'On time' sessions are those where you joined less than 2 minutes late"
+            color="slate"
+          />
+        </Flex>
         <Legend categories={["On time", "Late"]} colors={["blue", "orange"]} />
         <DonutChart
           className="mt-8"
@@ -86,7 +94,7 @@ export function PieCharts({
           <Icon
             icon={InformationCircleIcon}
             variant="simple"
-            tooltip="Completed sessions are defined as sessions that were booked and reached the end without cancelling or leaving early. Note that all metrics, except for this card, exclude incomplete sessions"
+            tooltip="'Completed' sessions are sessions that were booked and reached the end without cancelling or leaving early. Note that all metrics, except for this card, exclude incomplete sessions"
             color="slate"
           />
         </Flex>

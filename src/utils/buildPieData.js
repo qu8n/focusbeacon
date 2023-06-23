@@ -21,7 +21,7 @@ export function buildPieData(rawData) {
   };
   const attendanceObj = completedSessions.reduce((acc, session) => {
     const attendance =
-      new Date(session.users[0].joinedAt) <= new Date(session.startTime)
+      new Date(session.users[0].joinedAt) - new Date(session.startTime) < 120000 // 2 minutes
         ? "On time"
         : "Late";
     acc[attendance].sessions += 1;
