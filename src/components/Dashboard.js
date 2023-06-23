@@ -41,7 +41,7 @@ Dashboard.propTypes = {
 };
 
 export default function Dashboard({ isDemo }) {
-  const [currentTab, setCurrentTab] = useState("Weekly");
+  const [currentTab, setCurrentTab] = useState(isDemo ? "Lifetime" : "Weekly");
   const router = useRouter();
   const isDemoFlag = "isDemo=" + (isDemo ? "true" : "false");
 
