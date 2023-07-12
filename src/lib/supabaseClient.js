@@ -4,7 +4,13 @@ import { createClient } from "@supabase/supabase-js";
 // stored in an environment variable. The "user" data table has Row Level
 // Security (RLS) enabled with no policies, preventing unauthorized access
 // to the table.
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+
+let supabase;
+if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+  supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+  );
+}
+
+export { supabase };
