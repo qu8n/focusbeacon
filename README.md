@@ -61,5 +61,6 @@
 
 ## Contributing
 
-If you have a suggestion that would make this better, feel free to fork the repo and create a pull request. 
-I'm also happy to chat over a 30-minute Focusmate session to get you started with the codebase.
+By default, contributors will not have access to the Focusmate OAuth login nor production database. If your contributions require access to these, please reach out to me on [LinkedIn](https://www.linkedin.com/in/nguyenhq/).
+
+If you have a suggestion that would make this better, feel free to fork the repo and create a pull request. I'm also happy to chat over a Focusmate session to get you started with the codebase.
