@@ -33,7 +33,7 @@ export default async function handler(req, res) {
   const sessionsData = await fetchSessionsData(headers, memberSince);
 
   // Save data to Supabase
-  await supabase.from("user").upsert({
+  await supabase?.from("user").upsert({
     user_id: userId,
     time_zone: timeZone
   });

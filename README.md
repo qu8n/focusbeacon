@@ -40,22 +40,27 @@
    ```sh
    cd focusbeacon
    ```
-6. Install packages with npm
+6. Use the Node version specified for this project
+   ```sh
+   nvm use
+   ```
+7. Install packages with npm
    ```sh
    npm install
    ```
-7. Create an `.env` file in the root directory
-8. Enter the environment variables in the `.env` file
+8. Create an `.env` file in the root directory
+9. Enter the environment variables in the `.env` file
    ```
    DEMO_FOCUSMATE_API_KEY="YOUR_API_KEY"
    ```
-9. Run the app in development mode
+10. Run the app in development mode
    ```sh
    npm run dev
    ```
-10. Open [localhost:3000/dashboard/demo](http://localhost:3000/dashboard/demo) to view your metrics in the browser
+11. Open [localhost:3000/dashboard/demo](http://localhost:3000/dashboard/demo) to view your metrics in the browser
 
 ## Contributing
 
-If you have a suggestion that would make this better, feel free to fork the repo and create a pull request. 
-I'm also happy to chat over a 30-minute Focusmate session to get you started with the codebase.
+By default, contributors will not have access to the Focusmate OAuth login nor production database. If your contributions require access to these, please reach out to me on [LinkedIn](https://www.linkedin.com/in/nguyenhq/).
+
+If you have a suggestion that would make this better, feel free to fork the repo and create a pull request. I'm also happy to chat over a Focusmate session to get you started with the codebase.
