@@ -1,6 +1,6 @@
-export function calcTotalMetrics(sessionsData) {
-  const completedSessions = sessionsData.filter(
-    (session) => session.users[0].completed === true
+export function calcTotalMetrics(sessions) {
+  const completedSessions = sessions.filter(
+    (session) => session.users[0]?.completed === true
   );
 
   const totalSessions = completedSessions.length;

@@ -3,7 +3,7 @@ export function buildPieData(rawData) {
     (session) => session.users[0].completed === true
   );
 
-  const durationShell = {
+  const initialDurationData = {
     "25 minutes": { duration: "25 minutes", sessions: 0 },
     "50 minutes": { duration: "50 minutes", sessions: 0 },
     "75 minutes": { duration: "75 minutes", sessions: 0 }
@@ -12,7 +12,7 @@ export function buildPieData(rawData) {
     const duration = session.duration / 60000; // ms to minutes
     acc[`${duration} minutes`].sessions += 1;
     return acc;
-  }, durationShell);
+  }, initialDurationData);
   const durationPieData = Object.values(durationObj);
 
   const attendanceShell = {

@@ -8,7 +8,6 @@ Footer.propTypes = {
 
 export default function Footer({ today }) {
   return (
-    <>
       <footer className="flex flex-col items-center pt-12 pb-12 mx-3 mt-10 space-y-2 text-xs border-t sm:mx-20 text-slate-400 border-slate-300">
         <GitHubButton
           href="https://github.com/qu8n/focusbeacon"
@@ -20,6 +19,5 @@ export default function Footer({ today }) {
         <p>Made in NYC while using Focusmate</p>
         <p>&copy; {today.getFullYear()} FocusBeacon</p>
       </footer>
-    </>
   );
 }
