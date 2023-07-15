@@ -1,3 +1,5 @@
+import React from "react";
+import PropTypes from "prop-types";
 import {
   Table,
   TableHead,
@@ -8,8 +10,6 @@ import {
   Card,
   Title
 } from "@tremor/react";
-import React from "react";
-import PropTypes from "prop-types";
 
 RecentMilestones.propTypes = {
   sessionsData: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -17,8 +17,6 @@ RecentMilestones.propTypes = {
 };
 
 export function RecentMilestones({ sessionsData, lifetimeTotalSessions }) {
-  const milestoneSessions = [];
-  let currentMilestone = 0;
   const milestoneLevelsAndUnits = {
     25: 1,
     50: 5,
@@ -29,19 +27,34 @@ export function RecentMilestones({ sessionsData, lifetimeTotalSessions }) {
     2500: 250,
     100000: 500
   };
-  const milestoneUpperLevel = Object.keys(milestoneLevelsAndUnits).find(
-    (key) => key > lifetimeTotalSessions
-  );
-  const unit = milestoneLevelsAndUnits[milestoneUpperLevel];
-  currentMilestone = Math.floor(lifetimeTotalSessions / unit) * unit;
-  for (
-    let i = 0;
-    i < Math.min(Math.floor(lifetimeTotalSessions / unit), 5);
-    i++
-  ) {
-    milestoneSessions.push(currentMilestone);
-    currentMilestone -= unit;
+
+  function calculateMilestones(lifetimeTotalSessions, milestoneLevelsAndUnits) {
+    const milestoneSessions = [];
+    let currentMilestone = 0;
+
+    const milestoneUpperLevel = Object.keys(milestoneLevelsAndUnits).find(
+      (key) => key > lifetimeTotalSessions
+    );
+    const unit = milestoneLevelsAndUnits[milestoneUpperLevel];
+    currentMilestone = Math.floor(lifetimeTotalSessions / unit) * unit;
+
+    for (
+      let i = 0;
+      i < Math.min(Math.floor(lifetimeTotalSessions / unit), 5);
+      i++
+    ) {
+      milestoneSessions.push(currentMilestone);
+      currentMilestone -= unit;
+    }
+
+    return milestoneSessions;
   }
+
+  const milestoneSessions = calculateMilestones(
+    lifetimeTotalSessions,
+    milestoneLevelsAndUnits
+  );
+
   const milestonesArr = sessionsData
     .filter((session) => session.users[0].completed === true)
     .reverse()

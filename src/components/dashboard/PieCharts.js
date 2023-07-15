@@ -21,7 +21,7 @@ PieCharts.propTypes = {
 };
 
 export function PieCharts({
-  data: [durationData, attendanceData, completionData],
+  data: [durationChartData, attendanceChartData, completionChartData],
   totalSessions,
   grossSessions
 }) {
@@ -35,14 +35,14 @@ export function PieCharts({
         />
         <DonutChart
           className="mt-3"
-          data={durationData}
+          data={durationChartData}
           category="sessions"
           index="duration"
           colors={["blue", "orange", "yellow"]}
           variant="pie"
         />
         <List>
-          {durationData.map((data) => (
+          {durationChartData.map((data) => (
             <ListItem key={data.duration}>
               {data.duration}
               <Text>
@@ -68,14 +68,14 @@ export function PieCharts({
         <Legend categories={["On time", "Late"]} colors={["blue", "orange"]} />
         <DonutChart
           className="mt-8"
-          data={attendanceData}
+          data={attendanceChartData}
           category="sessions"
           index="attendance"
           colors={["blue", "orange", "yellow"]}
           variant="pie"
         />
         <List className="mt-5">
-          {attendanceData.map((data) => (
+          {attendanceChartData.map((data) => (
             <ListItem key={data.attendance}>
               {data.attendance}
               <Text>
@@ -104,14 +104,14 @@ export function PieCharts({
         />
         <DonutChart
           className="mt-8"
-          data={completionData}
+          data={completionChartData}
           category="sessions"
           index="completion"
           colors={["blue", "orange"]}
           variant="pie"
         />
         <List className="mt-5">
-          {completionData.map((data) => (
+          {completionChartData.map((data) => (
             <ListItem key={data.completion}>
               {data.completion}
               <Text>
