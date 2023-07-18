@@ -1,7 +1,7 @@
+import { getCompletedSessions } from './getCompletedSessions';
+
 export function buildPieData(rawData) {
-  const completedSessions = rawData.filter(
-    (session) => session.users[0].completed === true
-  );
+  const completedSessions = getCompletedSessions(rawData);
 
   const durationShell = {
     "25 minutes": { duration: "25 minutes", sessions: 0 },
