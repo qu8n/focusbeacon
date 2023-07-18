@@ -5,6 +5,10 @@ import Head from "next/head";
 import "../styles/globals.css";
 import NavBar from "../components/NavBar";
 import Modal from "../components/Modal";
+import {
+  AboutModalContent,
+  PrivacyModalContent
+} from "../constants/textSnippets";
 
 App.propTypes = {
   Component: PropTypes.elementType.isRequired,
@@ -67,9 +71,9 @@ export default function App({ Component, pageProps }) {
 
       {(showAboutModal || showPrivacyModal) && (
         <Modal
-          modalType={showAboutModal ? "about" : "privacy"}
-          setShowAboutModal={setShowAboutModal}
-          setShowPrivacyModal={setShowPrivacyModal}
+          title={showAboutModal ? "About" : "Privacy policy"}
+          content={showAboutModal ? AboutModalContent : PrivacyModalContent}
+          setOpen={showAboutModal ? setShowAboutModal : setShowPrivacyModal}
         />
       )}
 

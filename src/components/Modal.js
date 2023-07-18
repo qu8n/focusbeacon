@@ -1,29 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  AboutModalContent,
-  PrivacyModalContent
-} from "../constants/textSnippets";
 import { XIcon } from "@heroicons/react/solid";
 
 Modal.propTypes = {
-  modalType: PropTypes.string.isRequired,
-  setShowAboutModal: PropTypes.func.isRequired,
-  setShowPrivacyModal: PropTypes.func.isRequired
+  title: PropTypes.string.isRequired,
+  content: PropTypes.func.isRequired,
+  setOpen: PropTypes.func.isRequired
 };
 
-// TODO: Refactor this component to be more generic
-export default function Modal({
-  modalType,
-  setShowAboutModal,
-  setShowPrivacyModal
-}) {
+export default function Modal({ title, content, setOpen }) {
   function handleCloseClick() {
-    if (modalType === "about") {
-      setShowAboutModal(false);
-    } else if (modalType === "privacy") {
-      setShowPrivacyModal(false);
-    }
+    setOpen(false);
   }
 
   return (
@@ -34,7 +21,7 @@ export default function Modal({
             {/* Header */}
             <div className="flex items-start justify-between py-5 border-b border-gray-200 border-solid rounded-t">
               <h3 className="ml-10 text-2xl font-semibold capitalize">
-                {modalType}
+                {title}
               </h3>
               <button
                 type="button"
@@ -47,13 +34,7 @@ export default function Modal({
 
             {/* Body */}
             <div className="p-10">
-              <div className="text-slate-700 mb-7">
-                {modalType === "about" ? (
-                  <AboutModalContent />
-                ) : (
-                  <PrivacyModalContent />
-                )}
-              </div>
+              <div className="text-slate-700 mb-7">{content()}</div>
             </div>
           </div>
         </div>

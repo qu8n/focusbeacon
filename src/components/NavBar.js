@@ -88,7 +88,7 @@ export default function NavBar({ setShowAboutModal, setShowPrivacyModal }) {
                   onClick={() => setShowPrivacyModal(true)}
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700"
                 >
-                  Privacy
+                  Privacy policy
                 </button>
                 <Link
                   href="https://forms.gle/mcuSkyP5uguV7FKd7"
