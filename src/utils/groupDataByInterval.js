@@ -1,4 +1,6 @@
 // TODO: DRYifying date calculations, e.g. use calcs from date range functions here
+import { getCompletedSessions } from './getCompletedSessions';
+
 export function groupDataByInterval(sessionsData, today) {
   today.setHours(0, 0, 0, 0); // TODO: make sure hours are accounted for in all filters here
   const currDayOfWeek = today.getDay();
@@ -10,7 +12,7 @@ export function groupDataByInterval(sessionsData, today) {
   mondayCurrWeek.setDate(
     currDate - (currDayOfWeek === 0 ? 6 : currDayOfWeek - 1)
   );
-  const currWeekData = sessionsData.filter(
+  const currWeekData = getCompletedSessions(sessionsData).filter(
     (session) => new Date(session.startTime) >= mondayCurrWeek
   );
 
