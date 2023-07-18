@@ -20,8 +20,8 @@ function ModalLink({ text, href }) {
   );
 }
 
-export function AboutModalContent(want_model=false) {
-  return !want_model? (
+export function AboutModalContent() {
+  return (
     <>
       <p>Hey there,</p>
       <p className="mt-3">
@@ -47,11 +47,11 @@ export function AboutModalContent(want_model=false) {
       <p className="mt-3">Enjoy!</p>
       <p>Quan</p>
     </>
-  ): (<p>About</p>);
+  );
 }
 
-export function PrivacyModalContent(want_model=false) {
-  return !want_model? (
+export function PrivacyModalContent() {
+  return (
     <>
       <p>
         FocusBeacon is committed to your privacy and doesn't store nor sell
@@ -74,5 +74,5 @@ export function PrivacyModalContent(want_model=false) {
         .
       </p>
     </>
-  ) : (<p>Privacy</p>);
+  );
 }

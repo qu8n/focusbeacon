@@ -3,18 +3,14 @@ import PropTypes from "prop-types";
 import { XIcon } from "@heroicons/react/solid";
 
 Modal.propTypes = {
-  textContent: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.func.isRequired,
   setOpen: PropTypes.func.isRequired
 };
 
-// TODO: Refactor this component to be more generic
-export default function Modal({
-  setOpen,
-  textContent
-}) {
-
+export default function Modal({ title, content, setOpen }) {
   function handleCloseClick() {
-    setOpen(false)
+    setOpen(false);
   }
 
   return (
@@ -25,7 +21,7 @@ export default function Modal({
             {/* Header */}
             <div className="flex items-start justify-between py-5 border-b border-gray-200 border-solid rounded-t">
               <h3 className="ml-10 text-2xl font-semibold capitalize">
-                {textContent(true)}
+                {title}
               </h3>
               <button
                 type="button"
@@ -38,9 +34,7 @@ export default function Modal({
 
             {/* Body */}
             <div className="p-10">
-              <div className="text-slate-700 mb-7">
-                {textContent()}
-              </div>
+              <div className="text-slate-700 mb-7">{content()}</div>
             </div>
           </div>
         </div>

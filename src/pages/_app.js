@@ -71,7 +71,8 @@ export default function App({ Component, pageProps }) {
 
       {(showAboutModal || showPrivacyModal) && (
         <Modal
-          textContent={showAboutModal ? AboutModalContent : PrivacyModalContent}
+          title={showAboutModal ? "About" : "Privacy policy"}
+          content={showAboutModal ? AboutModalContent : PrivacyModalContent}
           setOpen={showAboutModal ? setShowAboutModal : setShowPrivacyModal}
         />
       )}
