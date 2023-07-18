@@ -6,6 +6,7 @@ import {
   FireIcon
 } from "@heroicons/react/solid";
 import PropTypes from "prop-types";
+import { getCompletedSessions } from '../../utils/getCompletedSessions';
 
 LifetimeMetrics.propTypes = {
   data: PropTypes.shape({
