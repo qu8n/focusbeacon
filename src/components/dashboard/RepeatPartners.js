@@ -14,6 +14,7 @@ import { UserIcon, UsersIcon, UserGroupIcon } from "@heroicons/react/solid";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import React from "react";
 import PropTypes from "prop-types";
+import { getCompletedSessions } from '../../utils/getCompletedSessions';
 
 RepeatPartners.propTypes = {
   sessionsData: PropTypes.arrayOf(PropTypes.object).isRequired
