@@ -1,16 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { XIcon } from "@heroicons/react/solid";
 
-Modal.propTypes = {
-  title: PropTypes.string.isRequired,
-  content: PropTypes.func.isRequired,
-  setOpen: PropTypes.func.isRequired
-};
-
-export default function Modal({ title, content, setOpen }) {
+export default function Modal(props: {
+  title: String
+  content: React.ReactNode
+  setOpen: (isOpen: boolean) => void
+}) {
+  const { title, content, setOpen } = props
   function handleCloseClick() {
-    setOpen(false);
+    setOpen(false)
   }
 
   return (
@@ -34,7 +32,7 @@ export default function Modal({ title, content, setOpen }) {
 
             {/* Body */}
             <div className="p-10">
-              <div className="text-slate-700 mb-7">{content()}</div>
+              <div className="text-slate-700 mb-7">{content}</div>
             </div>
           </div>
         </div>
