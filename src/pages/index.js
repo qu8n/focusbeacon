@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { VideoCameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
@@ -6,15 +6,13 @@ import Link from "next/link";
 import { getOAuthURL } from "../utils/getOAuthURL";
 import FadeIn from "react-fade-in";
 import PropTypes from "prop-types";
-import { LoaderSpinner } from "../components/LoaderSpinner";
 
 Home.propTypes = {
   totalUsers: PropTypes.number
 };
 
-export default function Home() {
+export default function Home({ totalUsers }) {
   const router = useRouter();
-  const [totalUsers, setTotalUsers] = useState();
 
   useEffect(() => {
     async function checkSignedInStatus() {
@@ -25,28 +23,9 @@ export default function Home() {
       }
     }
     checkSignedInStatus();
-
-    async function getStats() {
-      const response = await fetch("/api/stats");
-      const data = await response.json();
-      setTimeout(() => {
-        setTotalUsers(data.totalUsers);
-      }, 1000);
-    }
-    if (process.env.NODE_ENV === "production") {
-      getStats();
-    }
   }, []);
 
   const oauthURL = getOAuthURL();
-
-  if (process.env.NODE_ENV === "production" && !totalUsers) {
-    return (
-      <>
-        <LoaderSpinner />
-      </>
-    );
-  }
 
   return (
     <FadeIn transitionDuration={500}>
@@ -97,4 +76,14 @@ export default function Home() {
       </div>
     </FadeIn>
   );
+}
+
+export async function getServerSideProps() {
+  const response = await fetch("https://focusbeacon.com/api/stats");
+  const data = await response.json();
+  return {
+    props: {
+      totalUsers: data.totalUsers
+    }
+  };
 }
