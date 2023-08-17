@@ -13,7 +13,7 @@ export function getOAuthURL() {
   };
 
   const paramsString = Object.entries(paramsObj)
-    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`)
     .join("&");
 
   return `${baseURL}?${paramsString}`;

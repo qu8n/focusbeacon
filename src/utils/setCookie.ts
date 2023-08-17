@@ -1,12 +1,21 @@
 import { serialize } from "cookie";
 
+type CookieOptions = {
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: "strict";
+  domain?: string;
+  path: string;
+  maxAge?: number;
+};
+
 export default function setCookie(
-  environment,
-  cookieName,
-  cookieValue,
+  environment: string,
+  cookieName: string,
+  cookieValue: string,
   expires = false
 ) {
-  let cookieOptions;
+  let cookieOptions: CookieOptions;
   if (environment === "production") {
     cookieOptions = {
       httpOnly: true,
