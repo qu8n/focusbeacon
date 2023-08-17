@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getOAuthURL } from "../utils/getOAuthURL";
 import FadeIn from "react-fade-in";
 import PropTypes from "prop-types";
+import Image from "next/image";
 
 Home.propTypes = {
   totalUsers: PropTypes.number
@@ -29,17 +30,17 @@ export default function Home({ totalUsers }) {
 
   return (
     <FadeIn transitionDuration={500}>
-      <div className="flex items-center justify-center h-[calc(100vh-150px)] px-10">
+      <div className="flex items-center justify-center px-10 mt-44">
         <div className="relative w-full max-w-xl">
           <div className="relative">
             <p className="pb-2 -mt-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-br from-slate-700 to-slate-500">
               Unlock your Focusmate metrics.
             </p>
             {totalUsers && (
-              <p className="text-lg font-normal text-center text-slate-700">
+              <p className="text-xl font-normal text-center text-slate-700">
                 Join{" "}
                 <span className="underline decoration-orange-400 decoration-wavy">
-                  {totalUsers} other Focusmate users
+                  {totalUsers} Focusmate users
                 </span>{" "}
                 and get access to your milestones, session trends, hours of
                 session, and more.
@@ -63,16 +64,11 @@ export default function Home({ totalUsers }) {
                 Log in with Focusmate
               </Link>
             </div>
-            <div className="flex justify-center mt-4 text-lg font-semibold text-slate-700 hover:text-slate-500">
-              <Link href="/dashboard/demo">
-                View demo
-                <span aria-hidden="true" className="ml-1">
-                  →
-                </span>
-              </Link>
-            </div>
           </div>
         </div>
+      </div>
+      <div className="flex justify-center mt-10 mb-16 sneakpeek">
+        <Image src="/sneakpeek.png" width={1200} height={1200} />
       </div>
     </FadeIn>
   );
