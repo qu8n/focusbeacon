@@ -213,7 +213,7 @@ export function createYTDChartData(yearToDateData) {
     "Jun",
     "Jul",
     "Aug",
-    "Sept",
+    "Sep",
     "Nov",
     "Dec"
   ];
