@@ -17,19 +17,23 @@ export function TotalMetrics({
   const metrics = [
     {
       title: "Total sessions",
-      metric: totalSessions + (totalSessions > 1 ? " sessions" : " session"),
+      metric:
+        totalSessions.toLocaleString() +
+        (totalSessions > 1 ? " sessions" : " session"),
       icon: VideoCameraIcon
     },
     {
       title: "Total hours of sessions",
       metric:
-        Math.round(totalHours) +
+        Math.round(totalHours).toLocaleString() +
         (Math.round(totalHours) > 1 ? " hours" : " hour"),
       icon: ClockIcon
     },
     {
       title: "Total unique partners",
-      metric: totalPartners + (totalPartners > 1 ? " partners" : " partner"),
+      metric:
+        totalPartners.toLocaleString() +
+        (totalPartners > 1 ? " partners" : " partner"),
       icon: UsersIcon
     }
   ];
