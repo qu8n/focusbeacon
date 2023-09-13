@@ -118,11 +118,16 @@ export default function Dashboard({ isDemo }) {
       totalPartners: prevYearTotalPartners
     } = calcTotalMetrics(prevYearData);
 
-    const {
+    let {
       totalSessions: lifetimeTotalSessions,
       totalHours: lifetimeTotalHours,
       totalPartners: lifetimeTotalPartners
     } = calcTotalMetrics(sessionsData);
+
+    // Handle cases of older accounts when sessions were counted even if user didn't show up
+    if (profileData.user.totalSessionCount > lifetimeTotalSessions) {
+      lifetimeTotalSessions = profileData.user.totalSessionCount;
+    }
 
     return (
       <>
