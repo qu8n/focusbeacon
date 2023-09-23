@@ -25,7 +25,7 @@ export default function Home() {
       const response = await fetch("/api/stats");
       const data = await response.json();
       setTimeout(() => {
-        setTotalUsers(data.totalUsers);
+        setTotalUsers(data.count);
       }, 1000);
     }
     getStats();

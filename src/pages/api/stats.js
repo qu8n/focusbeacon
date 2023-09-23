@@ -1,11 +1,12 @@
 import { supabase } from "../../lib/supabaseClient";
 
 export default async function handler(req, res) {
-  const { data: user, error } = await supabase.from("user").select("user_id");
+  const { count, error } = await supabase
+    .from("user")
+    .select("*", { count: "exact", head: true });
 
-  if (user) {
-    const totalUsers = user.length;
-    res.status(200).json({ totalUsers });
+  if (count) {
+    res.status(200).json({ count });
   } else {
     res.status(500).json({ error });
   }
