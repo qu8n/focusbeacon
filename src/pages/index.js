@@ -66,8 +66,8 @@ export default function Home() {
                   <span className="underline decoration-orange-400 decoration-wavy">
                     {totalUsers} Focusmate users
                   </span>{" "}
-                  and get access to your milestones, session trends, hours of
-                  session, and more.
+                  and access your milestones, session trends, hours of session,
+                  and more!
                 </p>
               </FadeIn>
             )}
@@ -75,7 +75,16 @@ export default function Home() {
         </div>
       </div>
       <div className="flex justify-center mt-10 sneakpeek">
-        <Image src="/sneakpeek.png" width={1200} height={1200} />
+        <Image
+          src="/sneakpeek.png"
+          width={0}
+          height={0}
+          sizes="100vw"
+          style={{ width: "100%", height: "auto" }}
+          alt="sneak peek"
+          placeholder="blur"
+          blurDataURL="/sneakpeek.png"
+        />
       </div>
     </>
   );
