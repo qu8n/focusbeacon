@@ -214,6 +214,7 @@ export function createYTDChartData(yearToDateData) {
     "Jul",
     "Aug",
     "Sep",
+    "Oct",
     "Nov",
     "Dec"
   ];
@@ -230,7 +231,7 @@ export function createYTDChartData(yearToDateData) {
     });
     acc[month]["Total sessions"] += 1;
     return acc;
-  }, chartDataShell);
+  }, structuredClone(chartDataShell));
 
   return Object.values(chartData);
 }
