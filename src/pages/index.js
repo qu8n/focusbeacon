@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { InformationCircleIcon } from "@heroicons/react/outline";
 import { VideoCameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
@@ -9,7 +9,6 @@ import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
-  const [totalUsers, setTotalUsers] = useState(null);
 
   useEffect(() => {
     async function checkSignedInStatus() {
@@ -20,15 +19,6 @@ export default function Home() {
       }
     }
     checkSignedInStatus();
-
-    async function getStats() {
-      const response = await fetch("/api/stats");
-      const data = await response.json();
-      setTimeout(() => {
-        setTotalUsers(data.count);
-      }, 1000);
-    }
-    getStats();
   }, []);
 
   const oauthURL = getOAuthURL();
@@ -59,18 +49,15 @@ export default function Home() {
                 Log in with Focusmate
               </Link>
             </div>
-            {totalUsers && (
-              <FadeIn transitionDuration={500}>
-                <p className="mt-5 text-xl font-normal text-center lg:px-10 text-slate-500">
-                  Join{" "}
-                  <span className="underline decoration-orange-400 decoration-wavy">
-                    {totalUsers} Focusmate users
-                  </span>{" "}
-                  and access your milestones, session trends, hours of session,
-                  and more!
-                </p>
-              </FadeIn>
-            )}
+            <FadeIn transitionDuration={2000}>
+              <p className="mt-5 text-lg font-normal text-center lg:px-10 text-slate-500">
+                <span className="underline decoration-orange-400 decoration-wavy">
+                  150+ Focusmate users
+                </span>{" "}
+                are using FocusBeacon to access their milestones, session
+                trends, hours of session, and more
+              </p>
+            </FadeIn>
           </div>
         </div>
       </div>
