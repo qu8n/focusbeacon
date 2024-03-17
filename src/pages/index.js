@@ -52,7 +52,7 @@ export default function Home() {
             <FadeIn transitionDuration={2000}>
               <p className="mt-5 text-lg font-normal text-center lg:px-10 text-slate-500">
                 <span className="underline decoration-orange-400 decoration-wavy">
-                  150+ Focusmate users
+                  250+ Focusmate users
                 </span>{" "}
                 are using FocusBeacon to access their milestones, session
                 trends, hours of session, and more
