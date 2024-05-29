@@ -1,12 +1,10 @@
 import { ExternalLink } from '@/components/external-link';
-import { getFocusmateOAuthURL } from '@/utils/getOAuthURL';
-
-const oauthUrl = getFocusmateOAuthURL();
+import { fmOAuthForAuthCodeUrl } from '@/utils/oauth';
 
 export default function Home() {
 
   return (
-    <ExternalLink href={oauthUrl}>
+    <ExternalLink href={fmOAuthForAuthCodeUrl}>
       <button type='button'>
         <p>Login with Focusmate</p>
       </button>
