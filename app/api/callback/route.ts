@@ -1,25 +1,38 @@
-import { fmApiProfileUrl, fmOAuthClientID, fmOAuthClientSecret, fmOAuthUrlForAccessToken, oauthRedirectUri, siteUrl } from '@/utils/oauth';
-import { serialize } from "cookie";
-import { encrypt, generateSessionId } from '@/utils/crypto';
+import {
+  fmApiProfileUrl,
+  fmOAuthClientID,
+  fmOAuthClientSecret,
+  fmOAuthUrlForAccessToken,
+  oauthRedirectUri,
+  siteUrl,
+} from "@/utils/oauth"
+import { serialize } from "cookie"
+import { encrypt, generateSessionId } from "@/utils/crypto"
 
-export const sessionCookieName = "sessionId";
+export const sessionCookieName = "sessionId"
 
 export async function POST(request: Request) {
-  const { authorizationCode } = await request.json();
+  const { authorizationCode } = await request.json()
 
   try {
-    const accessToken = await fetchAccessToken(authorizationCode); 
-    const { user } = await fetchProfileData(accessToken);
-    const sessionId = generateSessionId();
+    const accessToken = await fetchAccessToken(authorizationCode)
+    const { user } = await fetchProfileData(accessToken)
+    const sessionId = generateSessionId()
 
-    saveProfileDataToDb(user, accessToken, sessionId);
+    saveProfileDataToDb(user, accessToken, sessionId)
 
-    return new Response('Cookie set', {
+    return new Response("Cookie set", {
       status: 200,
-      headers: { 'Set-Cookie': serialize(sessionCookieName, sessionId, buildCookieOptions()) }
+      headers: {
+        "Set-Cookie": serialize(
+          sessionCookieName,
+          sessionId,
+          buildCookieOptions()
+        ),
+      },
     })
   } catch (error) {
-    console.error(error);
+    console.error(error)
     return new Response(`Error: ${error}`, {
       status: 500,
     })
@@ -27,25 +40,24 @@ export async function POST(request: Request) {
 }
 
 async function fetchAccessToken(authorizationCode: string) {
-  const response = await fetch(fmOAuthUrlForAccessToken,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: new URLSearchParams({
-        client_id: fmOAuthClientID,
-        client_secret: fmOAuthClientSecret,
-        grant_type: "authorization_code",
-        code: authorizationCode,
-        redirect_uri: oauthRedirectUri,
-      })
-    });
+  const response = await fetch(fmOAuthUrlForAccessToken, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: fmOAuthClientID,
+      client_secret: fmOAuthClientSecret,
+      grant_type: "authorization_code",
+      code: authorizationCode,
+      redirect_uri: oauthRedirectUri,
+    }),
+  })
   if (!response.ok) {
-    throw new Error("Failed to get access token");
+    throw new Error("Failed to get access token")
   }
-  const data = await response.json();
-  return data.access_token;
+  const data = await response.json()
+  return data.access_token
 }
 
 async function fetchProfileData(accessToken: string) {
@@ -55,11 +67,11 @@ async function fetchProfileData(accessToken: string) {
     }),
     method: "GET",
     redirect: "follow",
-  });
+  })
   if (!response.ok) {
-    throw new Error("Failed to get profile data");
+    throw new Error("Failed to get profile data")
   }
-  return response.json();
+  return response.json()
 }
 
 function buildCookieOptions() {
@@ -70,28 +82,32 @@ function buildCookieOptions() {
       httpOnly: true,
       sameSite: "strict" as "strict", // due to this Next cookie option not being standardized yet
       path: "/",
-    };
+    }
   } else {
     return {
       secure: false,
       httpOnly: true,
       path: "/",
       sameSite: "strict" as "strict",
-    };
+    }
   }
 }
 
 interface FocusmateUser {
-  userId: string;
-  name: string;
-  totalSessionCount: number;
-  timeZone: string;
-  photoUrl: string;
-  memberSince: string;
+  userId: string
+  name: string
+  totalSessionCount: number
+  timeZone: string
+  photoUrl: string
+  memberSince: string
 }
 
 // TODO: Save user data to Supabase db
-async function saveProfileDataToDb(user: FocusmateUser, accessToken: string, sessionId: string) {
+async function saveProfileDataToDb(
+  user: FocusmateUser,
+  accessToken: string,
+  sessionId: string
+) {
   const userDataForDb = {
     userId: user.userId,
     totalSessionCount: user.totalSessionCount,
@@ -99,5 +115,5 @@ async function saveProfileDataToDb(user: FocusmateUser, accessToken: string, ses
     memberSince: user.memberSince,
     encryptedAccessToken: encrypt(accessToken),
     encryptedSessionId: encrypt(sessionId),
-  };
+  }
 }
