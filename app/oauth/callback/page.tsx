@@ -1,5 +1,5 @@
 import { buildRequestBodyForAccessToken, fmOAuthUrlForAccessToken } from "@/utils/oauth";
-import { generateSessionId } from "@/utils/session-id";
+import { encrypt, generateSessionId } from "@/utils/crypto";
 
 export default async function Callback({
   params,
@@ -33,6 +33,8 @@ export default async function Callback({
       <p>Authorization code: {authorizationCode}</p>
       <p>Access token: {accessToken || "not found"}</p>
       <p>Session ID: {sessionId || "not found"}</p>
+      <p>Encrypted access token: {accessToken ? encrypt(accessToken) : "not found"}</p>
+      <p>Encrypted session ID: {sessionId ? encrypt(sessionId) : "not found"}</p>
     </>
   )
 }
