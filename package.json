@@ -11,10 +11,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/cookie": "^0.6.0",
     "@types/node": "20.2.4",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "cookie": "^0.6.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
     "next": "^14.2.3",
