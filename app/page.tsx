@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/external-link"
-import { fmOAuthForAuthCodeUrl } from "@/utils/oauth"
+import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 
 export default function Home() {
   return (

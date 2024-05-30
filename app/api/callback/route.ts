@@ -6,10 +6,11 @@ import {
   fmOAuthClientSecret,
   oauthRedirectUri,
   siteUrl,
-} from "@/utils/oauth"
+} from "@/lib/oauth"
 import { serialize } from "cookie"
-import { encrypt, generateSessionId } from "@/utils/crypto"
-import { supabaseClient } from "@/utils/supabase"
+import { encrypt, generateSessionId } from "@/lib/crypto"
+import { supabaseClient } from "@/lib/supabase"
+import { DbUser, FocusmateProfile, FocusmateUser } from "@/lib/types"
 
 const sessionCookieName = process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME as string
 
@@ -67,7 +68,9 @@ async function fetchAccessToken(authorizationCode: string) {
   }
 }
 
-async function fetchProfileData(accessToken: string): Promise<FocusmateUser> {
+async function fetchProfileData(
+  accessToken: string
+): Promise<FocusmateProfile> {
   const response = await fetch(fmApiDomain + fmApiProfileEndpoint, {
     headers: new Headers({
       Authorization: `Bearer ${accessToken}`,
@@ -101,35 +104,8 @@ function buildCookieOptions() {
   }
 }
 
-/**
- * From Focusmate Profile API
- * https://apidocs.focusmate.com/#8f4fe5e5-0774-46ce-8010-5ed082c4f581
- */
-interface FocusmateUser {
-  user: User
-}
-
-interface User {
-  userId: string
-  name: string
-  totalSessionCount: number
-  timeZone: string
-  photoUrl: string
-  memberSince: string
-}
-
-// Supabase `profile` table schema
-interface DbUser
-  extends Pick<
-    User,
-    "userId" | "totalSessionCount" | "timeZone" | "memberSince"
-  > {
-  accessTokenEncrypted: string
-  sessionIdEncrypted: string
-}
-
 async function saveProfileDataToDb(
-  user: User,
+  user: FocusmateUser,
   accessToken: string,
   sessionId: string
 ) {
