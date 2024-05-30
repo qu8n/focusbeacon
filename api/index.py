@@ -1,3 +1,6 @@
+from urllib.parse import urlparse
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import os
@@ -7,6 +10,8 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import base64
 import http.client
+import json
+
 
 app = FastAPI()
 load_dotenv()  # from .env file
@@ -63,27 +68,102 @@ def get_session_id_from_cookie(request: Request):
 
 def get_access_token_from_db(session_id: str):
     response = supabase_client.table('profile').select(
-        "accessTokenEncrypted").eq('sessionId', session_id).execute()
-    access_token_encrypted = response.data[0]['accessTokenEncrypted']
+        "access_token_encrypted").eq('session_id', session_id).execute()
+    access_token_encrypted = response.data[0]['access_token_encrypted']
     access_token = decrypt(access_token_encrypted)
     return access_token
+
+
+fm_api_url = os.getenv("NEXT_PUBLIC_FM_API_URL")
+fm_api_profile_endpoint = os.getenv("NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT")
+fm_api_sessions_endpoint = os.getenv("NEXT_PUBLIC_FM_API_SESSIONS_ENDPOINT")
+fm_api_domain = urlparse(fm_api_url).netloc
 
 
 @app.get("/api/py/profile")
 async def profile(request: Request):
     session_id = get_session_id_from_cookie(request)
     access_token = get_access_token_from_db(session_id)
-    data = fetch_focusmate_data("/v1/me", access_token)
-    return {"data": data}
+    profile_data = fetch_focusmate_data(
+        fm_api_profile_endpoint, access_token).get("user")
+    return {"data": profile_data}
 
-fm_api_domain = os.getenv("NEXT_PUBLIC_FM_API_DOMAIN")
+
+@app.get("/api/py/sessions")
+async def sessions(request: Request):
+    session_id = get_session_id_from_cookie(request)
+    access_token = get_access_token_from_db(session_id)
+
+    profile_data = fetch_focusmate_data(
+        fm_api_profile_endpoint, access_token)
+
+    local_timezone: str = profile_data.get("user").get("timeZone")
+
+    start_of_week = get_start_of_week_local_datetime(local_timezone)
+    start_of_week_utc = local_datetime_to_utc_datetime(
+        start_of_week, local_timezone)
+    start_of_week_query_str = datetime_to_query_str(start_of_week_utc)
+
+    now_utc = datetime.now(timezone.utc)
+    now_utc_query_str = datetime_to_query_str(now_utc)
+
+    query_params = {
+        "start": start_of_week_query_str,
+        "end": now_utc_query_str
+    }
+
+    sessions_data: dict = fetch_focusmate_data(
+        fm_api_sessions_endpoint, access_token, query_params).get("sessions")
+
+    completed_sessions = [
+        session for session in sessions_data if session['users'][0].get('completed')]
+
+    return {"data": completed_sessions}
 
 
-def fetch_focusmate_data(endpoint, access_token):
-    conn = http.client.HTTPSConnection("api.focusmate.com")
+def fetch_focusmate_data(endpoint: str, access_token: str, query_params={}):
+    conn = http.client.HTTPSConnection(fm_api_domain)
+
     headers = {'Authorization': 'Bearer ' + access_token}
+    if query_params != {}:
+        endpoint += "?"
+        for key, value in query_params.items():
+            endpoint += f"{key}={value}&"
+        endpoint = endpoint[:-1]
+
     conn.request("GET", endpoint, headers=headers)
     response = conn.getresponse()
-    data = response.read().decode("utf-8")
+    data_as_str = response.read().decode("utf-8")
+    data_as_obj = json.loads(data_as_str)
+
     conn.close()
-    return data
+
+    return data_as_obj
+
+
+def utc_str_to_local_datetime(utc_time: str, local_timezone: str):
+    utc_as_datetime = datetime.strptime(utc_time, '%Y-%m-%dT%H:%M:%SZ')
+    local_timezone_obj = tz.gettz(local_timezone)
+    local_time = utc_as_datetime.replace(
+        tzinfo=tz.tzutc()).astimezone(local_timezone_obj)
+    return local_time
+
+
+def local_datetime_to_utc_datetime(local_time: datetime, local_timezone: str):
+    local_timezone_obj = tz.gettz(local_timezone)
+    utc_time = local_time.replace(
+        tzinfo=local_timezone_obj).astimezone(tz.tzutc())
+    return utc_time
+
+
+def datetime_to_query_str(datetime_obj: datetime):
+    return datetime_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def get_start_of_week_local_datetime(local_timezone: str):
+    '''Returns the start of the current week in the given timezone, defined as
+    00:00:00 on Monday of the current week.'''
+    today_local = datetime.now(tz.gettz(local_timezone))
+    monday = today_local - timedelta(days=today_local.weekday())
+    start_of_week = monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    return start_of_week

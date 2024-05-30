@@ -9,7 +9,7 @@ export const oauthRedirectUri = `${siteUrl}/oauth/callback`
 const fmOAuthBaseUrlForAuthCode = process.env
   .NEXT_PUBLIC_FM_OAUTH_BASE_URL_FOR_AUTH_CODE as string
 
-export const fmApiDomain = process.env.NEXT_PUBLIC_FM_API_DOMAIN as string
+export const fmApiDomain = process.env.NEXT_PUBLIC_FM_API_URL as string
 
 export const fmApiProfileEndpoint = process.env
   .NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT as string
