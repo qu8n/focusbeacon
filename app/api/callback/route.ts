@@ -10,7 +10,7 @@ import { serialize } from "cookie"
 import { encrypt, generateSessionId } from "@/utils/crypto"
 import { supabase } from "@/utils/supabase"
 
-export const sessionCookieName = "sessionId"
+const sessionCookieName = process.env.SESSION_COOKIE_NAME as string
 
 export async function POST(request: Request) {
   const { authorizationCode } = await request.json()
@@ -86,7 +86,8 @@ function buildCookieOptions() {
       domain: new URL(siteUrl).hostname,
       secure: true,
       httpOnly: true,
-      sameSite: "strict" as "strict", // due to this Next cookie option not being standardized yet
+      // Typing as `const` to avoid a TS error that generalizes the type of sameSite
+      sameSite: "strict" as const,
       path: "/",
     }
   } else {
@@ -94,7 +95,7 @@ function buildCookieOptions() {
       secure: false,
       httpOnly: true,
       path: "/",
-      sameSite: "strict" as "strict",
+      sameSite: "strict" as const,
     }
   }
 }
