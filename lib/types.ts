@@ -22,5 +22,5 @@ export interface DbUser
     "userId" | "totalSessionCount" | "timeZone" | "memberSince"
   > {
   accessTokenEncrypted: string
-  sessionIdEncrypted: string
+  sessionId: string
 }

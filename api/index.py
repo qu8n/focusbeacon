@@ -1,6 +1,3 @@
-# TODO: Handle when session_id is None. Actually, just handle it in the frontend.
-# If cookie name "sessionId" is not found, then redirect to login page.
-
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import os
@@ -57,16 +54,16 @@ def decrypt(encrypted_text: str) -> str:
     return decrypted.decode('utf-8')
 
 
-def get_encrypted_session_id_from_cookie(request: Request):
+def get_session_id_from_cookie(request: Request):
     cookies = request.cookies
-    session_id = cookies.get(os.getenv("NEXT_PUBLIC_SESSION_COOKIE_NAME"))
-    session_id_encrypted = encrypt(session_id)
-    return session_id_encrypted
+    cookie_name = os.getenv("NEXT_PUBLIC_SESSION_COOKIE_NAME")
+    session_id = cookies.get(cookie_name)
+    return session_id
 
 
-def get_access_token_from_db(session_id_encrypted: str):
+def get_access_token_from_db(session_id: str):
     response = supabase_client.table('profile').select(
-        "accessTokenEncrypted").eq('sessionIdEncrypted', session_id_encrypted).execute()
+        "accessTokenEncrypted").eq('sessionId', session_id).execute()
     access_token_encrypted = response.data[0]['accessTokenEncrypted']
     access_token = decrypt(access_token_encrypted)
     return access_token
@@ -74,8 +71,8 @@ def get_access_token_from_db(session_id_encrypted: str):
 
 @app.get("/api/py/profile")
 async def profile(request: Request):
-    session_id_encrypted = get_encrypted_session_id_from_cookie(request)
-    access_token = get_access_token_from_db(session_id_encrypted)
+    session_id = get_session_id_from_cookie(request)
+    access_token = get_access_token_from_db(session_id)
     data = fetch_focusmate_data("/v1/me", access_token)
     return {"data": data}
 

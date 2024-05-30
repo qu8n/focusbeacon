@@ -115,7 +115,7 @@ async function saveProfileDataToDb(
     timeZone: user.timeZone,
     memberSince: user.memberSince,
     accessTokenEncrypted: encrypt(accessToken),
-    sessionIdEncrypted: encrypt(sessionId),
+    sessionId: sessionId,
   }
 
   await supabaseClient.from("profile").upsert(dbUser)
