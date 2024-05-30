@@ -57,25 +57,27 @@ def decrypt(encrypted_text: str) -> str:
     return decrypted.decode('utf-8')
 
 
-def get_session_id_from_cookie(request: Request):
+def get_encrypted_session_id_from_cookie(request: Request):
     cookies = request.cookies
     session_id = cookies.get(os.getenv("NEXT_PUBLIC_SESSION_COOKIE_NAME"))
-    return session_id
-
-
-@app.get("/api/py/profile")
-async def profile(request: Request):
-    session_id = get_session_id_from_cookie(request)
     session_id_encrypted = encrypt(session_id)
+    return session_id_encrypted
 
+
+def get_access_token_from_db(session_id_encrypted: str):
     response = supabase_client.table('profile').select(
         "accessTokenEncrypted").eq('sessionIdEncrypted', session_id_encrypted).execute()
     access_token_encrypted = response.data[0]['accessTokenEncrypted']
     access_token = decrypt(access_token_encrypted)
+    return access_token
 
+
+@app.get("/api/py/profile")
+async def profile(request: Request):
+    session_id_encrypted = get_encrypted_session_id_from_cookie(request)
+    access_token = get_access_token_from_db(session_id_encrypted)
     data = fetch_focusmate_data("/v1/me", access_token)
-
-    return {"session_id": session_id, "data": data}
+    return {"data": data}
 
 fm_api_domain = os.getenv("NEXT_PUBLIC_FM_API_DOMAIN")
 
