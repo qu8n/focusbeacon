@@ -11,6 +11,7 @@ from cryptography.hazmat.backends import default_backend
 import base64
 import http.client
 import json
+import pandas as pd
 
 
 app = FastAPI()
@@ -112,13 +113,51 @@ async def sessions(request: Request):
         "end": now_utc_query_str
     }
 
-    sessions_data: dict = fetch_focusmate_data(
+    sessions_data: list = fetch_focusmate_data(
         fm_api_sessions_endpoint, access_token, query_params).get("sessions")
 
-    completed_sessions = [
-        session for session in sessions_data if session['users'][0].get('completed')]
+    sessions_df = fm_sessions_data_to_df(sessions_data)
 
-    return {"data": completed_sessions}
+    completed_sessions_count = len(
+        sessions_df[sessions_df['completed'] == True])
+
+    return {"data": completed_sessions_count}
+
+
+def fm_sessions_data_to_df(sessions_data: list):
+    rows = []
+
+    for session in sessions_data:
+        session_id = session['sessionId']
+        duration = session['duration']
+        start_time = session['startTime']
+
+        # Extract user data
+        user = session['users'][0]
+        session_title = user.get('sessionTitle')
+        requested_at = user.get('requestedAt')
+        joined_at = user.get('joinedAt')
+        completed = user.get('completed')
+
+        # Extract partner_id (second userId)
+        partner_id = session['users'][1].get(
+            'userId') if len(session['users']) > 1 else None
+
+        # Create a row with the extracted data
+        row = {
+            'session_id': session_id,
+            'duration': duration,
+            'start_time': start_time,
+            'requested_at': requested_at,
+            'joined_at': joined_at,
+            'completed': completed,
+            'session_title': session_title,
+            'partner_id': partner_id
+        }
+
+        rows.append(row)
+
+    return pd.DataFrame(rows)
 
 
 def fetch_focusmate_data(endpoint: str, access_token: str, query_params={}):
