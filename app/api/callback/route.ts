@@ -8,7 +8,7 @@ import {
 } from "@/utils/oauth"
 import { serialize } from "cookie"
 import { encrypt, generateSessionId } from "@/utils/crypto"
-import { supabase } from "@/utils/supabase"
+import { supabaseClient } from "@/utils/supabase"
 
 const sessionCookieName = process.env.SESSION_COOKIE_NAME as string
 
@@ -141,5 +141,5 @@ async function saveProfileDataToDb(
     sessionIdEncrypted: encrypt(sessionId),
   }
 
-  await supabase.from("profile").upsert(dbUser)
+  await supabaseClient.from("profile").upsert(dbUser)
 }

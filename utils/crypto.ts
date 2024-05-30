@@ -4,9 +4,10 @@ import { randomBytes, createCipheriv, createDecipheriv } from "crypto"
 const algorithm = "aes-256-cbc"
 const keyAsString = process.env.ENCRYPTION_KEY as string
 const keyAsBuffer = Buffer.from(keyAsString, "hex")
+const aesIV = process.env.ENCRYPTION_AES_IV as string
 
 export function encrypt(text: string): string {
-  const iv = randomBytes(16)
+  const iv = Buffer.from(aesIV, "hex")
   const cipher = createCipheriv(algorithm, keyAsBuffer, iv)
   let encrypted = cipher.update(text, "utf8", "base64")
   encrypted += cipher.final("base64")
