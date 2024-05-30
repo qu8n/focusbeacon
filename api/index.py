@@ -1,4 +1,5 @@
-# TODO: Handle when session_id is None
+# TODO: Handle when session_id is None. Actually, just handle it in the frontend.
+# If cookie name "sessionId" is not found, then redirect to login page.
 
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
@@ -8,12 +9,13 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import base64
+import http.client
 
 app = FastAPI()
 load_dotenv()  # from .env file
 
-supabase_project_url: str = os.getenv("SUPABASE_PROJECT_URL")
-supabase_service_role_key: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+supabase_project_url = os.getenv("SUPABASE_PROJECT_URL")
+supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 supabase_client: Client = create_client(
     supabase_project_url, supabase_service_role_key)
 
@@ -57,7 +59,7 @@ def decrypt(encrypted_text: str) -> str:
 
 def get_session_id_from_cookie(request: Request):
     cookies = request.cookies
-    session_id = cookies.get(os.getenv("SESSION_COOKIE_NAME"))
+    session_id = cookies.get(os.getenv("NEXT_PUBLIC_SESSION_COOKIE_NAME"))
     return session_id
 
 
@@ -68,8 +70,21 @@ async def profile(request: Request):
 
     response = supabase_client.table('profile').select(
         "accessTokenEncrypted").eq('sessionIdEncrypted', session_id_encrypted).execute()
-
-    access_token_encrypted = response['data'][0]['accessTokenEncrypted']
+    access_token_encrypted = response.data[0]['accessTokenEncrypted']
     access_token = decrypt(access_token_encrypted)
 
-    return {"session_id": session_id, "response": response}
+    data = fetch_focusmate_data("/v1/me", access_token)
+
+    return {"session_id": session_id, "data": data}
+
+fm_api_domain = os.getenv("NEXT_PUBLIC_FM_API_DOMAIN")
+
+
+def fetch_focusmate_data(endpoint, access_token):
+    conn = http.client.HTTPSConnection("api.focusmate.com")
+    headers = {'Authorization': 'Bearer ' + access_token}
+    conn.request("GET", endpoint, headers=headers)
+    response = conn.getresponse()
+    data = response.read().decode("utf-8")
+    conn.close()
+    return data

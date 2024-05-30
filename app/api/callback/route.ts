@@ -1,8 +1,9 @@
 import {
-  fmApiProfileUrl,
+  fmApiDomain,
+  fmApiOAuthTokenEndpoint,
+  fmApiProfileEndpoint,
   fmOAuthClientID,
   fmOAuthClientSecret,
-  fmOAuthUrlForAccessToken,
   oauthRedirectUri,
   siteUrl,
 } from "@/utils/oauth"
@@ -10,7 +11,7 @@ import { serialize } from "cookie"
 import { encrypt, generateSessionId } from "@/utils/crypto"
 import { supabaseClient } from "@/utils/supabase"
 
-const sessionCookieName = process.env.SESSION_COOKIE_NAME as string
+const sessionCookieName = process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME as string
 
 export async function POST(request: Request) {
   const { authorizationCode } = await request.json()
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
 
 async function fetchAccessToken(authorizationCode: string) {
   try {
-    const response = await fetch(fmOAuthUrlForAccessToken, {
+    const response = await fetch(fmApiDomain + fmApiOAuthTokenEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -67,7 +68,7 @@ async function fetchAccessToken(authorizationCode: string) {
 }
 
 async function fetchProfileData(accessToken: string): Promise<FocusmateUser> {
-  const response = await fetch(fmApiProfileUrl, {
+  const response = await fetch(fmApiDomain + fmApiProfileEndpoint, {
     headers: new Headers({
       Authorization: `Bearer ${accessToken}`,
     }),

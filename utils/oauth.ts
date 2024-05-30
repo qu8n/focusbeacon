@@ -9,14 +9,14 @@ export const oauthRedirectUri = `${siteUrl}/oauth/callback`
 const fmOAuthBaseUrlForAuthCode = process.env
   .NEXT_PUBLIC_FM_OAUTH_BASE_URL_FOR_AUTH_CODE as string
 
-export const fmOAuthUrlForAccessToken = process.env
-  .NEXT_PUBLIC_FM_OAUTH_URL_FOR_ACCESS_TOKEN as string
+export const fmApiDomain = process.env.NEXT_PUBLIC_FM_API_DOMAIN as string
 
-export const fmApiProfileUrl = process.env
-  .NEXT_PUBLIC_FM_API_PROFILE_URL as string
-
-export const fmApiSesssionsBaseUrl = process.env
-  .NEXT_PUBLIC_FM_API_SESSIONS_BASE_URL as string
+export const fmApiProfileEndpoint = process.env
+  .NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT as string
+export const fmApiSessionsEndpoint = process.env
+  .NEXT_PUBLIC_FM_API_SESSIONS_ENDPOINT as string
+export const fmApiOAuthTokenEndpoint = process.env
+  .NEXT_PUBLIC_FM_OAUTH_TOKEN_ENDPOINT as string
 
 const fmOAuthScope = process.env.NEXT_PUBLIC_FM_OAUTH_SCOPE as string
 
