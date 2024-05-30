@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export default async function Callback() {
+export default function Callback() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -11,9 +11,28 @@ export default async function Callback() {
 
   useEffect(() => {
     if (!authorizationCode) {
+      console.error("Authorization code not found")
       return
     }
-    handleAuthorizationCode(authorizationCode)
+
+    async function handlePostCallbackFlow(authorizationCode: string) {
+      const response = await fetch("/api/callback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          authorizationCode: authorizationCode,
+        }),
+      })
+      if (!response.ok) {
+        throw new Error(
+          "Failed to either obtain access token or upsert profile data"
+        )
+      }
+    }
+
+    handlePostCallbackFlow(authorizationCode)
       .then(() => router.push("/dashboard"))
       .catch((error) => console.error(error))
   }, [router, authorizationCode])
@@ -22,20 +41,5 @@ export default async function Callback() {
     return <p>Authorization code not found</p>
   } else {
     return "Loading..."
-  }
-}
-
-async function handleAuthorizationCode(authorizationCode: string) {
-  const response = await fetch("/api/callback", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      authorizationCode: authorizationCode,
-    }),
-  })
-  if (!response.ok) {
-    throw new Error("Failed to handle authorization code")
   }
 }

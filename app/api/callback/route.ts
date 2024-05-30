@@ -8,6 +8,7 @@ import {
 } from "@/utils/oauth"
 import { serialize } from "cookie"
 import { encrypt, generateSessionId } from "@/utils/crypto"
+import { supabase } from "@/utils/supabase"
 
 export const sessionCookieName = "sessionId"
 
@@ -19,8 +20,9 @@ export async function POST(request: Request) {
     const { user } = await fetchProfileData(accessToken)
     const sessionId = generateSessionId()
 
-    saveProfileDataToDb(user, accessToken, sessionId)
+    await saveProfileDataToDb(user, accessToken, sessionId)
 
+    // Set HTTPOnly cookie with user's session ID
     return new Response("Cookie set", {
       status: 200,
       headers: {
@@ -40,27 +42,31 @@ export async function POST(request: Request) {
 }
 
 async function fetchAccessToken(authorizationCode: string) {
-  const response = await fetch(fmOAuthUrlForAccessToken, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      client_id: fmOAuthClientID,
-      client_secret: fmOAuthClientSecret,
-      grant_type: "authorization_code",
-      code: authorizationCode,
-      redirect_uri: oauthRedirectUri,
-    }),
-  })
-  if (!response.ok) {
-    throw new Error("Failed to get access token")
+  try {
+    const response = await fetch(fmOAuthUrlForAccessToken, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        client_id: fmOAuthClientID,
+        client_secret: fmOAuthClientSecret,
+        grant_type: "authorization_code",
+        code: authorizationCode,
+        redirect_uri: oauthRedirectUri,
+      }),
+    })
+    if (!response.ok) {
+      throw new Error("Failed to get access token")
+    }
+    const { access_token } = await response.json()
+    return access_token
+  } catch (error) {
+    console.error(error)
   }
-  const data = await response.json()
-  return data.access_token
 }
 
-async function fetchProfileData(accessToken: string) {
+async function fetchProfileData(accessToken: string): Promise<FocusmateUser> {
   const response = await fetch(fmApiProfileUrl, {
     headers: new Headers({
       Authorization: `Bearer ${accessToken}`,
@@ -93,7 +99,15 @@ function buildCookieOptions() {
   }
 }
 
+/**
+ * From Focusmate Profile API
+ * https://apidocs.focusmate.com/#8f4fe5e5-0774-46ce-8010-5ed082c4f581
+ */
 interface FocusmateUser {
+  user: User
+}
+
+interface User {
   userId: string
   name: string
   totalSessionCount: number
@@ -102,18 +116,29 @@ interface FocusmateUser {
   memberSince: string
 }
 
-// TODO: Save user data to Supabase db
+// Supabase `profile` table schema
+interface DbUser
+  extends Pick<
+    User,
+    "userId" | "totalSessionCount" | "timeZone" | "memberSince"
+  > {
+  accessTokenEncrypted: string
+  sessionIdEncrypted: string
+}
+
 async function saveProfileDataToDb(
-  user: FocusmateUser,
+  user: User,
   accessToken: string,
   sessionId: string
 ) {
-  const userDataForDb = {
+  const dbUser: DbUser = {
     userId: user.userId,
     totalSessionCount: user.totalSessionCount,
     timeZone: user.timeZone,
     memberSince: user.memberSince,
-    encryptedAccessToken: encrypt(accessToken),
-    encryptedSessionId: encrypt(sessionId),
+    accessTokenEncrypted: encrypt(accessToken),
+    sessionIdEncrypted: encrypt(sessionId),
   }
+
+  await supabase.from("profile").upsert(dbUser)
 }

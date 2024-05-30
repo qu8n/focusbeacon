@@ -11,6 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
     "@types/cookie": "^0.6.0",
     "@types/node": "20.12.13",
     "@types/react": "18.3.3",
