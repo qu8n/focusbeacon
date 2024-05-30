@@ -110,12 +110,12 @@ async function saveProfileDataToDb(
   sessionId: string
 ) {
   const dbUser: DbUser = {
-    userId: user.userId,
-    totalSessionCount: user.totalSessionCount,
-    timeZone: user.timeZone,
-    memberSince: user.memberSince,
-    accessTokenEncrypted: encrypt(accessToken),
-    sessionId: sessionId,
+    user_id: user.userId,
+    total_session_count: user.totalSessionCount,
+    time_zone: user.timeZone,
+    member_since: user.memberSince,
+    access_token_encrypted: encrypt(accessToken),
+    session_id: sessionId,
   }
 
   await supabaseClient.from("profile").upsert(dbUser)
