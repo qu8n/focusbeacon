@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 from datetime import datetime, timedelta, timezone
-from dateutil import tz
+from dateutil import tz, parser
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import os
@@ -116,15 +116,29 @@ async def sessions(request: Request):
     sessions_data: list = fetch_focusmate_data(
         fm_api_sessions_endpoint, access_token, query_params).get("sessions")
 
-    sessions_df = fm_sessions_data_to_df(sessions_data)
+    sessions_df = fm_sessions_data_to_df(sessions_data, local_timezone)
 
-    completed_sessions_count = len(
-        sessions_df[sessions_df['completed'] == True])
+    completed_sessions = sessions_df[sessions_df['completed'] == True]
 
-    return {"data": completed_sessions_count}
+    total_sessions = len(completed_sessions)
+
+    total_duration = int(completed_sessions['duration'].sum())  # in ms
+    total_minutes = total_duration / 60000
+    total_hours = total_minutes / 60
+
+    total_unique_partners = len(completed_sessions['partner_id'].unique())
+
+    return {
+        "total_sessions": total_sessions,
+        "total_duration": total_duration,
+        "total_minutes": total_minutes,
+        "total_hours": total_hours,
+        "total_unique_partners": total_unique_partners,
+        # "df": sessions_df.to_dict(orient='records')
+    }
 
 
-def fm_sessions_data_to_df(sessions_data: list):
+def fm_sessions_data_to_df(sessions_data: list, local_timezone: str):
     rows = []
 
     for session in sessions_data:
@@ -132,24 +146,27 @@ def fm_sessions_data_to_df(sessions_data: list):
         duration = session['duration']
         start_time = session['startTime']
 
-        # Extract user data
         user = session['users'][0]
         session_title = user.get('sessionTitle')
         requested_at = user.get('requestedAt')
         joined_at = user.get('joinedAt')
         completed = user.get('completed')
 
-        # Extract partner_id (second userId)
         partner_id = session['users'][1].get(
             'userId') if len(session['users']) > 1 else None
 
-        # Create a row with the extracted data
+        local_start_time = utc_str_to_local_datetime(
+            start_time, local_timezone)
+        local_requested_at = utc_str_to_local_datetime(
+            requested_at, local_timezone)
+        local_joined_at = utc_str_to_local_datetime(joined_at, local_timezone)
+
         row = {
             'session_id': session_id,
             'duration': duration,
-            'start_time': start_time,
-            'requested_at': requested_at,
-            'joined_at': joined_at,
+            'start_time': local_start_time,
+            'requested_at': local_requested_at,
+            'joined_at': local_joined_at,
             'completed': completed,
             'session_title': session_title,
             'partner_id': partner_id
@@ -157,7 +174,19 @@ def fm_sessions_data_to_df(sessions_data: list):
 
         rows.append(row)
 
-    return pd.DataFrame(rows)
+    df = pd.DataFrame(rows)
+
+    # Convert columns to specified data types
+    df['session_id'] = df['session_id'].astype(str)
+    df['duration'] = df['duration'].astype(int)
+    df['start_time'] = df['start_time'].dt.tz_localize(None)
+    df['requested_at'] = df['requested_at'].dt.tz_localize(None)
+    df['joined_at'] = df['joined_at'].dt.tz_localize(None)
+    df['completed'] = df['completed'].astype(bool)
+    df['session_title'] = df['session_title'].astype(str)
+    df['partner_id'] = df['partner_id'].astype(str)
+
+    return df
 
 
 def fetch_focusmate_data(endpoint: str, access_token: str, query_params={}):
@@ -181,7 +210,7 @@ def fetch_focusmate_data(endpoint: str, access_token: str, query_params={}):
 
 
 def utc_str_to_local_datetime(utc_time: str, local_timezone: str):
-    utc_as_datetime = datetime.strptime(utc_time, '%Y-%m-%dT%H:%M:%SZ')
+    utc_as_datetime = parser.parse(utc_time)
     local_timezone_obj = tz.gettz(local_timezone)
     local_time = utc_as_datetime.replace(
         tzinfo=tz.tzutc()).astimezone(local_timezone_obj)
