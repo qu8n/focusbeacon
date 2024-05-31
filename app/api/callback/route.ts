@@ -8,9 +8,9 @@ import {
   siteUrl,
 } from "@/lib/oauth"
 import { serialize } from "cookie"
-import { encrypt, generateSessionId } from "@/lib/crypto"
+import { encrypt, generateSessionId } from "@/lib/cryptography"
 import { supabaseClient } from "@/lib/supabase"
-import { DbUser, FocusmateProfile, FocusmateUser } from "@/lib/types"
+import { DbProfile, FmProfile, FmUser } from "@/lib/types"
 
 const sessionCookieName = process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME as string
 
@@ -68,9 +68,7 @@ async function fetchAccessToken(authorizationCode: string) {
   }
 }
 
-async function fetchProfileData(
-  accessToken: string
-): Promise<FocusmateProfile> {
+async function fetchProfileData(accessToken: string): Promise<FmProfile> {
   const response = await fetch(fmApiDomain + fmApiProfileEndpoint, {
     headers: new Headers({
       Authorization: `Bearer ${accessToken}`,
@@ -105,11 +103,11 @@ function buildCookieOptions() {
 }
 
 async function saveProfileDataToDb(
-  user: FocusmateUser,
+  user: FmUser,
   accessToken: string,
   sessionId: string
 ) {
-  const dbUser: DbUser = {
+  const dbUser: DbProfile = {
     user_id: user.userId,
     total_session_count: user.totalSessionCount,
     time_zone: user.timeZone,
