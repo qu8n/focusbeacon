@@ -123,17 +123,35 @@ async def sessions(request: Request):
     total_sessions = len(completed_sessions)
 
     total_duration = int(completed_sessions['duration'].sum())  # in ms
-    total_minutes = total_duration / 60000
-    total_hours = total_minutes / 60
+    total_minutes = int(total_duration / 60000)
+    total_hours = int(total_minutes / 60)
 
     total_unique_partners = len(completed_sessions['partner_id'].unique())
+    total_repeat_partners = total_sessions - total_unique_partners
+
+    earliest_session_time = sessions_df['start_time'].dt.time.min()
+    latest_session_time = sessions_df['start_time'].dt.time.max()
+    most_common_session_time = sessions_df['start_time'].dt.time.mode().iloc[0]
+
+    daily_avg_duration = completed_sessions.groupby(
+        completed_sessions['start_time'].dt.date)['duration'].sum().mean()
+    daily_avg_minutes = int(daily_avg_duration / 60000)
+
+    sessions_df['join_diff'] = sessions_df['start_time'] - \
+        sessions_df['joined_at']
+    avg_join_sec_diff = int(sessions_df['join_diff'].mean().total_seconds())
 
     return {
         "total_sessions": total_sessions,
-        "total_duration": total_duration,
         "total_minutes": total_minutes,
         "total_hours": total_hours,
         "total_unique_partners": total_unique_partners,
+        "total_repeat_partners": total_repeat_partners,
+        "earliest_session_time": earliest_session_time,
+        "latest_session_time": latest_session_time,
+        "most_common_session_time": most_common_session_time,
+        "daily_avg_minutes": daily_avg_minutes,
+        "avg_join_sec_diff": avg_join_sec_diff
         # "df": sessions_df.to_dict(orient='records')
     }
 
@@ -176,7 +194,6 @@ def fm_sessions_data_to_df(sessions_data: list, local_timezone: str):
 
     df = pd.DataFrame(rows)
 
-    # Convert columns to specified data types
     df['session_id'] = df['session_id'].astype(str)
     df['duration'] = df['duration'].astype(int)
     df['start_time'] = df['start_time'].dt.tz_localize(None)
