@@ -1,6 +1,6 @@
 
 from api.helpers.time import get_start_of_week_local_datetime, \
-    local_datetime_to_utc_datetime, datetime_to_query_str
+    local_datetime_to_utc_datetime, datetime_to_query_str, ms_to_minutes
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
 from api.helpers.focusmate import fetch_focusmate_data, fm_sessions_data_to_df
 import os
@@ -52,45 +52,49 @@ async def sessions(request: Request):
     sessions_data: list = fetch_focusmate_data(
         fm_api_sessions_endpoint, access_token, query_params).get("sessions")
 
-    sessions_df = fm_sessions_data_to_df(sessions_data, local_timezone)
-    completed_sessions = sessions_df[sessions_df['completed'] == True].copy()
+    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
+    sessions = all_sessions[all_sessions['completed'] == True].copy()
 
-    session_count = len(completed_sessions)
-    session_minutes = int(completed_sessions['duration'].sum() / 60000)
+    total_sessions = len(sessions)
+    total_session_minutes = ms_to_minutes(sessions['duration'].sum())
 
-    unique_partner_count = len(completed_sessions['partner_id'].unique())
-    partner_session_counts = completed_sessions['partner_id'].value_counts()
-    repeat_partner_count = len(
+    total_partners = len(sessions['partner_id'].unique())
+    partner_session_counts = sessions['partner_id'].value_counts()
+    total_repeat_partners = len(
         partner_session_counts[partner_session_counts > 1])
 
-    earliest_session_time = completed_sessions['start_time'].dt.time.min()
-    latest_session_time = completed_sessions['start_time'].dt.time.max()
-    most_common_session_time = completed_sessions['start_time'].dt.time.mode(
+    earliest_session_time = sessions['start_time'].dt.time.min()
+    latest_session_time = sessions['start_time'].dt.time.max()
+    most_common_session_time = sessions['start_time'].dt.time.mode(
     ).iloc[0]
 
-    daily_avg_duration = completed_sessions.groupby(
-        completed_sessions['start_time'].dt.date)['duration'].sum().mean()
-    daily_avg_minutes = int(daily_avg_duration / 60000)
+    total_duration_by_date = sessions.groupby(
+        sessions['start_time'].dt.date)['duration'].sum()
+    daily_avg_minutes = ms_to_minutes(total_duration_by_date.mean())
+    daily_median_minutes = ms_to_minutes(total_duration_by_date.median())
+    daily_record_minutes = ms_to_minutes(total_duration_by_date.max())
 
-    daily_record_duration = completed_sessions.groupby(
-        completed_sessions['start_time'].dt.date)['duration'].sum().max()
-    daily_record_minutes = int(daily_record_duration / 60000)
-
-    completed_sessions.loc[:, 'join_diff'] = completed_sessions['start_time'] - \
-        completed_sessions['joined_at']
+    sessions['join_diff'] = sessions['start_time'] - sessions['joined_at']
     avg_join_diff_seconds = int(
-        completed_sessions['join_diff'].mean().total_seconds())
+        sessions['join_diff'].mean().total_seconds())
 
     return {
-        "session_count": session_count,
-        "session_minutes": session_minutes,
-        "unique_partner_count": unique_partner_count,
-        "repeat_partner_count": repeat_partner_count,
-        "earliest_session_time": earliest_session_time,
-        "latest_session_time": latest_session_time,
-        "most_common_session_time": most_common_session_time,
-        "daily_avg_minutes": daily_avg_minutes,
-        "daily_record_minutes": daily_record_minutes,
+        "total": {
+            "total_sessions": total_sessions,
+            "total_session_minutes": total_session_minutes,
+            "total_partners": total_partners,
+            "total_repeat_partners": total_repeat_partners
+        },
+        "time": {
+            "earliest_session_time": earliest_session_time,
+            "latest_session_time": latest_session_time,
+            "most_common_session_time": most_common_session_time
+        },
+        "daily": {
+            "daily_avg_minutes": daily_avg_minutes,
+            "daily_median_minutes": daily_median_minutes,
+            "daily_record_minutes": daily_record_minutes
+        },
         "avg_join_diff_seconds": avg_join_diff_seconds,
         # "df": sessions_df.to_dict(orient='records')
     }

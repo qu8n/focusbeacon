@@ -28,3 +28,7 @@ def get_start_of_week_local_datetime(local_timezone: str):
     monday = today_local - timedelta(days=today_local.weekday())
     start_of_week = monday.replace(hour=0, minute=0, second=0, microsecond=0)
     return start_of_week
+
+
+def ms_to_minutes(ms: float):
+    return int(ms / 60000)
