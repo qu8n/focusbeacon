@@ -8,7 +8,8 @@
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "supabase-typegen": "source .env && npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > types/supabase.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.43.4",
@@ -27,6 +28,7 @@
     "prettier": "^3.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "supabase": "^1.172.2",
     "tailwindcss": "3.4.3",
     "typescript": "5.4.5"
   },

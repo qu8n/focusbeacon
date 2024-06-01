@@ -38,3 +38,5 @@ next-env.d.ts
 #python
 .venv
 __pycache__
+
+/supabase

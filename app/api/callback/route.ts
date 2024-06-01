@@ -10,7 +10,8 @@ import {
 import { serialize } from "cookie"
 import { encrypt, generateSessionId } from "@/lib/cryptography"
 import { supabaseClient } from "@/lib/supabase"
-import { DbProfile, FmProfile, FmUser } from "@/lib/types"
+import { FmProfile, FmUser } from "@/types/focusmate"
+import { TablesInsert } from "@/types/supabase"
 
 const sessionCookieName = process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME as string
 
@@ -107,7 +108,7 @@ async function saveProfileDataToDb(
   accessToken: string,
   sessionId: string
 ) {
-  const dbUser: DbProfile = {
+  const dbUser: TablesInsert<"profile"> = {
     user_id: user.userId,
     total_session_count: user.totalSessionCount,
     time_zone: user.timeZone,
