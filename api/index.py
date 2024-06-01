@@ -32,9 +32,9 @@ async def sessions(request: Request):
     access_token = get_access_token_from_db(session_id)
 
     profile_data = fetch_focusmate_data(
-        fm_api_profile_endpoint, access_token)
+        fm_api_profile_endpoint, access_token).get("user")
 
-    local_timezone: str = profile_data.get("user").get("timeZone")
+    local_timezone: str = profile_data.get("timeZone")
 
     start_of_week = get_start_of_week_local_datetime(local_timezone)
     start_of_week_utc = local_datetime_to_utc_datetime(
@@ -48,7 +48,6 @@ async def sessions(request: Request):
         "start": start_of_week_query_str,
         "end": now_utc_query_str
     }
-
     sessions_data: list = fetch_focusmate_data(
         fm_api_sessions_endpoint, access_token, query_params).get("sessions")
 
@@ -74,9 +73,12 @@ async def sessions(request: Request):
     daily_median_minutes = ms_to_minutes(total_duration_by_date.median())
     daily_record_minutes = ms_to_minutes(total_duration_by_date.max())
 
-    sessions['join_diff'] = sessions['start_time'] - sessions['joined_at']
-    avg_join_diff_seconds = int(
-        sessions['join_diff'].mean().total_seconds())
+    sessions['joined_late_in_seconds'] = (
+        sessions['joined_at'] - sessions['start_time']).dt.total_seconds()
+    avg_joined_late_in_seconds = sessions['joined_late_in_seconds'].mean()
+    median_joined_late_in_seconds = sessions['joined_late_in_seconds'].median()
+    late_sessions = len(sessions[sessions['joined_late_in_seconds'] > 120])
+    on_time_sessions = len(sessions[sessions['joined_late_in_seconds'] <= 120])
 
     return {
         "total": {
@@ -95,6 +97,11 @@ async def sessions(request: Request):
             "daily_median_minutes": daily_median_minutes,
             "daily_record_minutes": daily_record_minutes
         },
-        "avg_join_diff_seconds": avg_join_diff_seconds,
+        "timeliness": {
+            "avg_joined_late_in_seconds": avg_joined_late_in_seconds,
+            "median_joined_late_in_seconds": median_joined_late_in_seconds,
+            "late_sessions": late_sessions,
+            "on_time_sessions": on_time_sessions
+        }
         # "df": sessions_df.to_dict(orient='records')
     }
