@@ -1,6 +1,6 @@
 
 from api.helpers.time import get_start_of_week_local_datetime, \
-    local_datetime_to_utc_datetime, datetime_to_query_str, ms_to_minutes
+    local_datetime_to_utc_datetime, datetime_to_query_str, ms_to_minutes, minutes_to_ms
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
 from api.helpers.focusmate import fetch_focusmate_data, fm_sessions_data_to_df
 import os
@@ -80,28 +80,40 @@ async def sessions(request: Request):
     late_sessions = len(sessions[sessions['joined_late_in_seconds'] > 120])
     on_time_sessions = len(sessions[sessions['joined_late_in_seconds'] <= 120])
 
+    total_25_minute_sessions = len(
+        sessions[sessions['duration'] == minutes_to_ms(25)])
+    total_50_minute_sessions = len(
+        sessions[sessions['duration'] == minutes_to_ms(50)])
+    total_75_minute_sessions = len(
+        sessions[sessions['duration'] == minutes_to_ms(75)])
+
     return {
-        "total": {
+        "total_metrics": {
             "total_sessions": total_sessions,
             "total_session_minutes": total_session_minutes,
             "total_partners": total_partners,
             "total_repeat_partners": total_repeat_partners
         },
-        "time": {
+        "time_metrics": {
             "earliest_session_time": earliest_session_time,
             "latest_session_time": latest_session_time,
             "most_common_session_time": most_common_session_time
         },
-        "daily": {
+        "daily_metrics": {
             "daily_avg_minutes": daily_avg_minutes,
             "daily_median_minutes": daily_median_minutes,
             "daily_record_minutes": daily_record_minutes
         },
-        "timeliness": {
+        "timeliness_metrics": {
             "avg_joined_late_in_seconds": avg_joined_late_in_seconds,
             "median_joined_late_in_seconds": median_joined_late_in_seconds,
             "late_sessions": late_sessions,
             "on_time_sessions": on_time_sessions
+        },
+        "sessions_by_duration": {
+            "total_25_minute_sessions": total_25_minute_sessions,
+            "total_50_minute_sessions": total_50_minute_sessions,
+            "total_75_minute_sessions": total_75_minute_sessions
         }
         # "df": sessions_df.to_dict(orient='records')
     }

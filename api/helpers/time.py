@@ -32,3 +32,7 @@ def get_start_of_week_local_datetime(local_timezone: str):
 
 def ms_to_minutes(ms: float):
     return int(ms / 60000)
+
+
+def minutes_to_ms(minutes: int):
+    return minutes * 60000
