@@ -1,9 +1,9 @@
 
+from datetime import datetime
 import pandas as pd
 import json
 import http.client
-from api.helpers.cryptography import decrypt
-from api.helpers.time import utc_str_to_local_datetime
+from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt
 import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -31,11 +31,12 @@ def fm_sessions_data_to_df(sessions_data: list, local_timezone: str):
         partner_id = session['users'][1].get(
             'userId') if len(session['users']) > 1 else None
 
-        local_start_time = utc_str_to_local_datetime(
+        local_start_time = fm_time_str_to_local_dt(
             start_time, local_timezone)
-        local_requested_at = utc_str_to_local_datetime(
+        local_requested_at = fm_time_str_to_local_dt(
             requested_at, local_timezone)
-        local_joined_at = utc_str_to_local_datetime(joined_at, local_timezone)
+        local_joined_at = fm_time_str_to_local_dt(
+            joined_at, local_timezone)
 
         row = {
             'session_id': session_id,
@@ -64,17 +65,41 @@ def fm_sessions_data_to_df(sessions_data: list, local_timezone: str):
     return df
 
 
-def fetch_focusmate_data(endpoint: str, access_token: str, query_params={}):
+def fetch_focusmate_sessions(endpoint: str, access_token: str,
+                             start_utc_dt: datetime, end_utc_dt: datetime):
     conn = http.client.HTTPSConnection(fm_api_domain)
 
     headers = {'Authorization': 'Bearer ' + access_token}
-    if query_params != {}:
-        endpoint += "?"
-        for key, value in query_params.items():
-            endpoint += f"{key}={value}&"
-        endpoint = endpoint[:-1]
+
+    endpoint += "?"
+
+    query_params = {
+        "start": dt_to_fm_time_str(start_utc_dt),
+        "end": dt_to_fm_time_str(end_utc_dt)
+    }
+
+    for key, value in query_params.items():
+        endpoint += f"{key}={value}&"
+
+    endpoint = endpoint[:-1]
 
     conn.request("GET", endpoint, headers=headers)
+    response = conn.getresponse()
+    data_as_str = response.read().decode("utf-8")
+    data_as_obj = json.loads(data_as_str)
+
+    conn.close()
+
+    return data_as_obj
+
+
+def fetch_focusmate_profile(endpoint: str, access_token: str):
+    conn = http.client.HTTPSConnection(fm_api_domain)
+
+    headers = {'Authorization': 'Bearer ' + access_token}
+
+    conn.request("GET", endpoint, headers=headers)
+
     response = conn.getresponse()
     data_as_str = response.read().decode("utf-8")
     data_as_obj = json.loads(data_as_str)

@@ -1,27 +1,41 @@
 from datetime import datetime, timedelta, timezone
 from dateutil import tz, parser
 
+fm_datetime_str_format = '%Y-%m-%dT%H:%M:%SZ'
+now_utc_dt = datetime.now(timezone.utc)
 
-def utc_str_to_local_datetime(utc_time: str, local_timezone: str):
-    utc_as_datetime = parser.parse(utc_time)
+
+def utc_dt_to_local_dt(utc_time: datetime, local_timezone: str):
     local_timezone_obj = tz.gettz(local_timezone)
-    local_time = utc_as_datetime.replace(
+    local_time = utc_time.replace(
         tzinfo=tz.tzutc()).astimezone(local_timezone_obj)
     return local_time
 
 
-def local_datetime_to_utc_datetime(local_time: datetime, local_timezone: str):
+def fm_time_str_to_dt(fm_time_str: str):
+    dt = parser.parse(fm_time_str)
+    return dt
+
+
+def fm_time_str_to_local_dt(fm_time_str: str, local_timezone: str):
+    utc_dt = fm_time_str_to_dt(fm_time_str)
+    local_dt = utc_dt_to_local_dt(utc_dt, local_timezone)
+    return local_dt
+
+
+def local_dt_to_utc_dt(local_time: datetime, local_timezone: str):
     local_timezone_obj = tz.gettz(local_timezone)
-    utc_time = local_time.replace(
+    utc_dt = local_time.replace(
         tzinfo=local_timezone_obj).astimezone(tz.tzutc())
-    return utc_time
+    return utc_dt
 
 
-def datetime_to_query_str(datetime_obj: datetime):
-    return datetime_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+def dt_to_fm_time_str(datetime_obj: datetime):
+    fm_time_str = datetime_obj.strftime(fm_datetime_str_format)
+    return fm_time_str
 
 
-def get_start_of_week_local_datetime(local_timezone: str):
+def get_start_of_week_local_dt(local_timezone: str):
     '''Returns the start of the current week in the given timezone, defined as
     00:00:00 on Monday of the current week.'''
     today_local = datetime.now(tz.gettz(local_timezone))
