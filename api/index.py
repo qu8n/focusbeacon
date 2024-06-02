@@ -1,11 +1,14 @@
 
+from datetime import datetime, timedelta, timezone
 from api.helpers.time import get_start_of_week_local_dt, \
     local_dt_to_utc_dt, ms_to_minutes, minutes_to_ms, now_utc_dt
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
 from api.helpers.focusmate import fetch_all_focusmate_sessions, fetch_focusmate_profile, fetch_focusmate_sessions, fm_sessions_data_to_df
+from api.test.sample_data.sessions import sample_sessions
 import os
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
+import pandas as pd
 
 
 app = FastAPI()
@@ -130,4 +133,43 @@ async def allSessions(request: Request):
 
     return {
         "total_sessions": total_sessions
+    }
+
+
+@app.get("/api/py/streak")
+async def streak(request: Request):
+    session_id = get_session_id_from_cookie(request)
+    access_token = get_access_token_from_db(session_id)
+
+    profile_data = fetch_focusmate_profile(
+        fm_api_profile_endpoint, access_token).get("user")
+    local_timezone: str = profile_data.get("timeZone")
+    member_since: str = profile_data.get("memberSince")
+
+    sessions_data = await fetch_all_focusmate_sessions(
+        fm_api_sessions_endpoint, access_token, member_since)
+
+    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
+    sessions = all_sessions[all_sessions['completed'] == True].copy()
+
+    sessions['start_time_date'] = sessions['start_time'].dt.date
+
+    yesterday = (pd.Timestamp.today() -
+                 pd.Timedelta(days=1)).date()
+
+    full_date_range = pd.date_range(
+        start=sessions['start_time_date'].min(), end=yesterday)
+    full_date_range_dates = [date.date() for date in full_date_range]
+
+    dates_set = set(sessions['start_time_date'])
+
+    daily_streak = 0
+    for date in reversed(full_date_range_dates):
+        if date in dates_set:
+            daily_streak += 1
+        else:
+            break
+
+    return {
+        "daily_streak": daily_streak
     }
