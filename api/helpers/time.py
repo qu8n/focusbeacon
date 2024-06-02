@@ -12,12 +12,16 @@ def utc_dt_to_local_dt(utc_time: datetime, local_timezone: str):
     return local_time
 
 
-def fm_time_str_to_dt(fm_time_str: str):
+def fm_time_str_to_dt(fm_time_str: str | None):
+    if fm_time_str is None:
+        return None
     dt = parser.parse(fm_time_str)
     return dt
 
 
-def fm_time_str_to_local_dt(fm_time_str: str, local_timezone: str):
+def fm_time_str_to_local_dt(fm_time_str: str | None, local_timezone: str):
+    if fm_time_str is None:
+        return None
     utc_dt = fm_time_str_to_dt(fm_time_str)
     local_dt = utc_dt_to_local_dt(utc_dt, local_timezone)
     return local_dt

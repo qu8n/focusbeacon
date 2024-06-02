@@ -1,8 +1,8 @@
 
 from api.helpers.time import get_start_of_week_local_dt, \
-    local_dt_to_utc_dt, dt_to_fm_time_str, ms_to_minutes, minutes_to_ms, now_utc_dt
+    local_dt_to_utc_dt, ms_to_minutes, minutes_to_ms, now_utc_dt
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
-from api.helpers.focusmate import fetch_focusmate_profile, fetch_focusmate_sessions, fm_sessions_data_to_df
+from api.helpers.focusmate import fetch_all_focusmate_sessions, fetch_focusmate_profile, fetch_focusmate_sessions, fm_sessions_data_to_df
 import os
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
@@ -110,15 +110,24 @@ async def sessions(request: Request):
     }
 
 
-# @app.get("/api/py/streak")
-# async def streak(request: Request):
-#     session_id = get_session_id_from_cookie(request)
-#     access_token = get_access_token_from_db(session_id)
+@app.get("/api/py/all-sessions")
+async def allSessions(request: Request):
+    session_id = get_session_id_from_cookie(request)
+    access_token = get_access_token_from_db(session_id)
 
-#     profile_data = fetch_focusmate_data(
-#         fm_api_profile_endpoint, access_token).get("user")
-#     local_timezone: str = profile_data.get("timeZone")
-#     member_since: str = profile_data.get("memberSince")
+    profile_data = fetch_focusmate_profile(
+        fm_api_profile_endpoint, access_token).get("user")
+    local_timezone: str = profile_data.get("timeZone")
+    member_since: str = profile_data.get("memberSince")
 
-#     curr_yr = now_utc.year
-#     first_yr = int(member_since[:4])
+    sessions_data = await fetch_all_focusmate_sessions(
+        fm_api_sessions_endpoint, access_token, member_since)
+
+    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
+    sessions = all_sessions[all_sessions['completed'] == True].copy()
+
+    total_sessions = len(sessions)
+
+    return {
+        "total_sessions": total_sessions
+    }
