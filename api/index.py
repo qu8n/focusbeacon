@@ -1,4 +1,5 @@
 
+from api.helpers.metric import calculate_streak
 from api.helpers.time import get_start_of_week_local_dt, \
     local_dt_to_utc_dt, ms_to_minutes, minutes_to_ms, now_utc_dt
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
@@ -152,24 +153,12 @@ async def streak(request: Request):
     all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
     sessions = all_sessions[all_sessions['completed'] == True].copy()
 
-    sessions['start_time_date'] = sessions['start_time'].dt.date
-
-    yesterday = (pd.Timestamp.today() -
-                 pd.Timedelta(days=1)).date()
-
-    full_date_range = pd.date_range(
-        start=sessions['start_time_date'].min(), end=yesterday)
-    full_date_range_dates = [date.date() for date in full_date_range]
-
-    dates_set = set(sessions['start_time_date'])
-
-    daily_streak = 0
-    for date in reversed(full_date_range_dates):
-        if date in dates_set:
-            daily_streak += 1
-        else:
-            break
+    daily_streak = calculate_streak(sessions, "D")
+    weekly_streak = calculate_streak(sessions, "W")
+    monthly_streak = calculate_streak(sessions, "M")
 
     return {
-        "daily_streak": daily_streak
+        "daily_streak": daily_streak,
+        "weekly_streak": weekly_streak,
+        "monthly_streak": monthly_streak
     }
