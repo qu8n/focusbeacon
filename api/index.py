@@ -7,6 +7,8 @@ import os
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 import pandas as pd
+import ssl
+ssl._create_default_https_context = ssl._create_stdlib_context
 
 
 app = FastAPI()
