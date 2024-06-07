@@ -2,15 +2,16 @@ import pandas as pd
 from typing import Literal
 
 
-def calculate_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M"]) -> int:
+def calculate_recent_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M"]) -> int:
     '''
-    Calculate either daily, weekly, or monthly session streak. A streak is defined as the
-    number of consecutive periods with at least one session, excluding the current period.
+    Calculate either daily, weekly, or monthly session streak in recent periods.
+    A recent streak is defined as the number of consecutive periods most recently
+    with at least one session, excluding the current period.
 
     Parameters
     ----------
     sessions : pd.DataFrame
-        A DataFrame containing all sessions.
+        A DataFrame containing all completed sessions.
     period : Literal["D", "W", "M"]
         The period to calculate the streak for. D for daily, W for weekly, M for monthly.
 
@@ -42,3 +43,37 @@ def calculate_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M"]) -> 
         period_streak += 1
 
     return period_streak
+
+
+def calculate_longest_daily_streak(sessions: pd.DataFrame) -> tuple[int, tuple[str, str]]:
+    '''
+    Calculate the longest daily session streak count and date range.
+
+    Parameters
+    ----------
+    sessions : pd.DataFrame
+        A DataFrame containing all completed sessions.
+
+    Returns
+    -------
+    tuple[int, tuple[str, str]]
+        The longest daily session streak count and date range.
+    '''
+    sessions_copy = sessions.copy()
+
+    sessions_copy['date'] = sessions_copy['start_time'].dt.date
+    sessions_copy.sort_values('date', inplace=True)
+    sessions_copy['day_over_day_delta'] = sessions_copy['date'].diff().dt.days
+    sessions_copy['consecutive_day_group_id'] = (
+        sessions_copy['day_over_day_delta'] != 1).cumsum()
+
+    streak_lengths = sessions_copy.groupby('consecutive_day_group_id').size()
+    longest_streak = streak_lengths.max()
+
+    longest_streak_id = streak_lengths.idxmax()
+    longest_streak_dates = sessions_copy.loc[sessions_copy['consecutive_day_group_id']
+                                             == longest_streak_id, 'date']
+    longest_streak_start_date = longest_streak_dates.min()
+    longest_streak_end_date = longest_streak_dates.max()
+
+    return int(longest_streak), (str(longest_streak_start_date), str(longest_streak_end_date))

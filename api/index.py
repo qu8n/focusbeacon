@@ -1,5 +1,5 @@
 
-from api.helpers.metric import calculate_streak
+from api.helpers.metric import calculate_longest_daily_streak, calculate_recent_streak
 from api.helpers.time import get_start_of_week_local_dt, \
     local_dt_to_utc_dt, ms_to_minutes, minutes_to_ms, now_utc_dt
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
@@ -153,12 +153,14 @@ async def streak(request: Request):
     all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
     sessions = all_sessions[all_sessions['completed'] == True].copy()
 
-    daily_streak = calculate_streak(sessions, "D")
-    weekly_streak = calculate_streak(sessions, "W")
-    monthly_streak = calculate_streak(sessions, "M")
+    daily_streak = calculate_recent_streak(sessions, "D")
+    weekly_streak = calculate_recent_streak(sessions, "W")
+    monthly_streak = calculate_recent_streak(sessions, "M")
+    longest_daily_streak = calculate_longest_daily_streak(sessions)
 
     return {
         "daily_streak": daily_streak,
         "weekly_streak": weekly_streak,
-        "monthly_streak": monthly_streak
+        "monthly_streak": monthly_streak,
+        "longest_daily_streak": longest_daily_streak
     }
