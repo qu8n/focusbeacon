@@ -100,7 +100,7 @@ def fetch_focusmate_sessions(endpoint: str, access_token: str,
     return data_as_obj
 
 
-async def fetch_focusmate_sessions_for_period(session: aiohttp.ClientSession, url, headers):
+async def fetch_focusmate_sessions_by_year(session: aiohttp.ClientSession, url: str, headers: dict[str, str]):
     async with session.get(url, headers=headers) as response:
         data = await response.json()
         return data.get("sessions", [])
@@ -112,22 +112,17 @@ async def fetch_all_focusmate_sessions(endpoint: str, access_token: str, member_
     curr_year = now_utc_dt.year
     first_year = int(member_since[:4])
 
-    async with aiohttp.ClientSession(connector=conn) as session:
+    aiohttpSession = aiohttp.ClientSession(connector=conn)
+    async with aiohttpSession as session:
         tasks = []
 
-        # Although the Focusmate API docs say that we can fetch sessions for a year at a time,
-        # doing that for certain years erronously returns error 'Date range must be smaller than one year'.
-        # To be safe, we fetch sessions for each half of the year to avoid this bug.
+        # Split the request into yearly chunks per the API's rules
         for year in range(first_year, curr_year + 1):
-            first_half_of_yr_sessions = f"{fm_api_url}{endpoint}?start={
-                year}-01-01T00:00:00Z&end={year}-06-30T23:59:59Z"
-            tasks.append(fetch_focusmate_sessions_for_period(
-                session, first_half_of_yr_sessions, headers))
+            api_endpoint_with_year = f"{fm_api_url}{endpoint}?start={
+                year}-01-01T00:00:00Z&end={year}-12-31T23:59:59Z"
 
-            second_half_of_yr_sessions = f"{fm_api_url}{endpoint}?start={
-                year}-07-01T00:00:00Z&end={year}-12-31T23:59:59Z"
-            tasks.append(fetch_focusmate_sessions_for_period(
-                session, second_half_of_yr_sessions, headers))
+            tasks.append(fetch_focusmate_sessions_by_year(
+                session, api_endpoint_with_year, headers))
 
         sessions = await asyncio.gather(*tasks)
 
