@@ -135,9 +135,25 @@ def prepare_calendar_data(sessions: pd.DataFrame) -> dict:
     -------
     dict
         A dictionary containing data for the "from", "to", and "data" props of
-        the Nivo TimeRange calendar component.
+        the Nivo TimeRange calendar component, as well as the total number of
+        sessions in the past year.
     '''
+    today = pd.Timestamp.today()
+    one_year_ago = today - pd.DateOffset(years=1)
+    # Because the Nivo TimeRange calendar component begins on Monday, we need
+    # the Monday of the week one year ago
+    one_year_ago_monday = one_year_ago - pd.DateOffset(
+        days=one_year_ago.weekday())
+    one_year_ago_monday_str = one_year_ago_monday.strftime('%Y-%m-%d')
+    today_str = today.strftime('%Y-%m-%d')
+
     sessions_copy = sessions.copy()
+    sessions_copy = sessions_copy[
+        (sessions_copy['start_time'] >= one_year_ago_monday) &
+        (sessions_copy['start_time'] <= today)
+    ]
+
+    past_year_sessions = len(sessions_copy)
 
     sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.strftime(
         '%Y-%m-%d')
@@ -146,15 +162,9 @@ def prepare_calendar_data(sessions: pd.DataFrame) -> dict:
     calendar_data.columns = ['day', 'value']  # expected by Nivo calendar
     calendar_data = calendar_data.to_dict(orient='records')
 
-    today = pd.Timestamp.today()
-    one_year_ago = today - pd.DateOffset(years=1)
-    one_year_ago_monday_str = (one_year_ago - pd.DateOffset(
-        days=one_year_ago.weekday()
-    )).strftime('%Y-%m-%d')
-    today_str = today.strftime('%Y-%m-%d')
-
     return {
         "from": one_year_ago_monday_str,
         "to": today_str,
-        "data": calendar_data
+        "data": calendar_data,
+        "past_year_sessions": past_year_sessions
     }
