@@ -45,7 +45,8 @@ def calculate_recent_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M
     return period_streak
 
 
-def calculate_longest_daily_streak(sessions: pd.DataFrame) -> tuple[int, tuple[str, str]]:
+def calculate_longest_daily_streak(sessions: pd.DataFrame,
+                                   include_weekend_in_daily_streak: bool) -> tuple[int, tuple[str, str]]:
     '''
     Calculate the longest daily session streak count and date range.
 
@@ -53,6 +54,8 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame) -> tuple[int, tuple[s
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
+    include_weekend_in_daily_streak : bool
+        Whether to include weekends in the daily streak calculation.
 
     Returns
     -------
@@ -64,6 +67,27 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame) -> tuple[int, tuple[s
     sessions_copy['date'] = sessions_copy['start_time'].dt.date
     sessions_copy.sort_values('date', inplace=True)
     sessions_copy['day_over_day_delta'] = sessions_copy['date'].diff().dt.days
+
+    if not include_weekend_in_daily_streak:
+        sessions_copy = sessions_copy[sessions_copy['start_time'].dt.weekday < 5]
+
+        def adjust_delta(row):
+            day_over_day_delta = row['day_over_day_delta']
+
+            # Handle the first row, where delta is NaN
+            if pd.isna(day_over_day_delta):
+                return day_over_day_delta
+
+            if day_over_day_delta > 1:
+                # Friday to Monday should be considered consecutive
+                prev_day = row['date'] - pd.Timedelta(days=day_over_day_delta)
+                if prev_day.weekday() == 4 and row['date'].weekday() == 0:
+                    return 1
+            return day_over_day_delta
+
+        sessions_copy['day_over_day_delta'] = sessions_copy.apply(
+            adjust_delta, axis=1)
+
     sessions_copy['consecutive_day_group_id'] = (
         sessions_copy['day_over_day_delta'] != 1).cumsum()
 

@@ -156,7 +156,7 @@ async def streak(request: Request):
     daily_streak = calculate_recent_streak(sessions, "D")
     weekly_streak = calculate_recent_streak(sessions, "W")
     monthly_streak = calculate_recent_streak(sessions, "M")
-    longest_daily_streak = calculate_longest_daily_streak(sessions)
+    longest_daily_streak = calculate_longest_daily_streak(sessions, False)
 
     return {
         "daily_streak": daily_streak,

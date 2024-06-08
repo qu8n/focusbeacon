@@ -12,7 +12,6 @@ import certifi
 import asyncio
 import ssl
 ssl_context = ssl.create_default_context(cafile=certifi.where())
-conn = aiohttp.TCPConnector(ssl=ssl_context)
 
 load_dotenv()
 
@@ -112,7 +111,9 @@ async def fetch_all_focusmate_sessions(endpoint: str, access_token: str, member_
     curr_year = now_utc_dt.year
     first_year = int(member_since[:4])
 
+    conn = aiohttp.TCPConnector(ssl=ssl_context)
     aiohttpSession = aiohttp.ClientSession(connector=conn)
+
     async with aiohttpSession as session:
         tasks = []
 
