@@ -26,7 +26,8 @@ def encrypt(text: str) -> str:
 
     encrypted = encryptor.update(padded_data) + encryptor.finalize()
 
-    return f"{base64.b64encode(iv).decode('utf-8')}:{base64.b64encode(encrypted).decode('utf-8')}"
+    return (f"{base64.b64encode(iv).decode('utf-8')}:"
+            f"{base64.b64encode(encrypted).decode('utf-8')}")
 
 
 def decrypt(encrypted_text: str) -> str:

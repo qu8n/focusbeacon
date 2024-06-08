@@ -4,23 +4,25 @@ from typing import Literal
 # TODO: Account for the include_weekend_in_daily_streak parameter
 
 
-def calculate_recent_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M"]) -> int:
+def calculate_recent_streak(sessions: pd.DataFrame,
+                            period: Literal["D", "W", "M"]) -> int:
     '''
-    Calculate either daily, weekly, or monthly session streak in recent periods.
-    A recent streak is defined as the number of consecutive periods most recently
-    with at least one session, excluding the current period.
+    Calculate either daily, weekly, or monthly session streak in recent
+    periods. A recent streak is defined as the number of consecutive periods
+    most recently with at least one session, excluding the current period.
 
     Parameters
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
     period : Literal["D", "W", "M"]
-        The period to calculate the streak for. D for daily, W for weekly, M for monthly.
+        The period to calculate the streak for. D for daily, W for weekly, M
+        for monthly.
 
     Returns
     -------
     int
-        The calculated streak.
+        The calculated streak corresponding to the period.
     '''
     sessions_copy = sessions.copy()
 
@@ -30,7 +32,8 @@ def calculate_recent_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M
     recently_completed_period = (curr_period - 1)
 
     period_range_lifetime = pd.period_range(
-        start=sessions_copy['period'].min(), end=recently_completed_period, freq=period)
+        start=sessions_copy['period'].min(), end=recently_completed_period,
+        freq=period)
 
     periods_with_session = set(sessions_copy['period'])
 
@@ -48,7 +51,8 @@ def calculate_recent_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M
 
 
 def calculate_longest_daily_streak(sessions: pd.DataFrame,
-                                   include_weekend_in_daily_streak: bool) -> tuple[int, tuple[str, str]]:
+                                   include_weekend_in_daily_streak: bool) \
+        -> tuple[int, tuple[str, str]]:
     '''
     Calculate the longest daily session streak count and date range.
 
@@ -68,10 +72,12 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
 
     sessions_copy['start_date'] = sessions_copy['start_time'].dt.date
     sessions_copy.sort_values('start_date', inplace=True)
-    sessions_copy['day_over_day_delta'] = sessions_copy['start_date'].diff().dt.days
+    sessions_copy['day_over_day_delta'] = \
+        sessions_copy['start_date'].diff().dt.days
 
     if not include_weekend_in_daily_streak:
-        sessions_copy = sessions_copy[sessions_copy['start_time'].dt.weekday < 5]
+        sessions_copy = \
+            sessions_copy[sessions_copy['start_time'].dt.weekday < 5]
 
         def adjust_delta(row):
             day_over_day_delta = row['day_over_day_delta']
@@ -84,7 +90,8 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
                 # Friday to Monday should be considered consecutive
                 prev_day = row['start_date'] - \
                     pd.Timedelta(days=day_over_day_delta)
-                if prev_day.weekday() == 4 and row['start_date'].weekday() == 0:
+                if prev_day.weekday() == 4 and \
+                        row['start_date'].weekday() == 0:
                     return 1
             return day_over_day_delta
 
@@ -100,14 +107,18 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     longest_streak = int(streak_lengths.max())
 
     longest_streak_id = streak_lengths.idxmax()
-    longest_streak_dates = sessions_copy.loc[sessions_copy['consecutive_day_group_id']
-                                             == longest_streak_id, 'date']
+    longest_streak_dates = \
+        sessions_copy.loc[sessions_copy['consecutive_day_group_id']
+                          == longest_streak_id, 'date']
     longest_streak_start_date = longest_streak_dates.min()
     longest_streak_end_date = longest_streak_dates.max()
 
     return {
         'longest_streak': longest_streak,
-        'longest_streak_dates': [longest_streak_start_date, longest_streak_end_date]
+        'longest_streak_dates': [
+            longest_streak_start_date,
+            longest_streak_end_date
+        ]
     }
 
 

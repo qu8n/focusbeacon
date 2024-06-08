@@ -3,7 +3,8 @@ from datetime import datetime
 import pandas as pd
 import json
 import http.client
-from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt, now_utc_dt
+from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt, \
+    now_utc_dt
 import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -99,13 +100,15 @@ def fetch_focusmate_sessions(endpoint: str, access_token: str,
     return data_as_obj
 
 
-async def fetch_focusmate_sessions_by_year(session: aiohttp.ClientSession, url: str, headers: dict[str, str]):
+async def fetch_focusmate_sessions_by_year(
+        session: aiohttp.ClientSession, url: str, headers: dict[str, str]):
     async with session.get(url, headers=headers) as response:
         data = await response.json()
         return data.get("sessions", [])
 
 
-async def fetch_all_focusmate_sessions(endpoint: str, access_token: str, member_since: str):
+async def fetch_all_focusmate_sessions(
+        endpoint: str, access_token: str, member_since: str):
     headers = {'Authorization': 'Bearer ' + access_token}
 
     curr_year = now_utc_dt.year
