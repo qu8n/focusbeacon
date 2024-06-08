@@ -10,7 +10,6 @@ from api.helpers.focusmate import fetch_all_focusmate_sessions, \
 import os
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
-import pandas as pd
 import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 
@@ -117,29 +116,6 @@ async def sessions(request: Request):
     }
 
 
-@app.get("/api/py/all-sessions")
-async def allSessions(request: Request):
-    session_id = get_session_id_from_cookie(request)
-    access_token = get_access_token_from_db(session_id)
-
-    profile_data = fetch_focusmate_profile(
-        fm_api_profile_endpoint, access_token).get("user")
-    local_timezone: str = profile_data.get("timeZone")
-    member_since: str = profile_data.get("memberSince")
-
-    sessions_data = await fetch_all_focusmate_sessions(
-        fm_api_sessions_endpoint, access_token, member_since)
-
-    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
-    sessions = all_sessions[all_sessions['completed'] == True].copy()
-
-    total_sessions = len(sessions)
-
-    return {
-        "total_sessions": total_sessions
-    }
-
-
 @app.get("/api/py/streak")
 async def streak(request: Request):
     session_id = get_session_id_from_cookie(request)
@@ -156,35 +132,16 @@ async def streak(request: Request):
     all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
     sessions = all_sessions[all_sessions['completed'] == True].copy()
 
-    daily_streak = calculate_recent_streak(sessions, "D")
+    daily_streak = calculate_recent_streak(sessions, "D", False)
     weekly_streak = calculate_recent_streak(sessions, "W")
     monthly_streak = calculate_recent_streak(sessions, "M")
     longest_daily_streak = calculate_longest_daily_streak(sessions, False)
+    calendar_data = prepare_calendar_data(sessions)
 
     return {
         "daily_streak": daily_streak,
         "weekly_streak": weekly_streak,
         "monthly_streak": monthly_streak,
-        "longest_daily_streak": longest_daily_streak
+        "longest_daily_streak": longest_daily_streak,
+        "calendar_data": calendar_data
     }
-
-
-@app.get("/api/py/calendar")
-async def calendar(request: Request):
-    session_id = get_session_id_from_cookie(request)
-    access_token = get_access_token_from_db(session_id)
-
-    profile_data = fetch_focusmate_profile(
-        fm_api_profile_endpoint, access_token).get("user")
-    local_timezone: str = profile_data.get("timeZone")
-    member_since: str = profile_data.get("memberSince")
-
-    sessions_data = await fetch_all_focusmate_sessions(
-        fm_api_sessions_endpoint, access_token, member_since)
-
-    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
-    sessions = all_sessions[all_sessions['completed'] == True].copy()
-
-    calendar_data = prepare_calendar_data(sessions)
-
-    return calendar_data

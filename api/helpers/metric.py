@@ -1,11 +1,11 @@
 import pandas as pd
 from typing import Literal
 
-# TODO: Account for the include_weekend_in_daily_streak parameter
-
 
 def calculate_recent_streak(sessions: pd.DataFrame,
-                            period: Literal["D", "W", "M"]) -> int:
+                            period: Literal["D", "W", "M"],
+                            include_weekend_in_daily_streak: bool = True) \
+        -> int:
     '''
     Calculate either daily, weekly, or monthly session streak in recent
     periods. A recent streak is defined as the number of consecutive periods
@@ -42,6 +42,10 @@ def calculate_recent_streak(sessions: pd.DataFrame,
         if period in periods_with_session:
             period_streak += 1
         else:
+            if not include_weekend_in_daily_streak and period == "D":
+                # If the period is a weekend, we should skip it
+                if period.to_timestamp().weekday() > 4:
+                    continue
             break
 
     if curr_period in periods_with_session:
@@ -155,8 +159,8 @@ def prepare_calendar_data(sessions: pd.DataFrame) -> dict:
 
     past_year_sessions = len(sessions_copy)
 
-    sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.strftime(
-        '%Y-%m-%d')
+    sessions_copy['start_date_str'] = \
+        sessions_copy['start_time'].dt.strftime('%Y-%m-%d')
     calendar_data = sessions_copy.groupby('start_date_str').size()
     calendar_data = calendar_data.reset_index()
     calendar_data.columns = ['day', 'value']  # expected by Nivo calendar
