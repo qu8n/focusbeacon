@@ -1,6 +1,8 @@
 import pandas as pd
 from typing import Literal
 
+# TODO: Account for the include_weekend_in_daily_streak parameter
+
 
 def calculate_recent_streak(sessions: pd.DataFrame, period: Literal["D", "W", "M"]) -> int:
     '''
@@ -64,9 +66,9 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     '''
     sessions_copy = sessions.copy()
 
-    sessions_copy['date'] = sessions_copy['start_time'].dt.date
-    sessions_copy.sort_values('date', inplace=True)
-    sessions_copy['day_over_day_delta'] = sessions_copy['date'].diff().dt.days
+    sessions_copy['start_date'] = sessions_copy['start_time'].dt.date
+    sessions_copy.sort_values('start_date', inplace=True)
+    sessions_copy['day_over_day_delta'] = sessions_copy['start_date'].diff().dt.days
 
     if not include_weekend_in_daily_streak:
         sessions_copy = sessions_copy[sessions_copy['start_time'].dt.weekday < 5]
@@ -80,8 +82,9 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
 
             if day_over_day_delta > 1:
                 # Friday to Monday should be considered consecutive
-                prev_day = row['date'] - pd.Timedelta(days=day_over_day_delta)
-                if prev_day.weekday() == 4 and row['date'].weekday() == 0:
+                prev_day = row['start_date'] - \
+                    pd.Timedelta(days=day_over_day_delta)
+                if prev_day.weekday() == 4 and row['start_date'].weekday() == 0:
                     return 1
             return day_over_day_delta
 
@@ -105,4 +108,42 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     return {
         'longest_streak': longest_streak,
         'longest_streak_dates': [longest_streak_start_date, longest_streak_end_date]
+    }
+
+
+def prepare_calendar_data(sessions: pd.DataFrame) -> dict:
+    '''
+    Prepare calendar data for the Nivo TimeRange calendar component
+
+    Parameters
+    ----------
+    sessions : pd.DataFrame
+        A DataFrame containing all completed sessions.
+
+    Returns
+    -------
+    dict
+        A dictionary containing data for the "from", "to", and "data" props of
+        the Nivo TimeRange calendar component.
+    '''
+    sessions_copy = sessions.copy()
+
+    sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.strftime(
+        '%Y-%m-%d')
+    calendar_data = sessions_copy.groupby('start_date_str').size()
+    calendar_data = calendar_data.reset_index()
+    calendar_data.columns = ['day', 'value']  # expected by Nivo calendar
+    calendar_data = calendar_data.to_dict(orient='records')
+
+    today = pd.Timestamp.today()
+    one_year_ago = today - pd.DateOffset(years=1)
+    one_year_ago_monday_str = (one_year_ago - pd.DateOffset(
+        days=one_year_ago.weekday()
+    )).strftime('%Y-%m-%d')
+    today_str = today.strftime('%Y-%m-%d')
+
+    return {
+        "from": one_year_ago_monday_str,
+        "to": today_str,
+        "data": calendar_data
     }

@@ -1,5 +1,5 @@
 
-from api.helpers.metric import calculate_longest_daily_streak, calculate_recent_streak
+from api.helpers.metric import calculate_longest_daily_streak, calculate_recent_streak, prepare_calendar_data
 from api.helpers.time import get_start_of_week_local_dt, \
     local_dt_to_utc_dt, ms_to_minutes, minutes_to_ms, now_utc_dt
 from api.helpers.request import get_session_id_from_cookie, get_access_token_from_db
@@ -164,3 +164,24 @@ async def streak(request: Request):
         "monthly_streak": monthly_streak,
         "longest_daily_streak": longest_daily_streak
     }
+
+
+@app.get("/api/py/calendar")
+async def calendar(request: Request):
+    session_id = get_session_id_from_cookie(request)
+    access_token = get_access_token_from_db(session_id)
+
+    profile_data = fetch_focusmate_profile(
+        fm_api_profile_endpoint, access_token).get("user")
+    local_timezone: str = profile_data.get("timeZone")
+    member_since: str = profile_data.get("memberSince")
+
+    sessions_data = await fetch_all_focusmate_sessions(
+        fm_api_sessions_endpoint, access_token, member_since)
+
+    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
+    sessions = all_sessions[all_sessions['completed'] == True].copy()
+
+    calendar_data = prepare_calendar_data(sessions)
+
+    return calendar_data
