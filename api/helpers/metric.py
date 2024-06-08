@@ -106,10 +106,10 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     # Convert to int to avoid numpy int64 type (not supported by FastAPI)
     longest_streak = int(streak_lengths.max())
 
-    longest_streak_id = streak_lengths.idxmax()
+    longest_streak_id = streak_lengths[::-1].idxmax()
     longest_streak_dates = \
         sessions_copy.loc[sessions_copy['consecutive_day_group_id']
-                          == longest_streak_id, 'date']
+                          == longest_streak_id, 'start_date']
     longest_streak_start_date = longest_streak_dates.min()
     longest_streak_end_date = longest_streak_dates.max()
 

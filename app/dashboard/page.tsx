@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await fetch("/api/py/calendar")
+      const response = await fetch("/api/py/streak")
       const data = await response.json()
       // setCalendarData(data)
       console.log(data)
