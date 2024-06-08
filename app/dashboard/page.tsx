@@ -2,7 +2,7 @@
 "use client"
 
 import React, { useCallback, useState } from "react"
-import { ResponsiveTimeRange } from "@nivo/calendar"
+import { Calendar } from "@/components/calendar"
 
 export default function Dashboard() {
   const [calendarData, setCalendarData] = useState<any | null>(null)
@@ -11,7 +11,8 @@ export default function Dashboard() {
     try {
       const response = await fetch("/api/py/calendar")
       const data = await response.json()
-      setCalendarData(data)
+      // setCalendarData(data)
+      console.log(data)
     } catch (error) {
       console.error("Error fetching data:", error)
     }
@@ -20,13 +21,12 @@ export default function Dashboard() {
   if (calendarData) {
     return (
       <>
-        <div style={{ height: 300 }}>
-          <MyResponsiveCalendarCanvas
-            data={calendarData.data}
-            from={calendarData.from}
-            to={calendarData.to}
-          />
-        </div>
+        <Calendar
+          data={calendarData.data}
+          from={calendarData.from}
+          to={calendarData.to}
+          height={300}
+        />
       </>
     )
   }
@@ -37,30 +37,3 @@ export default function Dashboard() {
     </>
   )
 }
-
-const MyResponsiveCalendarCanvas = ({
-  data,
-  from,
-  to,
-}: {
-  data: {
-    value: number
-    day: string
-  }[]
-  from: string
-  to: string
-}) => (
-  <ResponsiveTimeRange
-    data={data}
-    from={from}
-    direction="horizontal" // TODO: vertical on mobile
-    to={to}
-    firstWeekday="monday"
-    weekdayTicks={[0, 1, 2, 3, 4, 5, 6]}
-    emptyColor="#EBEDF0"
-    colors={["#ffedd5", "#fdba74", "#f97316"]}
-    margin={{ top: 40, right: 40, bottom: 100, left: 40 }}
-    dayBorderWidth={5}
-    dayBorderColor="#ffffff"
-  />
-)
