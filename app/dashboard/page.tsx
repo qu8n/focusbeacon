@@ -1,12 +1,10 @@
-/* eslint-disable */
 "use client"
 
 import React from "react"
-import { Calendar } from "@/components/calendar"
+import { Heatmap } from "@/components/heatmap"
 import { Stat } from "@/components/stat"
 import { useQuery } from "@tanstack/react-query"
 import { useBreakpoint } from "@/lib/use-breakpoint"
-import { Divider } from "@/components/divider"
 
 export default function Dashboard() {
   const { isBelowSm } = useBreakpoint("sm")
@@ -37,14 +35,11 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-9">
-        <Calendar
-          title={`${data.calendar_data.past_year_sessions} sessions in the last year`}
-          data={data.calendar_data.data}
-          from={data.calendar_data.from}
-          to={data.calendar_data.to}
+        <Heatmap
+          title="Sessions heatmap"
+          data={data.heatmap_data}
           isBelowSm={isBelowSm}
         />
-        <Divider />
       </div>
     </>
   )

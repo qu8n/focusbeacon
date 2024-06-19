@@ -34,7 +34,7 @@ export default function DashboardLayout({
   return (
     <StackedLayout
       navbar={
-        <Navbar>
+        <Navbar className="max-w-4xl mx-auto">
           <NavbarItem className="max-sm:hidden">
             <Avatar src="/images/icon-192.png" />
             <NavbarLabel>FocusBeacon</NavbarLabel>

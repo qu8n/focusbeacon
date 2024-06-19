@@ -126,9 +126,9 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     }
 
 
-def prepare_calendar_data(sessions: pd.DataFrame) -> dict:
+def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
     '''
-    Prepare calendar data for the Nivo TimeRange calendar component
+    Prepare data for the Nivo TimeRange calendar component
 
     Parameters
     ----------

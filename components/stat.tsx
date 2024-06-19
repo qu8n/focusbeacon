@@ -1,5 +1,6 @@
 import { Badge } from "./badge"
 import { Divider } from "./divider"
+import { Strong, Text } from "./text"
 
 export function Stat({
   title,
@@ -13,7 +14,10 @@ export function Stat({
   return (
     <div>
       <div className="mb-9">
-        <div className="mt-3 font-medium text-lg/6 sm:text-sm/6">{title}</div>
+        <Text className="mt-6 mb-3">
+          <Strong>{title}</Strong>
+        </Text>
+
         <div className="mt-3 font-semibold text-3xl/8 sm:text-2xl/8">
           {value}
         </div>
