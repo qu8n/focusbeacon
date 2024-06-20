@@ -4,11 +4,11 @@ import { Strong, Text } from "./text"
 
 export function Stat({
   title,
-  value,
+  children,
   change,
 }: {
   title: string
-  value: string
+  children: React.ReactNode
   change?: string
 }) {
   return (
@@ -18,8 +18,8 @@ export function Stat({
           <Strong>{title}</Strong>
         </Text>
 
-        <div className="mt-3 font-semibold text-3xl/8 sm:text-2xl/8">
-          {value}
+        <div className="flex flex-row items-center gap-1 mt-3 font-semibold align-middle text-3xl/8 sm:text-2xl/8">
+          {children}
         </div>
 
         {change && (
