@@ -71,9 +71,7 @@ export default function DashboardLayout({
         </Sidebar>
       }
     >
-      <div className="flex items-end justify-between w-full gap-4 pb-6 border-b border-zinc-950/10 dark:border-white/10">
-        <Header />
-      </div>
+      <Header />
 
       <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
     </StackedLayout>

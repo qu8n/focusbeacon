@@ -1,34 +1,33 @@
 "use client"
 
 import { useSelectedLayoutSegment } from "next/navigation"
-import { Button } from "./button"
 import { Heading } from "./heading"
+import { TabNavigation, TabNavigationLink } from "./tabs"
+import { useState } from "react"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
 export default function Header() {
-  const currTabName = useSelectedLayoutSegment()
+  const [currTabName, setCurrTabName] = useState(useSelectedLayoutSegment())
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <Heading>{currTabName}</Heading>
 
-      <div className="flex gap-2">
+      <TabNavigation className="mt-4 sm:mt-0">
         {tabNames.map((tabName) => {
-          if (tabName === currTabName) {
-            return (
-              <Button key={tabName} href={`/dashboard/${tabName}`}>
-                {tabName}
-              </Button>
-            )
-          }
           return (
-            <Button key={tabName} href={`/dashboard/${tabName}`} outline>
+            <TabNavigationLink
+              key={tabName}
+              href={`/dashboard/${tabName}`}
+              active={tabName === currTabName}
+              onClick={() => setCurrTabName(tabName)}
+            >
               {tabName}
-            </Button>
+            </TabNavigationLink>
           )
         })}
-      </div>
-    </>
+      </TabNavigation>
+    </div>
   )
 }
