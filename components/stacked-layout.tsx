@@ -3,7 +3,7 @@
 import * as Headless from "@headlessui/react"
 import React, { useState } from "react"
 import { NavbarItem } from "./navbar"
-import { Code, Footnote, Text } from "./text"
+import { Footnote } from "./text"
 
 function OpenMenuIcon() {
   return (

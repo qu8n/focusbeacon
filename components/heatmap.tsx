@@ -81,11 +81,16 @@ export function Heatmap({
             dayBorderColor="#ffffff"
             dayRadius={4}
             tooltip={({ day, value, color }) => {
+              // Can't directly call new Date(day) because day is already in
+              // local time (Date assumes UTC time)
+              const [y, m, d] = day.split("-").map(Number)
+              const date = new Date(y, m - 1, d) // month is 0-indexed
+
               return (
                 <div className="p-4 bg-white border rounded-md shadow-sm">
                   <Text>
                     <Strong>
-                      {new Date(day).toLocaleDateString("en-us", {
+                      {new Date(date).toLocaleDateString("en-us", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
