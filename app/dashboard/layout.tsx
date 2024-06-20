@@ -16,8 +16,7 @@ import {
   SidebarSection,
 } from "@/components/sidebar"
 import { ReactQueryClientProvider } from "@/components/react-query-provider"
-import { Heading } from "@/components/heading"
-import { Button } from "@/components/button"
+import Header from "@/components/header"
 
 const navItems = [
   { label: "About", url: "/" },
@@ -73,11 +72,7 @@ export default function DashboardLayout({
       }
     >
       <div className="flex items-end justify-between w-full gap-4 pb-6 border-b border-zinc-950/10 dark:border-white/10">
-        <Heading>Streak</Heading>
-        <div className="flex gap-4">
-          <Button>Streak</Button>
-          <Button outline>Weekly</Button>
-        </div>
+        <Header />
       </div>
 
       <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
