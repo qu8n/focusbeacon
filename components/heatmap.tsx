@@ -2,6 +2,28 @@ import { CalendarData, ResponsiveTimeRange } from "@nivo/calendar"
 import { Strong, Text } from "./text"
 import { Divider } from "./divider"
 
+const svgSizeReduction = 0.08
+
+function DaySvg({ color }: { color: string }) {
+  return (
+    <svg
+      width={300 * svgSizeReduction}
+      height={170 * svgSizeReduction}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        width={150 * svgSizeReduction}
+        height={150 * svgSizeReduction}
+        x={10 * svgSizeReduction}
+        y={10 * svgSizeReduction}
+        rx={30 * svgSizeReduction}
+        ry={30 * svgSizeReduction}
+        fill={color}
+      />
+    </svg>
+  )
+}
+
 export function Heatmap({
   title,
   data,
@@ -55,8 +77,30 @@ export function Heatmap({
                 ? { top: 60, right: 0, bottom: 80, left: 40 }
                 : { top: 50, right: 20, bottom: 0, left: 0 }
             }
-            dayBorderWidth={5}
+            dayBorderWidth={3}
             dayBorderColor="#ffffff"
+            dayRadius={4}
+            tooltip={({ day, value, color }) => {
+              return (
+                <div className="p-4 bg-white border rounded-md shadow-sm">
+                  <Text>
+                    <Strong>
+                      {new Date(day).toLocaleDateString("en-us", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </Strong>
+                  </Text>
+                  <div className="flex items-center">
+                    <DaySvg color={color} />
+                    <Text>
+                      {value} session{Number(value) !== 1 && "s"}
+                    </Text>
+                  </div>
+                </div>
+              )
+            }}
           />
         </div>
       </div>
