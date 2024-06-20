@@ -16,7 +16,7 @@ import {
   SidebarSection,
 } from "@/components/sidebar"
 import { ReactQueryClientProvider } from "@/components/react-query-provider"
-import Header from "@/components/header"
+import Subheader from "@/components/subheader"
 
 const navItems = [
   { label: "About", url: "/" },
@@ -71,7 +71,7 @@ export default function DashboardLayout({
         </Sidebar>
       }
     >
-      <Header />
+      <Subheader />
 
       <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
     </StackedLayout>

@@ -20,6 +20,25 @@ export function Text({
   )
 }
 
+export function Footnote({
+  className,
+  ...props
+}: {
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <p
+      data-slot="text"
+      {...props}
+      className={clsx(
+        className,
+        "text-md/6 text-zinc-500 sm:text-xs/6 dark:text-zinc-400"
+      )}
+    />
+  )
+}
+
 export function TextLink({
   className,
   href,

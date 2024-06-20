@@ -7,7 +7,7 @@ import { useState } from "react"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
-export default function Header() {
+export default function Subheader() {
   const [currTabName, setCurrTabName] = useState(useSelectedLayoutSegment())
 
   return (

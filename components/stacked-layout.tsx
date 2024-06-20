@@ -3,6 +3,7 @@
 import * as Headless from "@headlessui/react"
 import React, { useState } from "react"
 import { NavbarItem } from "./navbar"
+import { Code, Footnote, Text } from "./text"
 
 function OpenMenuIcon() {
   return (
@@ -76,7 +77,7 @@ export function StackedLayout({
   const [showSidebar, setShowSidebar] = useState(false)
 
   return (
-    <div className="relative flex flex-col w-full isolate min-h-svh bg-zinc-100 dark:bg-zinc-950">
+    <div className="relative flex flex-col w-full max-w-4xl mx-auto isolate min-h-svh">
       {/* Sidebar on mobile */}
       <MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
         {sidebar}
@@ -96,11 +97,19 @@ export function StackedLayout({
       </header>
 
       {/* Content */}
-      <main className="flex flex-col flex-1 px-2 pb-2">
-        <div className="p-10 bg-white rounded-lg shadow-sm grow ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
-          <div className="max-w-4xl mx-auto">{children}</div>
+      <main className="flex flex-col flex-1 px-2">
+        <div className="p-12 bg-white rounded-lg shadow-sm grow ring-1 ring-zinc-950/5">
+          <div className="mx-auto">{children}</div>
         </div>
       </main>
+
+      <footer className="flex pt-4 mb-8">
+        <Footnote className="mx-auto">
+          &copy; {currentYear} FocusBeacon
+        </Footnote>
+      </footer>
     </div>
   )
 }
+
+const currentYear = new Date().getFullYear()

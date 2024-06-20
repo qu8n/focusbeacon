@@ -1,3 +1,4 @@
+import { cx } from "@/lib/utils"
 import "./globals.css"
 import { Inter } from "next/font/google"
 
@@ -16,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={cx(inter.className, "bg-zinc-100")}>{children}</body>
     </html>
   )
 }
