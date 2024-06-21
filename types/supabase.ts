@@ -13,7 +13,7 @@ export type Database = {
         Row: {
           access_token_encrypted: string | null
           created_at: string
-          include_weekend_in_daily_streak: boolean
+          weekend_breaks_daily_streak: boolean
           late_after_seconds: number
           member_since: string | null
           session_id: string | null
@@ -24,7 +24,7 @@ export type Database = {
         Insert: {
           access_token_encrypted?: string | null
           created_at?: string
-          include_weekend_in_daily_streak?: boolean
+          weekend_breaks_daily_streak?: boolean
           late_after_seconds?: number
           member_since?: string | null
           session_id?: string | null
@@ -35,7 +35,7 @@ export type Database = {
         Update: {
           access_token_encrypted?: string | null
           created_at?: string
-          include_weekend_in_daily_streak?: boolean
+          weekend_breaks_daily_streak?: boolean
           late_after_seconds?: number
           member_since?: string | null
           session_id?: string | null

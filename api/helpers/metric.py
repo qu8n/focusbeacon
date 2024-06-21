@@ -4,12 +4,15 @@ from typing import Literal
 
 def calculate_recent_streak(sessions: pd.DataFrame,
                             period: Literal["D", "W", "M"],
-                            include_weekend_in_daily_streak: bool = True) \
+                            weekend_breaks_daily_streak: bool = False) \
         -> int:
     '''
     Calculate either daily, weekly, or monthly session streak in recent
     periods. A recent streak is defined as the number of consecutive periods
-    most recently with at least one session, excluding the current period.
+    most recently with at least one session.
+
+    Not having a session today/this week/this month does not break the streak,
+    but having it does increase the streak.
 
     Parameters
     ----------
@@ -42,7 +45,7 @@ def calculate_recent_streak(sessions: pd.DataFrame,
         if period in periods_with_session:
             period_streak += 1
         else:
-            if not include_weekend_in_daily_streak and period == "D":
+            if not weekend_breaks_daily_streak and period == "D":
                 # If the period is a weekend, we should skip it
                 if period.to_timestamp().weekday() > 4:
                     continue
@@ -55,7 +58,7 @@ def calculate_recent_streak(sessions: pd.DataFrame,
 
 
 def calculate_longest_daily_streak(sessions: pd.DataFrame,
-                                   include_weekend_in_daily_streak: bool) \
+                                   weekend_breaks_daily_streak: bool) \
         -> tuple[int, tuple[str, str]]:
     '''
     Calculate the longest daily session streak count and date range.
@@ -64,7 +67,7 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
-    include_weekend_in_daily_streak : bool
+    weekend_breaks_daily_streak : bool
         Whether to include weekends in the daily streak calculation.
 
     Returns
@@ -79,7 +82,7 @@ def calculate_longest_daily_streak(sessions: pd.DataFrame,
     sessions_copy['day_over_day_delta'] = \
         sessions_copy['start_date'].diff().dt.days
 
-    if not include_weekend_in_daily_streak:
+    if not weekend_breaks_daily_streak:
         sessions_copy = \
             sessions_copy[sessions_copy['start_time'].dt.weekday < 5]
 
