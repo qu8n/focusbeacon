@@ -3,7 +3,7 @@
 import * as Headless from "@headlessui/react"
 import React, { useState } from "react"
 import { NavbarItem } from "./navbar"
-import { Footnote } from "./text"
+import { Footnote, TextLink } from "./text"
 
 function OpenMenuIcon() {
   return (
@@ -103,13 +103,12 @@ export function StackedLayout({
         </div>
       </main>
 
-      <footer className="flex pt-4 mb-8">
+      <footer className="flex pt-4 mb-6">
         <Footnote className="mx-auto">
-          &copy; {currentYear} FocusBeacon
+          Made in 2023 while using{" "}
+          <TextLink href="https://focusmate.com/">Focusmate</TextLink>
         </Footnote>
       </footer>
     </div>
   )
 }
-
-const currentYear = new Date().getFullYear()

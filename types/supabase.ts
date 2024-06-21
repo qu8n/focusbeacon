@@ -13,35 +13,35 @@ export type Database = {
         Row: {
           access_token_encrypted: string | null
           created_at: string
-          weekend_breaks_daily_streak: boolean
           late_after_seconds: number
           member_since: string | null
           session_id: string | null
           time_zone: string
           total_session_count: number | null
           user_id: string
+          weekend_breaks_daily_streak: boolean
         }
         Insert: {
           access_token_encrypted?: string | null
           created_at?: string
-          weekend_breaks_daily_streak?: boolean
           late_after_seconds?: number
           member_since?: string | null
           session_id?: string | null
           time_zone: string
           total_session_count?: number | null
           user_id: string
+          weekend_breaks_daily_streak?: boolean
         }
         Update: {
           access_token_encrypted?: string | null
           created_at?: string
-          weekend_breaks_daily_streak?: boolean
           late_after_seconds?: number
           member_since?: string | null
           session_id?: string | null
           time_zone?: string
           total_session_count?: number | null
           user_id?: string
+          weekend_breaks_daily_streak?: boolean
         }
         Relationships: []
       }
