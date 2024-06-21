@@ -145,14 +145,18 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
         the Nivo TimeRange calendar component, as well as the total number of
         sessions in the past year.
     '''
+
+    # Nivo TimeRange calendar component's 'to' date is exclusive, so we need to
+    # add one day to the current date
     tomorrow = pd.Timestamp.today() + pd.DateOffset(days=1)
+    tomorrow_str = tomorrow.strftime('%Y-%m-%d')
+
+    # Nivo TimeRange calendar component begins on Monday, so we need the Monday
+    # of the week one year ago as the 'from' date
     one_year_ago = tomorrow - pd.DateOffset(years=1)
-    # Because the Nivo TimeRange calendar component begins on Monday, we need
-    # the Monday of the week one year ago
     one_year_ago_monday = one_year_ago - pd.DateOffset(
         days=one_year_ago.weekday())
     one_year_ago_monday_str = one_year_ago_monday.strftime('%Y-%m-%d')
-    tomorrow_str = tomorrow.strftime('%Y-%m-%d')
 
     sessions_copy = sessions.copy()
     sessions_copy = sessions_copy[
@@ -160,15 +164,15 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
         (sessions_copy['start_time'] <= tomorrow)
     ]
 
-    past_year_sessions = len(sessions_copy)
-
+    # Prepare data for the Nivo TimeRange calendar component
     sessions_copy['start_date_str'] = \
         sessions_copy['start_time'].dt.strftime('%Y-%m-%d')
     heatmap_data = sessions_copy.groupby('start_date_str').size()
     heatmap_data = heatmap_data.reset_index()
     heatmap_data.columns = ['day', 'value']  # expected by Nivo calendar
-    print(type(heatmap_data))
     heatmap_data = heatmap_data.to_dict(orient='records')
+
+    past_year_sessions = len(sessions_copy)
 
     return {
         "from": one_year_ago_monday_str,
