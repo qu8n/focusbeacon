@@ -43,11 +43,11 @@ export function Heatmap({
     // component to know how much space it should occupy
     <div>
       <div className="mb-2">
-        <Text className="mt-6 mb-3">
+        <Text className="flex flex-col mt-6 mb-3">
           <Strong>{title}</Strong>
-          <p>
+          <span>
             {data.past_year_sessions.toLocaleString()} sessions in the last year
-          </p>
+          </span>
         </Text>
 
         <div
