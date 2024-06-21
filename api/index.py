@@ -1,5 +1,5 @@
 
-from api.helpers.metric import calculate_longest_daily_streak, \
+from api.helpers.metric import calculate_max_daily_streak, \
     calculate_recent_streak, prepare_heatmap_data
 from api.helpers.time import get_start_of_week_local_dt, local_dt_to_utc_dt, \
     ms_to_minutes, minutes_to_ms, now_utc_dt
@@ -136,6 +136,6 @@ async def streak(request: Request):
         "daily_streak": calculate_recent_streak(sessions, "D", False),
         "weekly_streak": calculate_recent_streak(sessions, "W"),
         "monthly_streak": calculate_recent_streak(sessions, "M"),
-        "longest_daily_streak": calculate_longest_daily_streak(sessions, False),
+        "max_daily_streak": calculate_max_daily_streak(sessions, False),
         "heatmap_data": prepare_heatmap_data(sessions)
     }

@@ -57,74 +57,72 @@ def calculate_recent_streak(sessions: pd.DataFrame,
     return period_streak
 
 
-def calculate_longest_daily_streak(sessions: pd.DataFrame,
-                                   weekend_breaks_daily_streak: bool) \
-        -> tuple[int, tuple[str, str]]:
+def calculate_max_daily_streak(sessions: pd.DataFrame,
+                               weekend_breaks_daily_streak: bool) \
+        -> dict:
     '''
-    Calculate the longest daily session streak count and date range.
+    Calculate the max daily session streak count and date range.
 
     Parameters
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
     weekend_breaks_daily_streak : bool
-        Whether to include weekends in the daily streak calculation.
+        Whether the daily streak should be broken by weekends.
 
     Returns
     -------
-    tuple[int, tuple[str, str]]
-        The longest daily session streak count and date range.
+    dict
+        A dictionary containing the max daily session streak count, and the
+        start and end dates of the streak.
     '''
+    # Create a modified DataFrame with only unique dates of the sessions
     sessions_copy = sessions.copy()
-
     sessions_copy['start_date'] = sessions_copy['start_time'].dt.date
-    sessions_copy.sort_values('start_date', inplace=True)
-    sessions_copy['day_over_day_delta'] = \
-        sessions_copy['start_date'].diff().dt.days
+    sessions_copy = sessions_copy.groupby(
+        'start_date').size().reset_index(name='count')
 
-    if not weekend_breaks_daily_streak:
-        sessions_copy = \
-            sessions_copy[sessions_copy['start_time'].dt.weekday < 5]
+    max_streak = 0
+    max_streak_start = None
+    max_streak_end = None
+    current_streak = 1
+    current_streak_start = sessions_copy['start_date'].iloc[0]
 
-        def adjust_delta(row):
-            day_over_day_delta = row['day_over_day_delta']
+    for i in range(1, len(sessions_copy)):
+        current_date = sessions_copy['start_date'].iloc[i]
+        previous_date = sessions_copy['start_date'].iloc[i - 1]
 
-            # Handle the first row, where delta is NaN
-            if pd.isna(day_over_day_delta):
-                return day_over_day_delta
+        # Increment the streak for consecutive days
+        if current_date == previous_date + pd.Timedelta(days=1):
+            current_streak += 1
+        # If weekend doesn't break the streak, increment the streak if there
+        # are sessions on one or none of the weekend days
+        elif not weekend_breaks_daily_streak:
+            previous_day = previous_date.weekday()
+            current_day = current_date.weekday()
+            if ((previous_day == 4 or previous_day == 5) and current_day == 0)\
+                    or (previous_day == 4 and current_day == 6):
+                current_streak += 1
+        else:
+            if current_streak > max_streak:
+                max_streak = current_streak
+                max_streak_start = current_streak_start
+                max_streak_end = previous_date
 
-            if day_over_day_delta > 1:
-                # Friday to Monday should be considered consecutive
-                prev_day = row['start_date'] - \
-                    pd.Timedelta(days=day_over_day_delta)
-                if prev_day.weekday() == 4 and \
-                        row['start_date'].weekday() == 0:
-                    return 1
-            return day_over_day_delta
+            current_streak = 1
+            current_streak_start = current_date
 
-        sessions_copy['day_over_day_delta'] = sessions_copy.apply(
-            adjust_delta, axis=1)
-
-    sessions_copy['consecutive_day_group_id'] = (
-        sessions_copy['day_over_day_delta'] != 1).cumsum()
-
-    streak_lengths = sessions_copy.groupby('consecutive_day_group_id').size()
-
-    # Convert to int to avoid numpy int64 type (not supported by FastAPI)
-    longest_streak = int(streak_lengths.max())
-
-    longest_streak_id = streak_lengths[::-1].idxmax()
-    longest_streak_dates = \
-        sessions_copy.loc[sessions_copy['consecutive_day_group_id']
-                          == longest_streak_id, 'start_date']
-    longest_streak_start_date = longest_streak_dates.min()
-    longest_streak_end_date = longest_streak_dates.max()
+    # Final check in case the max streak is at the end of the dataframe
+    if current_streak > max_streak:
+        max_streak = current_streak
+        max_streak_start = current_streak_start
+        max_streak_end = sessions_copy['start_date'].iloc[-1]
 
     return {
-        'longest_streak': longest_streak,
-        'longest_streak_dates': [
-            longest_streak_start_date,
-            longest_streak_end_date
+        'count': max_streak,
+        'date_range': [
+            max_streak_start,
+            max_streak_end
         ]
     }
 
