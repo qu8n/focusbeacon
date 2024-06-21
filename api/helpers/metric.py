@@ -164,14 +164,15 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
 
     sessions_copy['start_date_str'] = \
         sessions_copy['start_time'].dt.strftime('%Y-%m-%d')
-    calendar_data = sessions_copy.groupby('start_date_str').size()
-    calendar_data = calendar_data.reset_index()
-    calendar_data.columns = ['day', 'value']  # expected by Nivo calendar
-    calendar_data = calendar_data.to_dict(orient='records')
+    heatmap_data = sessions_copy.groupby('start_date_str').size()
+    heatmap_data = heatmap_data.reset_index()
+    heatmap_data.columns = ['day', 'value']  # expected by Nivo calendar
+    print(type(heatmap_data))
+    heatmap_data = heatmap_data.to_dict(orient='records')
 
     return {
         "from": one_year_ago_monday_str,
         "to": tomorrow_str,
-        "data": calendar_data,
+        "data": heatmap_data,
         "past_year_sessions": past_year_sessions
     }
