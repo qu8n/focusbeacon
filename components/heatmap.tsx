@@ -1,6 +1,7 @@
 import { CalendarData, ResponsiveTimeRange } from "@nivo/calendar"
 import { Strong, Text } from "./text"
 import { Divider } from "./divider"
+import { getFormattedDate } from "@/lib/date"
 
 const svgSizeReduction = 0.08
 
@@ -89,13 +90,7 @@ export function Heatmap({
               return (
                 <div className="p-4 bg-white border rounded-md shadow-sm">
                   <Text>
-                    <Strong>
-                      {new Date(date).toLocaleDateString("en-us", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </Strong>
+                    <Strong>{getFormattedDate(date)}</Strong>
                   </Text>
                   <div className="flex items-center">
                     <DaySvg color={color} />

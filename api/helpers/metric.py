@@ -91,18 +91,18 @@ def calculate_max_daily_streak(sessions: pd.DataFrame,
     for i in range(1, len(sessions_copy)):
         current_date = sessions_copy['start_date'].iloc[i]
         previous_date = sessions_copy['start_date'].iloc[i - 1]
+        current_day = current_date.weekday()
+        previous_day = previous_date.weekday()
 
         # Increment the streak for consecutive days
         if current_date == previous_date + pd.Timedelta(days=1):
             current_streak += 1
         # If weekend doesn't break the streak, increment the streak if there
         # are sessions on one or none of the weekend days
-        elif not weekend_breaks_daily_streak:
-            previous_day = previous_date.weekday()
-            current_day = current_date.weekday()
-            if ((previous_day == 4 or previous_day == 5) and current_day == 0)\
-                    or (previous_day == 4 and current_day == 6):
-                current_streak += 1
+        elif not weekend_breaks_daily_streak and \
+            ((current_day == 0 and (previous_day == 4 or previous_day == 5))
+             or (current_day == 6 and previous_day == 4)):
+            current_streak += 1
         else:
             if current_streak > max_streak:
                 max_streak = current_streak

@@ -5,21 +5,25 @@ import { Strong, Text } from "./text"
 export function Stat({
   title,
   children,
+  value,
   change,
 }: {
   title: string
-  children: React.ReactNode
+  children?: React.ReactNode
+  value?: string | React.ReactNode
   change?: string
 }) {
   return (
     <div>
-      <div className="mb-9">
-        <Text className="mt-6 mb-3">
+      <div className="mt-2 mb-9">
+        <Text className="mb-3">
           <Strong>{title}</Strong>
         </Text>
 
+        {children}
+
         <div className="mt-3 font-semibold align-middle text-3xl/8 sm:text-2xl/8">
-          {children}
+          {value}
         </div>
 
         {change && (

@@ -3,8 +3,13 @@
 import React from "react"
 import { Heatmap } from "@/components/heatmap"
 import { Stat } from "@/components/stat"
+import { Text } from "@/components/text"
 import { useQuery } from "@tanstack/react-query"
 import { useBreakpoint } from "@/lib/use-breakpoint"
+import { getFormattedDate } from "@/lib/date"
+import { Label } from "@/components/fieldset"
+import { Switch } from "@/components/switch"
+import * as Headless from "@headlessui/react"
 
 export default function Dashboard() {
   const { isBelowSm } = useBreakpoint("sm")
@@ -28,9 +33,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="grid gap-8 mt-4 sm:grid-cols-2">
+      <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
         <Stat title="Current streak">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2 font-semibold text-3xl/8 sm:text-2xl/8">
             <div className="flex flex-row items-center gap-1">
               <span>{data.daily_streak} days</span>
               {data.daily_streak > 1 && (
@@ -51,7 +56,24 @@ export default function Dashboard() {
           </div>
         </Stat>
 
-        <Stat title="Record daily streak">TODO</Stat>
+        <Stat title="Record streak">
+          <div className="flex flex-col gap-1">
+            <span className="font-semibold text-3xl/8 sm:text-2xl/8">
+              {data.max_daily_streak.count} days
+            </span>
+
+            <Text className="font-normal">
+              {getFormattedDate(data.max_daily_streak.date_range[0]) +
+                " - " +
+                getFormattedDate(data.max_daily_streak.date_range[1])}
+            </Text>
+
+            <Headless.Field className="flex items-center gap-4 mt-6">
+              <Switch name="weekend_breaks_daily_streak" />
+              <Label>Weekend breaks daily streak</Label>
+            </Headless.Field>
+          </div>
+        </Stat>
       </div>
 
       <div className="mt-9">

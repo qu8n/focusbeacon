@@ -1,4 +1,4 @@
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tremor-raw-utils"
 import "./globals.css"
 import { Inter } from "next/font/google"
 import { StackedLayout } from "@/components/stacked-layout"

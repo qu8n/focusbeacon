@@ -9,7 +9,7 @@ export default function DashboardTabs() {
   const currTab = useSelectedLayoutSegment()
 
   return (
-    <TabNavigation className="mt-4 sm:mt-0">
+    <TabNavigation className="mt-6 sm:mt-2">
       {tabNames.map((tabName) => {
         return (
           <TabNavigationLink
