@@ -2,7 +2,10 @@ from datetime import datetime, timedelta, timezone
 from dateutil import tz, parser
 
 fm_datetime_str_format = '%Y-%m-%dT%H:%M:%SZ'
-now_utc_dt = datetime.now(timezone.utc)
+
+
+def get_curr_time_utc():
+    return datetime.now(timezone.utc)
 
 
 def utc_dt_to_local_dt(utc_time: datetime, local_timezone: str):

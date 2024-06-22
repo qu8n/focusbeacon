@@ -3,17 +3,15 @@ from typing import Annotated
 from api.helpers.metric import calculate_max_daily_streak, \
     calculate_recent_streak, prepare_heatmap_data
 from api.helpers.time import get_start_of_week_local_dt, local_dt_to_utc_dt, \
-    ms_to_minutes, minutes_to_ms, now_utc_dt
+    ms_to_minutes, minutes_to_ms, get_curr_time_utc
 from api.helpers.request import get_session_id, \
     get_access_token
-from api.helpers.focusmate import fetch_all_focusmate_sessions, \
-    fetch_focusmate_profile, fetch_focusmate_sessions, fm_session_data_to_df, \
-    get_session_data
+from api.helpers.focusmate import fetch_focusmate_profile, \
+    fetch_focusmate_sessions, fm_session_data_to_df, get_session_data
 import os
 from fastapi import Depends, FastAPI, Request
 from dotenv import load_dotenv
-from cachetools import TTLCache, cached, cachedmethod
-from cachetools.keys import hashkey
+from cachetools import TTLCache
 import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 
@@ -51,7 +49,7 @@ async def sessions(request: Request):
 
     sessions_data: list = fetch_focusmate_sessions(
         fm_api_sessions_endpoint, access_token,
-        start_of_week_utc_dt, now_utc_dt).get("sessions")
+        start_of_week_utc_dt, get_curr_time_utc()).get("sessions")
 
     all_sessions = fm_session_data_to_df(sessions_data, local_timezone)
     sessions = all_sessions[all_sessions['completed'] == True].copy()
@@ -133,4 +131,11 @@ async def streak(session_id: SessionIdDep):
         "monthly_streak": calculate_recent_streak(sessions, "M"),
         "max_daily_streak": calculate_max_daily_streak(sessions, False),
         "heatmap_data": prepare_heatmap_data(sessions)
+    }
+
+
+@app.get("/api/py/weekly")
+async def weekly(session_id: SessionIdDep):
+    sessions = await get_session_data(session_id, cache)
+    return {
     }

@@ -7,7 +7,7 @@ import json
 import http.client
 from api.helpers.request import get_access_token
 from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt, \
-    now_utc_dt
+    get_curr_time_utc
 import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -116,7 +116,7 @@ async def fetch_all_focusmate_sessions(
         endpoint: str, access_token: str, member_since: str):
     headers = {'Authorization': 'Bearer ' + access_token}
 
-    curr_year = now_utc_dt.year
+    curr_year = get_curr_time_utc().year
     first_year = int(member_since[:4])
 
     conn = aiohttp.TCPConnector(ssl=ssl_context)
@@ -172,10 +172,9 @@ async def get_session_data(session_id: str, cache: TTLCache):
 
     session_data = await fetch_all_focusmate_sessions(
         fm_api_sessions_endpoint, access_token, member_since)
-
     all_sessions = fm_session_data_to_df(session_data, local_timezone)
-    sessions = all_sessions[all_sessions['completed'] == True]
+    completed_sessions = all_sessions[all_sessions['completed'] == True]
 
-    cache[hashkey('session_data', session_id)] = sessions
+    cache[hashkey('session_data', session_id)] = completed_sessions
 
-    return sessions
+    return completed_sessions
