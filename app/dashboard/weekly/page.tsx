@@ -2,6 +2,7 @@
 
 import React from "react"
 import { useQuery } from "@tanstack/react-query"
+import { Stat } from "@/components/stat"
 
 export default function Weekly() {
   const { isLoading, isError, data, error } = useQuery({
@@ -21,5 +22,13 @@ export default function Weekly() {
     return <div></div>
   }
 
-  return <></>
+  return (
+    <>
+      <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-3">
+        <Stat title="Total sessions" value={data.total.sessions} />
+        <Stat title="Total hours" value={data.total.hours} />
+        <Stat title="Total partners" value={data.total.partners} />
+      </div>
+    </>
+  )
 }

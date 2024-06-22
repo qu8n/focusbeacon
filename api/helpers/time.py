@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from dateutil import tz, parser
+import pandas as pd
+import numpy as np
 
 fm_datetime_str_format = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -42,17 +44,21 @@ def dt_to_fm_time_str(datetime_obj: datetime):
     return fm_time_str
 
 
-def get_start_of_week_local_dt(local_timezone: str):
+def get_start_of_week(local_timezone: str):
     '''Returns the start of the current week in the given timezone, defined as
     00:00:00 on Monday of the current week.'''
     today_local = datetime.now(tz.gettz(local_timezone))
     monday = today_local - timedelta(days=today_local.weekday())
     start_of_week = monday.replace(hour=0, minute=0, second=0, microsecond=0)
-    return start_of_week
+    return np.datetime64(start_of_week)
 
 
 def ms_to_minutes(ms: float):
     return int(ms / 60000)
+
+
+def ms_to_hours(ms: float):
+    return int(ms / 3600000)
 
 
 def minutes_to_ms(minutes: int):

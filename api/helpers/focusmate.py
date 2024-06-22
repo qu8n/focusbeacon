@@ -25,10 +25,10 @@ fm_api_url = os.getenv("NEXT_PUBLIC_FM_API_URL")
 fm_api_domain = urlparse(fm_api_url).netloc
 
 
-def fm_session_data_to_df(session_data: list, local_timezone: str):
+def fm_raw_sessions_to_df(fm_raw_sessions: list, local_timezone: str):
     rows = []
 
-    for session in session_data:
+    for session in fm_raw_sessions:
         session_id = session['sessionId']
         duration = session['duration']
         start_time = session['startTime']
@@ -151,30 +151,34 @@ def fetch_focusmate_profile(endpoint: str, access_token: str):
 
     response = conn.getresponse()
     data_as_str = response.read().decode("utf-8")
-    data_as_obj = json.loads(data_as_str)
+    data_as_obj: dict = json.loads(data_as_str)
 
     conn.close()
 
     return data_as_obj
 
 
-async def get_session_data(session_id: str, cache: TTLCache):
-    cached_data: pd.DataFrame = cache.get(hashkey('session_data', session_id))
-    if cached_data is not None:
-        return cached_data
+async def get_data(session_id: str, cache: TTLCache):
+    cached_profile: dict = cache.get(
+        hashkey('profile', session_id))
+    cached_sessions: pd.DataFrame = cache.get(
+        hashkey('sessions', session_id))
+    if (cached_profile is not None) and (cached_sessions is not None):
+        return cached_profile, cached_sessions
 
     access_token = get_access_token(session_id)
 
-    profile_data = fetch_focusmate_profile(
+    profile: dict = fetch_focusmate_profile(
         fm_api_profile_endpoint, access_token).get("user")
-    local_timezone: str = profile_data.get("timeZone")
-    member_since: str = profile_data.get("memberSince")
+    local_timezone: str = profile.get("timeZone")
+    member_since: str = profile.get("memberSince")
 
-    session_data = await fetch_all_focusmate_sessions(
+    fm_raw_sessions = await fetch_all_focusmate_sessions(
         fm_api_sessions_endpoint, access_token, member_since)
-    all_sessions = fm_session_data_to_df(session_data, local_timezone)
-    completed_sessions = all_sessions[all_sessions['completed'] == True]
+    fm_sessions_df = fm_raw_sessions_to_df(fm_raw_sessions, local_timezone)
+    sessions = fm_sessions_df[fm_sessions_df['completed'] == True]
 
-    cache[hashkey('session_data', session_id)] = completed_sessions
+    cache[hashkey('profile', session_id)] = profile
+    cache[hashkey('sessions', session_id)] = sessions
 
-    return completed_sessions
+    return profile, sessions
