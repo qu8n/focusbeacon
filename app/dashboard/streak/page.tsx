@@ -7,12 +7,15 @@ import { Footnote } from "@/components/text"
 import { useQuery } from "@tanstack/react-query"
 import { useBreakpoint } from "@/lib/use-breakpoint"
 import { getFormattedDate } from "@/lib/date"
+import { Skeleton } from "@/components/skeleton"
+import { Text, Strong } from "@/components/text"
+import { Divider } from "@/components/divider"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
 
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["focusmateData"],
+    queryKey: ["streak"],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak`)
       const data = await response.json()
@@ -25,7 +28,36 @@ export default function Streak() {
   }
 
   if (isLoading || !data) {
-    return <p>Loading...</p>
+    return (
+      <div>
+        <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+          <Stat title="Daily streak">
+            <Skeleton className="h-[32px] w-[25px]" />
+          </Stat>
+          <Stat title="Record daily streak">
+            <div className="flex flex-row gap-4">
+              <Skeleton className="h-[32px] w-[25px]" />
+              <Skeleton className="h-[32px] w-[190px]" />
+            </div>
+          </Stat>
+          <Stat title="Weekly streak">
+            <Skeleton className="h-[32px] w-[25px]" />
+          </Stat>
+          <Stat title="Monthly streak">
+            <Skeleton className="h-[32px] w-[25px]" />
+          </Stat>
+        </div>
+
+        <div className="mt-9">
+          <Text className="flex flex-col">
+            <Strong>Sessions heatmap</Strong>
+          </Text>
+          <Skeleton className="mt-2 w-[180px] h-[20px]" />
+          <Skeleton className="mt-6 w-full h-[130px]" />
+          <Divider className="mt-10" />
+        </div>
+      </div>
+    )
   }
 
   return (
