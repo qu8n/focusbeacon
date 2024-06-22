@@ -28,36 +28,7 @@ export default function Streak() {
   }
 
   if (isLoading || !data) {
-    return (
-      <div>
-        <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
-          <Stat title="Daily streak">
-            <Skeleton className="h-[32px] w-[25px]" />
-          </Stat>
-          <Stat title="Record daily streak">
-            <div className="flex flex-row gap-4">
-              <Skeleton className="h-[32px] w-[25px]" />
-              <Skeleton className="h-[32px] w-[190px]" />
-            </div>
-          </Stat>
-          <Stat title="Weekly streak">
-            <Skeleton className="h-[32px] w-[25px]" />
-          </Stat>
-          <Stat title="Monthly streak">
-            <Skeleton className="h-[32px] w-[25px]" />
-          </Stat>
-        </div>
-
-        <div className="mt-9">
-          <Text className="flex flex-col">
-            <Strong>Sessions heatmap</Strong>
-          </Text>
-          <Skeleton className="mt-2 w-[180px] h-[20px]" />
-          <Skeleton className="mt-6 w-full h-[130px]" />
-          <Divider className="mt-10" />
-        </div>
-      </div>
-    )
+    return <LoadingSkeleton />
   }
 
   return (
@@ -99,6 +70,39 @@ export default function Streak() {
         />
       </div>
     </>
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div>
+      <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+        <Stat title="Daily streak">
+          <Skeleton className="h-[32px] w-[25px]" />
+        </Stat>
+        <Stat title="Record daily streak">
+          <div className="flex flex-row gap-4">
+            <Skeleton className="h-[32px] w-[25px]" />
+            <Skeleton className="h-[32px] w-[190px]" />
+          </div>
+        </Stat>
+        <Stat title="Weekly streak">
+          <Skeleton className="h-[32px] w-[25px]" />
+        </Stat>
+        <Stat title="Monthly streak">
+          <Skeleton className="h-[32px] w-[25px]" />
+        </Stat>
+      </div>
+
+      <div className="mt-9">
+        <Text className="flex flex-col">
+          <Strong>Sessions heatmap</Strong>
+        </Text>
+        <Skeleton className="mt-2 w-[180px] h-[20px]" />
+        <Skeleton className="mt-6 w-full h-[130px]" />
+        <Divider className="mt-10" />
+      </div>
+    </div>
   )
 }
 

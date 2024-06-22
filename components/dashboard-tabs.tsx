@@ -2,11 +2,12 @@
 
 import { useSelectedLayoutSegment } from "next/navigation"
 import { TabNavigation, TabNavigationLink } from "./tabs"
+import { useState } from "react"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
 export default function DashboardTabs() {
-  const currTab = useSelectedLayoutSegment()
+  const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
 
   return (
     <TabNavigation className="mt-6 sm:mt-2">
@@ -16,6 +17,7 @@ export default function DashboardTabs() {
             key={tabName}
             href={`/dashboard/${tabName}`}
             active={tabName === currTab}
+            onClick={() => setCurrTab(tabName)}
           >
             {tabName}
           </TabNavigationLink>
