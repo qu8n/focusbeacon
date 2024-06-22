@@ -1,21 +1,26 @@
 
+from typing import Annotated
 from api.helpers.metric import calculate_max_daily_streak, \
     calculate_recent_streak, prepare_heatmap_data
 from api.helpers.time import get_start_of_week_local_dt, local_dt_to_utc_dt, \
     ms_to_minutes, minutes_to_ms, now_utc_dt
-from api.helpers.request import get_session_id_from_cookie, \
-    get_access_token_from_db
+from api.helpers.request import get_session_id, \
+    get_access_token
 from api.helpers.focusmate import fetch_all_focusmate_sessions, \
-    fetch_focusmate_profile, fetch_focusmate_sessions, fm_sessions_data_to_df
+    fetch_focusmate_profile, fetch_focusmate_sessions, fm_session_data_to_df, \
+    get_session_data
 import os
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from dotenv import load_dotenv
+from cachetools import TTLCache, cached, cachedmethod
+from cachetools.keys import hashkey
 import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 
 
 app = FastAPI()
 load_dotenv()
+cache = TTLCache(maxsize=100, ttl=60)
 
 
 fm_api_profile_endpoint = os.getenv("NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT")
@@ -24,8 +29,8 @@ fm_api_sessions_endpoint = os.getenv("NEXT_PUBLIC_FM_API_SESSIONS_ENDPOINT")
 
 @app.get("/api/py/profile")
 async def profile(request: Request):
-    session_id = get_session_id_from_cookie(request)
-    access_token = get_access_token_from_db(session_id)
+    session_id = get_session_id(request)
+    access_token = get_access_token(session_id)
     profile_data = fetch_focusmate_profile(
         fm_api_profile_endpoint, access_token).get("user")
     return {"data": profile_data}
@@ -33,8 +38,8 @@ async def profile(request: Request):
 
 @app.get("/api/py/sessions")
 async def sessions(request: Request):
-    session_id = get_session_id_from_cookie(request)
-    access_token = get_access_token_from_db(session_id)
+    session_id = get_session_id(request)
+    access_token = get_access_token(session_id)
 
     profile_data = fetch_focusmate_profile(
         fm_api_profile_endpoint, access_token).get("user")
@@ -48,7 +53,7 @@ async def sessions(request: Request):
         fm_api_sessions_endpoint, access_token,
         start_of_week_utc_dt, now_utc_dt).get("sessions")
 
-    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
+    all_sessions = fm_session_data_to_df(sessions_data, local_timezone)
     sessions = all_sessions[all_sessions['completed'] == True].copy()
 
     total_sessions = len(sessions)
@@ -116,22 +121,12 @@ async def sessions(request: Request):
     }
 
 
+SessionIdDep = Annotated[str, Depends(get_session_id)]
+
+
 @app.get("/api/py/streak")
-async def streak(request: Request):
-    session_id = get_session_id_from_cookie(request)
-    access_token = get_access_token_from_db(session_id)
-
-    profile_data = fetch_focusmate_profile(
-        fm_api_profile_endpoint, access_token).get("user")
-    local_timezone: str = profile_data.get("timeZone")
-    member_since: str = profile_data.get("memberSince")
-
-    sessions_data = await fetch_all_focusmate_sessions(
-        fm_api_sessions_endpoint, access_token, member_since)
-
-    all_sessions = fm_sessions_data_to_df(sessions_data, local_timezone)
-    sessions = all_sessions[all_sessions['completed'] == True].copy()
-
+async def streak(session_id: SessionIdDep):
+    sessions = await get_session_data(session_id, cache)
     return {
         "daily_streak": calculate_recent_streak(sessions, "D", False),
         "weekly_streak": calculate_recent_streak(sessions, "W"),

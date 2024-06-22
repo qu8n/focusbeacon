@@ -8,7 +8,7 @@ import {
   siteUrl,
 } from "@/lib/oauth"
 import { serialize } from "cookie"
-import { encrypt, generateSessionId } from "@/lib/cryptography"
+import { encrypt, generateSessionId } from "@/lib/crypto"
 import { supabaseClient } from "@/lib/supabase"
 import { FmProfile, FmUser } from "@/types/focusmate"
 import { TablesInsert } from "@/types/supabase"

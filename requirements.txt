@@ -5,6 +5,7 @@ anyio==4.3.0
 appnope==0.1.4
 asttokens==2.4.1
 attrs==23.2.0
+cachetools==5.3.3
 certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2

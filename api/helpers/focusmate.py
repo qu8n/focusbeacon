@@ -1,8 +1,11 @@
 
 from datetime import datetime
+from cachetools import TTLCache
+from cachetools.keys import hashkey
 import pandas as pd
 import json
 import http.client
+from api.helpers.request import get_access_token
 from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt, \
     now_utc_dt
 import os
@@ -16,14 +19,16 @@ ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 load_dotenv()
 
+fm_api_profile_endpoint = os.getenv("NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT")
+fm_api_sessions_endpoint = os.getenv("NEXT_PUBLIC_FM_API_SESSIONS_ENDPOINT")
 fm_api_url = os.getenv("NEXT_PUBLIC_FM_API_URL")
 fm_api_domain = urlparse(fm_api_url).netloc
 
 
-def fm_sessions_data_to_df(sessions_data: list, local_timezone: str):
+def fm_session_data_to_df(session_data: list, local_timezone: str):
     rows = []
 
-    for session in sessions_data:
+    for session in session_data:
         session_id = session['sessionId']
         duration = session['duration']
         start_time = session['startTime']
@@ -151,3 +156,26 @@ def fetch_focusmate_profile(endpoint: str, access_token: str):
     conn.close()
 
     return data_as_obj
+
+
+async def get_session_data(session_id: str, cache: TTLCache):
+    cached_data: pd.DataFrame = cache.get(hashkey('session_data', session_id))
+    if cached_data is not None:
+        return cached_data
+
+    access_token = get_access_token(session_id)
+
+    profile_data = fetch_focusmate_profile(
+        fm_api_profile_endpoint, access_token).get("user")
+    local_timezone: str = profile_data.get("timeZone")
+    member_since: str = profile_data.get("memberSince")
+
+    session_data = await fetch_all_focusmate_sessions(
+        fm_api_sessions_endpoint, access_token, member_since)
+
+    all_sessions = fm_session_data_to_df(session_data, local_timezone)
+    sessions = all_sessions[all_sessions['completed'] == True]
+
+    cache[hashkey('session_data', session_id)] = sessions
+
+    return sessions
