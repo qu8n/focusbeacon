@@ -3,7 +3,8 @@ from typing import Annotated
 from api.helpers.metric import calculate_max_daily_streak, \
     calculate_recent_streak, prepare_heatmap_data
 from api.helpers.time import get_start_of_week, local_dt_to_utc_dt, \
-    ms_to_minutes, minutes_to_ms, get_curr_time_utc, ms_to_hours
+    ms_to_minutes, minutes_to_ms, get_curr_time_utc, ms_to_hours, \
+    get_start_of_prev_week
 from api.helpers.request import get_session_id, \
     get_access_token
 from api.helpers.focusmate import fetch_focusmate_profile, \
@@ -141,8 +142,13 @@ async def weekly(session_id: SessionIdDep):
     local_timezone: str = profile.get("timeZone")
 
     start_of_week = get_start_of_week(local_timezone)
+    start_of_prev_week = get_start_of_prev_week(local_timezone)
 
     curr_week_sessions = sessions[sessions['start_time'] >= start_of_week]
+    prev_week_sessions = sessions[
+        (sessions['start_time'] >= start_of_prev_week) &
+        (sessions['start_time'] < start_of_week)
+    ]
 
     partner_session_counts = curr_week_sessions['partner_id'].value_counts()
     total_repeat_partners = len(
@@ -154,5 +160,9 @@ async def weekly(session_id: SessionIdDep):
             "hours": ms_to_hours(curr_week_sessions['duration'].sum()),
             "partners": len(curr_week_sessions['partner_id'].unique()),
             "repeat_partners": total_repeat_partners
+        },
+        "prev": {
+            "sessions": len(prev_week_sessions),
+            "hours": ms_to_hours(prev_week_sessions['duration'].sum())
         }
     }

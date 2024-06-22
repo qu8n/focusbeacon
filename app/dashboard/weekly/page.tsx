@@ -25,9 +25,26 @@ export default function Weekly() {
   return (
     <>
       <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-3">
-        <Stat title="Total sessions" value={data.total.sessions} />
-        <Stat title="Total hours" value={data.total.hours} />
-        <Stat title="Total partners" value={data.total.partners} />
+        <Stat
+          title="Total sessions"
+          value={data.total.sessions}
+          changeVal={data.total.sessions - data.prev.sessions}
+          changeText="vs. previous week"
+          useNumberSign
+        />
+        <Stat
+          title="Total hours"
+          value={data.total.hours}
+          changeVal={data.total.hours - data.prev.hours}
+          changeText="vs. previous week"
+          useNumberSign
+        />
+        <Stat
+          title="Total partners"
+          value={data.total.partners}
+          changeVal={data.total.repeat_partners}
+          changeText="repeat"
+        />
       </div>
     </>
   )
