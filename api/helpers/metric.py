@@ -2,9 +2,10 @@ import pandas as pd
 from typing import Literal
 
 
-def calculate_recent_streak(sessions: pd.DataFrame,
-                            period: Literal["D", "W", "M"],
-                            weekend_breaks_daily_streak: bool = False) \
+def calculate_curr_streak(sessions: pd.DataFrame,
+                          period_type: Literal["D", "W", "M"],
+                          local_timezone: str,
+                          weekend_breaks_daily_streak: bool = False) \
         -> int:
     '''
     Calculate either daily, weekly, or monthly session streak in recent
@@ -29,14 +30,15 @@ def calculate_recent_streak(sessions: pd.DataFrame,
     '''
     sessions_copy = sessions.copy()
 
-    sessions_copy['period'] = sessions_copy['start_time'].dt.to_period(period)
+    sessions_copy['period'] = sessions_copy['start_time'].dt.to_period(
+        period_type)
 
-    curr_period = pd.Timestamp.today().to_period(period)
+    curr_period = pd.Timestamp.today(local_timezone).to_period(period_type)
     recently_completed_period = (curr_period - 1)
 
     period_range_lifetime = pd.period_range(
         start=sessions_copy['period'].min(), end=recently_completed_period,
-        freq=period)
+        freq=period_type)
 
     periods_with_session = set(sessions_copy['period'])
 
@@ -45,8 +47,7 @@ def calculate_recent_streak(sessions: pd.DataFrame,
         if period in periods_with_session:
             period_streak += 1
         else:
-            if not weekend_breaks_daily_streak and period == "D":
-                # If the period is a weekend, we should skip it
+            if not weekend_breaks_daily_streak and period_type == "D":
                 if period.to_timestamp().weekday() > 4:
                     continue
             break
@@ -58,7 +59,7 @@ def calculate_recent_streak(sessions: pd.DataFrame,
 
 
 def calculate_max_daily_streak(sessions: pd.DataFrame,
-                               weekend_breaks_daily_streak: bool) \
+                               weekend_breaks_daily_streak: bool = False) \
         -> dict:
     '''
     Calculate the max daily session streak count and date range.

@@ -1,10 +1,9 @@
 
 from typing import Annotated
 from api.helpers.metric import calculate_max_daily_streak, \
-    calculate_recent_streak, prepare_heatmap_data
+    calculate_curr_streak, prepare_heatmap_data
 from api.helpers.time import get_start_of_week, local_dt_to_utc_dt, \
-    ms_to_minutes, minutes_to_ms, get_curr_time_utc, ms_to_hours, \
-    get_start_of_prev_week
+    ms_to_minutes, minutes_to_ms, ms_to_hours, get_start_of_prev_week
 from api.helpers.request import get_session_id, \
     get_access_token
 from api.helpers.focusmate import fetch_focusmate_profile, \
@@ -50,7 +49,7 @@ async def sessions(request: Request):
 
     sessions_data: list = fetch_focusmate_sessions(
         fm_api_sessions_endpoint, access_token,
-        start_of_week_utc_dt, get_curr_time_utc()).get("sessions")
+        start_of_week_utc_dt, get_today_utc()).get("sessions")
 
     all_sessions = fm_raw_sessions_to_df(sessions_data, local_timezone)
     sessions = all_sessions[all_sessions['completed'] == True].copy()
@@ -125,12 +124,13 @@ SessionIdDep = Annotated[str, Depends(get_session_id)]
 
 @app.get("/api/py/streak")
 async def streak(session_id: SessionIdDep):
-    _, sessions = await get_data(session_id, cache)
+    profile, sessions = await get_data(session_id, cache)
+    local_timezone: str = profile.get("timeZone")
     return {
-        "daily_streak": calculate_recent_streak(sessions, "D", False),
-        "weekly_streak": calculate_recent_streak(sessions, "W"),
-        "monthly_streak": calculate_recent_streak(sessions, "M"),
-        "max_daily_streak": calculate_max_daily_streak(sessions, False),
+        "daily_streak": calculate_curr_streak(sessions, "D", local_timezone),
+        "weekly_streak": calculate_curr_streak(sessions, "W", local_timezone),
+        "monthly_streak": calculate_curr_streak(sessions, "M", local_timezone),
+        "max_daily_streak": calculate_max_daily_streak(sessions),
         "heatmap_data": prepare_heatmap_data(sessions)
     }
 

@@ -1,13 +1,8 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from dateutil import tz, parser
-import pandas as pd
 import numpy as np
 
 fm_datetime_str_format = '%Y-%m-%dT%H:%M:%SZ'
-
-
-def get_curr_time_utc():
-    return datetime.now(timezone.utc)
 
 
 def utc_dt_to_local_dt(utc_time: datetime, local_timezone: str):

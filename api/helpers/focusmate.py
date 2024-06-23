@@ -1,13 +1,12 @@
 
-from datetime import datetime
+from datetime import datetime, timezone
 from cachetools import TTLCache
 from cachetools.keys import hashkey
 import pandas as pd
 import json
 import http.client
 from api.helpers.request import get_access_token
-from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt, \
-    get_curr_time_utc
+from api.helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt
 import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -116,7 +115,7 @@ async def fetch_all_focusmate_sessions(
         endpoint: str, access_token: str, member_since: str):
     headers = {'Authorization': 'Bearer ' + access_token}
 
-    curr_year = get_curr_time_utc().year
+    curr_year = datetime.now(timezone.utc).year
     first_year = int(member_since[:4])
 
     conn = aiohttp.TCPConnector(ssl=ssl_context)
