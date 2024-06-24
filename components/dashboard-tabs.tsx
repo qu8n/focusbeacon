@@ -1,28 +1,27 @@
 "use client"
 
+import { Tabs, TabsList, TabsTrigger } from "@/components/tabs"
+import Link from "next/link"
 import { useSelectedLayoutSegment } from "next/navigation"
-import { TabNavigation, TabNavigationLink } from "./tabs"
-import { useState } from "react"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
 export default function DashboardTabs() {
-  const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
+  const initialTab = useSelectedLayoutSegment()
 
   return (
-    <TabNavigation className="mt-6 sm:mt-2">
-      {tabNames.map((tabName) => {
-        return (
-          <TabNavigationLink
-            key={tabName}
-            href={`/dashboard/${tabName}`}
-            active={tabName === currTab}
-            onClick={() => setCurrTab(tabName)}
-          >
-            {tabName}
-          </TabNavigationLink>
-        )
-      })}
-    </TabNavigation>
+    <Tabs defaultValue={initialTab ?? undefined} className="mt-6 sm:mt-4">
+      <TabsList variant="solid">
+        {tabNames.map((tabName) => {
+          return (
+            <TabsTrigger key={tabName} value={tabName}>
+              <Link className="capitalize" href={`/dashboard/${tabName}`}>
+                {tabName}
+              </Link>
+            </TabsTrigger>
+          )
+        })}
+      </TabsList>
+    </Tabs>
   )
 }

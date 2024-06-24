@@ -161,7 +161,7 @@ async def weekly(session_id: SessionIdDep):
             "partners": len(curr_week_sessions['partner_id'].unique()),
             "repeat_partners": total_repeat_partners
         },
-        "prev": {
+        "prev_period": {
             "sessions": len(prev_week_sessions),
             "hours": ms_to_hours(prev_week_sessions['duration'].sum())
         }
