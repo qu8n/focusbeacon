@@ -56,11 +56,11 @@ def get_start_of_prev_week(local_timezone: str):
 
 
 def ms_to_minutes(ms: float):
-    return int(ms / 60000)
+    return int(round(ms / 60000))
 
 
 def ms_to_hours(ms: float):
-    return int(ms / 3600000)
+    return int(round(ms / 3600000))
 
 
 def minutes_to_ms(minutes: int):
