@@ -29,13 +29,13 @@ export default function Weekly() {
         <Stat
           title="Total sessions"
           value={data.total.sessions}
-          changeVal={data.total.sessions - data.prev_period.sessions}
+          changeVal={data.prev_period_delta.sessions}
           changeText="vs. last week"
         />
         <Stat
           title="Total hours"
           value={data.total.hours}
-          changeVal={data.total.hours - data.prev_period.hours}
+          changeVal={data.prev_period_delta.hours}
           changeText="vs. last week"
         />
         <Stat

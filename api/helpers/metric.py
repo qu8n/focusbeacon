@@ -179,3 +179,16 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
         "data": heatmap_data,
         "past_year_sessions": past_year_sessions
     }
+
+
+def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame) -> dict:
+    sessions_copy = sessions.copy()
+    sessions_copy['start_date_str'] = \
+        sessions_copy['start_time'].dt.strftime('%b %y')
+    sessions_chart_df = sessions_copy.pivot_table(index='start_date_str',
+                                                  columns='duration',
+                                                  aggfunc='size',
+                                                  fill_value=0)
+    sessions_chart_df = sessions_chart_df.reset_index()
+    sessions_chart_df.columns.name = None
+    return sessions_chart_df.to_dict(orient='records')
