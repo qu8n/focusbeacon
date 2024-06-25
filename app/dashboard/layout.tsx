@@ -7,7 +7,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <section className="flex flex-col gap-9 sm:gap-6">
+    <section className="flex flex-col gap-9">
       <DashboardTabs />
       <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
     </section>

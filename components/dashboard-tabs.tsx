@@ -10,11 +10,11 @@ import { useState } from "react"
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
 export default function DashboardTabs({ className }: { className?: string }) {
-  const [activeTab, setActiveTab] = useState(useSelectedLayoutSegment())
+  const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
 
   return (
     <Tabs
-      defaultValue={activeTab ?? undefined}
+      defaultValue={currTab ?? undefined}
       className={cx(className, "mt-6 sm:mt-4")}
     >
       <TabsList variant="solid">
@@ -22,13 +22,13 @@ export default function DashboardTabs({ className }: { className?: string }) {
           <TabsTrigger
             key={tabName}
             value={tabName}
-            onClick={() => setActiveTab(tabName)}
+            onClick={() => setCurrTab(tabName)}
             className="relative transition"
             style={{
               WebkitTapHighlightColor: "transparent",
             }}
           >
-            {activeTab === tabName && (
+            {currTab === tabName && (
               <motion.span
                 layoutId="bubble"
                 className="absolute inset-0 z-10 bg-black rounded-md bg-opacity-20 mix-blend-difference"

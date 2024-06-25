@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const withMDX = require('@next/mdx')()
+
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   rewrites: async () => {
     return [
@@ -19,7 +23,8 @@ const nextConfig = {
         permanent: true,
       }
     ]
-  }
+  },
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
 };
 
-module.exports = nextConfig;
+module.exports = withMDX(nextConfig);
