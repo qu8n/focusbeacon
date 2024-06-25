@@ -22,7 +22,9 @@ export default function DashboardTabs({ className }: { className?: string }) {
           <TabsTrigger
             key={tabName}
             value={tabName}
-            onClick={() => setCurrTab(tabName)}
+            onClick={() => {
+              setCurrTab(tabName)
+            }}
             className="relative transition"
             style={{
               WebkitTapHighlightColor: "transparent",

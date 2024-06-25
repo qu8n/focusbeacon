@@ -4,6 +4,7 @@ import * as Headless from "@headlessui/react"
 import React, { useState } from "react"
 import { NavbarItem } from "./navbar"
 import { Footnote, TextLink } from "./text"
+import { Divider } from "./divider"
 
 function OpenMenuIcon() {
   return (
@@ -95,15 +96,17 @@ export function StackedLayout({
         </div>
         <div className="flex-1 min-w-0">{navbar}</div>
       </header>
+      <Divider className="mx-6" />
 
       {/* Content */}
-      <main className="px-8 grow">
+      <main className="px-8 mt-6 grow">
         <div className="mx-auto">{children}</div>
       </main>
 
       {/* Footer */}
-      <footer className="flex py-8">
-        <Footnote className="mx-auto">
+      <footer className="flex flex-col mt-16">
+        <Divider className="mx-6" />
+        <Footnote className="py-8 mx-auto">
           Made in 2023 while using Focusmate
         </Footnote>
       </footer>
