@@ -7,7 +7,7 @@ export default function PageTitle() {
   const currPage = useSelectedLayoutSegment()
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col mt-4">
       <Heading>{currPage}</Heading>
     </div>
   )

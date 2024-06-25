@@ -1,5 +1,4 @@
 import { Badge } from "./badge"
-import { Divider } from "./divider"
 import { Strong, Text } from "./text"
 
 export function Stat({
@@ -25,23 +24,20 @@ export function Stat({
 
   return (
     <div>
-      <div className="mt-2 mb-9">
-        <Text className="mb-3">
-          <Strong>{title}</Strong>
-        </Text>
+      <Text className="mb-3">
+        <Strong>{title}</Strong>
+      </Text>
 
-        {children}
+      {children}
 
-        <div className="flex flex-row items-center gap-4">
-          <div className="font-semibold text-3xl/8 sm:text-2xl/8">{value}</div>
+      <div className="flex flex-row items-center gap-4">
+        <div className="font-semibold text-3xl/8 sm:text-2xl/8">{value}</div>
 
-          <div className="text-sm/6 sm:text-xs/6">
-            {changeStr && <Badge color={changeBadgeColor}>{changeStr}</Badge>}{" "}
-            {changeText && <span className="text-zinc-500">{changeText}</span>}
-          </div>
+        <div className="text-sm/6 sm:text-xs/6">
+          {changeStr && <Badge color={changeBadgeColor}>{changeStr}</Badge>}{" "}
+          {changeText && <span className="text-zinc-500">{changeText}</span>}
         </div>
       </div>
-      <Divider />
     </div>
   )
 }

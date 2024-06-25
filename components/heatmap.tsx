@@ -1,6 +1,5 @@
 import { CalendarData, ResponsiveTimeRange } from "@nivo/calendar"
 import { Strong, Text } from "./text"
-import { Divider } from "./divider"
 import { getFormattedDate } from "@/lib/date"
 
 const svgSizeReduction = 0.08
@@ -51,7 +50,7 @@ export function Heatmap({
       </Text>
 
       <div
-        style={isBelowSm ? { height: 1600 } : { height: 200 }}
+        style={isBelowSm ? { height: 1600 } : { height: 155 }}
         className={isBelowSm ? "block sm:hidden" : "hidden sm:block"}
       >
         <ResponsiveTimeRange
@@ -102,8 +101,6 @@ export function Heatmap({
           }}
         />
       </div>
-
-      <Divider />
     </div>
   )
 }

@@ -32,11 +32,11 @@ const variantStyles: Record<TabsListVariant, string> = {
   ),
   solid: cx(
     // base
-    "inline-flex items-center justify-center rounded-md p-1",
+    "inline-flex items-center justify-center rounded-md p-2",
     // border color
     // "border-zinc-200 dark:border-zinc-800",
     // background color
-    "bg-zinc-100 dark:bg-zinc-800"
+    "bg-zinc-200/[0.6] dark:bg-zinc-800"
   ),
 }
 

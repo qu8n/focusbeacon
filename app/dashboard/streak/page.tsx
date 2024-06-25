@@ -10,6 +10,7 @@ import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/skeleton"
 import { Text, Strong } from "@/components/text"
 import { Divider } from "@/components/divider"
+import { Card } from "@/components/card"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
@@ -32,8 +33,8 @@ export default function Streak() {
   }
 
   return (
-    <>
-      <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+      <Card>
         <Stat title="Daily streak">
           <div className="flex flex-row items-center gap-1">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
@@ -42,7 +43,9 @@ export default function Streak() {
             {data.daily_streak > 1 && <FireIcon />}
           </div>
         </Stat>
+      </Card>
 
+      <Card>
         <Stat title="Record daily streak">
           <div className="flex flex-row items-center gap-4">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
@@ -56,52 +59,64 @@ export default function Streak() {
             </Footnote>
           </div>
         </Stat>
+      </Card>
 
+      <Card>
         <Stat title="Weekly streak" value={data.weekly_streak} />
+      </Card>
 
+      <Card>
         <Stat title="Monthly streak" value={data.monthly_streak} />
-      </div>
+      </Card>
 
-      <div className="mt-9">
+      <Card className="sm:col-span-2">
         <Heatmap
           title="Sessions heatmap"
           data={data.heatmap_data}
           isBelowSm={isBelowSm}
         />
-      </div>
-    </>
+      </Card>
+    </div>
   )
 }
 
 function LoadingSkeleton() {
   return (
-    <div>
-      <div className="grid gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+      <Card>
         <Stat title="Daily streak">
           <Skeleton className="h-[32px] w-[25px]" />
         </Stat>
+      </Card>
+
+      <Card>
         <Stat title="Record daily streak">
           <div className="flex flex-row gap-4">
             <Skeleton className="h-[32px] w-[25px]" />
             <Skeleton className="h-[32px] w-[190px]" />
           </div>
         </Stat>
+      </Card>
+
+      <Card>
         <Stat title="Weekly streak">
           <Skeleton className="h-[32px] w-[25px]" />
         </Stat>
+      </Card>
+
+      <Card>
         <Stat title="Monthly streak">
           <Skeleton className="h-[32px] w-[25px]" />
         </Stat>
-      </div>
+      </Card>
 
-      <div className="mt-9">
+      <Card className="sm:col-span-2">
         <Text className="flex flex-col">
           <Strong>Sessions heatmap</Strong>
         </Text>
         <Skeleton className="mt-2 w-[180px] h-[20px]" />
         <Skeleton className="mt-6 w-full h-[130px]" />
-        <Divider className="mt-10" />
-      </div>
+      </Card>
     </div>
   )
 }

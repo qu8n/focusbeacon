@@ -28,7 +28,7 @@ export function Footnote({
     <p
       data-slot="text"
       {...props}
-      className={clsx(className, "text-sm/6 text-zinc-500 sm:text-xs/6")}
+      className={clsx(className, "text-sm/6 text-zinc-400 sm:text-xs/6")}
     />
   )
 }

@@ -84,7 +84,7 @@ export function StackedLayout({
       </MobileSidebar>
 
       {/* Navbar */}
-      <header className="flex items-center px-4">
+      <header className="flex items-center px-4 my-2">
         <div className="py-2.5 sm:hidden">
           <NavbarItem
             onClick={() => setShowSidebar(true)}
@@ -97,16 +97,14 @@ export function StackedLayout({
       </header>
 
       {/* Content */}
-      <main className="flex flex-col flex-1 px-2">
-        <div className="p-12 bg-white rounded-lg shadow-sm grow ring-1 ring-zinc-950/5">
-          <div className="mx-auto">{children}</div>
-        </div>
+      <main className="px-8 grow">
+        <div className="mx-auto">{children}</div>
       </main>
 
-      <footer className="flex pt-4 mb-6">
+      {/* Footer */}
+      <footer className="flex py-8">
         <Footnote className="mx-auto">
-          Made in 2023 while using{" "}
-          <TextLink href="https://focusmate.com/">Focusmate</TextLink>
+          Made in 2023 while using Focusmate
         </Footnote>
       </footer>
     </div>
