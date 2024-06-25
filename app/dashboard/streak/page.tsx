@@ -9,13 +9,12 @@ import { useBreakpoint } from "@/lib/use-breakpoint"
 import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/skeleton"
 import { Text, Strong } from "@/components/text"
-import { Divider } from "@/components/divider"
 import { Card } from "@/components/card"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
 
-  const { isLoading, isError, data, error } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["streak"],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak`)
@@ -24,16 +23,12 @@ export default function Streak() {
     },
   })
 
-  if (isError) {
-    return <p>Error: {error.message}</p>
-  }
-
-  if (isLoading || !data) {
+  if (isLoading) {
     return <LoadingSkeleton />
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <Card>
         <Stat title="Daily streak">
           <div className="flex flex-row items-center gap-1">
@@ -82,7 +77,7 @@ export default function Streak() {
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 mt-9 sm:mt-6 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <Card>
         <Stat title="Daily streak">
           <Skeleton className="h-[32px] w-[25px]" />

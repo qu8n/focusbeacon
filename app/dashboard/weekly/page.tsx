@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/skeleton"
 import { Card } from "@/components/card"
 
 export default function Weekly() {
-  const { isLoading, isError, data, error } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["weekly"],
     queryFn: async () => {
       const response = await fetch(`/api/py/weekly`)
@@ -16,16 +16,12 @@ export default function Weekly() {
     },
   })
 
-  if (isError) {
-    return <p>Error: {error.message}</p>
-  }
-
-  if (isLoading || !data) {
+  if (isLoading) {
     return <LoadingSkeleton />
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 mt-9 sm:mt-6 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
       <Card>
         <Stat
           title="Total sessions"
@@ -57,7 +53,7 @@ export default function Weekly() {
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 mt-9 sm:mt-6 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
       <Card>
         <Stat title="Total sessions">
           <div className="flex flex-row gap-4">
