@@ -72,7 +72,7 @@ export const NavbarItem = React.forwardRef(function NavbarItem(
 ) {
   const classes = clsx(
     // Base
-    "relative flex min-w-0 items-center gap-3 rounded-lg p-2 text-left text-base/6 font-medium text-zinc-950 sm:text-sm/5",
+    "relative flex min-w-0 items-center gap-2 rounded-lg p-2 text-left text-base/6 font-medium text-zinc-950 sm:text-sm/5",
     // Leading icon/icon-only
     "data-[slot=icon]:*:size-6 data-[slot=icon]:*:shrink-0 data-[slot=icon]:*:fill-zinc-500 sm:data-[slot=icon]:*:size-5",
     // Trailing icon (down chevron or similar)
