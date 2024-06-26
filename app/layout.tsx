@@ -1,11 +1,10 @@
 import { cx } from "@/lib/utils"
 import "./globals.css"
-import { Inter } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
 import { StackedLayout } from "@/components/stacked-layout"
 import {
   Navbar,
   NavbarItem,
-  NavbarLabel,
   NavbarSection,
   NavbarSpacer,
 } from "@/components/navbar"
@@ -15,12 +14,10 @@ import {
   SidebarBody,
   SidebarHeader,
   SidebarItem,
-  SidebarLabel,
   SidebarSection,
 } from "@/components/sidebar"
 import PageTitle from "@/components/page-title"
-
-const inter = Inter({ subsets: ["latin"] })
+import { Link } from "@/components/link"
 
 export const metadata = {
   title: "FocusBeacon — Focusmate session metrics dashboard (unofficial)",
@@ -42,14 +39,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="antialiased">
-      <body className={cx(inter.className, "bg-zinc-100")}>
+    <html
+      lang="en"
+      className={cx(GeistSans.className, "antialiased bg-zinc-100")}
+    >
+      <body>
         <StackedLayout
           navbar={
             <Navbar className="max-w-4xl mx-auto">
               <NavbarItem className="max-sm:hidden">
                 <Avatar src="/images/icon-192.png" />
-                <NavbarLabel>FocusBeacon</NavbarLabel>
+                <Link href="/">FocusBeacon</Link>
               </NavbarItem>
 
               <NavbarSpacer />
@@ -72,7 +72,7 @@ export default function RootLayout({
               <SidebarHeader>
                 <SidebarItem>
                   <Avatar src="/images/icon-192.png" />
-                  <SidebarLabel>FocusBeacon</SidebarLabel>
+                  <Link href="/">FocusBeacon</Link>
                 </SidebarItem>
               </SidebarHeader>
 

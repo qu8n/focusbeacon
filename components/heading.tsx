@@ -12,7 +12,7 @@ export function Heading({ className, level = 1, ...props }: HeadingProps) {
       {...props}
       className={clsx(
         className,
-        "text-2xl/8 capitalize font-semibold text-zinc-950 sm:text-xl/8 dark:text-white"
+        "text-4xl/8 capitalize font-semibold text-zinc-950 sm:text-2xl/8 dark:text-white"
       )}
     />
   )
