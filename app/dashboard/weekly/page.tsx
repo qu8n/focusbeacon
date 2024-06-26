@@ -61,7 +61,7 @@ export default function Weekly() {
             categories={["25 minutes", "50 minutes", "75 minutes"]}
             type="stacked"
             data={data.chart.sessions}
-            colors={["amber", "blue", "emerald"]}
+            colors={["blue", "orange", "yellow"]}
           />
         </div>
       </Card>

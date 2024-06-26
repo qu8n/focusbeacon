@@ -1,8 +1,9 @@
 import { CalendarData, ResponsiveTimeRange } from "@nivo/calendar"
 import { Strong, Text } from "./text"
 import { getFormattedDate } from "@/lib/date"
+import { Divider } from "./divider"
 
-const svgSizeReduction = 0.08
+const svgSizeReduction = 0.05
 
 function DaySvg({ color }: { color: string }) {
   return (
@@ -86,11 +87,12 @@ export function Heatmap({
             const date = new Date(y, m - 1, d) // month is 0-indexed
 
             return (
-              <div className="p-4 bg-white border rounded-md shadow-sm">
-                <Text>
+              <div className="py-2 bg-white border rounded-md shadow-sm">
+                <Text className="px-4">
                   <Strong>{getFormattedDate(date)}</Strong>
                 </Text>
-                <div className="flex items-center">
+                <Divider className="my-2" />
+                <div className="flex px-4 items-center">
                   <DaySvg color={color} />
                   <Text>
                     {value} session{Number(value) !== 1 && "s"}

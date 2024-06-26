@@ -56,7 +56,11 @@ export default function RootLayout({
 
               <NavbarSection className="max-sm:hidden">
                 {navItems.map(({ label, url }) => (
-                  <NavbarItem key={label} href={url}>
+                  <NavbarItem
+                    prefetch={label !== "Dashboard"}
+                    key={label}
+                    href={url}
+                  >
                     {label}
                   </NavbarItem>
                 ))}

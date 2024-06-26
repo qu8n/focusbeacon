@@ -3,9 +3,9 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/tabs"
 import { cx } from "@/lib/utils"
 import { motion } from "framer-motion"
-import Link from "next/link"
 import { useSelectedLayoutSegment } from "next/navigation"
 import { useState } from "react"
+import { Link } from "@/components/link"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 

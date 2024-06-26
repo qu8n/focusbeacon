@@ -45,6 +45,18 @@ export const chartColors = {
     fill: "fill-pink-500",
     text: "text-pink-500",
   },
+  yellow: {
+    bg: "bg-yellow-500",
+    stroke: "stroke-yellow-500",
+    fill: "fill-yellow-500",
+    text: "text-yellow-500",
+  },
+  orange: {
+    bg: "bg-orange-500",
+    stroke: "stroke-orange-500",
+    fill: "fill-orange-500",
+    text: "text-orange-500",
+  },
 } as const satisfies {
   [color: string]: {
     [key in ColorUtility]: string
