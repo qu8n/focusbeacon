@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="antialiased">
       <body className={cx(inter.className, "bg-zinc-100")}>
         <StackedLayout
           navbar={

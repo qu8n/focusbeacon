@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query"
 import { Stat } from "@/components/stat"
 import { Skeleton } from "@/components/skeleton"
 import { Card } from "@/components/card"
+import { BarChart } from "@/components/bar-chart"
+import { Text, Strong } from "@/components/text"
 
 export default function Weekly() {
   const { isLoading, data } = useQuery({
@@ -47,6 +49,22 @@ export default function Weekly() {
           changeText={`${data.total.repeat_partners} repeat`}
         />
       </Card>
+
+      <Card className="sm:col-span-3">
+        <Text className="flex flex-col mb-3">
+          <Strong>Sessions this week</Strong>
+        </Text>
+
+        <div className="mb-2 mr-4 -ml-4">
+          <BarChart
+            index="start_date_str"
+            categories={["25 minutes", "50 minutes", "75 minutes"]}
+            type="stacked"
+            data={data.chart.sessions}
+            colors={["amber", "blue", "emerald"]}
+          />
+        </div>
+      </Card>
     </div>
   )
 }
@@ -79,6 +97,13 @@ function LoadingSkeleton() {
             <Skeleton className="h-[32px] w-[50px]" />
           </div>
         </Stat>
+      </Card>
+
+      <Card className="sm:col-span-3">
+        <Text className="flex flex-col mb-3">
+          <Strong>Sessions this week</Strong>
+        </Text>
+        <Skeleton className="h-[328px] w-full" />
       </Card>
     </div>
   )

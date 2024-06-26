@@ -1,5 +1,6 @@
 import pandas as pd
-from typing import Literal
+from typing import Any, Dict, List, Literal
+import numpy as np
 
 
 def calculate_curr_streak(sessions: pd.DataFrame,
@@ -181,14 +182,40 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
     }
 
 
-def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame) -> dict:
+def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
+                                            start_of_week: np.datetime64,
+                                            end_of_week: np.datetime64) \
+        -> List[Dict[str, Any]]:
     sessions_copy = sessions.copy()
-    sessions_copy['start_date_str'] = \
-        sessions_copy['start_time'].dt.strftime('%b %y')
-    sessions_chart_df = sessions_copy.pivot_table(index='start_date_str',
-                                                  columns='duration',
-                                                  aggfunc='size',
-                                                  fill_value=0)
-    sessions_chart_df = sessions_chart_df.reset_index()
-    sessions_chart_df.columns.name = None
-    return sessions_chart_df.to_dict(orient='records')
+    sessions_copy = sessions_copy.reset_index()
+
+    # Convert start_time to weekday name abbreviation
+    sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.day_name(
+    ).str[:3]
+
+    pivot_df: pd.DataFrame = pd.pivot_table(sessions_copy,
+                                            index='start_date_str',
+                                            columns='duration',
+                                            aggfunc='size',
+                                            fill_value=0)
+    pivot_df = pivot_df.reset_index()
+    pivot_df.columns.name = None
+
+    # Add columns for durations that had no sessions
+    for duration in [1500000, 3000000, 4500000]:
+        if duration not in pivot_df.columns:
+            pivot_df[duration] = 0
+    pivot_df.rename(columns={1500000: '25 minutes',
+                             3000000: '50 minutes',
+                             4500000: '75 minutes'}, inplace=True)
+
+    # Add rows for dates that had no sessions
+    date_range = pd.date_range(start=start_of_week, end=end_of_week)
+    formatted_date_range = date_range.strftime('%a')
+    missing_dates = [date for date in formatted_date_range
+                     if date not in pivot_df['start_date_str'].values]
+    missing_date_df = pd.DataFrame({'start_date_str': missing_dates})
+    pivot_df = pd.concat([pivot_df, missing_date_df],
+                         ignore_index=True).fillna(0)
+
+    return pivot_df.to_dict(orient='records')

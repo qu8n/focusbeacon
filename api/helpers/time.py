@@ -48,6 +48,12 @@ def get_start_of_week(local_timezone: str):
     return np.datetime64(start_of_week)
 
 
+def get_end_of_week(start_of_week: np.datetime64):
+    end_of_week = start_of_week + \
+        np.timedelta64(7, 'D') - np.timedelta64(1, 's')
+    return end_of_week
+
+
 def get_start_of_prev_week(local_timezone: str):
     '''Returns the start of the previous week in the given timezone, defined as
     00:00:00 on Monday of the previous week.'''

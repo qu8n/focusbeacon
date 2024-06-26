@@ -3,7 +3,7 @@ from typing import Annotated
 from api.helpers.metric import calculate_max_daily_streak, \
     calculate_curr_streak, prepare_heatmap_data, \
     prepare_sessions_chart_data_by_duration
-from api.helpers.time import get_start_of_week, local_dt_to_utc_dt, \
+from api.helpers.time import get_end_of_week, get_start_of_week, local_dt_to_utc_dt, \
     ms_to_minutes, minutes_to_ms, ms_to_hours, get_start_of_prev_week
 from api.helpers.request import get_session_id, \
     get_access_token
@@ -144,6 +144,7 @@ async def weekly(session_id: SessionIdDep):
 
     start_of_week = get_start_of_week(local_timezone)
     start_of_prev_week = get_start_of_prev_week(local_timezone)
+    end_of_week = get_end_of_week(start_of_week)
 
     curr_week_sessions = sessions[sessions['start_time'] >= start_of_week]
     prev_week_sessions = sessions[
@@ -169,6 +170,6 @@ async def weekly(session_id: SessionIdDep):
         },
         "chart": {
             "sessions": prepare_sessions_chart_data_by_duration(
-                prev_week_sessions)
+                curr_week_sessions, start_of_week, end_of_week)
         }
     }
