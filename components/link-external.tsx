@@ -1,11 +1,11 @@
-export function ExternalLink({
+export function LinkExternal({
   href,
   openInNewTab = false,
   children,
   className,
 }: {
   href: string
-  openInNewTab?: boolean
+  openInNewTab: boolean
   children: React.ReactNode
   className?: string
 }) {

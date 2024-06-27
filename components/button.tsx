@@ -1,12 +1,12 @@
 import * as Headless from "@headlessui/react"
 import { clsx } from "clsx"
 import React from "react"
-import { Link } from "./link"
+import { LinkInternal } from "./link-internal"
 
 const styles = {
   base: [
     // Base
-    "relative capitalize isolate inline-flex items-center justify-center gap-x-2 rounded-lg border text-base/6 font-semibold",
+    "relative capitalize isolate inline-flex items-center justify-center gap-x-2 rounded-lg border font-semibold cursor-pointer",
     // Sizing
     "px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] sm:px-[calc(theme(spacing.3)-1px)] sm:py-[calc(theme(spacing[1.5])-1px)] sm:text-sm/6",
     // Focus
@@ -164,7 +164,7 @@ type ButtonProps = (
   | { color?: never; outline?: never; plain: true }
 ) & { className?: string; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, "className">
-    | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
+    | Omit<React.ComponentPropsWithoutRef<typeof LinkInternal>, "className">
   )
 
 export const Button = React.forwardRef(function Button(
@@ -182,13 +182,13 @@ export const Button = React.forwardRef(function Button(
   )
 
   return "href" in props ? (
-    <Link
+    <LinkInternal
       {...props}
       className={classes}
       ref={ref as React.ForwardedRef<HTMLAnchorElement>}
     >
       <TouchTarget>{children}</TouchTarget>
-    </Link>
+    </LinkInternal>
   ) : (
     <Headless.Button
       {...props}

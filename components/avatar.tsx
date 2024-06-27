@@ -2,7 +2,7 @@ import * as Headless from "@headlessui/react"
 import clsx from "clsx"
 import React from "react"
 import { TouchTarget } from "./button"
-import { Link } from "./link"
+import { LinkInternal } from "./link-internal"
 
 type AvatarProps = {
   src?: string | null
@@ -64,7 +64,7 @@ export const AvatarButton = React.forwardRef(function AvatarButton(
   }: AvatarProps &
     (
       | Omit<Headless.ButtonProps, "className">
-      | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
+      | Omit<React.ComponentPropsWithoutRef<typeof LinkInternal>, "className">
     ),
   ref: React.ForwardedRef<HTMLElement>
 ) {
@@ -75,7 +75,7 @@ export const AvatarButton = React.forwardRef(function AvatarButton(
   )
 
   return "href" in props ? (
-    <Link
+    <LinkInternal
       {...props}
       className={classes}
       ref={ref as React.ForwardedRef<HTMLAnchorElement>}
@@ -83,7 +83,7 @@ export const AvatarButton = React.forwardRef(function AvatarButton(
       <TouchTarget>
         <Avatar src={src} square={square} initials={initials} alt={alt} />
       </TouchTarget>
-    </Link>
+    </LinkInternal>
   ) : (
     <Headless.Button {...props} className={classes} ref={ref}>
       <TouchTarget>

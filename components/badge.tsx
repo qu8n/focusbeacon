@@ -2,7 +2,7 @@ import * as Headless from "@headlessui/react"
 import clsx from "clsx"
 import React from "react"
 import { TouchTarget } from "./button"
-import { Link } from "./link"
+import { LinkInternal } from "./link-internal"
 
 const colors = {
   red: "bg-red-500/15 text-red-700 group-data-[hover]:bg-red-500/25 dark:bg-red-500/10 dark:text-red-400 dark:group-data-[hover]:bg-red-500/20",
@@ -61,7 +61,7 @@ export const BadgeButton = React.forwardRef(function BadgeButton(
     ...props
   }: BadgeProps & { className?: string; children: React.ReactNode } & (
       | Omit<Headless.ButtonProps, "className">
-      | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
+      | Omit<React.ComponentPropsWithoutRef<typeof LinkInternal>, "className">
     ),
   ref: React.ForwardedRef<HTMLElement>
 ) {
@@ -71,7 +71,7 @@ export const BadgeButton = React.forwardRef(function BadgeButton(
   )
 
   return "href" in props ? (
-    <Link
+    <LinkInternal
       {...props}
       className={classes}
       ref={ref as React.ForwardedRef<HTMLAnchorElement>}
@@ -79,7 +79,7 @@ export const BadgeButton = React.forwardRef(function BadgeButton(
       <TouchTarget>
         <Badge color={color}>{children}</Badge>
       </TouchTarget>
-    </Link>
+    </LinkInternal>
   ) : (
     <Headless.Button {...props} className={classes} ref={ref}>
       <TouchTarget>

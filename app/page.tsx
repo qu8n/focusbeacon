@@ -1,12 +1,10 @@
-import { ExternalLink } from "@/components/external-link"
+import { LinkExternal } from "@/components/link-external"
 import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 
 export default function Home() {
   return (
-    <ExternalLink href={fmOAuthForAuthCodeUrl}>
-      <button type="button">
-        <p>Login with Focusmate</p>
-      </button>
-    </ExternalLink>
+    <LinkExternal href={fmOAuthForAuthCodeUrl} openInNewTab={false}>
+      <button type="button">Login with Focusmate</button>
+    </LinkExternal>
   )
 }

@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import { Link } from "./link"
+import { LinkInternal } from "./link-internal"
 
 export function Text({
   className,
@@ -43,7 +43,7 @@ export function TextLink({
   children: React.ReactNode
 }) {
   return (
-    <Link
+    <LinkInternal
       href={href}
       {...props}
       className={clsx(

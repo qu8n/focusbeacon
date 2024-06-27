@@ -5,7 +5,7 @@ import { cx } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useSelectedLayoutSegment } from "next/navigation"
 import { useState } from "react"
-import { Link } from "@/components/link"
+import { LinkInternal } from "@/components/link-internal"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
@@ -37,13 +37,13 @@ export default function DashboardTabs({ className }: { className?: string }) {
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
             )}
-            <Link
+            <LinkInternal
               prefetch={false}
               className="capitalize"
               href={`/dashboard/${tabName}`}
             >
               {tabName}
-            </Link>
+            </LinkInternal>
           </TabsTrigger>
         ))}
       </TabsList>

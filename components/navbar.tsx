@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { LayoutGroup, motion } from "framer-motion"
 import React, { useId } from "react"
 import { TouchTarget } from "./button"
-import { Link } from "./link"
+import { LinkInternal } from "./link-internal"
 
 export function Navbar({
   className,
@@ -66,7 +66,7 @@ export const NavbarItem = React.forwardRef(function NavbarItem(
     ...props
   }: { current?: boolean; className?: string; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, "className">
-    | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
+    | Omit<React.ComponentPropsWithoutRef<typeof LinkInternal>, "className">
   ),
   ref: React.ForwardedRef<HTMLAnchorElement | HTMLButtonElement>
 ) {
@@ -98,14 +98,14 @@ export const NavbarItem = React.forwardRef(function NavbarItem(
         />
       )}
       {"href" in props ? (
-        <Link
+        <LinkInternal
           {...props}
           className={classes}
           data-current={current ? "true" : undefined}
           ref={ref as React.ForwardedRef<HTMLAnchorElement>}
         >
           <TouchTarget>{children}</TouchTarget>
-        </Link>
+        </LinkInternal>
       ) : (
         <Headless.Button
           {...props}

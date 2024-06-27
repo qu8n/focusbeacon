@@ -1,5 +1,4 @@
 import DashboardTabs from "@/components/dashboard-tabs"
-import { ReactQueryClientProvider } from "@/components/react-query-provider"
 
 export default function DashboardLayout({
   children,
@@ -9,7 +8,7 @@ export default function DashboardLayout({
   return (
     <section className="flex flex-col gap-9">
       <DashboardTabs />
-      <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+      {children}
     </section>
   )
 }

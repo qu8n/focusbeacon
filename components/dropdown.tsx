@@ -4,7 +4,7 @@ import * as Headless from "@headlessui/react"
 import clsx from "clsx"
 import type React from "react"
 import { Button } from "./button"
-import { Link } from "./link"
+import { LinkInternal } from "./link-internal"
 
 export function Dropdown(props: Headless.MenuProps) {
   return <Headless.Menu {...props} />
@@ -53,7 +53,7 @@ export function DropdownItem({
   className,
   ...props
 }: { className?: string } & (
-  | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
+  | Omit<React.ComponentPropsWithoutRef<typeof LinkInternal>, "className">
   | Omit<React.ComponentPropsWithoutRef<"button">, "className">
 )) {
   const classes = clsx(
@@ -80,7 +80,7 @@ export function DropdownItem({
   return (
     <Headless.MenuItem>
       {"href" in props ? (
-        <Link {...props} className={classes} />
+        <LinkInternal {...props} className={classes} />
       ) : (
         <button type="button" {...props} className={classes} />
       )}

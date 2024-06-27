@@ -11,26 +11,22 @@ import {
 import PageTitle from "@/components/page-title"
 import { Logo } from "@/components/logo"
 import { Footnote } from "@/components/text"
-import { Link } from "@/components/link"
-import { ExternalLink } from "@/components/external-link"
+import { LinkInternal } from "@/components/link-internal"
+import { LinkExternal } from "@/components/link-external"
 import { RiExternalLinkLine } from "@remixicon/react"
+import { NavbarClient } from "@/components/navbar-client"
+import { Providers } from "@/components/providers"
 
 export const metadata = {
-  title: "FocusBeacon — Focusmate session metrics dashboard (unofficial)",
+  title: "FocusBeacon — Focusmate session metrics dashboard",
   description:
-    "FocusBeacon unlocks insights into your Focusmate sessions, helping you track your progress and stay motivated.",
+    "Track your session statistics and stay motivated toward your goals. FocusBeacon is a free and unofficial dashboard for all Focusmate users.",
 }
 
-export const navItems = [{ label: "Sign Out", url: "/#" }]
-
-const footerNavItems = [
+const navItems = [
   {
     label: "Home",
     url: "/",
-  },
-  {
-    label: "Dashboard",
-    url: "/dashboard",
   },
   {
     label: "About",
@@ -57,60 +53,54 @@ export default function RootLayout({
       className={cx(GeistSans.className, "antialiased bg-zinc-100")}
     >
       <body>
-        <StackedLayout
-          navbar={
-            <Navbar className="max-w-4xl mx-auto">
-              <NavbarItem>
-                <Logo />
-              </NavbarItem>
+        <Providers>
+          <StackedLayout
+            navbar={
+              <Navbar className="max-w-4xl mx-auto">
+                <NavbarItem>
+                  <Logo />
+                </NavbarItem>
 
-              <NavbarSpacer />
+                <NavbarSpacer />
 
-              <NavbarSection>
-                {navItems.map(({ label, url }) => (
-                  <NavbarItem
-                    prefetch={label !== "Dashboard"}
-                    key={label}
-                    href={url}
-                  >
-                    {label}
-                  </NavbarItem>
-                ))}
-              </NavbarSection>
-            </Navbar>
-          }
-          footer={
-            <>
-              <Footnote>© FocusBeacon</Footnote>
-              <div className="flex flex-col sm:flex-row gap-4">
-                {footerNavItems.map(({ label, url }) => {
-                  if (url[0] === "/") {
-                    return (
-                      <Link key={label} href={url}>
-                        <Footnote key={label}>{label}</Footnote>
-                      </Link>
-                    )
-                  } else {
-                    return (
-                      <ExternalLink
-                        key={label}
-                        href={url}
-                        openInNewTab
-                        className="flex flex-row items-center gap-1"
-                      >
-                        <RiExternalLinkLine className="size-3" color="gray" />
-                        <Footnote key={label}>{label}</Footnote>
-                      </ExternalLink>
-                    )
-                  }
-                })}
-              </div>
-            </>
-          }
-        >
-          <PageTitle />
-          {children}
-        </StackedLayout>
+                <NavbarSection>
+                  <NavbarClient />
+                </NavbarSection>
+              </Navbar>
+            }
+            footer={
+              <>
+                <Footnote>© FocusBeacon</Footnote>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {navItems.map(({ label, url }) => {
+                    if (url[0] === "/") {
+                      return (
+                        <LinkInternal key={label} href={url}>
+                          <Footnote key={label}>{label}</Footnote>
+                        </LinkInternal>
+                      )
+                    } else {
+                      return (
+                        <LinkExternal
+                          key={label}
+                          href={url}
+                          openInNewTab
+                          className="flex flex-row items-center gap-1"
+                        >
+                          <RiExternalLinkLine className="size-3" color="gray" />
+                          <Footnote key={label}>{label}</Footnote>
+                        </LinkExternal>
+                      )
+                    }
+                  })}
+                </div>
+              </>
+            }
+          >
+            <PageTitle />
+            {children}
+          </StackedLayout>
+        </Providers>
       </body>
     </html>
   )
