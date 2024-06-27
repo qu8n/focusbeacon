@@ -7,40 +7,19 @@ import {
   NavbarItem,
   NavbarSection,
   NavbarSpacer,
-} from "@/components/common/navbar"
+} from "@/components/ui/navbar"
 import { PageTitle } from "@/components/common/page-title"
 import { Logo } from "@/components/ui/logo"
-import { Footnote } from "@/components/ui/text"
-import { LinkInternal } from "@/components/ui/link-internal"
-import { LinkExternal } from "@/components/ui/link-external"
-import { RiExternalLinkLine } from "@remixicon/react"
 import { NavbarClient } from "@/components/common/navbar-client"
 import { Providers } from "@/components/common/providers"
+import { Metadata } from "next"
+import { Footer } from "@/components/common/footer"
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "FocusBeacon — Focusmate session metrics dashboard",
   description:
     "Track your session statistics and stay motivated toward your goals. FocusBeacon is a free and unofficial dashboard for all Focusmate users.",
 }
-
-const navItems = [
-  {
-    label: "Home",
-    url: "/",
-  },
-  {
-    label: "About",
-    url: "/about",
-  },
-  {
-    label: "Privacy",
-    url: "/privacy",
-  },
-  {
-    label: "Contact",
-    url: "https://forms.gle/D7k33QwMUzK2m1vb7",
-  },
-]
 
 export default function RootLayout({
   children,
@@ -68,34 +47,7 @@ export default function RootLayout({
                 </NavbarSection>
               </Navbar>
             }
-            footer={
-              <>
-                <Footnote>© FocusBeacon</Footnote>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  {navItems.map(({ label, url }) => {
-                    if (url[0] === "/") {
-                      return (
-                        <LinkInternal key={label} href={url}>
-                          <Footnote key={label}>{label}</Footnote>
-                        </LinkInternal>
-                      )
-                    } else {
-                      return (
-                        <LinkExternal
-                          key={label}
-                          href={url}
-                          openInNewTab
-                          className="flex flex-row items-center gap-1"
-                        >
-                          <RiExternalLinkLine className="size-3" color="gray" />
-                          <Footnote key={label}>{label}</Footnote>
-                        </LinkExternal>
-                      )
-                    }
-                  })}
-                </div>
-              </>
-            }
+            footer={<Footer />}
           >
             <PageTitle />
             {children}

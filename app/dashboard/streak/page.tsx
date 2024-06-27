@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card"
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
 
-  const { isLoading, data } = useQuery({
+  const { isLoading: loadingData, data } = useQuery({
     queryKey: ["streak"],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak`)
@@ -22,7 +22,7 @@ export default function Streak() {
     },
   })
 
-  if (isLoading) {
+  if (loadingData || !data) {
     return <LoadingSkeleton />
   }
 

@@ -3,14 +3,23 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cx } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { useSelectedLayoutSegment } from "next/navigation"
-import { useState } from "react"
+import { useRouter, useSelectedLayoutSegment } from "next/navigation"
+import { useEffect, useState } from "react"
 import { LinkInternal } from "@/components/ui/link-internal"
+import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 
 export default function DashboardTabs({ className }: { className?: string }) {
   const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
+
+  const { isSuccess } = useGetSigninStatus()
+  const router = useRouter()
+  useEffect(() => {
+    if (!isSuccess) {
+      router.push("/home")
+    }
+  }, [isSuccess, router])
 
   return (
     <Tabs

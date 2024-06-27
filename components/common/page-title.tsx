@@ -11,11 +11,13 @@ const fraunces = Fraunces({
 })
 
 export function PageTitle() {
-  const currPage = useSelectedLayoutSegment()
+  let currPage = useSelectedLayoutSegment()
+  if (currPage === "/_not-found") currPage = "Not Found"
+  if (currPage === "home") currPage = null
 
   return (
     <div className={cx(fraunces.className, "flex flex-col mt-4")}>
-      <Heading>{currPage}</Heading>
+      {currPage && <Heading>{currPage}</Heading>}
     </div>
   )
 }
