@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Tremor Raw chartColors [v0.0.0]
 
 export type ColorUtility = "bg" | "stroke" | "fill" | "text"

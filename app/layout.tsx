@@ -1,21 +1,21 @@
 import { cx } from "@/lib/utils"
 import "./globals.css"
 import { GeistSans } from "geist/font/sans"
-import { StackedLayout } from "@/components/stacked-layout"
+import { StackedLayout } from "@/components/common/stacked-layout"
 import {
   Navbar,
   NavbarItem,
   NavbarSection,
   NavbarSpacer,
-} from "@/components/navbar"
-import PageTitle from "@/components/page-title"
-import { Logo } from "@/components/logo"
-import { Footnote } from "@/components/text"
-import { LinkInternal } from "@/components/link-internal"
-import { LinkExternal } from "@/components/link-external"
+} from "@/components/common/navbar"
+import { PageTitle } from "@/components/common/page-title"
+import { Logo } from "@/components/ui/logo"
+import { Footnote } from "@/components/ui/text"
+import { LinkInternal } from "@/components/ui/link-internal"
+import { LinkExternal } from "@/components/ui/link-external"
 import { RiExternalLinkLine } from "@remixicon/react"
-import { NavbarClient } from "@/components/navbar-client"
-import { Providers } from "@/components/providers"
+import { NavbarClient } from "@/components/common/navbar-client"
+import { Providers } from "@/components/common/providers"
 
 export const metadata = {
   title: "FocusBeacon — Focusmate session metrics dashboard",

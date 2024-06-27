@@ -1,10 +1,10 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { LinkExternal } from "@/components/link-external"
+import { LinkExternal } from "@/components/ui/link-external"
 import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
-import { Button } from "@/components/button"
-import { LinkInternal } from "./link-internal"
+import { Button } from "@/components/ui/button"
+import { LinkInternal } from "../ui/link-internal"
 
 export function NavbarClient() {
   const { isLoading, isSuccess } = useQuery({

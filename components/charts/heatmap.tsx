@@ -1,7 +1,7 @@
 import { CalendarData, ResponsiveTimeRange } from "@nivo/calendar"
-import { Strong, Text } from "./text"
+import { Strong, Text } from "../ui/text"
 import { getFormattedDate } from "@/lib/date"
-import { Divider } from "./divider"
+import { Divider } from "../ui/divider"
 
 const svgSizeReduction = 0.05
 

@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import { LinkInternal } from "./link-internal"
+import { LinkInternal } from "@/components/ui/link-internal"
 
 export function Text({
   className,

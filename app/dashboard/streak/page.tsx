@@ -1,15 +1,14 @@
 "use client"
 
-import React from "react"
-import { Heatmap } from "@/components/heatmap"
-import { Stat } from "@/components/stat"
-import { Footnote } from "@/components/text"
+import { Heatmap } from "@/components/charts/heatmap"
+import { Stat } from "@/components/ui/stat"
+import { Footnote } from "@/components/ui/text"
 import { useQuery } from "@tanstack/react-query"
-import { useBreakpoint } from "@/lib/use-breakpoint"
+import { useBreakpoint } from "@/hooks/use-breakpoint"
 import { getFormattedDate } from "@/lib/date"
-import { Skeleton } from "@/components/skeleton"
-import { Text, Strong } from "@/components/text"
-import { Card } from "@/components/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Text, Strong } from "@/components/ui/text"
+import { Card } from "@/components/ui/card"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")

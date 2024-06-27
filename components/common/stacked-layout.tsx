@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Divider } from "@/components/divider"
+import { Divider } from "@/components/ui/divider"
 
 export function StackedLayout({
   navbar,

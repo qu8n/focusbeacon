@@ -1,8 +1,8 @@
 import * as Headless from "@headlessui/react"
 import clsx from "clsx"
 import React from "react"
-import { TouchTarget } from "./button"
-import { LinkInternal } from "./link-internal"
+import { TouchTarget } from "@/components/ui/button"
+import { LinkInternal } from "@/components/ui/link-internal"
 
 const colors = {
   red: "bg-red-500/15 text-red-700 group-data-[hover]:bg-red-500/25 dark:bg-red-500/10 dark:text-red-400 dark:group-data-[hover]:bg-red-500/20",

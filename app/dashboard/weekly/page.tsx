@@ -1,12 +1,11 @@
 "use client"
 
-import React from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Stat } from "@/components/stat"
-import { Skeleton } from "@/components/skeleton"
-import { Card } from "@/components/card"
-import { BarChart } from "@/components/bar-chart"
-import { Text, Strong } from "@/components/text"
+import { Stat } from "@/components/ui/stat"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Card } from "@/components/ui/card"
+import { BarChart } from "@/components/charts/bar-chart"
+import { Text, Strong } from "@/components/ui/text"
 
 export default function Weekly() {
   const { isLoading, data } = useQuery({

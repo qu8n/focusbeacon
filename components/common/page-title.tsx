@@ -1,7 +1,7 @@
 "use client"
 
 import { useSelectedLayoutSegment } from "next/navigation"
-import { Heading } from "./heading"
+import { Heading } from "../ui/heading"
 import { Fraunces } from "next/font/google"
 import { cx } from "@/lib/utils"
 
@@ -10,7 +10,7 @@ const fraunces = Fraunces({
   display: "swap",
 })
 
-export default function PageTitle() {
+export function PageTitle() {
   const currPage = useSelectedLayoutSegment()
 
   return (

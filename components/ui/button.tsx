@@ -1,7 +1,7 @@
 import * as Headless from "@headlessui/react"
 import { clsx } from "clsx"
 import React from "react"
-import { LinkInternal } from "./link-internal"
+import { LinkInternal } from "@/components/ui/link-internal"
 
 const styles = {
   base: [

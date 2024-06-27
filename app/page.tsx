@@ -1,4 +1,4 @@
-import { LinkExternal } from "@/components/link-external"
+import { LinkExternal } from "@/components/ui/link-external"
 import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 
 export default function Home() {

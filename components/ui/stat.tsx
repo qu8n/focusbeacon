@@ -1,5 +1,5 @@
-import { Badge } from "./badge"
-import { Strong, Text } from "./text"
+import { Badge } from "@/components/ui/badge"
+import { Strong, Text } from "@/components/ui/text"
 
 export function Stat({
   title,

@@ -1,11 +1,11 @@
 "use client"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cx } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useSelectedLayoutSegment } from "next/navigation"
 import { useState } from "react"
-import { LinkInternal } from "@/components/link-internal"
+import { LinkInternal } from "@/components/ui/link-internal"
 
 const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 

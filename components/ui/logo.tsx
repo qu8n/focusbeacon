@@ -1,5 +1,5 @@
-import { Avatar } from "@/components/avatar"
-import { LinkInternal } from "@/components/link-internal"
+import { Avatar } from "@/components/ui/avatar"
+import { LinkInternal } from "@/components/ui/link-internal"
 
 export function Logo() {
   return (
