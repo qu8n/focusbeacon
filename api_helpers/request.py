@@ -2,7 +2,7 @@ from supabase import create_client, Client
 from fastapi import Request
 import os
 from dotenv import load_dotenv
-from api.helpers.crypto import decrypt
+from api_helpers.crypto import decrypt
 
 load_dotenv()
 
