@@ -1,7 +1,5 @@
 "use client"
 
-import { LinkExternal } from "@/components/ui/link-external"
-import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,6 +8,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useState } from "react"
+import { LinkInternal } from "../ui/link-internal"
+import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
+import { useRouter } from "next/navigation"
 
 export function SigninButton({
   text,
@@ -19,10 +20,23 @@ export function SigninButton({
   className?: string
 }) {
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
+  const { isLoading, isSignedIn } = useGetSigninStatus()
 
   return (
     <>
-      <Button color="orange" type="button" onClick={() => setIsOpen(true)}>
+      <Button
+        disabled={isLoading}
+        color="orange"
+        type="button"
+        onClick={() => {
+          if (isSignedIn) {
+            router.push("/dashboard")
+          } else {
+            setIsOpen(true)
+          }
+        }}
+      >
         <span className={className}>{text}</span>
       </Button>
 
@@ -40,9 +54,9 @@ export function SigninButton({
           </Button>
 
           <Button color="orange">
-            <LinkExternal href={fmOAuthForAuthCodeUrl} openInNewTab={false}>
+            <LinkInternal href="/continue">
               <span className={className}>Yes, I&apos;m ready to continue</span>
-            </LinkExternal>
+            </LinkInternal>
           </Button>
         </DialogActions>
       </Dialog>

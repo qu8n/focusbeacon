@@ -100,7 +100,7 @@ const styles = {
       "[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
     ],
     orange: [
-      "text-orange-950 [--btn-hover-overlay:theme(colors.white/25%)] [--btn-bg:theme(colors.orange.300/80%)] [--btn-border:theme(colors.orange.400/80%)]",
+      "text-orange-950 [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.orange.300/80%)] [--btn-border:theme(colors.orange.400/80%)]",
       "[--btn-icon:theme(colors.orange.600)]",
     ],
     amber: [

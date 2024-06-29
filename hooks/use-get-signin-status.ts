@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
-export function useGetSigninStatus() {
-  const { isLoading, isSuccess } = useQuery({
-    queryKey: ["signinStatus"],
+export function useGetSigninStatus(queryKey: string[] = ["signinStatus"]) {
+  const { isLoading, isSuccess: isSignedIn } = useQuery({
+    queryKey: queryKey,
     queryFn: async () => {
       const response = await fetch(`/api/signin-status`)
       if (!response.ok) throw Error
@@ -12,5 +12,5 @@ export function useGetSigninStatus() {
     retry: false,
   })
 
-  return { isLoading, isSuccess }
+  return { isLoading, isSignedIn }
 }

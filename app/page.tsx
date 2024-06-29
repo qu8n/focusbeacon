@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function Home() {
-  const { isSuccess } = useGetSigninStatus()
+  const { isSignedIn } = useGetSigninStatus()
   const router = useRouter()
   useEffect(() => {
-    if (isSuccess) {
+    if (isSignedIn) {
       router.push("/dashboard")
     }
-  }, [isSuccess, router])
+  }, [isSignedIn, router])
 
   return <HomeContent />
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 import { cx } from "@/lib/utils"
 import { Suspense } from "react"
@@ -101,7 +102,7 @@ export const TweetNotFound = ({
 
 export const TweetHeader = ({ tweet }: { tweet: EnrichedTweet }) => (
   <div className="flex flex-row justify-between tracking-tight">
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 pointer-events-none">
       <a href={tweet.user.url} target="_blank" rel="noreferrer">
         <img
           title={`Profile picture of ${tweet.user.name}`}
@@ -137,6 +138,7 @@ export const TweetHeader = ({ tweet }: { tweet: EnrichedTweet }) => (
         </div>
       </div>
     </div>
+
     <a href={tweet.url} target="_blank" rel="noreferrer">
       <span className="sr-only">Link to tweet</span>
       <Twitter className="h-5 w-5 items-start text-[#3BA9EE] transition-all ease-in-out hover:scale-105" />
@@ -145,7 +147,7 @@ export const TweetHeader = ({ tweet }: { tweet: EnrichedTweet }) => (
 )
 
 export const TweetBody = ({ tweet }: { tweet: EnrichedTweet }) => (
-  <div className="break-words leading-snug tracking-tighter">
+  <div className="break-words leading-snug tracking-tighter text-xs">
     {tweet.entities.map((entity, idx) => {
       switch (entity.type) {
         case "url":
@@ -158,7 +160,7 @@ export const TweetBody = ({ tweet }: { tweet: EnrichedTweet }) => (
               href={entity.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-normal text-zinc-500"
+              className="font-normal text-zinc-400"
             >
               <span>{entity.text}</span>
             </a>
@@ -167,7 +169,7 @@ export const TweetBody = ({ tweet }: { tweet: EnrichedTweet }) => (
           return (
             <span
               key={idx}
-              className="text-sm text-zinc-800 font-normal"
+              className="text-zinc-500 font-normal"
               dangerouslySetInnerHTML={{ __html: entity.text }}
             />
           )
@@ -192,18 +194,16 @@ export const TweetMedia = ({ tweet }: { tweet: EnrichedTweet }) => (
       </video>
     )}
     {tweet.photos && (
-      <div className="relative flex transform-gpu snap-x snap-mandatory gap-4 overflow-x-auto pointer-events-none">
-        <div className="shrink-0 snap-center sm:w-2" />
+      <div className="relative flex transform-gpu snap-x snap-mandatory overflow-x-auto pointer-events-none">
         {tweet.photos.map((photo) => (
           <img
             key={photo.url}
             src={photo.url}
             title={"Photo by " + tweet.user.name}
             alt={tweet.text}
-            className="h-64 w-5/6 shrink-0 snap-center snap-always rounded-xl border object-cover shadow-sm"
+            className="h-64 shrink-0 snap-center snap-always rounded-lg border object-cover shadow-sm"
           />
         ))}
-        <div className="shrink-0 snap-center sm:w-2" />
       </div>
     )}
   </div>
@@ -221,7 +221,7 @@ export const MagicTweet = ({
   return (
     <div
       className={cx(
-        "relative flex h-full w-full max-w-[32rem] flex-col gap-2 overflow-hidden rounded-lg border p-4 backdrop-blur-md",
+        "relative flex h-full w-full max-w-[32rem] flex-col gap-2 overflow-hidden rounded-lg border p-4 backdrop-blur-md bg-white bg-opacity-10 sm:shadow-sm",
         className
       )}
       {...props}

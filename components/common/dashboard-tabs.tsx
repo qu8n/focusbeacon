@@ -12,13 +12,13 @@ const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
 export default function DashboardTabs({ className }: { className?: string }) {
   const currTab = useSelectedLayoutSegment()
   const router = useRouter()
-  const { isLoading, isSuccess } = useGetSigninStatus()
+  const { isLoading, isSignedIn } = useGetSigninStatus()
 
   useEffect(() => {
-    if (!isLoading && !isSuccess) {
+    if (!isLoading && !isSignedIn) {
       router.push("/home")
     }
-  }, [isSuccess, isLoading, router])
+  }, [isSignedIn, isLoading, router])
 
   return (
     <div
