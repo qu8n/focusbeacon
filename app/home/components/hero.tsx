@@ -1,10 +1,8 @@
 import { Heading } from "@/components/ui/heading"
 import { hero } from "./config"
 import { RiCheckboxCircleLine } from "@remixicon/react"
-import { LinkExternal } from "@/components/ui/link-external"
-import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
-import { Button } from "@/components/ui/button"
 import { Text } from "@/components/ui/text"
+import { SigninButton } from "@/components/common/signin-button"
 
 export function Hero() {
   return (
@@ -24,15 +22,7 @@ export function Hero() {
         })}
       </div>
 
-      <LinkExternal
-        href={fmOAuthForAuthCodeUrl}
-        openInNewTab={false}
-        className="mx-auto"
-      >
-        <Button color="orange">
-          <span className="p-1">{hero.buttonText}</span>
-        </Button>
-      </LinkExternal>
+      <SigninButton className="p-1" text={hero.buttonText} />
     </div>
   )
 }

@@ -1,10 +1,9 @@
 "use client"
 
-import { LinkExternal } from "@/components/ui/link-external"
-import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 import { Button } from "@/components/ui/button"
 import { LinkInternal } from "../ui/link-internal"
 import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
+import { SigninButton } from "./signin-button"
 
 export function NavbarClient() {
   const { isLoading, isSuccess } = useGetSigninStatus()
@@ -14,11 +13,7 @@ export function NavbarClient() {
   }
 
   if (!isSuccess) {
-    return (
-      <LinkExternal href={fmOAuthForAuthCodeUrl} openInNewTab={false}>
-        <Button color="orange">Sign in</Button>
-      </LinkExternal>
-    )
+    return <SigninButton text="Sign in" />
   }
 
   return (

@@ -1,8 +1,6 @@
 import { Subheading } from "@/components/ui/heading"
 import { cta, hero } from "./config"
-import { LinkExternal } from "@/components/ui/link-external"
-import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
-import { Button } from "@/components/ui/button"
+import { SigninButton } from "@/components/common/signin-button"
 
 export function CallToAction() {
   return (
@@ -16,21 +14,13 @@ export function CallToAction() {
 
       <Subheading className="max-w-xs sm:max-w-sm text-center">
         {cta.titleBefore}{" "}
-        <span className="underline decoration-wavy decoration-orange-400">
+        <span className="underline underline-offset-2 decoration-2 decoration-wavy decoration-orange-400">
           {cta.titleUnderlined}
         </span>{" "}
         {cta.titleAfter}
       </Subheading>
 
-      <LinkExternal
-        href={fmOAuthForAuthCodeUrl}
-        openInNewTab={false}
-        className="mx-auto"
-      >
-        <Button color="orange">
-          <span className="p-1">{hero.buttonText}</span>
-        </Button>
-      </LinkExternal>
+      <SigninButton className="p-1" text={hero.buttonText} />
     </div>
   )
 }
