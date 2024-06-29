@@ -6,7 +6,8 @@ export function Logo() {
     <>
       <Avatar src="/images/icon-192.png" />
       <LinkInternal href="/" className="text-base">
-        Focus<span className="font-semibold">Beacon</span>
+        <span>Focus</span>
+        <span className="font-semibold">Beacon</span>
       </LinkInternal>
     </>
   )

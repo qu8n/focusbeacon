@@ -1,10 +1,11 @@
 import { RiUserSmileLine } from "@remixicon/react"
+import { LinkExternal } from "@/components/ui/link-external"
 
 <br />
 
-<p className="flex flex-row gap-1 items-center">
+<p className="inline-flex gap-1 items-center">
   <span>Welcome to FocusBeacon</span>
-  <RiUserSmileLine className="text-zinc-600" />
+  <RiUserSmileLine className="text-zinc-600" size={20} />
 </p>
 
 I'm Quan. I built this website because seeing my Focusmate stats gives me a lot of motivation and helps me appreciate the progress I've made.
@@ -19,8 +20,8 @@ This website will be 100% free forever. Why?
 
 Want to support? Here is a few ways:
 
-- Let others know about this website. One of my Focusmate friends even includes it in her Focusmate profile (thanks, Louisa!).
-- Let me know if you encounter any bugs or have any suggestions.
-- Give this project a GitHub star and/or contribute to it.
+- If you're on GitHub, I'd appreciate a star and/or your contributions <LinkExternal href="https://github.com/qu8n/focusbeacon" openInNewTab>here</LinkExternal>.
+- Let others know about this website. One of my Focusmate friends mentions it on her Focusmate profile (thanks, Louisa!).
+- Let me know if you encounter any bugs or have any suggestions <LinkExternal href="https://forms.gle/D7k33QwMUzK2m1vb7" openInNewTab>here</LinkExternal>.
 
 export default ({ children }) => <div className="prose">{children}</div>

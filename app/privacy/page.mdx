@@ -1,10 +1,12 @@
+import { LinkExternal } from "@/components/ui/link-external"
+
 <br />
 
 FocusBeacon does not store nor sell your personal data.
 
 Signing in to FocusBeacon is done through the official Focusmate website, ensuring your password is never shared with us.
 
-The only data we use are those made available to us by the official Focusmate API. The majority of your Focusmate data points is pulled live when you visit FocusBeacon and not stored in our database.
+The only data we use are those made available to us by the official <LinkExternal href="https://www.focusmate.com/blog/focusmate-public-api/" openInNewTab>Focusmate API</LinkExternal>. The majority of your Focusmate data points is pulled live when you visit FocusBeacon and not stored in our database.
 
 Here is the data we store and why:
 
@@ -12,6 +14,6 @@ Here is the data we store and why:
 - Your time zone: lets us understand the overall user demographics of FocusBeacon.
 - Your current daily streak: for our upcoming leaderboard feature that privately lets you know where you stand among other FocusBeacon users.
 
-What's more, FocusBeacon is an open-source project, meaning anyone can inspect the code that runs this website, ensuring transparency and accountability.
+What's more, FocusBeacon is an <LinkExternal href="https://github.com/qu8n/focusbeacon" openInNewTab>open-source project</LinkExternal>, meaning anyone can inspect the code that runs this website, ensuring transparency.
 
 export default ({ children }) => <div className="prose">{children}</div>

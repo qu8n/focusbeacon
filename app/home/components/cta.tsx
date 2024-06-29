@@ -4,7 +4,7 @@ import { SigninButton } from "@/components/common/signin-button"
 
 export function CallToAction() {
   return (
-    <div className="relative h-full w-full justify-center overflow-hidden rounded-lg border py-8 sm:shadow-sm flex flex-col gap-4 items-center bg-orange-300 bg-opacity-20 border-orange-300/[0.4]">
+    <div className="relative h-full w-full px-2 justify-center overflow-hidden rounded-lg border py-8 sm:shadow-sm flex flex-col gap-4 items-center bg-orange-300 bg-opacity-20 border-orange-300/[0.4]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/globe.png"
