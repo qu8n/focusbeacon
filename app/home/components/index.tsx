@@ -1,6 +1,7 @@
 import { Hero } from "@/app/home/components/hero"
 import { Reviews } from "@/app/home/components/reviews"
 import { Tweets } from "@/app/home/components/tweets"
+import { CallToAction } from "@/app/home/components/cta"
 
 export function HomeContent() {
   return (
@@ -8,6 +9,7 @@ export function HomeContent() {
       <Hero />
       <Reviews />
       <Tweets />
+      <CallToAction />
     </div>
   )
 }

@@ -76,3 +76,11 @@ export const reviews = {
     },
   ],
 }
+
+export const tweetsTitle = "FocusBeacon in the wild 🔸"
+
+export const cta = {
+  titleBefore: "Join our international community across",
+  titleUnderlined: "16 time zones",
+  titleAfter: "who are using FocusBeacon to boost their productivity",
+}

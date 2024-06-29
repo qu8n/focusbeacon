@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import { enrichTweet, type EnrichedTweet, type TweetProps } from "react-tweet"
 import { getTweet, type Tweet } from "react-tweet/api"
 import { Subheading } from "@/components/ui/heading"
+import { tweetsTitle } from "@/app/home/components/config"
 
 interface TwitterIconProps {
   className?: string
@@ -191,7 +192,7 @@ export const TweetMedia = ({ tweet }: { tweet: EnrichedTweet }) => (
       </video>
     )}
     {tweet.photos && (
-      <div className="relative flex transform-gpu snap-x snap-mandatory gap-4 overflow-x-auto">
+      <div className="relative flex transform-gpu snap-x snap-mandatory gap-4 overflow-x-auto pointer-events-none">
         <div className="shrink-0 snap-center sm:w-2" />
         {tweet.photos.map((photo) => (
           <img
@@ -269,8 +270,8 @@ export const TweetCard = async ({
 export function Tweets() {
   return (
     <div className="flex flex-col gap-6 items-center">
-      <Subheading>FocusBeacon in the wild 🔸</Subheading>
-      <div className="flex sm:flex-row gap-4 mx-1 flex-col">
+      <Subheading>{tweetsTitle}</Subheading>
+      <div className="flex sm:flex-row gap-4 flex-col">
         <TweetCard id="1758690830636707988" />
         <TweetCard id="1740581536578388065" />
       </div>
