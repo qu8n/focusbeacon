@@ -1,4 +1,10 @@
-import { clsx } from "clsx"
+import { Fraunces } from "next/font/google"
+import { cx } from "@/lib/utils"
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+})
 
 type HeadingProps = {
   level?: 1 | 2 | 3 | 4 | 5 | 6
@@ -10,9 +16,10 @@ export function Heading({ className, level = 1, ...props }: HeadingProps) {
   return (
     <Element
       {...props}
-      className={clsx(
+      className={cx(
         className,
-        "text-4xl/8 capitalize font-semibold text-zinc-950 sm:text-2xl/8 dark:text-white"
+        fraunces.className,
+        "text-3xl/8 capitalize font-semibold text-zinc-950 sm:text-2xl/8 dark:text-white"
       )}
     />
   )
@@ -24,9 +31,9 @@ export function Subheading({ className, level = 2, ...props }: HeadingProps) {
   return (
     <Element
       {...props}
-      className={clsx(
+      className={cx(
         className,
-        "text-base/7 font-semibold text-zinc-950 sm:text-sm/6 dark:text-white"
+        "text-lg/7 font-semibold text-zinc-950 sm:text-md/6 dark:text-white"
       )}
     />
   )
