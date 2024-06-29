@@ -1,49 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { LinkExternal } from "@/components/ui/link-external"
-import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
-import { Footnote, Text } from "@/components/ui/text"
-import { Heading } from "@/components/ui/heading"
-import { RiCheckboxCircleLine } from "@remixicon/react"
-import { hero } from "@/app/home/config"
+import { Footnote } from "@/components/ui/text"
 import { cx } from "@/lib/utils"
 import { Marquee } from "@/components/ui/marquee"
 import { Subheading } from "@/components/ui/heading"
-import { reviews } from "@/app/home/config"
-
-export function HomeContent() {
-  return (
-    <div className="flex flex-col gap-14">
-      <div className="flex flex-col gap-4 mt-12 items-center">
-        <Heading className="text-3xl font-bold max-w-xs sm:max-w-none text-center">
-          {hero.title}
-        </Heading>
-
-        <div className="flex flex-col items-center">
-          {hero.features.map((feature) => {
-            return (
-              <div key={feature} className="inline-flex items-center gap-2">
-                <RiCheckboxCircleLine className="text-zinc-700" size={14} />
-                <Text>{feature}</Text>
-              </div>
-            )
-          })}
-        </div>
-
-        <LinkExternal
-          href={fmOAuthForAuthCodeUrl}
-          openInNewTab={false}
-          className="mx-auto"
-        >
-          <Button color="orange">
-            <span className="p-1">{hero.buttonText}</span>
-          </Button>
-        </LinkExternal>
-      </div>
-
-      <Reviews />
-    </div>
-  )
-}
+import { reviews } from "@/app/home/components/config"
 
 const ReviewCard = ({ name, review }: { name: string; review: string }) => {
   return (
@@ -77,7 +36,7 @@ const ReviewCard = ({ name, review }: { name: string; review: string }) => {
 const firstRow = reviews.reviews.slice(0, reviews.reviews.length / 2)
 const secondRow = reviews.reviews.slice(reviews.reviews.length / 2)
 
-function Reviews() {
+export function Reviews() {
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border py-8 sm:shadow-sm">
       <Subheading className="mb-4 inline-flex items-center">

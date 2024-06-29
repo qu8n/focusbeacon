@@ -1,6 +1,6 @@
 "use client"
 
-import { HomeContent } from "@/app/home/content"
+import { HomeContent } from "@/app/home/components"
 import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
