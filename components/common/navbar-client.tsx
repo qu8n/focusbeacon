@@ -16,7 +16,7 @@ export function NavbarClient() {
   if (!isSuccess) {
     return (
       <LinkExternal href={fmOAuthForAuthCodeUrl} openInNewTab={false}>
-        <Button>Sign In</Button>
+        <Button color="orange">Sign in</Button>
       </LinkExternal>
     )
   }

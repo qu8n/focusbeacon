@@ -3,7 +3,7 @@ import { cx } from "@/lib/utils"
 import { Marquee } from "@/components/ui/marquee"
 import { Subheading } from "@/components/ui/heading"
 import reviews from "@/app/home/reviews.json"
-import { RiHeart2Line } from "@remixicon/react"
+import { Footnote } from "../ui/text"
 
 const firstRow = reviews.slice(0, reviews.length / 2)
 const secondRow = reviews.slice(reviews.length / 2)
@@ -28,35 +28,39 @@ const ReviewCard = ({ name, review }: { name: string; review: string }) => {
           src={`https://ui-avatars.com/api/?name=${name[0]}+${name[1][0]}}`}
         />
         <div className="flex flex-col">
-          <figcaption className="text-sm font-medium dark:text-white">
-            {name}
-          </figcaption>
+          <figcaption className="text-sm dark:text-white">{name}</figcaption>
         </div>
       </div>
-      <blockquote className="mt-2 text-sm">{review}</blockquote>
+      <blockquote className="mt-2 text-sm text-zinc-600">{review}</blockquote>
     </figure>
   )
 }
 
 export function Reviews() {
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background py-12 sm:shadow-sm">
-      <Subheading className="mb-4 inline-flex gap-1">
-        <RiHeart2Line />
-        <span>from Focusmate members</span>
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border py-8 sm:shadow-sm">
+      <Subheading className="mb-4 inline-flex items-center">
+        Loved by Focusmate members 🧡
       </Subheading>
+
       <Marquee pauseOnHover className="[--duration:50s]">
         {firstRow.map((review) => (
           <ReviewCard key={review.name} {...review} />
         ))}
       </Marquee>
+
       <Marquee reverse pauseOnHover className="[--duration:55s]">
         {secondRow.map((review) => (
           <ReviewCard key={review.name} {...review} />
         ))}
       </Marquee>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-white dark:from-background"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-white dark:from-background"></div>
+
+      <Footnote className="mt-4">
+        Source: Focusmate&apos;s Facebook group
+      </Footnote>
+
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-white dark:from-background"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-white dark:from-background"></div>
     </div>
   )
 }

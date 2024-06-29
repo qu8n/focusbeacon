@@ -42,7 +42,7 @@ export default function RootLayout({
 
                 <NavbarSpacer />
 
-                <NavbarSection>
+                <NavbarSection className="mr-4">
                   <NavbarClient />
                 </NavbarSection>
               </Navbar>

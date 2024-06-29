@@ -6,7 +6,7 @@ import { LinkInternal } from "@/components/ui/link-internal"
 const styles = {
   base: [
     // Base
-    "relative capitalize isolate inline-flex items-center justify-center gap-x-2 rounded-lg border font-semibold cursor-pointer",
+    "relative first-letter:uppercase isolate inline-flex items-center justify-center gap-x-2 rounded-lg border font-semibold cursor-pointer",
     // Sizing
     "px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] sm:px-[calc(theme(spacing.3)-1px)] sm:py-[calc(theme(spacing[1.5])-1px)] sm:text-sm/6",
     // Focus
@@ -100,8 +100,8 @@ const styles = {
       "[--btn-icon:theme(colors.red.300)] data-[active]:[--btn-icon:theme(colors.red.200)] data-[hover]:[--btn-icon:theme(colors.red.200)]",
     ],
     orange: [
-      "text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.orange.500)] [--btn-border:theme(colors.orange.600/90%)]",
-      "[--btn-icon:theme(colors.orange.300)] data-[active]:[--btn-icon:theme(colors.orange.200)] data-[hover]:[--btn-icon:theme(colors.orange.200)]",
+      "text-orange-950 [--btn-hover-overlay:theme(colors.white/25%)] [--btn-bg:theme(colors.orange.300/80%)] [--btn-border:theme(colors.orange.400/80%)]",
+      "[--btn-icon:theme(colors.orange.600)]",
     ],
     amber: [
       "text-amber-950 [--btn-hover-overlay:theme(colors.white/25%)] [--btn-bg:theme(colors.amber.400)] [--btn-border:theme(colors.amber.500/80%)]",
