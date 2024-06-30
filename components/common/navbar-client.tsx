@@ -6,13 +6,9 @@ import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 import { SigninButton } from "./signin-button"
 
 export function NavbarClient() {
-  const { isLoading, isSignedIn } = useGetSigninStatus(["signinStatus0"])
+  const { isLoading, isSignedIn } = useGetSigninStatus(["navbar"])
 
-  if (isLoading) {
-    return <></>
-  }
-
-  if (!isSignedIn) {
+  if (isLoading || !isSignedIn) {
     return <SigninButton text="Sign in" />
   }
 

@@ -21,7 +21,7 @@ export function SigninButton({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
-  const { isLoading, isSignedIn } = useGetSigninStatus()
+  const { isLoading, isSignedIn } = useGetSigninStatus(["signinButton"])
 
   return (
     <>
