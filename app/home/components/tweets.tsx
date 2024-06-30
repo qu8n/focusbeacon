@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { enrichTweet, type EnrichedTweet, type TweetProps } from "react-tweet"
 import { getTweet, type Tweet } from "react-tweet/api"
 import { Subheading } from "@/components/ui/heading"
-import { tweetsTitle } from "@/app/home/components/config"
+import { twitter } from "@/app/home/components/config"
 
 interface TwitterIconProps {
   className?: string
@@ -270,10 +270,12 @@ export const TweetCard = async ({
 export function Tweets() {
   return (
     <div className="flex flex-col gap-6 items-center">
-      <Subheading>{tweetsTitle}</Subheading>
+      <Subheading>{twitter.title}</Subheading>
+
       <div className="flex sm:flex-row gap-4 flex-col">
-        <TweetCard id="1758690830636707988" />
-        <TweetCard id="1740581536578388065" />
+        {twitter.tweets.map((tweet) => {
+          return <TweetCard key={tweet.data.id_str} id={tweet.data.id_str} />
+        })}
       </div>
     </div>
   )
