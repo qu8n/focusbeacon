@@ -8,9 +8,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useState } from "react"
-import { LinkInternal } from "../ui/link-internal"
 import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 import { useRouter } from "next/navigation"
+import { LinkExternal } from "@/components/ui/link-external"
+import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 
 export function SigninButton({
   text,
@@ -44,7 +45,7 @@ export function SigninButton({
         <DialogTitle>Have you already signed into Focusmate?</DialogTitle>
         <DialogDescription>
           Ensure that you have already signed in to Focusmate on your browser.{" "}
-          <span className="underline underline-offset-2 decoration-2 decoration-wavy decoration-orange-400">
+          <span className="underline underline-offset-4 decoration-2 decoration-wavy decoration-orange-400">
             If not, please do so first, then come back to this window.
           </span>
         </DialogDescription>
@@ -54,9 +55,9 @@ export function SigninButton({
           </Button>
 
           <Button color="orange">
-            <LinkInternal href="/continue">
+            <LinkExternal href={fmOAuthForAuthCodeUrl} openInNewTab={false}>
               <span className={className}>Yes, I&apos;m ready to continue</span>
-            </LinkInternal>
+            </LinkExternal>
           </Button>
         </DialogActions>
       </Dialog>
