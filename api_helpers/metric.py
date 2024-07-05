@@ -187,11 +187,8 @@ def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
                                             end_of_week: np.datetime64) \
         -> List[Dict[str, Any]]:
     sessions_copy = sessions.copy()
-    sessions_copy = sessions_copy.reset_index()
-
-    # Convert start_time to weekday name abbreviation
-    sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.day_name(
-    ).str[:3]
+    sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.strftime(
+        '%Y-%m-%d')
 
     pivot_df: pd.DataFrame = pd.pivot_table(sessions_copy,
                                             index='start_date_str',
@@ -210,12 +207,16 @@ def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
                              4500000: '75 minutes'}, inplace=True)
 
     # Add rows for dates that had no sessions
-    date_range = pd.date_range(start=start_of_week, end=end_of_week)
-    formatted_date_range = date_range.strftime('%a')
-    missing_dates = [date for date in formatted_date_range
+    date_range = pd.date_range(
+        start=start_of_week, end=end_of_week).strftime('%Y-%m-%d')
+    missing_dates = [date for date in date_range
                      if date not in pivot_df['start_date_str'].values]
     missing_date_df = pd.DataFrame({'start_date_str': missing_dates})
     pivot_df = pd.concat([pivot_df, missing_date_df],
                          ignore_index=True).fillna(0)
+
+    pivot_df = pivot_df.sort_values('start_date_str')
+    pivot_df['start_date_str'] = pd.to_datetime(
+        pivot_df['start_date_str']).dt.day_name().str[:3]
 
     return pivot_df.to_dict(orient='records')
