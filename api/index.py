@@ -1,7 +1,7 @@
 
 from typing import Annotated
 from api_helpers.metric import calculate_max_daily_streak, \
-    calculate_curr_streak, prepare_heatmap_data, \
+    calculate_curr_streak, prepare_heatmap_data, prepare_history_data, \
     prepare_sessions_chart_data_by_duration
 from api_helpers.time import get_end_of_week, get_start_of_week, \
     ms_to_hours, get_start_of_prev_week
@@ -35,14 +35,14 @@ async def streak(session_id: SessionIdDep):
         "weekly_streak": calculate_curr_streak(sessions, "W", local_timezone),
         "monthly_streak": calculate_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calculate_max_daily_streak(sessions),
-        "heatmap_data": prepare_heatmap_data(sessions)
+        "heatmap_data": prepare_heatmap_data(sessions),
+        "recent_history": prepare_history_data(sessions, head=5)
     }
 
 
 @app.get("/api/py/weekly")
 async def weekly(session_id: SessionIdDep):
     profile, sessions = await get_data(session_id, cache)
-
     local_timezone: str = profile.get("timeZone")
 
     start_of_week = get_start_of_week(local_timezone)
@@ -75,4 +75,13 @@ async def weekly(session_id: SessionIdDep):
             "sessions": prepare_sessions_chart_data_by_duration(
                 curr_week_sessions, start_of_week, end_of_week)
         }
+    }
+
+
+@app.get("/api/py/history")
+async def streak(session_id: SessionIdDep):
+    _, sessions = await get_data(session_id, cache)
+
+    return {
+        "data": prepare_history_data(sessions)
     }

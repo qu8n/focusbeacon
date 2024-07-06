@@ -15,7 +15,7 @@ export default function DashboardTabs({ className }: { className?: string }) {
     <div
       className={cx(
         className,
-        "shadow-inner mt-6 sm:mt-4 w-fit rounded-md p-2 bg-zinc-200/[0.6] dark:bg-zinc-800 border border-zinc-200"
+        "shadow-inner -mt-6 w-fit rounded-md p-2 bg-zinc-200/[0.6] dark:bg-zinc-800 border border-zinc-200"
       )}
     >
       {tabNames.map((tabName) => (

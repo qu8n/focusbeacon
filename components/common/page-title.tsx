@@ -19,8 +19,12 @@ export function PageTitle() {
   currPage = updateTitle(currPage)
 
   return (
-    <div className="flex flex-col mt-4">
-      {currPage && <Heading>{currPage}</Heading>}
-    </div>
+    <>
+      {currPage && (
+        <div className="flex flex-col mt-4 mb-12">
+          <Heading>{currPage}</Heading>
+        </div>
+      )}
+    </>
   )
 }

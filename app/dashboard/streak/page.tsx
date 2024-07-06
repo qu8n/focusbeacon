@@ -10,6 +10,19 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Text, Strong } from "@/components/ui/text"
 import { Card } from "@/components/ui/card"
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { LinkInternal } from "@/components/ui/link-internal"
+import { RiArrowRightSLine } from "@remixicon/react"
+
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
 
@@ -69,6 +82,54 @@ export default function Streak() {
           data={data.heatmap_data}
           isBelowSm={isBelowSm}
         />
+      </Card>
+
+      <Card className="sm:col-span-2">
+        <Text className="mb-3">
+          <Strong>Recent sessions</Strong>
+        </Text>
+
+        <TableRoot className="mb-4">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeaderCell>Date</TableHeaderCell>
+                <TableHeaderCell>Time</TableHeaderCell>
+                <TableHeaderCell>Duration</TableHeaderCell>
+                <TableHeaderCell>On time</TableHeaderCell>
+                <TableHeaderCell>Completed</TableHeaderCell>
+                <TableHeaderCell>Title</TableHeaderCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {data.recent_history.map((item: any) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.date}</TableCell>
+                  <TableCell>{item.time}</TableCell>
+                  <TableCell>{item.duration_minutes}</TableCell>
+                  <TableCell>
+                    <Badge color={item.on_time ? "lime" : "pink"}>
+                      {item.on_time ? "Yes" : "No"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge color={item.completed ? "lime" : "pink"}>
+                      {item.completed ? "Yes" : "No"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{item.session_title}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableRoot>
+
+        <Text className="flex justify-end">
+          <LinkInternal href="/history" className="inline-flex items-center">
+            View all <RiArrowRightSLine size={16} />
+          </LinkInternal>
+        </Text>
       </Card>
     </div>
   )
