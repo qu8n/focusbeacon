@@ -1,5 +1,7 @@
 
 from typing import Annotated
+
+from pydantic import BaseModel
 from api_helpers.metric import calculate_max_daily_streak, \
     calculate_curr_streak, prepare_heatmap_data, prepare_history_data, \
     prepare_sessions_chart_data_by_duration
@@ -11,6 +13,7 @@ import os
 from fastapi import Depends, FastAPI
 from dotenv import load_dotenv
 from cachetools import TTLCache
+import math
 import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 
@@ -78,10 +81,17 @@ async def weekly(session_id: SessionIdDep):
     }
 
 
-@app.get("/api/py/history")
-async def streak(session_id: SessionIdDep):
-    _, sessions = await get_data(session_id, cache)
+class Item(BaseModel):
+    page_index: int
+    page_size: int
 
+
+@app.post("/api/py/history")
+async def streak(session_id: SessionIdDep, item: Item):
+    _, sessions = await get_data(session_id, cache)
+    data = prepare_history_data(sessions)
     return {
-        "data": prepare_history_data(sessions)
+        "rows": data[item.page_index * item.page_size:
+                     (item.page_index + 1) * item.page_size],
+        "row_count": len(data)
     }

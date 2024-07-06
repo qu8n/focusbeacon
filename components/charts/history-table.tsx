@@ -11,20 +11,46 @@ import { Badge } from "@/components/ui/badge"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { Text, Strong } from "@/components/ui/text"
+import { ColumnDef } from "@tanstack/react-table"
 
-export default function HistoryTable({
-  data,
-}: {
-  data: {
-    session_id: string
-    date: string
-    time: string
-    duration_minutes: number
-    on_time: boolean
-    completed: boolean
-    session_title: string
-  }[]
-}) {
+export const historyTableColumns: ColumnDef<SessionDetails>[] = [
+  {
+    header: "Date",
+    accessorKey: "date",
+  },
+  {
+    header: "Time",
+    accessorKey: "time",
+  },
+  {
+    header: "Duration (m)",
+    accessorKey: "duration_minutes",
+  },
+  {
+    header: "On time",
+    accessorKey: "on_time",
+  },
+  {
+    header: "Completed",
+    accessorKey: "completed",
+  },
+  {
+    header: "Title",
+    accessorKey: "session_title",
+  },
+]
+
+export type SessionDetails = {
+  session_id: string
+  date: string
+  time: string
+  duration_minutes: number
+  on_time: boolean
+  completed: boolean
+  session_title: string
+}
+
+export default function HistoryTable({ data }: { data: SessionDetails[] }) {
   return (
     <>
       <Text className="mb-3">

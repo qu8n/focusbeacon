@@ -223,8 +223,8 @@ def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
 
 
 def prepare_history_data(sessions: pd.DataFrame, head: int = None):
-    '''Converts the sessions DataFrame into a dictionary containing the
-    data for the history table.
+    '''Converts the sessions DataFrame into a list of dictionaries containing
+    the data for the history table.
 
     Parameters
     ----------
