@@ -24,7 +24,7 @@ fm_api_url = os.getenv("NEXT_PUBLIC_FM_API_URL")
 fm_api_domain = urlparse(fm_api_url).netloc
 
 
-def fm_raw_sessions_to_df(fm_raw_sessions: list, local_timezone: str):
+def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
     rows = []
 
     for session in fm_raw_sessions:
@@ -172,10 +172,9 @@ async def get_data(session_id: str, cache: TTLCache):
     local_timezone: str = profile.get("timeZone")
     member_since: str = profile.get("memberSince")
 
-    fm_raw_sessions = await fetch_all_focusmate_sessions(
+    sessions = await fetch_all_focusmate_sessions(
         fm_api_sessions_endpoint, access_token, member_since)
-    fm_sessions_df = fm_raw_sessions_to_df(fm_raw_sessions, local_timezone)
-    sessions = fm_sessions_df[fm_sessions_df['completed'] == True]
+    sessions = sessions_ls_to_df(sessions, local_timezone)
 
     cache[hashkey('profile', session_id)] = profile
     cache[hashkey('sessions', session_id)] = sessions

@@ -32,6 +32,8 @@ SessionIdDep = Annotated[str, Depends(get_session_id)]
 @app.get("/api/py/streak")
 async def streak(session_id: SessionIdDep):
     profile, sessions = await get_data(session_id, cache)
+    all_sessions = sessions.copy()
+    sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
     return {
         "daily_streak": calculate_curr_streak(sessions, "D", local_timezone),
@@ -39,13 +41,14 @@ async def streak(session_id: SessionIdDep):
         "monthly_streak": calculate_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calculate_max_daily_streak(sessions),
         "heatmap_data": prepare_heatmap_data(sessions),
-        "history_data": prepare_history_data(sessions, head=5)
+        "history_data": prepare_history_data(all_sessions, head=3)
     }
 
 
 @app.get("/api/py/weekly")
 async def weekly(session_id: SessionIdDep):
     profile, sessions = await get_data(session_id, cache)
+    sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
     start_of_week = get_start_of_week(local_timezone)
