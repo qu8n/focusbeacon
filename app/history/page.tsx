@@ -3,23 +3,16 @@
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
 import {
   PaginationState,
-  flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from "@/components/ui/table"
 import { useMemo, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Text } from "@/components/ui/text"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { historyTableColumns } from "@/components/charts/history-table"
+import HistoryTable, { columns } from "@/components/charts/history-table"
+import { Skeleton } from "@/components/ui/skeleton"
+import { TableHeaderCell, TableRow } from "@/components/ui/table"
 
 const Button = ({
   onClick,
@@ -45,7 +38,7 @@ const Button = ({
 export default function History() {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 15,
+    pageSize: 10,
   })
 
   const { isLoading: loadingData, data } = useQuery({
@@ -72,7 +65,7 @@ export default function History() {
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
-    columns: historyTableColumns,
+    columns: columns,
     rowCount: data?.row_count,
     state: { pagination },
     onPaginationChange: setPagination,
@@ -81,41 +74,12 @@ export default function History() {
   })
 
   if (loadingData || !data) {
-    return <></>
+    return <LoadingSkeleton />
   }
 
   return (
     <Card>
-      <Table>
-        <TableHead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-b">
-              {headerGroup.headers.map((header) => (
-                <TableHeaderCell key={header.id} scope="col">
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </TableHeaderCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-
-        <TableBody>
-          {table.getRowModel().rows.map((row) => {
-            return (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
+      <HistoryTable rows={table.getRowModel().rows} />
 
       <div className="mt-6 flex items-center justify-between">
         <Text className="tabular-nums">
@@ -149,6 +113,14 @@ export default function History() {
           </Button>
         </div>
       </div>
+    </Card>
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <Card>
+      <Skeleton className="w-full h-[680px]" />
     </Card>
   )
 }

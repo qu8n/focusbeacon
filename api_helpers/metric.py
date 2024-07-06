@@ -265,7 +265,7 @@ def prepare_history_data(sessions: pd.DataFrame, head: int = None):
         sessions_copy['joined_at'] - sessions_copy['start_time']) \
         <= pd.Timedelta(minutes=2)
     sessions_copy['session_title'] = sessions_copy['session_title'].replace(
-        "", "N/A")
+        to_replace='^$|^None$', value='N/A', regex=True)
 
     sessions_copy.drop(columns=['duration', 'requested_at',
                        'joined_at', 'start_time', 'partner_id'], inplace=True)

@@ -9,7 +9,11 @@ import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Text, Strong } from "@/components/ui/text"
 import { Card } from "@/components/ui/card"
-import HistoryTable from "@/components/charts/history-table"
+import HistoryTable, { columns } from "@/components/charts/history-table"
+import { LinkInternal } from "@/components/ui/link-internal"
+import { RiArrowRightSLine } from "@remixicon/react"
+import { useMemo } from "react"
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
@@ -21,6 +25,13 @@ export default function Streak() {
       const data = await response.json()
       return data
     },
+  })
+
+  const defaultData = useMemo(() => [], [])
+  const table = useReactTable({
+    data: data?.history_data ?? defaultData,
+    columns: columns,
+    getCoreRowModel: getCoreRowModel(),
   })
 
   if (loadingData || !data) {
@@ -73,7 +84,15 @@ export default function Streak() {
       </Card>
 
       <Card className="sm:col-span-2">
-        <HistoryTable data={data.history_data} />
+        <Text className="mb-3 flex flex-col">
+          <Strong>Recent sessions</Strong>
+
+          <LinkInternal href="/history" className="inline-flex items-center">
+            View all <RiArrowRightSLine size={15} />
+          </LinkInternal>
+        </Text>
+
+        <HistoryTable rows={table.getRowModel().rows} />
       </Card>
     </div>
   )
