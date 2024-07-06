@@ -9,19 +9,7 @@ import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Text, Strong } from "@/components/ui/text"
 import { Card } from "@/components/ui/card"
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { LinkInternal } from "@/components/ui/link-internal"
-import { RiArrowRightSLine } from "@remixicon/react"
+import HistoryTable from "@/components/charts/history-table"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
@@ -85,51 +73,7 @@ export default function Streak() {
       </Card>
 
       <Card className="sm:col-span-2">
-        <Text className="mb-3">
-          <Strong>Recent sessions</Strong>
-        </Text>
-
-        <TableRoot className="mb-4">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Date</TableHeaderCell>
-                <TableHeaderCell>Time</TableHeaderCell>
-                <TableHeaderCell>Duration</TableHeaderCell>
-                <TableHeaderCell>On time</TableHeaderCell>
-                <TableHeaderCell>Completed</TableHeaderCell>
-                <TableHeaderCell>Title</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {data.recent_history.map((item: any) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.date}</TableCell>
-                  <TableCell>{item.time}</TableCell>
-                  <TableCell>{item.duration_minutes}</TableCell>
-                  <TableCell>
-                    <Badge color={item.on_time ? "lime" : "pink"}>
-                      {item.on_time ? "Yes" : "No"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge color={item.completed ? "lime" : "pink"}>
-                      {item.completed ? "Yes" : "No"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{item.session_title}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableRoot>
-
-        <Text className="flex justify-end">
-          <LinkInternal href="/history" className="inline-flex items-center">
-            View all <RiArrowRightSLine size={16} />
-          </LinkInternal>
-        </Text>
+        <HistoryTable data={data.history_data} />
       </Card>
     </div>
   )
@@ -166,11 +110,18 @@ function LoadingSkeleton() {
       </Card>
 
       <Card className="sm:col-span-2">
-        <Text className="flex flex-col">
+        <Text>
           <Strong>Sessions heatmap</Strong>
         </Text>
         <Skeleton className="mt-2 w-[180px] h-[20px]" />
-        <Skeleton className="mt-6 w-full h-[130px]" />
+        <Skeleton className="mt-6 w-full h-[140px]" />
+      </Card>
+
+      <Card className="sm:col-span-2">
+        <Text>
+          <Strong>Recent sessions</Strong>
+        </Text>
+        <Skeleton className="mt-6 w-full h-[360px]" />
       </Card>
     </div>
   )

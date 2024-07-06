@@ -36,7 +36,7 @@ async def streak(session_id: SessionIdDep):
         "monthly_streak": calculate_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calculate_max_daily_streak(sessions),
         "heatmap_data": prepare_heatmap_data(sessions),
-        "recent_history": prepare_history_data(sessions, head=5)
+        "history_data": prepare_history_data(sessions, head=5)
     }
 
 
