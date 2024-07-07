@@ -1,20 +1,25 @@
 "use client"
 
-import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
+import {
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+  RiDownloadLine,
+} from "@remixicon/react"
 import {
   PaginationState,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 import { useMemo, useState } from "react"
-import { Card } from "@/components/ui/card"
 import { Text } from "@/components/ui/text"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import HistoryTable, { columns } from "@/components/charts/history-table"
 import { Skeleton } from "@/components/ui/skeleton"
-import { TableHeaderCell, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { exportJSONToCSV } from "@/lib/export"
+import { Card } from "@/components/ui/card"
 
-const Button = ({
+const PageNavButton = ({
   onClick,
   disabled,
   children,
@@ -62,7 +67,6 @@ export default function History() {
   })
 
   const defaultData = useMemo(() => [], [])
-
   const table = useReactTable({
     data: data?.rows ?? defaultData,
     columns: columns,
@@ -73,54 +77,58 @@ export default function History() {
     manualPagination: true,
   })
 
+  async function handleDownload() {
+    const response = await fetch(`/api/py/history-all`)
+    const data = await response.json()
+    exportJSONToCSV(data)
+  }
+
   if (loadingData || !data) {
-    return <LoadingSkeleton />
+    return <Skeleton className="w-full h-[680px]" />
   }
 
   return (
-    <Card>
-      <HistoryTable rows={table.getRowModel().rows} />
+    <>
+      <Card>
+        <HistoryTable rows={table.getRowModel().rows} />
 
-      <div className="mt-6 flex items-center justify-between">
-        <Text className="tabular-nums">
-          Page{" "}
-          <span className="font-medium">
-            {table.getState().pagination.pageIndex + 1}
-          </span>{" "}
-          of{" "}
-          <span className="font-medium">
-            {table.getPageCount().toLocaleString()}
-          </span>
-        </Text>
+        <div className="mt-6 flex items-center justify-between">
+          <Text className="tabular-nums">
+            Page{" "}
+            <span className="font-medium">
+              {table.getState().pagination.pageIndex + 1}
+            </span>{" "}
+            of{" "}
+            <span className="font-medium">
+              {table.getPageCount().toLocaleString()}
+            </span>
+          </Text>
 
-        <div className="inline-flex items-center border rounded-md">
-          <Button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Previous</span>
-            <RiArrowLeftSLine className="h-5 w-5" aria-hidden={true} />
-          </Button>
+          <div className="inline-flex items-center border rounded-md">
+            <PageNavButton
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Previous</span>
+              <RiArrowLeftSLine className="h-5 w-5" aria-hidden={true} />
+            </PageNavButton>
 
-          <span className="h-5 border-r" aria-hidden={true} />
+            <span className="h-5 border-r" aria-hidden={true} />
 
-          <Button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Next</span>
-            <RiArrowRightSLine className="h-5 w-5" aria-hidden={true} />
-          </Button>
+            <PageNavButton
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Next</span>
+              <RiArrowRightSLine className="h-5 w-5" aria-hidden={true} />
+            </PageNavButton>
+          </div>
         </div>
-      </div>
-    </Card>
-  )
-}
+      </Card>
 
-function LoadingSkeleton() {
-  return (
-    <Card>
-      <Skeleton className="w-full h-[680px]" />
-    </Card>
+      <Button className="mt-4" outline onClick={handleDownload}>
+        <RiDownloadLine size={14} /> Download as CSV
+      </Button>
+    </>
   )
 }

@@ -98,3 +98,9 @@ async def streak(session_id: SessionIdDep, item: Item):
                      (item.page_index + 1) * item.page_size],
         "row_count": len(data)
     }
+
+
+@app.get("/api/py/history-all")
+async def streak(session_id: SessionIdDep):
+    _, sessions = await get_data(session_id, cache)
+    return prepare_history_data(sessions)
