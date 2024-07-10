@@ -6,6 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
 import { BarChart } from "@/components/charts/bar-chart"
 import { Text, Strong } from "@/components/ui/text"
+import { ProgressBar } from "@/components/ui/progress-bar"
+import { Button } from "@/components/ui/button"
 
 export default function Weekly() {
   const { isLoading, data } = useQuery({
@@ -23,6 +25,20 @@ export default function Weekly() {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+      <Card className="sm:col-span-3">
+        <div className="mb-3 inline-flex items-center gap-2">
+          <Text>
+            <Strong>Progress to goal</Strong>
+          </Text>
+
+          <Button className="scale-90" outline>
+            Set goal
+          </Button>
+        </div>
+
+        <ProgressBar value={0} variant="neutral" label="N/A" />
+      </Card>
+
       <Card>
         <Stat
           title="Total sessions"
