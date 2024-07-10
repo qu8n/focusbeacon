@@ -182,10 +182,9 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
     }
 
 
-def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
-                                            start_of_week: np.datetime64,
-                                            end_of_week: np.datetime64) \
-        -> List[Dict[str, Any]]:
+def prep_chart_data_by_range(sessions: pd.DataFrame,
+                             start_date: np.datetime64,
+                             end_date: np.datetime64) -> List[Dict[str, Any]]:
     sessions_copy = sessions.copy()
     sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.strftime(
         '%Y-%m-%d')
@@ -208,7 +207,7 @@ def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
 
     # Add rows for dates that had no sessions
     date_range = pd.date_range(
-        start=start_of_week, end=end_of_week).strftime('%Y-%m-%d')
+        start=start_date, end=end_date).strftime('%Y-%m-%d')
     missing_dates = [date for date in date_range
                      if date not in pivot_df['start_date_str'].values]
     missing_date_df = pd.DataFrame({'start_date_str': missing_dates})
@@ -218,6 +217,47 @@ def prepare_sessions_chart_data_by_duration(sessions: pd.DataFrame,
     pivot_df = pivot_df.sort_values('start_date_str')
     pivot_df['start_date_str'] = pd.to_datetime(
         pivot_df['start_date_str']).dt.day_name().str[:3]
+
+    return pivot_df.to_dict(orient='records')
+
+
+def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
+    sessions_copy = sessions.copy()
+    sessions_copy['start_time_str'] = sessions_copy['start_time'].dt.strftime(
+        '%I:%M %p')
+
+    pivot_df: pd.DataFrame = pd.pivot_table(sessions_copy,
+                                            index='start_time_str',
+                                            columns='duration',
+                                            aggfunc='size',
+                                            fill_value=0)
+    pivot_df = pivot_df.reset_index()
+    pivot_df.columns.name = None
+
+    # Add columns for durations that had no sessions
+    for duration in [1500000, 3000000, 4500000]:
+        if duration not in pivot_df.columns:
+            pivot_df[duration] = 0
+    pivot_df.rename(columns={1500000: '25 minutes',
+                             3000000: '50 minutes',
+                             4500000: '75 minutes'}, inplace=True)
+
+    # Add rows for missing %I:%M %p that had no sessions
+    today = pd.Timestamp('today').normalize()
+    time_range = pd.date_range(start=today, end=today + pd.Timedelta(
+        days=1) - pd.Timedelta(minutes=1), freq='15min').strftime('%I:%M %p')
+    missing_times = [time for time in time_range
+                     if time not in pivot_df['start_time_str'].values]
+    missing_time_df = pd.DataFrame({'start_time_str': missing_times})
+    pivot_df = pd.concat([pivot_df, missing_time_df],
+                         ignore_index=True).fillna(0)
+
+    # Sort smartly
+    pivot_df['start_time_str'] = pd.to_datetime(
+        pivot_df['start_time_str']).dt.strftime('%I:%M %p')
+    pivot_df['start_time_str'] = pd.Categorical(
+        pivot_df['start_time_str'], time_range)
+    pivot_df = pivot_df.sort_values('start_time_str')
 
     return pivot_df.to_dict(orient='records')
 

@@ -3,17 +3,16 @@ from typing import Annotated
 
 from pydantic import BaseModel
 from api_helpers.metric import calculate_max_daily_streak, \
-    calculate_curr_streak, prepare_heatmap_data, prepare_history_data, \
-    prepare_sessions_chart_data_by_duration
+    calculate_curr_streak, prep_chart_data_by_time, prepare_heatmap_data, prepare_history_data, \
+    prep_chart_data_by_range
 from api_helpers.time import get_end_of_week, get_start_of_week, \
-    ms_to_hours, get_start_of_prev_week
+    ms_to_h, get_start_of_prev_week
 from api_helpers.request import get_session_id
 from api_helpers.focusmate import get_data
 import os
 from fastapi import Depends, FastAPI
 from dotenv import load_dotenv
 from cachetools import TTLCache
-import math
 import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 
@@ -68,18 +67,19 @@ async def weekly(session_id: SessionIdDep):
     return {
         "total": {
             "sessions": len(curr_week_sessions),
-            "hours": ms_to_hours(curr_week_sessions['duration'].sum()),
+            "hours": ms_to_h(curr_week_sessions['duration'].sum()),
             "partners": len(curr_week_sessions['partner_id'].unique()),
             "repeat_partners": total_repeat_partners
         },
         "prev_period_delta": {
             "sessions": len(curr_week_sessions) - len(prev_week_sessions),
-            "hours": ms_to_hours(curr_week_sessions['duration'].sum() -
-                                 prev_week_sessions['duration'].sum())
+            "hours": ms_to_h(curr_week_sessions['duration'].sum() -
+                             prev_week_sessions['duration'].sum())
         },
         "chart": {
-            "sessions": prepare_sessions_chart_data_by_duration(
-                curr_week_sessions, start_of_week, end_of_week)
+            "range": prep_chart_data_by_range(
+                curr_week_sessions, start_of_week, end_of_week),
+            "time": prep_chart_data_by_time(curr_week_sessions)
         }
     }
 

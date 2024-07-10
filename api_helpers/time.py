@@ -61,13 +61,13 @@ def get_start_of_prev_week(local_timezone: str):
     return start_of_week - np.timedelta64(7, 'D')
 
 
-def ms_to_minutes(ms: float):
+def ms_to_m(ms: int):
     return int(round(ms / 60000))
 
 
-def ms_to_hours(ms: float):
+def ms_to_h(ms: int):
     return int(round(ms / 3600000))
 
 
-def minutes_to_ms(minutes: int):
+def m_to_ms(minutes: int):
     return minutes * 60000

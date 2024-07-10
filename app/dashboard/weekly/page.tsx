@@ -59,8 +59,27 @@ export default function Weekly() {
             index="start_date_str"
             categories={["25 minutes", "50 minutes", "75 minutes"]}
             type="stacked"
-            data={data.chart.sessions}
+            data={data.chart.range}
             colors={["blue", "orange", "yellow"]}
+            allowDecimals={false}
+          />
+        </div>
+      </Card>
+
+      <Card className="sm:col-span-3">
+        <Text className="flex flex-col mb-3">
+          <Strong>Sessions by starting time</Strong>
+        </Text>
+
+        <div className="mb-2 mr-4 -ml-4">
+          <BarChart
+            index="start_time_str"
+            categories={["25 minutes", "50 minutes", "75 minutes"]}
+            type="stacked"
+            data={data.chart.time}
+            colors={["blue", "orange", "yellow"]}
+            allowDecimals={false}
+            tickGap={28}
           />
         </div>
       </Card>
