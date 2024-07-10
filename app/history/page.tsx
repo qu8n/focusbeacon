@@ -10,7 +10,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Text } from "@/components/ui/text"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import HistoryTable, { columns } from "@/components/charts/history-table"
@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { exportJSONToCSV } from "@/lib/export"
 import { Card } from "@/components/ui/card"
+import { usePathname } from "next/navigation"
 
 const PageNavButton = ({
   onClick,
@@ -76,6 +77,12 @@ export default function History() {
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
   })
+
+  // Temp patch for Next.js bug. See more at https://github.com/vercel/next.js/issues/45187
+  const pathname = usePathname()
+  useEffect(() => {
+    window.scroll(0, 0)
+  }, [pathname])
 
   async function handleDownload() {
     const response = await fetch(`/api/py/history-all`)
