@@ -123,6 +123,13 @@ function LoadingSkeleton() {
         </Text>
         <Skeleton className="h-[328px] w-full" />
       </Card>
+
+      <Card className="sm:col-span-3">
+        <Text className="flex flex-col mb-3">
+          <Strong>Sessions by starting time</Strong>
+        </Text>
+        <Skeleton className="h-[328px] w-full" />
+      </Card>
     </div>
   )
 }
