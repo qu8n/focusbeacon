@@ -9,12 +9,21 @@ import { Text, Strong } from "@/components/ui/text"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { Button } from "@/components/ui/button"
 
+function buildProgressLabel(progressPercent: number) {
+  if (!progressPercent) return "N/A"
+  const progressPercentStr = progressPercent.toString() + "%"
+  return progressPercent >= 100
+    ? progressPercentStr + " " + "🎉"
+    : progressPercentStr
+}
+
 export default function Weekly() {
   const { isLoading, data } = useQuery({
     queryKey: ["weekly"],
     queryFn: async () => {
       const response = await fetch(`/api/py/weekly`)
       const data = await response.json()
+      data["goal"] = 10 // temp
       return data
     },
   })
@@ -23,20 +32,30 @@ export default function Weekly() {
     return <LoadingSkeleton />
   }
 
+  const progressPercent = data.goal && (data.total.sessions / data.goal) * 100
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
       <Card className="sm:col-span-3">
-        <div className="mb-3 inline-flex items-center gap-2">
+        <div className="-mt-4 mb-6 inline-flex justify-between w-full items-center gap-2">
           <Text>
             <Strong>Progress to goal</Strong>
           </Text>
 
-          <Button className="scale-90" outline>
-            Set goal
+          <Button
+            className="scale-90"
+            {...(data.goal && { outline: true })}
+            {...(!data.goal && { color: "orange" })}
+          >
+            {data.goal ? "Change goal" : "Set goal"}
           </Button>
         </div>
 
-        <ProgressBar value={0} variant="neutral" label="N/A" />
+        <ProgressBar
+          value={progressPercent || 0}
+          variant={progressPercent >= 100 ? "success" : "neutral"}
+          label={buildProgressLabel(progressPercent)}
+        />
       </Card>
 
       <Card>

@@ -29,8 +29,8 @@ const progressBarVariants = tv({
         bar: "bg-red-500 dark:bg-red-500",
       },
       success: {
-        background: "bg-emerald-200 dark:bg-emerald-500/30",
-        bar: "bg-emerald-500 dark:bg-emerald-500",
+        background: "bg-orange-200 dark:bg-orange-500/30",
+        bar: "bg-orange-500 dark:bg-orange-500",
       },
     },
   },
