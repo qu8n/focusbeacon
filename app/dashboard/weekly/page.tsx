@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
+import { updateGoal } from "@/app/actions/updateGoal"
 
 function buildProgressLabel(progressPercent: number) {
   if (!progressPercent) return "N/A"
@@ -28,12 +29,21 @@ function buildProgressLabel(progressPercent: number) {
 }
 
 export default function Weekly() {
-  const { isLoading: goalIsLoading, data: goal } = useQuery({
+  const [goal, setGoal] = useState(0)
+  const [updatingGoal, setUpdatingGoal] = useState(false)
+  const [dialogIsOpen, setDialogIsOpen] = useState(false)
+
+  const {
+    isLoading: goalIsLoading,
+    data: currGoal,
+    refetch: refetchGoal,
+  } = useQuery({
     queryKey: ["goal"],
     queryFn: async () => {
-      const response = await fetch(`/api/py/goal`)
-      const data = await response.json()
-      return data
+      const response = await fetch(`/api/py/goal`, { next: { tags: ["goal"] } })
+      const goal = await response.json()
+      setGoal(goal)
+      return goal
     },
   })
 
@@ -46,13 +56,11 @@ export default function Weekly() {
     },
   })
 
-  const [isOpen, setIsOpen] = useState(false)
-
   if (goalIsLoading || dataIsLoading) {
     return <LoadingSkeleton />
   }
 
-  const progressPercent = goal && (data.total.sessions / goal) * 100
+  const progressPercent = currGoal && (data.total.sessions / currGoal) * 100
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -65,11 +73,11 @@ export default function Weekly() {
           <Button
             type="button"
             className="scale-90"
-            {...(goal && { outline: true })}
-            {...(!goal && { color: "orange" })}
-            onClick={() => setIsOpen(true)}
+            {...(currGoal && { outline: true })}
+            {...(!currGoal && { color: "orange" })}
+            onClick={() => setDialogIsOpen(true)}
           >
-            {goal ? "Change goal" : "Set goal"}
+            {currGoal ? "Change goal" : "Set goal"}
           </Button>
         </div>
 
@@ -80,7 +88,7 @@ export default function Weekly() {
         />
       </Card>
 
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={dialogIsOpen} onClose={setDialogIsOpen}>
         <DialogTitle>Weekly session goal</DialogTitle>
         <DialogDescription>
           How many sessions would you like to achieve this week? You can change
@@ -88,15 +96,57 @@ export default function Weekly() {
         </DialogDescription>
         <DialogBody>
           <Field>
-            <Input name="weekly session goal" placeholder="10" autoFocus />
+            <Input
+              name="weekly session goal"
+              placeholder="10"
+              autoFocus
+              onChange={(e) => setGoal(Number(e.target.value))}
+              value={goal ?? ""}
+            />
           </Field>
         </DialogBody>
         <DialogActions>
-          <Button plain onClick={() => setIsOpen(false)}>
+          <Button plain onClick={() => setDialogIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={() => setIsOpen(false)} color="orange">
-            Submit
+          <Button
+            onClick={async () => {
+              setUpdatingGoal(true)
+              await updateGoal(goal)
+              await refetchGoal()
+              setDialogIsOpen(false)
+              setUpdatingGoal(false)
+            }}
+            disabled={updatingGoal}
+            color="orange"
+          >
+            {updatingGoal ? (
+              <span className="inline-flex items-center">
+                <svg
+                  className="animate-spin mr-2 h-3 w-3 text-zinc-900"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Submitting<span className="tracking-wider">...</span>
+              </span>
+            ) : (
+              <span>Submit</span>
+            )}
           </Button>
         </DialogActions>
       </Dialog>
