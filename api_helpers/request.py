@@ -1,15 +1,10 @@
-from supabase import create_client, Client
 from fastapi import Request
 import os
 from dotenv import load_dotenv
 from api_helpers.crypto import decrypt
+from api_helpers.supabase import supabase_client
 
 load_dotenv()
-
-supabase_project_url = os.getenv("SUPABASE_PROJECT_URL")
-supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-supabase_client: Client = create_client(
-    supabase_project_url, supabase_service_role_key)
 
 
 def get_session_id(request: Request):

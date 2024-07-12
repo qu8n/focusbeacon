@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from api_helpers.metric import calculate_max_daily_streak, \
     calculate_curr_streak, prep_chart_data_by_time, prepare_heatmap_data, prepare_history_data, \
     prep_chart_data_by_range
+from api_helpers.supabase import update_daily_streak
 from api_helpers.time import get_end_of_week, get_start_of_week, \
     ms_to_h, get_start_of_prev_week
 from api_helpers.request import get_session_id
@@ -31,11 +32,16 @@ SessionIdDep = Annotated[str, Depends(get_session_id)]
 @app.get("/api/py/streak")
 async def streak(session_id: SessionIdDep):
     profile, sessions = await get_data(session_id, cache)
+
     all_sessions = sessions.copy()
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
+
+    daily_streak = calculate_curr_streak(sessions, "D", local_timezone)
+    update_daily_streak(profile.get("userId"), daily_streak)
+
     return {
-        "daily_streak": calculate_curr_streak(sessions, "D", local_timezone),
+        "daily_streak": daily_streak,
         "weekly_streak": calculate_curr_streak(sessions, "W", local_timezone),
         "monthly_streak": calculate_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calculate_max_daily_streak(sessions),
