@@ -8,6 +8,16 @@ import { BarChart } from "@/components/charts/bar-chart"
 import { Text, Strong } from "@/components/ui/text"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Field } from "@/components/ui/fieldset"
+import { Input } from "@/components/ui/input"
 
 function buildProgressLabel(progressPercent: number) {
   if (!progressPercent) return "N/A"
@@ -23,10 +33,11 @@ export default function Weekly() {
     queryFn: async () => {
       const response = await fetch(`/api/py/weekly`)
       const data = await response.json()
-      data["goal"] = 10 // temp
       return data
     },
   })
+
+  const [isOpen, setIsOpen] = useState(false)
 
   if (isLoading) {
     return <LoadingSkeleton />
@@ -43,9 +54,11 @@ export default function Weekly() {
           </Text>
 
           <Button
+            type="button"
             className="scale-90"
             {...(data.goal && { outline: true })}
             {...(!data.goal && { color: "orange" })}
+            onClick={() => setIsOpen(true)}
           >
             {data.goal ? "Change goal" : "Set goal"}
           </Button>
@@ -57,6 +70,27 @@ export default function Weekly() {
           label={buildProgressLabel(progressPercent)}
         />
       </Card>
+
+      <Dialog open={isOpen} onClose={setIsOpen}>
+        <DialogTitle>Weekly session goal</DialogTitle>
+        <DialogDescription>
+          How many sessions would you like to achieve this week? You can change
+          this number at any time.
+        </DialogDescription>
+        <DialogBody>
+          <Field>
+            <Input name="weekly session goal" placeholder="10" autoFocus />
+          </Field>
+        </DialogBody>
+        <DialogActions>
+          <Button plain onClick={() => setIsOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => setIsOpen(false)} color="orange">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Card>
         <Stat
