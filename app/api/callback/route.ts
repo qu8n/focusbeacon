@@ -112,7 +112,6 @@ async function saveProfileDataToDb(
     user_id: user.userId,
     total_session_count: user.totalSessionCount,
     time_zone: user.timeZone,
-    member_since: user.memberSince,
     access_token_encrypted: encrypt(accessToken),
     session_id: sessionId,
   }
