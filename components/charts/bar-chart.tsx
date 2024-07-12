@@ -76,6 +76,8 @@ const renderShape = (
       y={y}
       width={width}
       height={height}
+      rx={width < 10 ? 2 : 6}
+      ry={width < 10 ? 2 : 6}
       opacity={
         activeBar || (activeLegend && activeLegend !== name)
           ? deepEqual(activeBar, { ...payload, value })

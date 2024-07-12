@@ -6,7 +6,7 @@ import { useSelectedLayoutSegment } from "next/navigation"
 import { useState } from "react"
 import { LinkInternal } from "@/components/ui/link-internal"
 
-const tabNames = ["streak", "weekly", "monthly", "yearly", "lifetime"]
+const tabNames = ["streak", "week", "month", "year", "lifetime"]
 
 export default function DashboardTabs({ className }: { className?: string }) {
   const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
