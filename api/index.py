@@ -50,6 +50,12 @@ async def streak(session_id: SessionIdDep):
     }
 
 
+@app.get("/api/py/goal")
+async def goal(session_id: SessionIdDep):
+    profile, _ = await get_data(session_id, cache)
+    return get_weekly_goal(profile.get("userId"))
+
+
 @app.get("/api/py/weekly")
 async def weekly(session_id: SessionIdDep):
     profile, sessions = await get_data(session_id, cache)
@@ -71,7 +77,6 @@ async def weekly(session_id: SessionIdDep):
         partner_session_counts[partner_session_counts > 1])
 
     return {
-        "goal": get_weekly_goal(profile.get("userId")),
         "total": {
             "sessions": len(curr_week_sessions),
             "hours": ms_to_h(curr_week_sessions['duration'].sum()),

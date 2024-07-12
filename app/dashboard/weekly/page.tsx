@@ -28,7 +28,16 @@ function buildProgressLabel(progressPercent: number) {
 }
 
 export default function Weekly() {
-  const { isLoading, data } = useQuery({
+  const { isLoading: goalIsLoading, data: goal } = useQuery({
+    queryKey: ["goal"],
+    queryFn: async () => {
+      const response = await fetch(`/api/py/goal`)
+      const data = await response.json()
+      return data
+    },
+  })
+
+  const { isLoading: dataIsLoading, data } = useQuery({
     queryKey: ["weekly"],
     queryFn: async () => {
       const response = await fetch(`/api/py/weekly`)
@@ -39,11 +48,11 @@ export default function Weekly() {
 
   const [isOpen, setIsOpen] = useState(false)
 
-  if (isLoading) {
+  if (goalIsLoading || dataIsLoading) {
     return <LoadingSkeleton />
   }
 
-  const progressPercent = data.goal && (data.total.sessions / data.goal) * 100
+  const progressPercent = goal && (data.total.sessions / goal) * 100
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -56,11 +65,11 @@ export default function Weekly() {
           <Button
             type="button"
             className="scale-90"
-            {...(data.goal && { outline: true })}
-            {...(!data.goal && { color: "orange" })}
+            {...(goal && { outline: true })}
+            {...(!goal && { color: "orange" })}
             onClick={() => setIsOpen(true)}
           >
-            {data.goal ? "Change goal" : "Set goal"}
+            {goal ? "Change goal" : "Set goal"}
           </Button>
         </div>
 
