@@ -203,9 +203,9 @@ def prep_chart_data_by_range(sessions: pd.DataFrame,
     for duration in [1500000, 3000000, 4500000]:
         if duration not in pivot_df.columns:
             pivot_df[duration] = 0
-    pivot_df.rename(columns={1500000: '25 minutes',
-                             3000000: '50 minutes',
-                             4500000: '75 minutes'}, inplace=True)
+    pivot_df.rename(columns={1500000: '25m',
+                             3000000: '50m',
+                             4500000: '75m'}, inplace=True)
 
     # Add rows for dates that had no sessions
     date_range = pd.date_range(
@@ -240,9 +240,9 @@ def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     for duration in [1500000, 3000000, 4500000]:
         if duration not in pivot_df.columns:
             pivot_df[duration] = 0
-    pivot_df.rename(columns={1500000: '25 minutes',
-                             3000000: '50 minutes',
-                             4500000: '75 minutes'}, inplace=True)
+    pivot_df.rename(columns={1500000: '25m',
+                             3000000: '50m',
+                             4500000: '75m'}, inplace=True)
 
     # Add rows for missing %I:%M %p that had no sessions
     today = pd.Timestamp('today').normalize()
@@ -322,15 +322,15 @@ def get_duration_pie_data(sessions: pd.DataFrame):
 
     return [
         {
-            "duration": "25 minutes",
+            "duration": "25m",
             "amount": total_25m_sessions
         },
         {
-            "duration": "50 minutes",
+            "duration": "50m",
             "amount": total_50m_sessions
         },
         {
-            "duration": "75 minutes",
+            "duration": "75m",
             "amount": total_75m_sessions
         }
     ]

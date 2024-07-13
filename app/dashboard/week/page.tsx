@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Stat } from "@/components/ui/stat"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
-import { BarChart } from "@/components/charts/bar-chart"
+import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { Text, Strong } from "@/components/ui/text"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { Button } from "@/components/ui/button"
@@ -19,6 +19,7 @@ import {
 import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
+import { DonutChart } from "@/components/charts/donut-chart"
 
 export default function Weekly() {
   const [goal, setGoal] = useState(0)
@@ -160,14 +161,14 @@ export default function Weekly() {
       </Card>
 
       <Card className="sm:col-span-3">
-        <Text className="flex flex-col mb-3">
+        <Text>
           <Strong>Sessions by day of the week</Strong>
         </Text>
 
         <div className="mb-2 mr-4 -ml-4">
           <BarChart
             index="start_date_str"
-            categories={["25 minutes", "50 minutes", "75 minutes"]}
+            categories={["25m", "50m", "75m"]}
             type="stacked"
             data={data.chart.range}
             colors={["blue", "orange", "yellow"]}
@@ -177,14 +178,14 @@ export default function Weekly() {
       </Card>
 
       <Card className="sm:col-span-3">
-        <Text className="flex flex-col mb-3">
+        <Text>
           <Strong>Sessions by starting time</Strong>
         </Text>
 
         <div className="mb-2 mr-4 -ml-4">
           <BarChart
             index="start_time_str"
-            categories={["25 minutes", "50 minutes", "75 minutes"]}
+            categories={["25m", "50m", "75m"]}
             type="stacked"
             data={data.chart.time}
             colors={["blue", "orange", "yellow"]}
@@ -192,6 +193,30 @@ export default function Weekly() {
             tickGap={28}
           />
         </div>
+      </Card>
+
+      <Card>
+        <Text>
+          <Strong>Sessions by duration</Strong>
+        </Text>
+
+        <Legend
+          className="flex flex-col"
+          categories={["25m", "50m", "75m"]}
+          colors={["blue", "orange", "yellow"]}
+        />
+
+        <DonutChart
+          data={data.chart.pie}
+          variant="pie"
+          category="duration"
+          value="amount"
+          colors={["blue", "orange", "yellow"]}
+          valueFormatter={(value) =>
+            `${value} (${(value / data.total.sessions) * 100}%)`
+          }
+          className="mx-auto mt-4"
+        />
       </Card>
     </div>
   )
@@ -238,17 +263,17 @@ function LoadingSkeleton() {
       </Card>
 
       <Card className="sm:col-span-3">
-        <Text className="flex flex-col mb-3">
-          <Strong>Sessions this week</Strong>
+        <Text className="mb-3">
+          <Strong>Sessions by day of the week</Strong>
         </Text>
-        <Skeleton className="h-[328px] w-full" />
+        <Skeleton className="h-[315px] w-full" />
       </Card>
 
       <Card className="sm:col-span-3">
-        <Text className="flex flex-col mb-3">
+        <Text className="mb-3">
           <Strong>Sessions by starting time</Strong>
         </Text>
-        <Skeleton className="h-[328px] w-full" />
+        <Skeleton className="h-[315px] w-full" />
       </Card>
     </div>
   )

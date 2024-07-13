@@ -30,7 +30,7 @@ const progressBarVariants = tv({
       },
       success: {
         background: "bg-orange-200 dark:bg-orange-500/30",
-        bar: "bg-orange-400 dark:bg-orange-500",
+        bar: "bg-orange-500 dark:bg-orange-500",
       },
     },
   },
