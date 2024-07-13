@@ -2,6 +2,8 @@ import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
 
+from api_helpers.time import m_to_ms
+
 
 def calculate_curr_streak(sessions: pd.DataFrame,
                           period_type: Literal["D", "W", "M"],
@@ -311,3 +313,24 @@ def prepare_history_data(sessions: pd.DataFrame, head: int = None):
                        'joined_at', 'start_time', 'partner_id'], inplace=True)
 
     return sessions_copy.to_dict(orient='records')
+
+
+def get_duration_pie_data(sessions: pd.DataFrame):
+    total_25m_sessions = len(sessions[sessions['duration'] == m_to_ms(25)])
+    total_50m_sessions = len(sessions[sessions['duration'] == m_to_ms(50)])
+    total_75m_sessions = len(sessions[sessions['duration'] == m_to_ms(75)])
+
+    return [
+        {
+            "duration": "25 minutes",
+            "amount": total_25m_sessions
+        },
+        {
+            "duration": "50 minutes",
+            "amount": total_50m_sessions
+        },
+        {
+            "duration": "75 minutes",
+            "amount": total_75m_sessions
+        }
+    ]
