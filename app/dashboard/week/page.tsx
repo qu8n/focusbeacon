@@ -20,6 +20,7 @@ import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
+import { Divider } from "@/components/ui/divider"
 
 export default function Weekly() {
   const [goal, setGoal] = useState(0)
@@ -201,22 +202,42 @@ export default function Weekly() {
         </Text>
 
         <Legend
-          className="flex flex-col"
           categories={["25m", "50m", "75m"]}
           colors={["blue", "orange", "yellow"]}
         />
 
-        <DonutChart
-          data={data.chart.pie}
-          variant="pie"
-          category="duration"
-          value="amount"
-          colors={["blue", "orange", "yellow"]}
-          valueFormatter={(value) =>
-            `${value} (${(value / data.total.sessions) * 100}%)`
-          }
-          className="mx-auto mt-4"
-        />
+        <div className="grid grid-cols-2 sm:grid-cols-1 items-center mt-4">
+          <DonutChart
+            data={data.chart.pie}
+            variant="pie"
+            category="duration"
+            value="amount"
+            colors={["blue", "orange", "yellow"]}
+            valueFormatter={(value) =>
+              `${value} (${(value / data.total.sessions) * 100}%)`
+            }
+            className="sm:mx-auto ml-6"
+          />
+
+          <div className="mt-2">
+            {data.chart.pie.map(
+              (item: { duration: string; amount: number }) => {
+                return (
+                  <Text
+                    key={item.duration}
+                    className="flex justify-between border-b border-zinc-200 last:border-none py-3 sm:py-1 last:pb-0"
+                  >
+                    <span>{item.duration}</span>
+                    <span>
+                      {item.amount} sessions (
+                      {Math.round((item.amount / data.total.sessions) * 100)}%)
+                    </span>
+                  </Text>
+                )
+              }
+            )}
+          </div>
+        </div>
       </Card>
     </div>
   )
