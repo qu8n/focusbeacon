@@ -4,6 +4,7 @@ import React from "react"
 import { tv, type VariantProps } from "tailwind-variants"
 
 import { cx } from "@/lib/utils"
+import { Text } from "./text"
 
 const progressBarVariants = tv({
   slots: {
@@ -92,16 +93,9 @@ const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
         </div>
 
         {label ? (
-          <span
-            className={cx(
-              // base
-              "ml-4 whitespace-nowrap text-sm font-medium leading-none",
-              // text color
-              "text-zinc-700 dark:text-zinc-50"
-            )}
-          >
+          <Text className={cx("ml-4 whitespace-nowrap leading-none")}>
             {label}
-          </span>
+          </Text>
         ) : null}
       </div>
     )

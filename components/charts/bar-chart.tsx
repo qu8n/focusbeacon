@@ -9,7 +9,9 @@ import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
 import {
   Bar,
   CartesianGrid,
+  Cell,
   Label,
+  LabelList,
   BarChart as RechartsBarChart,
   Legend as RechartsLegend,
   ResponsiveContainer,
@@ -51,42 +53,6 @@ export function deepEqual(obj1: any, obj2: any) {
   }
 
   return true
-}
-
-const renderShape = (
-  props: any,
-  activeBar: any | undefined,
-  activeLegend: string | undefined,
-  layout: string
-) => {
-  const { fillOpacity, name, payload, value } = props
-  let { x, width, y, height } = props
-
-  if (layout === "horizontal" && height < 0) {
-    y += height
-    height = Math.abs(height) // height must be a positive number
-  } else if (layout === "vertical" && width < 0) {
-    x += width
-    width = Math.abs(width) // width must be a positive number
-  }
-
-  return (
-    <rect
-      x={x}
-      y={y}
-      width={width}
-      height={height}
-      rx={width < 10 ? 2 : 6}
-      ry={width < 10 ? 2 : 6}
-      opacity={
-        activeBar || (activeLegend && activeLegend !== name)
-          ? deepEqual(activeBar, { ...payload, value })
-            ? fillOpacity
-            : 0.3
-          : fillOpacity
-      }
-    />
-  )
 }
 
 //#region Legend
@@ -615,7 +581,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
       ...other
     } = props
     const paddingValue =
-      (!showXAxis && !showYAxis) || (startEndOnly && !showYAxis) ? 0 : 20
+      (!showXAxis && !showYAxis) || (startEndOnly && !showYAxis) ? 0 : 30
     const [legendHeight, setLegendHeight] = React.useState(60)
     const [activeLegend, setActiveLegend] = React.useState<string | undefined>(
       undefined
@@ -858,7 +824,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                 }
               />
             ) : null}
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <Bar
                 className={cx(
                   getColorClassName(
@@ -874,11 +840,35 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                 stackId={stacked ? "stack" : undefined}
                 isAnimationActive={false}
                 fill=""
-                shape={(props: any) =>
-                  renderShape(props, activeBar, activeLegend, layout)
-                }
                 onClick={onBarClick}
-              />
+                radius={[4, 4, 0, 0]}
+              >
+                {index === categories.length - 1 && (
+                  <LabelList
+                    position="top"
+                    offset={10}
+                    className="fill-foreground"
+                    fontSize={12}
+                    formatter={(label: any) => (label === 0 ? "" : label)}
+                  />
+                )}
+
+                {/* Dynamically round corners of the stacked bar chart */}
+                {data.map((entry, index) => {
+                  const keys = Object.keys(entry)
+                  const values = Object.values(entry)
+                  const categoryIndex = keys.findIndex(
+                    (key) => key === category
+                  )
+                  const lastBarIndex = values.findLastIndex(
+                    (value) => value !== 0
+                  )
+                  if (categoryIndex === lastBarIndex) {
+                    return <Cell key={`cell-${index}`} />
+                  }
+                  return <Cell key={`cell-${index}`} radius={0} />
+                })}
+              </Bar>
             ))}
           </RechartsBarChart>
         </ResponsiveContainer>

@@ -20,7 +20,6 @@ import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
-import { Divider } from "@/components/ui/divider"
 
 export default function Weekly() {
   const [goal, setGoal] = useState(0)
@@ -45,8 +44,7 @@ export default function Weekly() {
     queryKey: ["weekly"],
     queryFn: async () => {
       const response = await fetch(`/api/py/weekly`)
-      const data = await response.json()
-      return data
+      return await response.json()
     },
   })
 
@@ -166,16 +164,15 @@ export default function Weekly() {
           <Strong>Sessions by day of the week</Strong>
         </Text>
 
-        <div className="mb-2 mr-4 -ml-4">
-          <BarChart
-            index="start_date_str"
-            categories={["25m", "50m", "75m"]}
-            type="stacked"
-            data={data.chart.range}
-            colors={["blue", "orange", "yellow"]}
-            allowDecimals={false}
-          />
-        </div>
+        <BarChart
+          index="start_date_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.chart.range}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
+        />
       </Card>
 
       <Card className="sm:col-span-3">
@@ -183,17 +180,16 @@ export default function Weekly() {
           <Strong>Sessions by starting time</Strong>
         </Text>
 
-        <div className="mb-2 mr-4 -ml-4">
-          <BarChart
-            index="start_time_str"
-            categories={["25m", "50m", "75m"]}
-            type="stacked"
-            data={data.chart.time}
-            colors={["blue", "orange", "yellow"]}
-            allowDecimals={false}
-            tickGap={28}
-          />
-        </div>
+        <BarChart
+          index="start_time_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.chart.time}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
+          tickGap={28}
+        />
       </Card>
 
       <Card>
@@ -206,7 +202,7 @@ export default function Weekly() {
           colors={["blue", "orange", "yellow"]}
         />
 
-        <div className="grid grid-cols-2 sm:grid-cols-1 items-center mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-1 items-center mt-4 gap-2">
           <DonutChart
             data={data.chart.pie}
             variant="pie"
@@ -216,10 +212,10 @@ export default function Weekly() {
             valueFormatter={(value) =>
               `${value} (${(value / data.total.sessions) * 100}%)`
             }
-            className="sm:mx-auto ml-6"
+            className="sm:mx-auto"
           />
 
-          <div className="mt-2">
+          <div>
             {data.chart.pie.map(
               (item: { duration: string; amount: number }) => {
                 return (
@@ -229,7 +225,7 @@ export default function Weekly() {
                   >
                     <span>{item.duration}</span>
                     <span>
-                      {item.amount} sessions (
+                      {item.amount} (
                       {Math.round((item.amount / data.total.sessions) * 100)}%)
                     </span>
                   </Text>
