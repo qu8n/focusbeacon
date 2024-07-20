@@ -63,8 +63,8 @@ export default function Weekly() {
   const progressPercent = currGoal && (data.total.sessions / currGoal) * 100
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-      <Card className="sm:col-span-3">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+      <Card className="sm:col-span-6">
         <div className="-mt-5 mb-4 inline-flex justify-between w-full items-center gap-2">
           <Text>
             <Strong>Progress to goal</Strong>
@@ -133,7 +133,7 @@ export default function Weekly() {
         </DialogActions>
       </Dialog>
 
-      <Card>
+      <Card className="sm:col-span-2">
         <Stat
           title="Total sessions"
           value={data.total.sessions}
@@ -142,7 +142,7 @@ export default function Weekly() {
         />
       </Card>
 
-      <Card>
+      <Card className="sm:col-span-2">
         <Stat
           title="Total hours"
           value={data.total.hours}
@@ -151,7 +151,7 @@ export default function Weekly() {
         />
       </Card>
 
-      <Card>
+      <Card className="sm:col-span-2">
         <Stat
           title="Total partners"
           value={data.total.partners}
@@ -159,7 +159,7 @@ export default function Weekly() {
         />
       </Card>
 
-      <Card className="sm:col-span-3">
+      <Card className="sm:col-span-6">
         <Text>
           <Strong>Sessions by day of the week</Strong>
         </Text>
@@ -177,23 +177,6 @@ export default function Weekly() {
 
       <Card className="sm:col-span-3">
         <Text>
-          <Strong>Sessions by starting time</Strong>
-        </Text>
-
-        <BarChart
-          index="start_time_str"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.chart.time}
-          colors={["blue", "orange", "yellow"]}
-          allowDecimals={false}
-          showYAxis={false}
-          tickGap={28}
-        />
-      </Card>
-
-      <Card>
-        <Text>
           <Strong>Sessions by duration</Strong>
         </Text>
 
@@ -202,7 +185,7 @@ export default function Weekly() {
           colors={["blue", "orange", "yellow"]}
         />
 
-        <div className="grid grid-cols-2 sm:grid-cols-1 items-center mt-4 gap-2">
+        <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
             data={data.chart.pie}
             variant="pie"
@@ -212,16 +195,16 @@ export default function Weekly() {
             valueFormatter={(value) =>
               `${value} (${(value / data.total.sessions) * 100}%)`
             }
-            className="sm:mx-auto"
+            className="ml-4"
           />
 
-          <div>
+          <div className="flex flex-col">
             {data.chart.pie.map(
               (item: { duration: string; amount: number }) => {
                 return (
                   <Text
                     key={item.duration}
-                    className="flex justify-between border-b border-zinc-200 last:border-none py-3 sm:py-1 last:pb-0"
+                    className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0"
                   >
                     <span>{item.duration}</span>
                     <span>
@@ -236,14 +219,14 @@ export default function Weekly() {
         </div>
       </Card>
 
-      <Card>
+      <Card className="sm:col-span-3">
         <Text>
           <Strong>Sessions by punctuality</Strong>
         </Text>
 
         <Legend categories={["Early", "Late"]} colors={["blue", "orange"]} />
 
-        <div className="grid grid-cols-2 sm:grid-cols-1 items-center mt-4 gap-2">
+        <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
             data={data.chart.pie}
             variant="pie"
@@ -253,11 +236,11 @@ export default function Weekly() {
             valueFormatter={(value) =>
               `${value} (${(value / data.total.sessions) * 100}%)`
             }
-            className="sm:mx-auto"
+            className="ml-4"
           />
 
-          <div>
-            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-3 sm:py-1 last:pb-0">
+          <div className="flex flex-col">
+            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0">
               <span>{data.chart.punctuality.data[0].punctuality}</span>
               <span>
                 {data.chart.punctuality.data[0].amount} (
@@ -269,16 +252,33 @@ export default function Weekly() {
                 %)
               </span>
             </Text>
-            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-3 sm:py-1 last:pb-0">
+            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0">
               <span>Average</span>
               <span>{data.chart.punctuality.avg}</span>
             </Text>
-            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-3 sm:py-1 last:pb-0">
+            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0">
               <span>Median</span>
               <span>{data.chart.punctuality.median}</span>
             </Text>
           </div>
         </div>
+      </Card>
+
+      <Card className="sm:col-span-6">
+        <Text>
+          <Strong>Sessions by starting time</Strong>
+        </Text>
+
+        <BarChart
+          index="start_time_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.chart.time}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
+          tickGap={28}
+        />
       </Card>
     </div>
   )
