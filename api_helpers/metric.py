@@ -323,21 +323,54 @@ def prepare_history_data(sessions: pd.DataFrame, head: int = None):
 
 
 def get_duration_pie_data(sessions: pd.DataFrame):
-    total_25m_sessions = len(sessions[sessions['duration'] == m_to_ms(25)])
-    total_50m_sessions = len(sessions[sessions['duration'] == m_to_ms(50)])
-    total_75m_sessions = len(sessions[sessions['duration'] == m_to_ms(75)])
-
     return [
         {
             "duration": "25m",
-            "amount": total_25m_sessions
+            "amount": len(sessions[sessions['duration'] == m_to_ms(25)])
         },
         {
             "duration": "50m",
-            "amount": total_50m_sessions
+            "amount": len(sessions[sessions['duration'] == m_to_ms(50)])
         },
         {
             "duration": "75m",
-            "amount": total_75m_sessions
+            "amount": len(sessions[sessions['duration'] == m_to_ms(75)])
         }
     ]
+
+
+def get_punctuality_pie_data(sessions: pd.DataFrame):
+    sessions['join_start_diff'] = (
+        sessions['joined_at'] - sessions['start_time']).dt.total_seconds()
+
+    avg_join_start_diff = sessions['join_start_diff'].mean()
+    median_join_start_diff = sessions['join_start_diff'].median()
+
+    late_s = 60
+
+    return {
+        "data": [
+            {
+                "punctuality": "Early",
+                "amount": len(sessions[sessions['join_start_diff'] <= late_s])
+            },
+            {
+                "punctuality": "Late",
+                "amount": len(sessions[sessions['join_start_diff'] > late_s])
+            }
+        ],
+        "avg": format_seconds(avg_join_start_diff),
+        "median": format_seconds(median_join_start_diff)
+    }
+
+
+def format_seconds(seconds: float) -> str:
+    seconds = round(seconds)
+    punctuality = "early" if seconds <= 0 else "late"
+    seconds = abs(seconds)
+
+    if seconds <= 60:
+        return f"{seconds}s {punctuality}"
+    minutes = seconds // 60
+    seconds = round(seconds % 60)
+    return f"{minutes}m {seconds}s {punctuality}"

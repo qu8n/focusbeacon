@@ -3,7 +3,7 @@ from typing import Annotated
 
 from pydantic import BaseModel
 from api_helpers.metric import calculate_max_daily_streak, \
-    calculate_curr_streak, get_duration_pie_data, prep_chart_data_by_time, \
+    calculate_curr_streak, get_duration_pie_data, get_punctuality_pie_data, prep_chart_data_by_time, \
     prepare_heatmap_data, prepare_history_data, prep_chart_data_by_range
 from api_helpers.supabase import get_weekly_goal, update_daily_streak
 from api_helpers.time import get_end_of_week, get_start_of_week, \
@@ -92,7 +92,8 @@ async def weekly(session_id: SessionIdDep):
             "range": prep_chart_data_by_range(
                 curr_week_sessions, start_of_week, end_of_week),
             "time": prep_chart_data_by_time(curr_week_sessions),
-            "pie": get_duration_pie_data(curr_week_sessions)
+            "pie": get_duration_pie_data(curr_week_sessions),
+            "punctuality": get_punctuality_pie_data(curr_week_sessions)
         }
     }
 

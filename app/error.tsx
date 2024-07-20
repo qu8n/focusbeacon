@@ -20,14 +20,13 @@ export default function Error({
 
   return (
     <div className="flex flex-col mt-10 text-left items-start">
-      <Text>Something went wrong.</Text>
-      <Text>Please try again.</Text>
+      <Text>Something went wrong. Try refreshing the page.</Text>
       <Text>
         If that doesn&apos;t work, let us know{" "}
         <TextLink href={contactUrl!}>here</TextLink>.
       </Text>
       <Button className="mt-2" onClick={() => reset()}>
-        Try again
+        Refresh the page
       </Button>
     </div>
   )
