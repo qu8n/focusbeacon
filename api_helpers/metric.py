@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
@@ -31,19 +32,21 @@ def calculate_curr_streak(sessions: pd.DataFrame,
     int
         The calculated streak corresponding to the period.
     '''
-    sessions_copy = sessions.copy()
+    sessions = sessions.copy()
 
-    sessions_copy['period'] = sessions_copy['start_time'].dt.to_period(
+    sessions['period'] = sessions['start_time'].dt.to_period(
         period_type)
 
-    curr_period = pd.Timestamp.today(local_timezone).to_period(period_type)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        curr_period = pd.Timestamp.today(local_timezone).to_period(period_type)
     recently_completed_period = (curr_period - 1)
 
     period_range_lifetime = pd.period_range(
-        start=sessions_copy['period'].min(), end=recently_completed_period,
+        start=sessions['period'].min(), end=recently_completed_period,
         freq=period_type)
 
-    periods_with_session = set(sessions_copy['period'])
+    periods_with_session = set(sessions['period'])
 
     period_streak = 0
     for period in reversed(period_range_lifetime):
@@ -81,20 +84,21 @@ def calculate_max_daily_streak(sessions: pd.DataFrame,
         start and end dates of the streak.
     '''
     # Create a modified DataFrame with only unique dates of the sessions
-    sessions_copy = sessions.copy()
-    sessions_copy['start_date'] = sessions_copy['start_time'].dt.date
-    sessions_copy = sessions_copy.groupby(
+    sessions = sessions.copy()
+
+    sessions['start_date'] = sessions['start_time'].dt.date
+    sessions = sessions.groupby(
         'start_date').size().reset_index(name='count')
 
     max_streak = 0
     max_streak_start = None
     max_streak_end = None
     current_streak = 1
-    current_streak_start = sessions_copy['start_date'].iloc[0]
+    current_streak_start = sessions['start_date'].iloc[0]
 
-    for i in range(1, len(sessions_copy)):
-        current_date = sessions_copy['start_date'].iloc[i]
-        previous_date = sessions_copy['start_date'].iloc[i - 1]
+    for i in range(1, len(sessions)):
+        current_date = sessions['start_date'].iloc[i]
+        previous_date = sessions['start_date'].iloc[i - 1]
         current_day = current_date.weekday()
         previous_day = previous_date.weekday()
 
@@ -120,7 +124,7 @@ def calculate_max_daily_streak(sessions: pd.DataFrame,
     if current_streak > max_streak:
         max_streak = current_streak
         max_streak_start = current_streak_start
-        max_streak_end = sessions_copy['start_date'].iloc[-1]
+        max_streak_end = sessions['start_date'].iloc[-1]
 
     return {
         'count': max_streak,
@@ -160,21 +164,22 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
         days=one_year_ago.weekday())
     one_year_ago_monday_str = one_year_ago_monday.strftime('%Y-%m-%d')
 
-    sessions_copy = sessions.copy()
-    sessions_copy = sessions_copy[
-        (sessions_copy['start_time'] >= one_year_ago_monday) &
-        (sessions_copy['start_time'] <= tomorrow)
+    sessions = sessions.copy()
+
+    sessions = sessions[
+        (sessions['start_time'] >= one_year_ago_monday) &
+        (sessions['start_time'] <= tomorrow)
     ]
 
     # Prepare data for the Nivo TimeRange calendar component
-    sessions_copy['start_date_str'] = \
-        sessions_copy['start_time'].dt.strftime('%Y-%m-%d')
-    heatmap_data = sessions_copy.groupby('start_date_str').size()
+    sessions['start_date_str'] = \
+        sessions['start_time'].dt.strftime('%Y-%m-%d')
+    heatmap_data = sessions.groupby('start_date_str').size()
     heatmap_data = heatmap_data.reset_index()
     heatmap_data.columns = ['day', 'value']  # expected by Nivo calendar
     heatmap_data = heatmap_data.to_dict(orient='records')
 
-    past_year_sessions = len(sessions_copy)
+    past_year_sessions = len(sessions)
 
     return {
         "from": one_year_ago_monday_str,
@@ -187,11 +192,11 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
 def prep_chart_data_by_range(sessions: pd.DataFrame,
                              start_date: np.datetime64,
                              end_date: np.datetime64) -> List[Dict[str, Any]]:
-    sessions_copy = sessions.copy()
-    sessions_copy['start_date_str'] = sessions_copy['start_time'].dt.strftime(
+    sessions = sessions.copy()
+    sessions['start_date_str'] = sessions['start_time'].dt.strftime(
         '%Y-%m-%d')
 
-    pivot_df: pd.DataFrame = pd.pivot_table(sessions_copy,
+    pivot_df: pd.DataFrame = pd.pivot_table(sessions,
                                             index='start_date_str',
                                             columns='duration',
                                             aggfunc='size',
@@ -224,11 +229,12 @@ def prep_chart_data_by_range(sessions: pd.DataFrame,
 
 
 def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
-    sessions_copy = sessions.copy()
-    sessions_copy['start_time_str'] = sessions_copy['start_time'].dt.strftime(
+    sessions = sessions.copy()
+
+    sessions['start_time_str'] = sessions['start_time'].dt.strftime(
         '%I:%M %p')
 
-    pivot_df: pd.DataFrame = pd.pivot_table(sessions_copy,
+    pivot_df: pd.DataFrame = pd.pivot_table(sessions,
                                             index='start_time_str',
                                             columns='duration',
                                             aggfunc='size',
@@ -256,7 +262,7 @@ def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
 
     # Sort smartly
     pivot_df['start_time_str'] = pd.to_datetime(
-        pivot_df['start_time_str']).dt.strftime('%I:%M %p')
+        pivot_df['start_time_str'], format='%I:%M %p').dt.strftime('%I:%M %p')
     pivot_df['start_time_str'] = pd.Categorical(
         pivot_df['start_time_str'], time_range)
     pivot_df = pivot_df.sort_values('start_time_str')
@@ -294,29 +300,30 @@ def prepare_history_data(sessions: pd.DataFrame, head: int = None):
         session_title: str
             The title of the session.
     '''
-    sessions_copy = sessions.copy()
-    sessions_copy = sessions_copy.sort_values('start_time', ascending=False)
+    sessions = sessions.copy()
 
-    sessions_copy['date'] = sessions_copy['start_time'].dt.strftime(
+    sessions = sessions.sort_values('start_time', ascending=False)
+
+    sessions['date'] = sessions['start_time'].dt.strftime(
         '%a, %b %d, %Y')
-    sessions_copy = sessions_copy[sessions_copy['start_time']
-                                  < pd.Timestamp.now()]
+    sessions = sessions[sessions['start_time']
+                        < pd.Timestamp.now()]
 
     if head:
-        sessions_copy = sessions_copy.head(head)
+        sessions = sessions.head(head)
 
-    sessions_copy['time'] = sessions_copy['start_time'].dt.strftime('%I:%M %p')
-    sessions_copy['duration_minutes'] = sessions_copy['duration'] / 60000
-    sessions_copy['on_time'] = (
-        sessions_copy['joined_at'] - sessions_copy['start_time']) \
+    sessions['time'] = sessions['start_time'].dt.strftime('%I:%M %p')
+    sessions['duration_minutes'] = sessions['duration'] / 60000
+    sessions['on_time'] = (
+        sessions['joined_at'] - sessions['start_time']) \
         <= pd.Timedelta(minutes=2)
-    sessions_copy['session_title'] = sessions_copy['session_title'].replace(
+    sessions['session_title'] = sessions['session_title'].replace(
         to_replace='^$|^None$', value='N/A', regex=True)
 
-    sessions_copy.drop(columns=['duration', 'requested_at',
-                       'joined_at', 'start_time', 'partner_id'], inplace=True)
+    sessions.drop(columns=['duration', 'requested_at',
+                           'joined_at', 'start_time', 'partner_id'], inplace=True)
 
-    return sessions_copy.to_dict(orient='records')
+    return sessions.to_dict(orient='records')
 
 
 def get_duration_pie_data(sessions: pd.DataFrame):
@@ -337,7 +344,9 @@ def get_duration_pie_data(sessions: pd.DataFrame):
 
 
 def get_punctuality_pie_data(sessions: pd.DataFrame):
-    sessions['join_start_diff'] = (
+    sessions = sessions.copy()
+
+    sessions.loc[:, 'join_start_diff'] = (
         sessions['joined_at'] - sessions['start_time']).dt.total_seconds()
 
     avg_join_start_diff = sessions['join_start_diff'].mean()

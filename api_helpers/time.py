@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import warnings
 from dateutil import tz, parser
 import numpy as np
 
@@ -45,7 +46,10 @@ def get_start_of_week(local_timezone: str):
     today_local = datetime.now(tz.gettz(local_timezone))
     monday = today_local - timedelta(days=today_local.weekday())
     start_of_week = monday.replace(hour=0, minute=0, second=0, microsecond=0)
-    return np.datetime64(start_of_week)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        start_of_week_dt64 = np.datetime64(start_of_week)
+    return start_of_week_dt64
 
 
 def get_end_of_week(start_of_week: np.datetime64):
