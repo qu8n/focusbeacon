@@ -297,13 +297,10 @@ def prepare_history_data(sessions: pd.DataFrame, head: int = None):
     sessions_copy = sessions.copy()
     sessions_copy = sessions_copy.sort_values('start_time', ascending=False)
 
-    # Remove future sessions of today (included in data for some reason)
-    # It would be strange to see future sessions of only today
     sessions_copy['date'] = sessions_copy['start_time'].dt.strftime(
         '%a, %b %d, %Y')
-    today_str = pd.Timestamp.today().strftime('%a, %b %d, %Y')
-    sessions_copy = sessions_copy[~((sessions_copy['date'] == today_str) &
-                                    (sessions_copy['completed'] == False))]
+    sessions_copy = sessions_copy[sessions_copy['start_time']
+                                  < pd.Timestamp.now()]
 
     if head:
         sessions_copy = sessions_copy.head(head)
