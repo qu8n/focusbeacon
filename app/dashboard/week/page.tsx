@@ -204,7 +204,7 @@ export default function Weekly() {
                 return (
                   <Text
                     key={item.duration}
-                    className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0"
+                    className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
                   >
                     <span>{item.duration}</span>
                     <span>
@@ -240,7 +240,7 @@ export default function Weekly() {
           />
 
           <div className="flex flex-col">
-            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0">
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>{data.chart.punctuality.data[0].punctuality}</span>
               <span>
                 {data.chart.punctuality.data[0].amount} (
@@ -252,11 +252,11 @@ export default function Weekly() {
                 %)
               </span>
             </Text>
-            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0">
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>Average</span>
               <span>{data.chart.punctuality.avg}</span>
             </Text>
-            <Text className="flex justify-between border-b border-zinc-200 last:border-none py-2 last:pb-0">
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>Median</span>
               <span>{data.chart.punctuality.median}</span>
             </Text>
@@ -354,7 +354,7 @@ function buildProgressLabel(
 function LoaderIcon() {
   return (
     <svg
-      className="animate-spin mr-2 h-3 w-3 text-zinc-900"
+      className="animate-spin mr-2 h-3 w-3 text-stone-900"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

@@ -87,7 +87,7 @@ export function Heatmap({
             const date = new Date(y, m - 1, d) // month is 0-indexed
 
             return (
-              <div className="py-2 bg-white border rounded-md shadow-sm">
+              <div className="py-2 bg-[#FDFDFA] border rounded-md shadow-sm">
                 <Text className="px-4">
                   <Strong>{getFormattedDate(date)}</Strong>
                 </Text>

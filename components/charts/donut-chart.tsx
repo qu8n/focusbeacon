@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Tremor Raw DonutChart [v0.0.0]
 
 "use client"
@@ -74,9 +75,9 @@ const ChartTooltip = ({
           // base
           "rounded-md border text-sm shadow-md",
           // border color
-          "border-gray-200 dark:border-gray-800",
+          "border-gray-200",
           // background color
-          "bg-white dark:bg-gray-950"
+          "bg-white"
         )}
       >
         <div className={cx("space-y-1 px-4 py-2")}>
@@ -98,7 +99,7 @@ const ChartTooltip = ({
                     // base
                     "whitespace-nowrap text-right",
                     // text color
-                    "text-gray-700 dark:text-gray-300"
+                    "text-gray-700"
                   )}
                 >
                   {category}
@@ -109,7 +110,7 @@ const ChartTooltip = ({
                   // base
                   "whitespace-nowrap text-right font-medium tabular-nums",
                   // text color
-                  "text-gray-900 dark:text-gray-50"
+                  "text-gray-900"
                 )}
               >
                 {valueFormatter(value)}
@@ -238,7 +239,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
           >
             {showLabel && isDonut && (
               <text
-                className="fill-gray-700 dark:fill-gray-300"
+                className="fill-gray-700"
                 x="50%"
                 y="50%"
                 textAnchor="middle"
@@ -249,7 +250,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
             )}
             <Pie
               className={cx(
-                "stroke-white dark:stroke-gray-950 [&_.recharts-pie-sector]:outline-none",
+                "stroke-white [&_.recharts-pie-sector]:outline-none",
                 onValueChange ? "cursor-pointer" : "cursor-default"
               )}
               data={parseData(data, categoryColors, category)}

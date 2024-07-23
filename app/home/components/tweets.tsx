@@ -118,7 +118,7 @@ export const TweetHeader = ({ tweet }: { tweet: EnrichedTweet }) => (
           href={tweet.user.url}
           target="_blank"
           rel="noreferrer"
-          className="flex text-sm text-zinc-700 items-center whitespace-nowrap font-semibold"
+          className="flex text-sm text-stone-700 items-center whitespace-nowrap font-semibold"
         >
           {truncate(tweet.user.name, 20)}
           {tweet.user.verified ||
@@ -131,7 +131,7 @@ export const TweetHeader = ({ tweet }: { tweet: EnrichedTweet }) => (
             href={tweet.user.url}
             target="_blank"
             rel="noreferrer"
-            className="text-xs text-zinc-500 transition-all duration-75"
+            className="text-xs text-stone-500 transition-all duration-75"
           >
             @{truncate(tweet.user.screen_name, 16)}
           </a>
@@ -160,7 +160,7 @@ export const TweetBody = ({ tweet }: { tweet: EnrichedTweet }) => (
               href={entity.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-normal text-zinc-400"
+              className="font-normal text-stone-400"
             >
               <span>{entity.text}</span>
             </a>
@@ -169,7 +169,7 @@ export const TweetBody = ({ tweet }: { tweet: EnrichedTweet }) => (
           return (
             <span
               key={idx}
-              className="text-zinc-500 font-normal"
+              className="text-stone-500 font-normal"
               dangerouslySetInnerHTML={{ __html: entity.text }}
             />
           )

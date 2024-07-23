@@ -15,11 +15,11 @@ export function Stat({
   changeText?: string
 }) {
   let changeStr
-  let changeBadgeColor: "zinc" | "lime" | "pink" | undefined
+  let changeBadgeColor: "stone" | "lime" | "pink" | undefined
   if (changeVal?.toString()) {
     changeStr = changeVal > 0 ? `+${changeVal}` : `${changeVal}`
     changeBadgeColor =
-      changeVal === 0 ? "zinc" : changeVal > 0 ? "lime" : "pink"
+      changeVal === 0 ? "stone" : changeVal > 0 ? "lime" : "pink"
   }
 
   return (
@@ -35,7 +35,7 @@ export function Stat({
 
         <div className="text-sm/6 sm:text-xs/6">
           {changeStr && <Badge color={changeBadgeColor}>{changeStr}</Badge>}{" "}
-          {changeText && <span className="text-zinc-500">{changeText}</span>}
+          {changeText && <span className="text-stone-500">{changeText}</span>}
         </div>
       </div>
     </div>

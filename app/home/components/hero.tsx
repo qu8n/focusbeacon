@@ -15,7 +15,7 @@ export function Hero() {
         {hero.features.map((feature) => {
           return (
             <div key={feature} className="inline-flex items-center gap-2">
-              <RiCheckboxCircleLine className="text-zinc-700" size={14} />
+              <RiCheckboxCircleLine className="text-stone-700" size={14} />
               <Text>{feature}</Text>
             </div>
           )

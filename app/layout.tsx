@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cx(GeistSans.className, "antialiased bg-zinc-100")}
+      className={cx(GeistSans.className, "antialiased bg-[#F3F1EB]")}
     >
       <body>
         <Providers>

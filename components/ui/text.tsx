@@ -12,7 +12,7 @@ export function Text({
     <p
       data-slot="text"
       {...props}
-      className={clsx(className, "text-base/6 text-zinc-500 sm:text-sm/6")}
+      className={clsx(className, "text-base/6 text-stone-500 sm:text-sm/6")}
     />
   )
 }
@@ -28,7 +28,7 @@ export function Footnote({
     <p
       data-slot="text"
       {...props}
-      className={clsx(className, "text-sm/6 text-zinc-400 sm:text-xs/6")}
+      className={clsx(className, "text-sm/6 text-stone-400 sm:text-xs/6")}
     />
   )
 }
@@ -48,7 +48,7 @@ export function TextLink({
       {...props}
       className={clsx(
         className,
-        "text-zinc-950 underline decoration-zinc-950/50 data-[hover]:decoration-zinc-950"
+        "text-stone-950 underline decoration-stone-950/50 data-[hover]:decoration-stone-950"
       )}
     />
   )
@@ -64,7 +64,7 @@ export function Strong({
   return (
     <strong
       {...props}
-      className={clsx(className, "font-medium text-zinc-950")}
+      className={clsx(className, "font-medium text-stone-950")}
     />
   )
 }
@@ -81,7 +81,7 @@ export function Code({
       {...props}
       className={clsx(
         className,
-        "rounded border border-zinc-950/10 bg-zinc-950/[2.5%] px-0.5 text-sm font-medium text-zinc-950 sm:text-[0.8125rem]"
+        "rounded border border-stone-950/10 bg-stone-950/[2.5%] px-0.5 text-sm font-medium text-stone-950 sm:text-[0.8125rem]"
       )}
     />
   )

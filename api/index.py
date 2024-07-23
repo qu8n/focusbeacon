@@ -8,12 +8,13 @@ from api_helpers.metric import calculate_max_daily_streak, \
 from api_helpers.supabase import get_weekly_goal, update_daily_streak
 from api_helpers.time import get_end_of_week, get_start_of_week, \
     ms_to_h, get_start_of_prev_week
-from api_helpers.request import get_session_id
-from api_helpers.focusmate import get_data
+from api_helpers.request import get_access_token, get_session_id
+from api_helpers.focusmate import fetch_focusmate_profile, get_data
 import os
 from fastapi import Depends, FastAPI
 from dotenv import load_dotenv
 from cachetools import TTLCache
+from cachetools.keys import hashkey
 import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 
@@ -52,7 +53,14 @@ async def streak(session_id: SessionIdDep):
 
 @app.get("/api/py/goal")
 async def goal(session_id: SessionIdDep):
-    profile, _ = await get_data(session_id, cache)
+    profile: dict = cache.get(
+        hashkey('profile', session_id))
+
+    if profile is None:
+        access_token = get_access_token(session_id)
+        profile = fetch_focusmate_profile(
+            fm_api_profile_endpoint, access_token).get("user")
+
     return get_weekly_goal(profile.get("userId"))
 
 

@@ -15,7 +15,7 @@ export default function DashboardTabs({ className }: { className?: string }) {
     <div
       className={cx(
         className,
-        "shadow-inner -mt-6 w-fit rounded-md p-2 bg-zinc-200/[0.6] dark:bg-zinc-800 border border-zinc-200"
+        "shadow-inner -mt-6 w-fit rounded-md p-2 bg-[#EAE7DC] border border-stone-200"
       )}
     >
       {tabNames.map((tabName) => (
@@ -24,8 +24,8 @@ export default function DashboardTabs({ className }: { className?: string }) {
           className={cx(
             "relative transition",
             "inline-flex px-3 py-1 text-sm font-medium",
-            "text-zinc-700 dark:text-zinc-400",
-            "hover:text-zinc-600 hover:dark:text-zinc-300"
+            "text-stone-700",
+            "hover:text-stone-600"
           )}
           style={{
             WebkitTapHighlightColor: "transparent",
@@ -34,13 +34,13 @@ export default function DashboardTabs({ className }: { className?: string }) {
           {currTab === tabName && (
             <motion.span
               layoutId="bubble"
-              className="absolute inset-0 z-10 bg-white rounded-md border border-1 border-zinc-300/[0.8] shadow-sm"
+              className="absolute inset-0 z-10 bg-[#FDFDFA] rounded-md border border-1 border-stone-300/[0.7] shadow-sm"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
           <LinkInternal
             prefetch={false}
-            className="capitalize z-20 hover:text-zinc-600"
+            className="capitalize z-20 hover:text-stone-600"
             href={`/dashboard/${tabName}`}
             onClick={() => setCurrTab(tabName)}
           >

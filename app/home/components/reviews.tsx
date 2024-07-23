@@ -10,9 +10,7 @@ const ReviewCard = ({ name, review }: { name: string; review: string }) => {
       className={cx(
         "relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
         // light styles
-        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-        // dark styles
-        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
+        "border-gray-950/[.1] bg-[#F3F1EB] hover:bg-gray-950/[.05]"
       )}
     >
       <div className="flex flex-row items-center gap-2">
@@ -25,10 +23,10 @@ const ReviewCard = ({ name, review }: { name: string; review: string }) => {
           src={`https://ui-avatars.com/api/?name=${name[0]}+${name[1][0]}}`}
         />
         <div className="flex flex-col">
-          <figcaption className="text-sm dark:text-white">{name}</figcaption>
+          <figcaption className="text-sm">{name}</figcaption>
         </div>
       </div>
-      <blockquote className="mt-2 text-sm text-zinc-600">{review}</blockquote>
+      <blockquote className="mt-2 text-sm text-stone-600">{review}</blockquote>
     </figure>
   )
 }
@@ -38,7 +36,7 @@ const secondRow = reviews.reviews.slice(reviews.reviews.length / 2)
 
 export function Reviews() {
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border py-8 sm:shadow-sm">
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border border-stone-300/[0.7] py-8 sm:shadow-sm bg-[#EAE7DC]">
       <Subheading className="mb-4 inline-flex items-center">
         {reviews.title}
       </Subheading>
@@ -57,8 +55,8 @@ export function Reviews() {
 
       <Footnote className="mt-4">{reviews.footnote}</Footnote>
 
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-white dark:from-background"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-white dark:from-background"></div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-[#EAE7DC]"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-[#EAE7DC]"></div>
     </div>
   )
 }

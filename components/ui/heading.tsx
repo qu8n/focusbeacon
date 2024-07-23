@@ -19,7 +19,7 @@ export function Heading({ className, level = 1, ...props }: HeadingProps) {
       className={cx(
         className,
         fraunces.className,
-        "text-3xl/8 first-letter:uppercase font-semibold text-zinc-950 sm:text-2xl/8 dark:text-white"
+        "text-3xl/8 first-letter:uppercase font-semibold text-stone-950 sm:text-2xl/8"
       )}
     />
   )
@@ -33,7 +33,7 @@ export function Subheading({ className, level = 2, ...props }: HeadingProps) {
       {...props}
       className={cx(
         className,
-        "text-md/7 font-medium text-zinc-950 sm:text-sm/6 dark:text-white"
+        "text-md/7 font-medium text-stone-950 sm:text-sm/6"
       )}
     />
   )
