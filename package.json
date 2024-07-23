@@ -45,7 +45,6 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-responsive": "^10.0.0",
-    "react-tweet": "^3.2.1",
     "recharts": "^2.12.7",
     "supabase": "^1.172.2",
     "tailwind-merge": "^2.3.0",
