@@ -3,20 +3,15 @@
 import { useSelectedLayoutSegment } from "next/navigation"
 import { Heading } from "../ui/heading"
 
-function updateTitle(currPage: string | null) {
-  switch (currPage) {
-    case "home":
-      return null
-    case "/_not-found":
-      return "Not Found"
-    default:
-      return currPage
-  }
-}
-
 export function PageTitle() {
   let currPage = useSelectedLayoutSegment()
-  currPage = updateTitle(currPage)
+
+  switch (currPage) {
+    case "home":
+      currPage = null
+    case "/_not-found":
+      currPage = "Not Found"
+  }
 
   return (
     <>

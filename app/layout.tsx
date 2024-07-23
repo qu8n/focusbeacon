@@ -14,11 +14,12 @@ import { NavbarClient } from "@/components/common/navbar-client"
 import { Providers } from "@/components/common/providers"
 import { Metadata } from "next"
 import { Footer } from "@/components/common/footer"
+import manifest from "@/app/manifest"
 
 export const metadata: Metadata = {
-  title: "FocusBeacon — Focusmate session metrics dashboard",
-  description:
-    "Track your session statistics and stay motivated toward your goals. FocusBeacon is a free and unofficial dashboard for all Focusmate users.",
+  title:
+    "Focusbeacon — Focusmate statistics & productivity dashboard (Unofficial)",
+  description: manifest().description,
 }
 
 export default function RootLayout({

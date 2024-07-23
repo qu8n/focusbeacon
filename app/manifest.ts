@@ -2,10 +2,10 @@ import { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "FocusBeacon",
-    short_name: "FocusBeacon",
+    name: "Focusbeacon",
+    short_name: "Focusbeacon",
     description:
-      "FocusBeacon unlocks insights into your Focusmate sessions, helping you track your progress and stay motivated.",
+      "Focusbeacon helps Focusmate users be more consistent and motivated. Unlock insights from your sessions, track weekly goals, and more.",
     start_url: "/",
     display: "standalone",
     icons: [
