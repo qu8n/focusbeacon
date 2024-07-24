@@ -75,7 +75,7 @@ const LegendItem = ({
     <li
       className={cx(
         // base
-        "group inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap rounded px-2 py-1 transition",
+        "group inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap rounded px-2 mb-2 transition",
         hasOnValueChange
           ? "cursor-pointer hover:bg-stone-100"
           : "cursor-default"
@@ -362,12 +362,9 @@ const ChartLegend = (
 
   const filteredPayload = payload.filter((item: any) => item.type !== "none")
 
-  const paddingLeft =
-    legendPosition === "left" && yAxisWidth ? yAxisWidth - 8 : 0
-
   return (
     <div
-      style={{ paddingLeft: paddingLeft }}
+      style={{ paddingLeft: 0 }}
       ref={legendRef}
       className={cx(
         "flex items-center",

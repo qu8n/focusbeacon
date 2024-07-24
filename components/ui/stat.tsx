@@ -1,14 +1,11 @@
 import { Badge } from "@/components/ui/badge"
-import { Strong, Text } from "@/components/ui/text"
 
 export function Stat({
-  title,
   children,
   value,
   changeVal,
   changeText,
 }: {
-  title: string
   children?: React.ReactNode
   value?: string | React.ReactNode
   changeVal?: number
@@ -24,10 +21,6 @@ export function Stat({
 
   return (
     <div>
-      <Text className="mb-3">
-        <Strong>{title}</Strong>
-      </Text>
-
       {children}
 
       <div className="flex flex-row items-center gap-4">

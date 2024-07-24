@@ -21,8 +21,21 @@ import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
+import { DevModeButton } from "@/components/common/dev-mode-button"
 
-export default function Weekly() {
+export default function WeekPage() {
+  const [devMode, setDevMode] = useState(false)
+  return (
+    <>
+      <Week devMode={devMode} />
+      {process.env.NODE_ENV === "development" && (
+        <DevModeButton devMode={devMode} setDevMode={setDevMode} />
+      )}
+    </>
+  )
+}
+
+export function Week({ devMode }: { devMode: boolean }) {
   const [goal, setGoal] = useState(0)
   const [updatingGoal, setUpdatingGoal] = useState(false)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
@@ -57,7 +70,7 @@ export default function Weekly() {
     setUpdatingGoal(false)
   }
 
-  if (goalIsLoading || dataIsLoading) {
+  if (goalIsLoading || dataIsLoading || devMode) {
     return <LoadingSkeleton />
   }
 
@@ -66,40 +79,6 @@ export default function Weekly() {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
-      <DateSubheading
-        title="Current week"
-        dateRange={`${data.curr_week.start_date} - ${data.curr_week.end_date}`}
-        className="sm:col-span-6"
-      />
-
-      <Card className="sm:col-span-6">
-        <div className="-mt-5 mb-4 inline-flex justify-between w-full items-center gap-2">
-          <Text>
-            <Strong>Progress to goal</Strong>
-          </Text>
-
-          <Button
-            type="button"
-            className="scale-90 -mr-2"
-            {...(currGoal && { outline: true })}
-            {...(!currGoal && { color: "orange" })}
-            onClick={() => setDialogIsOpen(true)}
-          >
-            {currGoal ? "Edit goal" : "Set goal"}
-          </Button>
-        </div>
-
-        <ProgressBar
-          value={progressPercent || 0}
-          variant={progressPercent ? "success" : "neutral"}
-          label={buildProgressLabel(
-            progressPercent,
-            data.curr_week.sessions_total,
-            currGoal
-          )}
-        />
-      </Card>
-
       <Dialog open={dialogIsOpen} onClose={setDialogIsOpen}>
         <DialogTitle>Weekly session goal</DialogTitle>
         <DialogDescription>
@@ -141,37 +120,64 @@ export default function Weekly() {
         </DialogActions>
       </Dialog>
 
-      <Card className="sm:col-span-2">
+      <DateSubheading
+        title="Current week"
+        dateRange={`${data.curr_week.start_date} - ${data.curr_week.end_date}`}
+        className="sm:col-span-6"
+      />
+
+      <Card className="sm:col-span-6">
+        <div className="-mt-5 mb-3 inline-flex justify-between w-full items-center">
+          <Text>
+            <Strong>Progress to goal</Strong>
+          </Text>
+
+          <Button
+            type="button"
+            className="scale-90 -mr-2"
+            {...(currGoal && { outline: true })}
+            {...(!currGoal && { color: "orange" })}
+            onClick={() => setDialogIsOpen(true)}
+          >
+            {currGoal ? "Edit goal" : "Set goal"}
+          </Button>
+        </div>
+
+        <ProgressBar
+          value={progressPercent || 0}
+          variant={progressPercent ? "success" : "neutral"}
+          label={buildProgressLabel(
+            progressPercent,
+            data.curr_week.sessions_total,
+            currGoal
+          )}
+        />
+      </Card>
+
+      <Card title="Total sessions" className="sm:col-span-2">
         <Stat
-          title="Total sessions"
           value={data.curr_week.sessions_total}
           changeVal={data.curr_week.sessions_delta}
           changeText="vs. previous week"
         />
       </Card>
 
-      <Card className="sm:col-span-2">
+      <Card title="Total hours" className="sm:col-span-2">
         <Stat
-          title="Total hours"
           value={data.curr_week.hours_total}
           changeVal={data.curr_week.hours_delta}
           changeText="vs. previous week"
         />
       </Card>
 
-      <Card className="sm:col-span-2">
+      <Card title="Total partners" className="sm:col-span-2">
         <Stat
-          title="Total partners"
           value={data.curr_week.partners_total}
           changeText={`${data.curr_week.partners_repeat} repeat`}
         />
       </Card>
 
-      <Card className="sm:col-span-6">
-        <Text>
-          <Strong>Sessions by day of the week</Strong>
-        </Text>
-
+      <Card title="Sessions by day of the week" className="sm:col-span-6">
         <BarChart
           index="start_date_str"
           categories={["25m", "50m", "75m"]}
@@ -180,6 +186,7 @@ export default function Weekly() {
           colors={["blue", "orange", "yellow"]}
           allowDecimals={false}
           showYAxis={false}
+          legendPosition="left"
         />
       </Card>
 
@@ -189,11 +196,7 @@ export default function Weekly() {
         className="sm:col-span-6 mt-4"
       />
 
-      <Card className="sm:col-span-6">
-        <Text>
-          <Strong>Sessions by week</Strong>
-        </Text>
-
+      <Card title="Sessions by week" className="sm:col-span-6">
         <BarChart
           index="start_week_str"
           categories={["25m", "50m", "75m"]}
@@ -202,14 +205,11 @@ export default function Weekly() {
           colors={["blue", "orange", "yellow"]}
           allowDecimals={false}
           showYAxis={false}
+          legendPosition="left"
         />
       </Card>
 
-      <Card className="sm:col-span-3">
-        <Text>
-          <Strong>Sessions by punctuality</Strong>
-        </Text>
-
+      <Card title="Sessions by punctuality" className="sm:col-span-3">
         <Legend categories={["Early", "Late"]} colors={["blue", "orange"]} />
 
         <div className="grid grid-cols-2 items-center mt-3">
@@ -250,11 +250,7 @@ export default function Weekly() {
         </div>
       </Card>
 
-      <Card className="sm:col-span-3">
-        <Text>
-          <Strong>Sessions by duration</Strong>
-        </Text>
-
+      <Card title="Sessions by duration" className="sm:col-span-3">
         <Legend
           categories={["25m", "50m", "75m"]}
           colors={["blue", "orange", "yellow"]}
@@ -297,11 +293,7 @@ export default function Weekly() {
         </div>
       </Card>
 
-      <Card className="sm:col-span-6">
-        <Text>
-          <Strong>Sessions by starting time</Strong>
-        </Text>
-
+      <Card title="Sessions by starting time" className="sm:col-span-6">
         <BarChart
           index="start_time_str"
           categories={["25m", "50m", "75m"]}
@@ -311,6 +303,7 @@ export default function Weekly() {
           allowDecimals={false}
           showYAxis={false}
           tickGap={28}
+          legendPosition="left"
         />
       </Card>
     </div>
@@ -330,44 +323,32 @@ function LoadingSkeleton() {
         <Skeleton className="h-[10px] w-full" />
       </Card>
 
-      <Card>
-        <Stat title="Total sessions">
-          <div className="flex flex-row gap-4">
-            <Skeleton className="h-[32px] w-[25px]" />
-            <Skeleton className="h-[32px] w-[100px]" />
-          </div>
-        </Stat>
+      <Card title="Total sessions">
+        <div className="flex flex-row gap-4">
+          <Skeleton className="h-[32px] w-[25px]" />
+          <Skeleton className="h-[32px] w-[100px]" />
+        </div>
       </Card>
 
-      <Card>
-        <Stat title="Total hours">
-          <div className="flex flex-row gap-4">
-            <Skeleton className="h-[32px] w-[25px]" />
-            <Skeleton className="h-[32px] w-[100px]" />
-          </div>
-        </Stat>
+      <Card title="Total hours">
+        <div className="flex flex-row gap-4">
+          <Skeleton className="h-[32px] w-[25px]" />
+          <Skeleton className="h-[32px] w-[100px]" />
+        </div>
       </Card>
 
-      <Card>
-        <Stat title="Total partners">
-          <div className="flex flex-row gap-4">
-            <Skeleton className="h-[32px] w-[25px]" />
-            <Skeleton className="h-[32px] w-[50px]" />
-          </div>
-        </Stat>
+      <Card title="Total partners">
+        <div className="flex flex-row gap-4">
+          <Skeleton className="h-[32px] w-[25px]" />
+          <Skeleton className="h-[32px] w-[50px]" />
+        </div>
       </Card>
 
-      <Card className="sm:col-span-3">
-        <Text className="mb-3">
-          <Strong>Sessions by day of the week</Strong>
-        </Text>
+      <Card title="Sessions by day of the week" className="sm:col-span-3">
         <Skeleton className="h-[315px] w-full" />
       </Card>
 
-      <Card className="sm:col-span-3">
-        <Text className="mb-3">
-          <Strong>Sessions by starting time</Strong>
-        </Text>
+      <Card title="Sessions by starting time" className="sm:col-span-3">
         <Skeleton className="h-[315px] w-full" />
       </Card>
     </div>

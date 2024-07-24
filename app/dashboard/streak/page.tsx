@@ -7,16 +7,29 @@ import { useQuery } from "@tanstack/react-query"
 import { useBreakpoint } from "@/hooks/use-breakpoint"
 import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Text, Strong } from "@/components/ui/text"
+import { Text } from "@/components/ui/text"
 import { Card } from "@/components/ui/card"
 import HistoryTable, { columns } from "@/components/charts/history-table"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { RiArrowRightSLine } from "@remixicon/react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
+import { DevModeButton } from "@/components/common/dev-mode-button"
 
-export default function Streak() {
+export default function StreakPage() {
+  const [devMode, setDevMode] = useState(false)
+  return (
+    <>
+      <Streak devMode={devMode} />
+      {process.env.NODE_ENV === "development" && (
+        <DevModeButton devMode={devMode} setDevMode={setDevMode} />
+      )}
+    </>
+  )
+}
+
+function Streak({ devMode }: { devMode: boolean }) {
   const { isBelowSm } = useBreakpoint("sm")
 
   const { isLoading: loadingData, data } = useQuery({
@@ -35,14 +48,14 @@ export default function Streak() {
     getCoreRowModel: getCoreRowModel(),
   })
 
-  if (loadingData || !data) {
+  if (loadingData || !data || devMode) {
     return <LoadingSkeleton />
   }
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <Card>
-        <Stat title="Daily streak">
+      <Card title="Daily streak">
+        <Stat>
           <div className="flex flex-row items-center gap-1">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
               {data.daily_streak}
@@ -52,8 +65,8 @@ export default function Streak() {
         </Stat>
       </Card>
 
-      <Card>
-        <Stat title="Record daily streak">
+      <Card title="Record daily streak">
+        <Stat>
           <div className="flex flex-row items-center gap-4">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
               {data.max_daily_streak.count}
@@ -68,27 +81,23 @@ export default function Streak() {
         </Stat>
       </Card>
 
-      <Card>
-        <Stat title="Weekly streak" value={data.weekly_streak} />
+      <Card title="Weekly streak">
+        <Stat value={data.weekly_streak} />
       </Card>
 
-      <Card>
-        <Stat title="Monthly streak" value={data.monthly_streak} />
+      <Card title="Monthly streak">
+        <Stat value={data.monthly_streak} />
       </Card>
 
-      <Card className="sm:col-span-2">
-        <Heatmap
-          title="Sessions heatmap"
-          data={data.heatmap_data}
-          isBelowSm={isBelowSm}
-        />
+      <Card
+        title="Sessions heatmap"
+        subtitle={`${data.heatmap_data.past_year_sessions.toLocaleString()} sessions in the last year`}
+        className="sm:col-span-2"
+      >
+        <Heatmap data={data.heatmap_data} isBelowSm={isBelowSm} />
       </Card>
 
-      <Card className="sm:col-span-2">
-        <Text className="mb-3 flex flex-col">
-          <Strong>Recent sessions</Strong>
-        </Text>
-
+      <Card title="Recent sessions" className="sm:col-span-2">
         <HistoryTable rows={table.getRowModel().rows} />
         <div className="relative flex items-center">
           <div className="flex-grow border-t border-stone-200" />
@@ -112,46 +121,32 @@ export default function Streak() {
 function LoadingSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <Card>
-        <Stat title="Daily streak">
+      <Card title="Daily streak">
+        <Skeleton className="h-[32px] w-[25px]" />
+      </Card>
+
+      <Card title="Record daily streak">
+        <div className="flex flex-row gap-4">
           <Skeleton className="h-[32px] w-[25px]" />
-        </Stat>
+          <Skeleton className="h-[32px] w-[190px]" />
+        </div>
       </Card>
 
-      <Card>
-        <Stat title="Record daily streak">
-          <div className="flex flex-row gap-4">
-            <Skeleton className="h-[32px] w-[25px]" />
-            <Skeleton className="h-[32px] w-[190px]" />
-          </div>
-        </Stat>
+      <Card title="Weekly streak">
+        <Skeleton className="h-[32px] w-[25px]" />
       </Card>
 
-      <Card>
-        <Stat title="Weekly streak">
-          <Skeleton className="h-[32px] w-[25px]" />
-        </Stat>
+      <Card title="Monthly streak">
+        <Skeleton className="h-[32px] w-[25px]" />
       </Card>
 
-      <Card>
-        <Stat title="Monthly streak">
-          <Skeleton className="h-[32px] w-[25px]" />
-        </Stat>
+      <Card title="Sessions heatmap" className="sm:col-span-2">
+        <Skeleton className="-mt-2 w-[180px] h-[20px]" />
+        <Skeleton className="mt-6 w-full h-[143px]" />
       </Card>
 
-      <Card className="sm:col-span-2">
-        <Text>
-          <Strong>Sessions heatmap</Strong>
-        </Text>
-        <Skeleton className="mt-2 w-[180px] h-[20px]" />
-        <Skeleton className="mt-6 w-full h-[140px]" />
-      </Card>
-
-      <Card className="sm:col-span-2">
-        <Text>
-          <Strong>Recent sessions</Strong>
-        </Text>
-        <Skeleton className="mt-6 w-full h-[360px]" />
+      <Card title="Recent sessions" className="sm:col-span-2">
+        <Skeleton className="mt-6 w-full h-[260px]" />
       </Card>
     </div>
   )
