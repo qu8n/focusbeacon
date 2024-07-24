@@ -20,6 +20,7 @@ import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
+import { DateSubheading } from "@/components/common/date-subheading"
 
 export default function Weekly() {
   const [goal, setGoal] = useState(0)
@@ -64,6 +65,12 @@ export default function Weekly() {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+      <DateSubheading
+        title="This week"
+        dateRange="Monday, Jul 22 - Sunday, Jul 28"
+        className="sm:col-span-6"
+      />
+
       <Card className="sm:col-span-6">
         <div className="-mt-5 mb-4 inline-flex justify-between w-full items-center gap-2">
           <Text>
@@ -281,9 +288,15 @@ export default function Weekly() {
         />
       </Card>
 
+      <DateSubheading
+        title="Last 4 weeks"
+        dateRange="Monday, Jun 24 - Mon, Jul 21"
+        className="sm:col-span-6 mt-4"
+      />
+
       <Card className="sm:col-span-6">
         <Text>
-          <Strong>Sessions in the last 4 weeks</Strong>
+          <Strong>Sessions by week</Strong>
         </Text>
 
         <BarChart
