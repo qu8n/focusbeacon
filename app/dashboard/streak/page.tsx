@@ -14,6 +14,7 @@ import { LinkInternal } from "@/components/ui/link-internal"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import { Button } from "@/components/ui/button"
 
 export default function Streak() {
   const { isBelowSm } = useBreakpoint("sm")
@@ -86,13 +87,23 @@ export default function Streak() {
       <Card className="sm:col-span-2">
         <Text className="mb-3 flex flex-col">
           <Strong>Recent sessions</Strong>
-
-          <LinkInternal href="/history" className="inline-flex items-center">
-            View all <RiArrowRightSLine size={15} />
-          </LinkInternal>
         </Text>
 
         <HistoryTable rows={table.getRowModel().rows} />
+        <div className="relative flex items-center">
+          <div className="flex-grow border-t border-stone-200" />
+          <LinkInternal
+            href="/history"
+            className="inline-flex items-center flex-shrink"
+          >
+            <Button outline>
+              <Text className="inline-flex items-center">
+                View all <RiArrowRightSLine size={15} />
+              </Text>
+            </Button>
+          </LinkInternal>
+          <div className="flex-grow border-t border-stone-200" />
+        </div>
       </Card>
     </div>
   )

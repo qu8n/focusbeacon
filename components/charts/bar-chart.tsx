@@ -76,7 +76,9 @@ const LegendItem = ({
       className={cx(
         // base
         "group inline-flex flex-nowrap items-center gap-1.5 whitespace-nowrap rounded px-2 py-1 transition",
-        hasOnValueChange ? "cursor-pointer hover:bg-gray-100" : "cursor-default"
+        hasOnValueChange
+          ? "cursor-pointer hover:bg-stone-100"
+          : "cursor-default"
       )}
       onClick={(e) => {
         e.stopPropagation()
@@ -96,8 +98,8 @@ const LegendItem = ({
           // base
           "truncate whitespace-nowrap text-xs",
           // text color
-          "text-gray-700",
-          hasOnValueChange && "group-hover:text-gray-900",
+          "text-stone-700",
+          hasOnValueChange && "group-hover:text-stone-900",
           activeLegend && activeLegend !== name ? "opacity-40" : "opacity-100"
         )}
       >
@@ -143,8 +145,8 @@ const ScrollButton = ({ icon, onClick, disabled }: ScrollButtonProps) => {
         // base
         "group inline-flex size-5 items-center truncate rounded transition",
         disabled
-          ? "cursor-not-allowed text-gray-400"
-          : "cursor-pointer text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+          ? "cursor-not-allowed text-stone-400"
+          : "cursor-pointer text-stone-700 hover:bg-stone-100 hover:text-stone-900"
       )}
       disabled={disabled}
       onClick={(e) => {
@@ -409,7 +411,7 @@ const ChartTooltipRow = ({ value, name, color }: ChartTooltipRowProps) => (
           // commmon
           "whitespace-nowrap text-right",
           // text color
-          "text-gray-700"
+          "text-stone-700"
         )}
       >
         {name}
@@ -420,7 +422,7 @@ const ChartTooltipRow = ({ value, name, color }: ChartTooltipRowProps) => (
         // base
         "whitespace-nowrap text-right font-medium tabular-nums",
         // text color
-        "text-gray-900"
+        "text-stone-900"
       )}
     >
       {value}
@@ -457,7 +459,7 @@ const ChartTooltip = ({
           // base
           "rounded-md border text-sm shadow-md",
           // border color
-          "border-gray-200",
+          "border-stone-200",
           // background color
           "bg-white"
         )}
@@ -473,7 +475,7 @@ const ChartTooltip = ({
               // base
               "font-medium",
               // text color
-              "text-gray-900"
+              "text-stone-900"
             )}
           >
             {label}
@@ -658,7 +660,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
           >
             {showGridLines ? (
               <CartesianGrid
-                className={cx("stroke-gray-200 stroke-1")}
+                className={cx("stroke-stone-200 stroke-1")}
                 horizontal={layout !== "vertical"}
                 vertical={layout === "vertical"}
               />
@@ -675,7 +677,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                 // base
                 "text-xs",
                 // text fill
-                "fill-gray-500",
+                "fill-stone-500",
                 { "mt-4": layout !== "vertical" }
               )}
               tickLine={false}
@@ -705,7 +707,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                 <Label
                   position="insideBottom"
                   offset={-20}
-                  className="text-sm font-medium fill-gray-800"
+                  className="text-sm font-medium fill-stone-800"
                 >
                   {xAxisLabel}
                 </Label>
@@ -722,7 +724,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                 // base
                 "text-xs",
                 // text fill
-                "fill-gray-500"
+                "fill-stone-500"
               )}
               tick={{
                 transform:
@@ -753,7 +755,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                   style={{ textAnchor: "middle" }}
                   angle={-90}
                   offset={-15}
-                  className="text-sm font-medium fill-gray-800"
+                  className="text-sm font-medium fill-stone-800"
                 >
                   {yAxisLabel}
                 </Label>

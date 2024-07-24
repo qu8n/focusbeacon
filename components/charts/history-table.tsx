@@ -97,7 +97,7 @@ export default function HistoryTable({
     <TableRoot className="mb-4">
       <Table>
         <TableHead>
-          <TableRow className="border-b">
+          <TableRow>
             {columns.map((column) => {
               return (
                 <TableHeaderCell

@@ -75,7 +75,7 @@ const ChartTooltip = ({
           // base
           "rounded-md border text-sm shadow-md",
           // border color
-          "border-gray-200",
+          "border-stone-200",
           // background color
           "bg-white"
         )}
@@ -99,7 +99,7 @@ const ChartTooltip = ({
                     // base
                     "whitespace-nowrap text-right",
                     // text color
-                    "text-gray-700"
+                    "text-stone-700"
                   )}
                 >
                   {category}
@@ -110,7 +110,7 @@ const ChartTooltip = ({
                   // base
                   "whitespace-nowrap text-right font-medium tabular-nums",
                   // text color
-                  "text-gray-900"
+                  "text-stone-900"
                 )}
               >
                 {valueFormatter(value)}
@@ -239,7 +239,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
           >
             {showLabel && isDonut && (
               <text
-                className="fill-gray-700"
+                className="fill-stone-700"
                 x="50%"
                 y="50%"
                 textAnchor="middle"

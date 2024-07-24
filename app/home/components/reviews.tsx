@@ -9,7 +9,7 @@ const ReviewCard = ({ name, review }: { name: string; review: string }) => {
     <figure
       className={cx(
         "relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
-        "border-gray-950/[.1] bg-[#FDFDFA] hover:bg-gray-950/[.05]"
+        "border-stone-950/[.1] bg-[#FDFDFA] hover:bg-stone-950/[.05]"
       )}
     >
       <div className="flex flex-row items-center gap-2">
