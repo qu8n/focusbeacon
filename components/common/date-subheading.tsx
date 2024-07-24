@@ -6,7 +6,7 @@ export function DateSubheading({
   className,
 }: {
   title: string
-  dateRange: string
+  dateRange: string | React.ReactNode
   className?: string
 }) {
   return (
@@ -14,7 +14,13 @@ export function DateSubheading({
       <Strong className="text-base">{title}</Strong>
 
       <div className="relative flex items-center">
-        <Text className="flex-shrink mr-4">{dateRange}</Text>
+        <div className="flex-shrink mr-4">
+          {typeof dateRange === "string" || dateRange instanceof String ? (
+            <Text>{dateRange}</Text>
+          ) : (
+            dateRange
+          )}
+        </div>
 
         {/* Horizontal line */}
         <div className="flex-grow border-t border-stone-300 border-dashed" />

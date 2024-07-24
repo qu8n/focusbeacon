@@ -312,44 +312,68 @@ export function Week({ devMode }: { devMode: boolean }) {
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-      <Card className="sm:col-span-3">
-        <div className="inline-flex w-full justify-between mb-5 items-center">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+      <DateSubheading
+        title="Current week"
+        dateRange={<Skeleton className="w-[210px] h-[25px]" />}
+        className="sm:col-span-6"
+      />
+
+      <Card className="sm:col-span-6">
+        <div className="inline-flex w-full justify-between mb-4 items-center">
           <Text>
             <Strong>Progress to goal</Strong>
           </Text>
           <Skeleton className="w-[70px] h-[30px]" />
         </div>
-        <Skeleton className="h-[10px] w-full" />
+        <Skeleton className="h-[10px] w-full mb-2" />
       </Card>
 
-      <Card title="Total sessions">
+      <Card title="Total sessions" className="sm:col-span-2">
         <div className="flex flex-row gap-4">
           <Skeleton className="h-[32px] w-[25px]" />
-          <Skeleton className="h-[32px] w-[100px]" />
+          <Skeleton className="h-[32px] w-[125px]" />
         </div>
       </Card>
 
-      <Card title="Total hours">
+      <Card title="Total hours" className="sm:col-span-2">
         <div className="flex flex-row gap-4">
           <Skeleton className="h-[32px] w-[25px]" />
-          <Skeleton className="h-[32px] w-[100px]" />
+          <Skeleton className="h-[32px] w-[125px]" />
         </div>
       </Card>
 
-      <Card title="Total partners">
+      <Card title="Total partners" className="sm:col-span-2">
         <div className="flex flex-row gap-4">
           <Skeleton className="h-[32px] w-[25px]" />
           <Skeleton className="h-[32px] w-[50px]" />
         </div>
       </Card>
 
-      <Card title="Sessions by day of the week" className="sm:col-span-3">
-        <Skeleton className="h-[315px] w-full" />
+      <Card title="Sessions by day of the week" className="sm:col-span-6">
+        <Skeleton className="h-[320px] w-full" />
       </Card>
 
-      <Card title="Sessions by starting time" className="sm:col-span-3">
-        <Skeleton className="h-[315px] w-full" />
+      <DateSubheading
+        title="Previous weeks"
+        dateRange={<Skeleton className="w-[210px] h-[25px]" />}
+        className="sm:col-span-6 mt-4"
+      />
+
+      <Card title="Sessions by week" className="sm:col-span-6">
+        <Skeleton className="h-[320px] w-full" />
+      </Card>
+
+      <Card title="Sessions by punctuality" className="sm:col-span-3">
+        <Skeleton className="h-[165px] w-full" />
+      </Card>
+
+      <Card title="Sessions by duration" className="sm:col-span-3">
+        <Skeleton className="h-[165px] w-full" />
+      </Card>
+
+      <Card title="Sessions by starting time" className="sm:col-span-6">
+        <Skeleton className="h-[320px] w-full" />
       </Card>
     </div>
   )

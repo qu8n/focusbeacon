@@ -99,20 +99,10 @@ function Streak({ devMode }: { devMode: boolean }) {
 
       <Card title="Recent sessions" className="sm:col-span-2">
         <HistoryTable rows={table.getRowModel().rows} />
-        <div className="relative flex items-center">
-          <div className="flex-grow border-t border-stone-200" />
-          <LinkInternal
-            href="/history"
-            className="inline-flex items-center flex-shrink"
-          >
-            <Button outline>
-              <Text className="inline-flex items-center">
-                View all <RiArrowRightSLine size={15} />
-              </Text>
-            </Button>
-          </LinkInternal>
-          <div className="flex-grow border-t border-stone-200" />
-        </div>
+        <LinkInternal href="/history" className="inline-flex items-center">
+          <Text>View all</Text>
+          <RiArrowRightSLine color="gray" size={15} />
+        </LinkInternal>
       </Card>
     </div>
   )
