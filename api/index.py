@@ -1,14 +1,12 @@
 
 from typing import Annotated
 import pandas as pd
-import datetime
 from pydantic import BaseModel
 from api_helpers.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, prep_punctuality_pie_data, prep_chart_data_by_past_range, prep_chart_data_by_time, \
     prep_heatmap_data, prep_history_data, prep_chart_data_by_range
 from api_helpers.supabase import get_weekly_goal, update_daily_streak
-from api_helpers.time import get_end_of_week, get_start_of_week, \
-    ms_to_h, get_start_of_prev_week
+from api_helpers.time import get_curr_week_start, ms_to_h
 from api_helpers.request import get_access_token, get_session_id
 from api_helpers.focusmate import fetch_focusmate_profile, get_data
 import os
@@ -65,50 +63,63 @@ async def goal(session_id: SessionIdDep):
     return get_weekly_goal(profile.get("userId"))
 
 
-@app.get("/api/py/weekly")
+@app.get("/api/py/week")
 async def weekly(session_id: SessionIdDep):
     profile, sessions = await get_data(session_id, cache)
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
-    start_of_week = get_start_of_week(local_timezone)
-    start_of_prev_week = get_start_of_prev_week(local_timezone)
-    end_of_week = get_end_of_week(start_of_week)
+    curr_week_start = get_curr_week_start(local_timezone)
+    curr_week_end = curr_week_start + \
+        pd.DateOffset(days=6, hours=23, minutes=59, seconds=59)
+    prev_week_start = curr_week_start - pd.DateOffset(weeks=1)
+    l4w_start = curr_week_start - pd.DateOffset(weeks=4)
+    l4w_end = curr_week_end - pd.DateOffset(weeks=1)
 
-    curr_week_sessions = sessions[sessions['start_time'] >= start_of_week]
+    curr_week_sessions = sessions[sessions['start_time'] >= curr_week_start]
     prev_week_sessions = sessions[
-        (sessions['start_time'] >= start_of_prev_week) &
-        (sessions['start_time'] < start_of_week)
+        (sessions['start_time'] >= prev_week_start) &
+        (sessions['start_time'] < curr_week_start)
+    ]
+    l4w_sessions = sessions[
+        (sessions['start_time'] >= l4w_start) &
+        (sessions['start_time'] < curr_week_start)
     ]
 
-    l4w_end_date = pd.Timestamp(datetime.datetime.now().date(
-    ) - pd.DateOffset(days=pd.Timestamp(datetime.datetime.now().date()).dayofweek + 1))
-    l4w_start_date = l4w_end_date - pd.DateOffset(weeks=4)
-    l4w_sessions = sessions[
-        (sessions['start_time'] >= l4w_start_date) &
-        (sessions['start_time'] < l4w_end_date)
-    ]
+    # Date end labels are calculated separately to avoid timezone issues
+    date_format = "%A, %b %d"
+    curr_week_start_date = pd.to_datetime(
+        str(curr_week_start)).strftime(date_format)
+    curr_week_end_date = pd.to_datetime(
+        str(curr_week_start + pd.DateOffset(days=6))).strftime(date_format)
+    prev_weeks_start_date = pd.to_datetime(
+        str(l4w_start)).strftime(date_format)
+    prev_weeks_end_date = pd.to_datetime(
+        str(l4w_start + pd.DateOffset(days=4*7-1))).strftime(date_format)
 
     return {
-        "total": {
-            "sessions": len(curr_week_sessions),
-            "hours": ms_to_h(curr_week_sessions['duration'].sum()),
-            "partners": len(curr_week_sessions['partner_id'].unique()),
-            "repeat_partners": calc_repeat_partners(curr_week_sessions)
+        "curr_week": {
+            "start_date": curr_week_start_date,
+            "end_date": curr_week_end_date,
+            "sessions_total": len(curr_week_sessions),
+            "sessions_delta": len(curr_week_sessions) - len(prev_week_sessions),
+            "hours_total": ms_to_h(curr_week_sessions['duration'].sum()),
+            "hours_delta": ms_to_h(curr_week_sessions['duration'].sum() -
+                                   prev_week_sessions['duration'].sum()),
+            "partners_total": len(curr_week_sessions['partner_id'].unique()),
+            "partners_repeat": calc_repeat_partners(curr_week_sessions),
+            "chart_data": prep_chart_data_by_range(
+                curr_week_sessions, curr_week_start, curr_week_end),
         },
-        "prev_period_delta": {
-            "sessions": len(curr_week_sessions) - len(prev_week_sessions),
-            "hours": ms_to_h(curr_week_sessions['duration'].sum() -
-                             prev_week_sessions['duration'].sum())
-        },
-        "chart": {
-            "range": prep_chart_data_by_range(
-                curr_week_sessions, start_of_week, end_of_week),
-            "time": prep_chart_data_by_time(curr_week_sessions),
-            "l4w": prep_chart_data_by_past_range(
-                l4w_sessions, l4w_start_date, l4w_end_date),
-            "pie": prep_duration_pie_data(curr_week_sessions),
-            "punctuality": prep_punctuality_pie_data(curr_week_sessions)
+        "prev_weeks": {
+            "start_date": prev_weeks_start_date,
+            "end_date": prev_weeks_end_date,
+            "sessions_total": len(l4w_sessions),
+            "week": prep_chart_data_by_past_range(
+                l4w_sessions, l4w_start, l4w_end),
+            "punctuality": prep_punctuality_pie_data(l4w_sessions),
+            "duration": prep_duration_pie_data(l4w_sessions),
+            "time": prep_chart_data_by_time(l4w_sessions)
         }
     }
 

@@ -40,29 +40,14 @@ def dt_to_fm_time_str(datetime_obj: datetime):
     return fm_time_str
 
 
-def get_start_of_week(local_timezone: str):
-    '''Returns the start of the current week in the given timezone, defined as
-    00:00:00 on Monday of the current week.'''
+def get_curr_week_start(local_timezone: str):
     today_local = datetime.now(tz.gettz(local_timezone))
     monday = today_local - timedelta(days=today_local.weekday())
-    start_of_week = monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    curr_week_start = monday.replace(hour=0, minute=0, second=0, microsecond=0)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
-        start_of_week_dt64 = np.datetime64(start_of_week)
-    return start_of_week_dt64
-
-
-def get_end_of_week(start_of_week: np.datetime64):
-    end_of_week = start_of_week + \
-        np.timedelta64(7, 'D') - np.timedelta64(1, 's')
-    return end_of_week
-
-
-def get_start_of_prev_week(local_timezone: str):
-    '''Returns the start of the previous week in the given timezone, defined as
-    00:00:00 on Monday of the previous week.'''
-    start_of_week = get_start_of_week(local_timezone)
-    return start_of_week - np.timedelta64(7, 'D')
+        curr_week_start_dt64 = np.datetime64(curr_week_start)
+    return curr_week_start_dt64
 
 
 def ms_to_m(ms: int):

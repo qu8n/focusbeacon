@@ -44,7 +44,7 @@ export default function Weekly() {
   const { isLoading: dataIsLoading, data } = useQuery({
     queryKey: ["weekly"],
     queryFn: async () => {
-      const response = await fetch(`/api/py/weekly`)
+      const response = await fetch(`/api/py/week`)
       return await response.json()
     },
   })
@@ -61,13 +61,14 @@ export default function Weekly() {
     return <LoadingSkeleton />
   }
 
-  const progressPercent = currGoal && (data.total.sessions / currGoal) * 100
+  const progressPercent =
+    currGoal && (data.curr_week.sessions_total / currGoal) * 100
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
       <DateSubheading
-        title="This week"
-        dateRange="Monday, Jul 22 - Sunday, Jul 28"
+        title="Current week"
+        dateRange={`${data.curr_week.start_date} - ${data.curr_week.end_date}`}
         className="sm:col-span-6"
       />
 
@@ -93,7 +94,7 @@ export default function Weekly() {
           variant={progressPercent ? "success" : "neutral"}
           label={buildProgressLabel(
             progressPercent,
-            data.total.sessions,
+            data.curr_week.sessions_total,
             currGoal
           )}
         />
@@ -143,26 +144,64 @@ export default function Weekly() {
       <Card className="sm:col-span-2">
         <Stat
           title="Total sessions"
-          value={data.total.sessions}
-          changeVal={data.prev_period_delta.sessions}
-          changeText="vs. last week"
+          value={data.curr_week.sessions_total}
+          changeVal={data.curr_week.sessions_delta}
+          changeText="vs. previous week"
         />
       </Card>
 
       <Card className="sm:col-span-2">
         <Stat
           title="Total hours"
-          value={data.total.hours}
-          changeVal={data.prev_period_delta.hours}
-          changeText="vs. last week"
+          value={data.curr_week.hours_total}
+          changeVal={data.curr_week.hours_delta}
+          changeText="vs. previous week"
         />
       </Card>
 
       <Card className="sm:col-span-2">
         <Stat
           title="Total partners"
-          value={data.total.partners}
-          changeText={`${data.total.repeat_partners} repeat`}
+          value={data.curr_week.partners_total}
+          changeText={`${data.curr_week.partners_repeat} repeat`}
+        />
+      </Card>
+
+      <Card className="sm:col-span-6">
+        <Text>
+          <Strong>Sessions by day of the week</Strong>
+        </Text>
+
+        <BarChart
+          index="start_date_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.curr_week.chart_data}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
+        />
+      </Card>
+
+      <DateSubheading
+        title="Previous weeks"
+        dateRange={`${data.prev_weeks.start_date} - ${data.prev_weeks.end_date}`}
+        className="sm:col-span-6 mt-4"
+      />
+
+      <Card className="sm:col-span-6">
+        <Text>
+          <Strong>Sessions by week</Strong>
+        </Text>
+
+        <BarChart
+          index="start_week_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.prev_weeks.week}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
         />
       </Card>
 
@@ -175,25 +214,25 @@ export default function Weekly() {
 
         <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
-            data={data.chart.pie}
+            data={data.prev_weeks.punctuality.data}
             variant="pie"
             category="punctuality"
             value="amount"
             colors={["blue", "orange"]}
             valueFormatter={(value) =>
-              `${value} (${(value / data.total.sessions) * 100}%)`
+              `${value} (${(value / data.prev_weeks.sessions_total) * 100}%)`
             }
             className="ml-4"
           />
 
           <div className="flex flex-col">
             <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>{data.chart.punctuality.data[0].punctuality}</span>
+              <span>{data.prev_weeks.punctuality.data[0].punctuality}</span>
               <span>
-                {data.chart.punctuality.data[0].amount} (
+                {data.prev_weeks.punctuality.data[0].amount} (
                 {Math.round(
-                  (data.chart.punctuality.data[0].amount /
-                    data.total.sessions) *
+                  (data.prev_weeks.punctuality.data[0].amount /
+                    data.prev_weeks.sessions_total) *
                     100
                 )}
                 %)
@@ -201,11 +240,11 @@ export default function Weekly() {
             </Text>
             <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>Average</span>
-              <span>{data.chart.punctuality.avg}</span>
+              <span>{data.prev_weeks.punctuality.avg}</span>
             </Text>
             <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>Median</span>
-              <span>{data.chart.punctuality.median}</span>
+              <span>{data.prev_weeks.punctuality.median}</span>
             </Text>
           </div>
         </div>
@@ -223,19 +262,19 @@ export default function Weekly() {
 
         <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
-            data={data.chart.pie}
+            data={data.prev_weeks.duration}
             variant="pie"
             category="duration"
             value="amount"
             colors={["blue", "orange", "yellow"]}
             valueFormatter={(value) =>
-              `${value} (${(value / data.total.sessions) * 100}%)`
+              `${value} (${(value / data.prev_weeks.sessions_total) * 100}%)`
             }
             className="ml-4"
           />
 
           <div className="flex flex-col">
-            {data.chart.pie.map(
+            {data.prev_weeks.duration.map(
               (item: { duration: string; amount: number }) => {
                 return (
                   <Text
@@ -245,7 +284,10 @@ export default function Weekly() {
                     <span>{item.duration}</span>
                     <span>
                       {item.amount} (
-                      {Math.round((item.amount / data.total.sessions) * 100)}%)
+                      {Math.round(
+                        (item.amount / data.prev_weeks.sessions_total) * 100
+                      )}
+                      %)
                     </span>
                   </Text>
                 )
@@ -257,22 +299,6 @@ export default function Weekly() {
 
       <Card className="sm:col-span-6">
         <Text>
-          <Strong>Sessions by day of the week</Strong>
-        </Text>
-
-        <BarChart
-          index="start_date_str"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.chart.range}
-          colors={["blue", "orange", "yellow"]}
-          allowDecimals={false}
-          showYAxis={false}
-        />
-      </Card>
-
-      <Card className="sm:col-span-6">
-        <Text>
           <Strong>Sessions by starting time</Strong>
         </Text>
 
@@ -280,33 +306,11 @@ export default function Weekly() {
           index="start_time_str"
           categories={["25m", "50m", "75m"]}
           type="stacked"
-          data={data.chart.time}
+          data={data.prev_weeks.time}
           colors={["blue", "orange", "yellow"]}
           allowDecimals={false}
           showYAxis={false}
           tickGap={28}
-        />
-      </Card>
-
-      <DateSubheading
-        title="Last 4 weeks"
-        dateRange="Monday, Jun 24 - Mon, Jul 21"
-        className="sm:col-span-6 mt-4"
-      />
-
-      <Card className="sm:col-span-6">
-        <Text>
-          <Strong>Sessions by week</Strong>
-        </Text>
-
-        <BarChart
-          index="start_week_str"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.chart.l4w}
-          colors={["blue", "orange", "yellow"]}
-          allowDecimals={false}
-          showYAxis={false}
         />
       </Card>
     </div>
