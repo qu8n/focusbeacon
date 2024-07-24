@@ -159,20 +159,49 @@ export default function Weekly() {
         />
       </Card>
 
-      <Card className="sm:col-span-6">
+      <Card className="sm:col-span-3">
         <Text>
-          <Strong>Sessions by day of the week</Strong>
+          <Strong>Sessions by punctuality</Strong>
         </Text>
 
-        <BarChart
-          index="start_date_str"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.chart.range}
-          colors={["blue", "orange", "yellow"]}
-          allowDecimals={false}
-          showYAxis={false}
-        />
+        <Legend categories={["Early", "Late"]} colors={["blue", "orange"]} />
+
+        <div className="grid grid-cols-2 items-center mt-3">
+          <DonutChart
+            data={data.chart.pie}
+            variant="pie"
+            category="punctuality"
+            value="amount"
+            colors={["blue", "orange"]}
+            valueFormatter={(value) =>
+              `${value} (${(value / data.total.sessions) * 100}%)`
+            }
+            className="ml-4"
+          />
+
+          <div className="flex flex-col">
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>{data.chart.punctuality.data[0].punctuality}</span>
+              <span>
+                {data.chart.punctuality.data[0].amount} (
+                {Math.round(
+                  (data.chart.punctuality.data[0].amount /
+                    data.total.sessions) *
+                    100
+                )}
+                %)
+              </span>
+            </Text>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>Average</span>
+              <span>{data.chart.punctuality.avg}</span>
+            </Text>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>Median</span>
+              <span>{data.chart.punctuality.median}</span>
+            </Text>
+          </div>
+        </div>
       </Card>
 
       <Card className="sm:col-span-3">
@@ -219,49 +248,20 @@ export default function Weekly() {
         </div>
       </Card>
 
-      <Card className="sm:col-span-3">
+      <Card className="sm:col-span-6">
         <Text>
-          <Strong>Sessions by punctuality</Strong>
+          <Strong>Sessions by day of the week</Strong>
         </Text>
 
-        <Legend categories={["Early", "Late"]} colors={["blue", "orange"]} />
-
-        <div className="grid grid-cols-2 items-center mt-3">
-          <DonutChart
-            data={data.chart.pie}
-            variant="pie"
-            category="punctuality"
-            value="amount"
-            colors={["blue", "orange"]}
-            valueFormatter={(value) =>
-              `${value} (${(value / data.total.sessions) * 100}%)`
-            }
-            className="ml-4"
-          />
-
-          <div className="flex flex-col">
-            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>{data.chart.punctuality.data[0].punctuality}</span>
-              <span>
-                {data.chart.punctuality.data[0].amount} (
-                {Math.round(
-                  (data.chart.punctuality.data[0].amount /
-                    data.total.sessions) *
-                    100
-                )}
-                %)
-              </span>
-            </Text>
-            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>Average</span>
-              <span>{data.chart.punctuality.avg}</span>
-            </Text>
-            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>Median</span>
-              <span>{data.chart.punctuality.median}</span>
-            </Text>
-          </div>
-        </div>
+        <BarChart
+          index="start_date_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.chart.range}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
+        />
       </Card>
 
       <Card className="sm:col-span-6">
@@ -278,6 +278,22 @@ export default function Weekly() {
           allowDecimals={false}
           showYAxis={false}
           tickGap={28}
+        />
+      </Card>
+
+      <Card className="sm:col-span-6">
+        <Text>
+          <Strong>Sessions in the last 4 weeks</Strong>
+        </Text>
+
+        <BarChart
+          index="start_week_str"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.chart.l4w}
+          colors={["blue", "orange", "yellow"]}
+          allowDecimals={false}
+          showYAxis={false}
         />
       </Card>
     </div>

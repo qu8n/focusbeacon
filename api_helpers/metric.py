@@ -6,10 +6,15 @@ import numpy as np
 from api_helpers.time import m_to_ms
 
 
-def calculate_curr_streak(sessions: pd.DataFrame,
-                          period_type: Literal["D", "W", "M"],
-                          local_timezone: str,
-                          weekend_breaks_daily_streak: bool = False) \
+def calc_repeat_partners(sessions: pd.DataFrame) -> int:
+    partner_session_counts = sessions['partner_id'].value_counts()
+    return len(partner_session_counts[partner_session_counts > 1])
+
+
+def calc_curr_streak(sessions: pd.DataFrame,
+                     period_type: Literal["D", "W", "M"],
+                     local_timezone: str,
+                     weekend_breaks_daily_streak: bool = False) \
         -> int:
     '''
     Calculate either daily, weekly, or monthly session streak in recent
@@ -64,8 +69,8 @@ def calculate_curr_streak(sessions: pd.DataFrame,
     return period_streak
 
 
-def calculate_max_daily_streak(sessions: pd.DataFrame,
-                               weekend_breaks_daily_streak: bool = False) \
+def calc_max_daily_streak(sessions: pd.DataFrame,
+                          weekend_breaks_daily_streak: bool = False) \
         -> dict:
     '''
     Calculate the max daily session streak count and date range.
@@ -135,7 +140,7 @@ def calculate_max_daily_streak(sessions: pd.DataFrame,
     }
 
 
-def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
+def prep_heatmap_data(sessions: pd.DataFrame) -> dict:
     '''
     Prepare data for the Nivo TimeRange calendar component
 
@@ -187,6 +192,46 @@ def prepare_heatmap_data(sessions: pd.DataFrame) -> dict:
         "data": heatmap_data,
         "past_year_sessions": past_year_sessions
     }
+
+
+def prep_chart_data_by_past_range(sessions: pd.DataFrame,
+                                  start_date: np.datetime64,
+                                  end_date: np.datetime64) -> List[Dict[str, Any]]:
+    sessions = sessions.copy()
+    sessions['start_week_str'] = sessions['start_time'].dt.to_period(
+        'W').apply(lambda r: r.start_time.strftime('%Y-%m-%d'))
+
+    pivot_df: pd.DataFrame = pd.pivot_table(sessions,
+                                            index='start_week_str',
+                                            columns='duration',
+                                            aggfunc='size',
+                                            fill_value=0)
+    pivot_df = pivot_df.reset_index()
+    pivot_df.columns.name = None
+
+    # Add columns for durations that had no sessions
+    for duration in [1500000, 3000000, 4500000]:
+        if duration not in pivot_df.columns:
+            pivot_df[duration] = 0
+    pivot_df.rename(columns={1500000: '25m',
+                             3000000: '50m',
+                             4500000: '75m'}, inplace=True)
+
+    # Add rows for weeks that had no sessions
+    week_range = pd.date_range(
+        start=start_date, end=end_date, freq='W-MON').strftime('%Y-%m-%d')
+    missing_weeks = [week for week in week_range
+                     if week not in pivot_df['start_week_str'].values]
+    missing_week_df = pd.DataFrame({'start_week_str': missing_weeks})
+    pivot_df = pd.concat([pivot_df, missing_week_df],
+                         ignore_index=True).fillna(0)
+
+    pivot_df = pivot_df.sort_values('start_week_str')
+
+    pivot_df['start_week_str'] = pd.to_datetime(
+        pivot_df['start_week_str']).dt.strftime('%b %d')
+
+    return pivot_df.to_dict(orient='records')
 
 
 def prep_chart_data_by_range(sessions: pd.DataFrame,
@@ -270,7 +315,7 @@ def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     return pivot_df.to_dict(orient='records')
 
 
-def prepare_history_data(sessions: pd.DataFrame, head: int = None):
+def prep_history_data(sessions: pd.DataFrame, head: int = None):
     '''Converts the sessions DataFrame into a list of dictionaries containing
     the data for the history table.
 
@@ -326,7 +371,7 @@ def prepare_history_data(sessions: pd.DataFrame, head: int = None):
     return sessions.to_dict(orient='records')
 
 
-def get_duration_pie_data(sessions: pd.DataFrame):
+def prep_duration_pie_data(sessions: pd.DataFrame):
     return [
         {
             "duration": "25m",
@@ -343,7 +388,7 @@ def get_duration_pie_data(sessions: pd.DataFrame):
     ]
 
 
-def get_punctuality_pie_data(sessions: pd.DataFrame):
+def prep_punctuality_pie_data(sessions: pd.DataFrame):
     sessions = sessions.copy()
 
     sessions.loc[:, 'join_start_diff'] = (
