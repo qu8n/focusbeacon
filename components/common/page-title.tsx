@@ -9,8 +9,10 @@ export function PageTitle() {
   switch (currPage) {
     case "home":
       currPage = null
+      break
     case "/_not-found":
       currPage = "Not Found"
+      break
   }
 
   return (
