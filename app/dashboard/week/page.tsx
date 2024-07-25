@@ -35,7 +35,7 @@ export default function WeekPage() {
   )
 }
 
-export function Week({ devMode }: { devMode: boolean }) {
+function Week({ devMode }: { devMode: boolean }) {
   const [goal, setGoal] = useState(0)
   const [updatingGoal, setUpdatingGoal] = useState(false)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
@@ -220,7 +220,7 @@ export function Week({ devMode }: { devMode: boolean }) {
             value="amount"
             colors={["blue", "orange"]}
             valueFormatter={(value) =>
-              `${value} (${(value / data.prev_weeks.sessions_total) * 100}%)`
+              `${value} (${Math.round((value / data.prev_weeks.sessions_total) * 100)}%)`
             }
             className="ml-4"
           />
@@ -264,7 +264,7 @@ export function Week({ devMode }: { devMode: boolean }) {
             value="amount"
             colors={["blue", "orange", "yellow"]}
             valueFormatter={(value) =>
-              `${value} (${(value / data.prev_weeks.sessions_total) * 100}%)`
+              `${value} (${Math.round((value / data.prev_weeks.sessions_total) * 100)}%)`
             }
             className="ml-4"
           />

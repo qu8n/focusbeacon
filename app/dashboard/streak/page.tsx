@@ -14,7 +14,6 @@ import { LinkInternal } from "@/components/ui/link-internal"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { useMemo, useState } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
 import { DevModeButton } from "@/components/common/dev-mode-button"
 
 export default function StreakPage() {
