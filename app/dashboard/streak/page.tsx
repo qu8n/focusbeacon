@@ -135,7 +135,7 @@ function LoadingSkeleton() {
       </Card>
 
       <Card title="Recent sessions" className="sm:col-span-2">
-        <Skeleton className="mt-6 w-full h-[260px]" />
+        <Skeleton className="mt-6 w-full h-[247px]" />
       </Card>
     </div>
   )

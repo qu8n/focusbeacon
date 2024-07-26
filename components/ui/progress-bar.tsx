@@ -13,30 +13,18 @@ const progressBarVariants = tv({
   },
   variants: {
     variant: {
-      default: {
-        background: "bg-blue-200",
-        bar: "bg-blue-500",
-      },
       neutral: {
         background: "bg-stone-100",
         bar: "bg-stone-400/[0.8]",
       },
-      warning: {
-        background: "bg-yellow-200",
-        bar: "bg-yellow-500",
-      },
-      error: {
-        background: "bg-red-200",
-        bar: "bg-red-500",
-      },
       success: {
-        background: "bg-orange-200",
-        bar: "bg-orange-500",
+        background: "bg-custom-2/[0.4]",
+        bar: "bg-custom-2",
       },
     },
   },
   defaultVariants: {
-    variant: "default",
+    variant: "neutral",
   },
 })
 

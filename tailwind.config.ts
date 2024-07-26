@@ -10,6 +10,15 @@ const config: Config = {
   plugins: [require("@tailwindcss/typography")],
   theme: {
     extend: {
+      colors: {
+        "custom-0": "#876A5C", // brown
+        "custom-0.5": "#BEABA5", // light brown
+        "custom-1": "#E2B352", // yellow
+        "custom-2": "#DB813E", // orange
+        "custom-3": "#9d6348", // red-orange
+        "custom-4": "#4D7E61", // green
+        "custom-5": "#c84b50", // red
+      },
       animation: {
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",

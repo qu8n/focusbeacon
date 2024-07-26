@@ -4,59 +4,41 @@
 export type ColorUtility = "bg" | "stroke" | "fill" | "text"
 
 export const chartColors = {
-  blue: {
-    bg: "bg-blue-500",
-    stroke: "stroke-blue-500",
-    fill: "fill-blue-500",
-    text: "text-blue-500",
+  "custom-0": {
+    bg: `bg-custom-0`,
+    stroke: `stroke-custom-0`,
+    fill: `fill-custom-0`,
+    text: `text-custom-0`,
   },
-  emerald: {
-    bg: "bg-emerald-500",
-    stroke: "stroke-emerald-500",
-    fill: "fill-emerald-500",
-    text: "text-emerald-500",
+  "custom-1": {
+    bg: `bg-custom-1`,
+    stroke: `stroke-custom-1`,
+    fill: `fill-custom-1`,
+    text: `text-custom-1`,
   },
-  violet: {
-    bg: "bg-violet-500",
-    stroke: "stroke-violet-500",
-    fill: "fill-violet-500",
-    text: "text-violet-500",
+  "custom-2": {
+    bg: `bg-custom-2`,
+    stroke: `stroke-custom-2`,
+    fill: `fill-custom-2`,
+    text: `text-custom-2`,
   },
-  amber: {
-    bg: "bg-amber-500",
-    stroke: "stroke-amber-500",
-    fill: "fill-amber-500",
-    text: "text-amber-500",
+  "custom-3": {
+    bg: `bg-custom-3`,
+    stroke: `stroke-custom-3`,
+    fill: `fill-custom-3`,
+    text: `text-custom-3`,
   },
-  gray: {
-    bg: "bg-gray-500",
-    stroke: "stroke-gray-500",
-    fill: "fill-gray-500",
-    text: "text-gray-500",
+  "custom-4": {
+    bg: `bg-custom-4`,
+    stroke: `stroke-custom-4`,
+    fill: `fill-custom-4`,
+    text: `text-custom-4`,
   },
-  cyan: {
-    bg: "bg-cyan-500",
-    stroke: "stroke-cyan-500",
-    fill: "fill-cyan-500",
-    text: "text-cyan-500",
-  },
-  pink: {
-    bg: "bg-pink-500",
-    stroke: "stroke-pink-500",
-    fill: "fill-pink-500",
-    text: "text-pink-500",
-  },
-  yellow: {
-    bg: "bg-yellow-500",
-    stroke: "stroke-yellow-500",
-    fill: "fill-yellow-500",
-    text: "text-yellow-500",
-  },
-  orange: {
-    bg: "bg-orange-500",
-    stroke: "stroke-orange-500",
-    fill: "fill-orange-500",
-    text: "text-orange-500",
+  "custom-5": {
+    bg: `bg-custom-5`,
+    stroke: `stroke-custom-5`,
+    fill: `fill-custom-5`,
+    text: `text-custom-5`,
   },
 } as const satisfies {
   [color: string]: {

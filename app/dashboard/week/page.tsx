@@ -183,7 +183,7 @@ function Week({ devMode }: { devMode: boolean }) {
           categories={["25m", "50m", "75m"]}
           type="stacked"
           data={data.curr_week.chart_data}
-          colors={["blue", "orange", "yellow"]}
+          colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}
           legendPosition="left"
@@ -202,7 +202,7 @@ function Week({ devMode }: { devMode: boolean }) {
           categories={["25m", "50m", "75m"]}
           type="stacked"
           data={data.prev_weeks.week}
-          colors={["blue", "orange", "yellow"]}
+          colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}
           legendPosition="left"
@@ -210,7 +210,10 @@ function Week({ devMode }: { devMode: boolean }) {
       </Card>
 
       <Card title="Sessions by punctuality" className="sm:col-span-3">
-        <Legend categories={["Early", "Late"]} colors={["blue", "orange"]} />
+        <Legend
+          categories={["Early", "Late"]}
+          colors={["custom-4", "custom-5"]}
+        />
 
         <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
@@ -218,7 +221,7 @@ function Week({ devMode }: { devMode: boolean }) {
             variant="pie"
             category="punctuality"
             value="amount"
-            colors={["blue", "orange"]}
+            colors={["custom-4", "custom-5"]}
             valueFormatter={(value) =>
               `${value} (${Math.round((value / data.prev_weeks.sessions_total) * 100)}%)`
             }
@@ -253,7 +256,7 @@ function Week({ devMode }: { devMode: boolean }) {
       <Card title="Sessions by duration" className="sm:col-span-3">
         <Legend
           categories={["25m", "50m", "75m"]}
-          colors={["blue", "orange", "yellow"]}
+          colors={["custom-1", "custom-2", "custom-3"]}
         />
 
         <div className="grid grid-cols-2 items-center mt-3">
@@ -262,7 +265,7 @@ function Week({ devMode }: { devMode: boolean }) {
             variant="pie"
             category="duration"
             value="amount"
-            colors={["blue", "orange", "yellow"]}
+            colors={["custom-1", "custom-2", "custom-3"]}
             valueFormatter={(value) =>
               `${value} (${Math.round((value / data.prev_weeks.sessions_total) * 100)}%)`
             }
@@ -299,7 +302,7 @@ function Week({ devMode }: { devMode: boolean }) {
           categories={["25m", "50m", "75m"]}
           type="stacked"
           data={data.prev_weeks.time}
-          colors={["blue", "orange", "yellow"]}
+          colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}
           tickGap={28}
