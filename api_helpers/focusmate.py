@@ -1,10 +1,12 @@
 
 from datetime import datetime, timezone
+import random
 from cachetools import TTLCache
 from cachetools.keys import hashkey
 import pandas as pd
 import json
 import http.client
+from api_helpers.faker import generate_fake_sessions
 from api_helpers.request import get_access_token
 from api_helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt
 import os

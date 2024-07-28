@@ -3,8 +3,10 @@ from typing import Annotated
 import pandas as pd
 from pydantic import BaseModel
 from api_helpers.metric import calc_max_daily_streak, \
-    calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, prep_punctuality_pie_data, prep_chart_data_by_past_range, prep_chart_data_by_time, \
-    prep_heatmap_data, prep_history_data, prep_chart_data_by_range
+    calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, \
+    prep_punctuality_pie_data, prep_chart_data_by_past_range, \
+    prep_chart_data_by_time, prep_heatmap_data, prep_history_data, \
+    prep_chart_data_by_range
 from api_helpers.supabase import get_weekly_goal, update_daily_streak
 from api_helpers.time import get_curr_week_start, ms_to_h
 from api_helpers.request import get_access_token, get_session_id
