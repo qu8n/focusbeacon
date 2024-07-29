@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cx } from "@/lib/utils"
 
 interface MarqueeProps {

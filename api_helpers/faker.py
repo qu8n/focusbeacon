@@ -1,18 +1,22 @@
-from faker import Faker
 import random
+import uuid
 from datetime import datetime, timedelta, timezone
-
-fake = Faker()
-Faker.seed(0)
 
 NUM_SESSIONS = 2000
 USER_ID = "5edcf2e5-539c-4250-966a-468a7ddfa38d"  # example from FM API docs
 DURATION_OPTIONS = [1500000, 3000000, 4500000]
 HOURS = list(range(24))
-HOUR_WEIGHTS = [1 if 9 <= hour <= 18 else 0.1 for hour in HOURS]
+HOUR_WEIGHTS = [1 if 9 <= hour <= 18 else 0.05 for hour in HOURS]
 MINUTE_OPTIONS = [0, 15, 30, 45]
 START_YEAR = datetime.now().year - 2
-COMPLETED_WEIGHTS = [0.95, 0.05]
+COMPLETED_WEIGHTS = [1, 0.05]
+
+
+def random_date(start, end):
+    """Generate a random datetime between `start` and `end`."""
+    return start + timedelta(
+        seconds=random.randint(0, int((end - start).total_seconds())),
+    )
 
 
 def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
@@ -23,16 +27,17 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
     datetime_end = datetime.now(timezone.utc)
     for _ in range(num_sessions):
         chosen_hour = random.choices(HOURS, weights=HOUR_WEIGHTS, k=1)[0]
-        start_time = fake.date_time_between_dates(
-            datetime_start, datetime_end, tzinfo=timezone.utc)
+        start_time = random_date(datetime_start, datetime_end)
         start_time = start_time.replace(hour=chosen_hour, minute=random.choice(
             MINUTE_OPTIONS), second=0, microsecond=0)
 
-        requested_at = fake.date_time_between_dates(
-            datetime_start=start_time - timedelta(days=1),
-            datetime_end=start_time, tzinfo=timezone.utc)
+        requested_at = random_date(
+            start_time - timedelta(days=1),
+            start_time
+        )
 
-        completed = random.choices([True, False], weights=COMPLETED_WEIGHTS)
+        completed = random.choices(
+            [True, False], weights=COMPLETED_WEIGHTS, k=1)[0]
         joined_at = None
         if completed:
             # Users can only join a session within 10m before or 1m after start
@@ -44,7 +49,7 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
         duration = random.choice(DURATION_OPTIONS)
 
         session = {
-            "sessionId": fake.uuid4(),
+            "sessionId": str(uuid.uuid4()),
             "duration": str(duration),
             "startTime": start_time.isoformat(),
             "users": [
@@ -59,7 +64,7 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
         }
         if completed:
             session["users"].append({
-                "userId": fake.uuid4()
+                "userId": str(uuid.uuid4())
             })
 
         sessions.append(session)

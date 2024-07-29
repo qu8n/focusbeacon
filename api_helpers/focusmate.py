@@ -1,6 +1,5 @@
 
 from datetime import datetime, timezone
-import random
 from cachetools import TTLCache
 from cachetools.keys import hashkey
 import pandas as pd
@@ -174,8 +173,9 @@ async def get_data(session_id: str, cache: TTLCache):
     local_timezone: str = profile.get("timeZone")
     member_since: str = profile.get("memberSince")
 
-    sessions = await fetch_all_focusmate_sessions(
-        fm_api_sessions_endpoint, access_token, member_since)
+    # sessions = await fetch_all_focusmate_sessions(
+    #     fm_api_sessions_endpoint, access_token, member_since)
+    sessions = generate_fake_sessions()
     sessions = sessions_ls_to_df(sessions, local_timezone)
 
     cache[hashkey('profile', session_id)] = profile
