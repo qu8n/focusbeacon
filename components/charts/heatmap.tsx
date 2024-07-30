@@ -56,8 +56,7 @@ export function Heatmap({
           // Manually get the month and year because Nivo can't infer
           // these values automatically from our data
           const month = date.toLocaleString("default", { month: "short" })
-          const year = date.getFullYear() % 100
-          return `${month}-${year}`
+          return month
         }}
         monthLegendOffset={20}
         emptyColor="#EBEDF0"

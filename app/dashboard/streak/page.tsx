@@ -16,12 +16,18 @@ import { useMemo, useState } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { DevModeButton } from "@/components/common/dev-mode-button"
 import { useSearchParams } from "next/navigation"
+import { DemoCallout } from "@/components/common/demo-callout"
 
 export default function StreakPage() {
   const [devMode, setDevMode] = useState(false)
+
+  const searchParams = useSearchParams()
+  const demoMode = searchParams.get("demo") === "true"
+
   return (
     <>
-      <Streak devMode={devMode} />
+      {demoMode && <DemoCallout />}
+      <Streak devMode={devMode} demoMode={demoMode} />
       {process.env.NODE_ENV === "development" && (
         <DevModeButton devMode={devMode} setDevMode={setDevMode} />
       )}
@@ -29,11 +35,14 @@ export default function StreakPage() {
   )
 }
 
-function Streak({ devMode }: { devMode: boolean }) {
+function Streak({
+  devMode,
+  demoMode,
+}: {
+  devMode: boolean
+  demoMode: boolean
+}) {
   const { isBelowSm } = useBreakpoint("sm")
-
-  const searchParams = useSearchParams()
-  const demoMode = searchParams.get("demo") === "true"
 
   const { isLoading: loadingData, data } = useQuery({
     queryKey: ["streak", demoMode],

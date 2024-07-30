@@ -23,12 +23,18 @@ import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DevModeButton } from "@/components/common/dev-mode-button"
 import { useSearchParams } from "next/navigation"
+import { DemoCallout } from "@/components/common/demo-callout"
 
 export default function WeekPage() {
   const [devMode, setDevMode] = useState(false)
+
+  const searchParams = useSearchParams()
+  const demoMode = searchParams.get("demo") === "true"
+
   return (
     <>
-      <Week devMode={devMode} />
+      {demoMode && <DemoCallout />}
+      <Week devMode={devMode} demoMode={demoMode} />
       {process.env.NODE_ENV === "development" && (
         <DevModeButton devMode={devMode} setDevMode={setDevMode} />
       )}
@@ -36,13 +42,10 @@ export default function WeekPage() {
   )
 }
 
-function Week({ devMode }: { devMode: boolean }) {
+function Week({ devMode, demoMode }: { devMode: boolean; demoMode: boolean }) {
   const [goal, setGoal] = useState(0)
   const [updatingGoal, setUpdatingGoal] = useState(false)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
-
-  const searchParams = useSearchParams()
-  const demoMode = searchParams.get("demo") === "true"
 
   const {
     isLoading: goalIsLoading,
