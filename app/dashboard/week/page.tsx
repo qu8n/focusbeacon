@@ -8,7 +8,7 @@ import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { Text, Strong } from "@/components/ui/text"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import {
   Dialog,
   DialogActions,
@@ -21,28 +21,24 @@ import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
-import { DevModeButton } from "@/components/common/dev-mode-button"
 import { useSearchParams } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
+import { DevModeContext } from "@/components/common/providers"
 
 export default function WeekPage() {
-  const [devMode, setDevMode] = useState(false)
-
   const searchParams = useSearchParams()
   const demoMode = searchParams.get("demo") === "true"
 
   return (
     <>
       {demoMode && <DemoCallout />}
-      <Week devMode={devMode} demoMode={demoMode} />
-      {process.env.NODE_ENV === "development" && (
-        <DevModeButton devMode={devMode} setDevMode={setDevMode} />
-      )}
+      <Week demoMode={demoMode} />
     </>
   )
 }
 
-function Week({ devMode, demoMode }: { devMode: boolean; demoMode: boolean }) {
+function Week({ demoMode }: { demoMode: boolean }) {
+  const devMode = useContext(DevModeContext)
   const [goal, setGoal] = useState(0)
   const [updatingGoal, setUpdatingGoal] = useState(false)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)

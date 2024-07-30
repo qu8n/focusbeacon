@@ -1,15 +1,15 @@
 "use client"
 
-import React from "react"
+import { PropsWithChildren, ReactNode } from "react"
 import { Divider } from "@/components/ui/divider"
 
 export function StackedLayout({
   navbar,
   children,
   footer,
-}: React.PropsWithChildren<{
-  navbar: React.ReactNode
-  footer: React.ReactNode
+}: PropsWithChildren<{
+  navbar: ReactNode
+  footer: ReactNode
 }>) {
   return (
     <div className="relative flex flex-col w-full max-w-4xl mx-auto isolate min-h-svh">

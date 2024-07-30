@@ -12,36 +12,26 @@ import { Card } from "@/components/ui/card"
 import HistoryTable, { columns } from "@/components/charts/history-table"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { RiArrowRightSLine } from "@remixicon/react"
-import { useMemo, useState } from "react"
+import { useContext, useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { DevModeButton } from "@/components/common/dev-mode-button"
 import { useSearchParams } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
+import { DevModeContext } from "@/components/common/providers"
 
 export default function StreakPage() {
-  const [devMode, setDevMode] = useState(false)
-
   const searchParams = useSearchParams()
   const demoMode = searchParams.get("demo") === "true"
 
   return (
     <>
       {demoMode && <DemoCallout />}
-      <Streak devMode={devMode} demoMode={demoMode} />
-      {process.env.NODE_ENV === "development" && (
-        <DevModeButton devMode={devMode} setDevMode={setDevMode} />
-      )}
+      <Streak demoMode={demoMode} />
     </>
   )
 }
 
-function Streak({
-  devMode,
-  demoMode,
-}: {
-  devMode: boolean
-  demoMode: boolean
-}) {
+function Streak({ demoMode }: { demoMode: boolean }) {
+  const devMode = useContext(DevModeContext)
   const { isBelowSm } = useBreakpoint("sm")
 
   const { isLoading: loadingData, data } = useQuery({

@@ -8,7 +8,7 @@ import { LinkInternal } from "@/components/ui/link-internal"
 
 const tabNames = ["streak", "week", "month", "year", "lifetime"]
 
-export default function DashboardTabs({ className }: { className?: string }) {
+export function DashboardTabs({ className }: { className?: string }) {
   const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
 
   const searchParams = useSearchParams()
