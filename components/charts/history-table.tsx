@@ -88,11 +88,7 @@ export type SessionDetails = {
   session_title: string
 }
 
-export default function HistoryTable({
-  rows,
-}: {
-  rows: Row<SessionDetails>[]
-}) {
+export function HistoryTable({ rows }: { rows: Row<SessionDetails>[] }) {
   return (
     <TableRoot className="mb-4">
       <Table>

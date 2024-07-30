@@ -10,40 +10,31 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { Text } from "@/components/ui/text"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import HistoryTable, { columns } from "@/components/charts/history-table"
+import { HistoryTable, columns } from "@/components/charts/history-table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { exportJSONToCSV } from "@/lib/export"
 import { Card } from "@/components/ui/card"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
+import { DemoCallout } from "@/components/common/demo-callout"
+import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 
-const PageNavButton = ({
-  onClick,
-  disabled,
-  children,
-}: {
-  onClick: () => void
-  disabled: boolean
-  children: React.ReactNode
-}) => {
+export default function HistoryPage() {
+  const demoMode = useContext(DemoModeContext)
   return (
-    <button
-      type="button"
-      className="group px-2.5 py-2 text-tremor-default disabled:cursor-not-allowed disabled:opacity-50"
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
+    <>
+      {demoMode && <DemoCallout />}
+      <br />
+      <History demoMode={demoMode} />
+    </>
   )
 }
 
-export default function History() {
-  const searchParams = useSearchParams()
-  const demoMode = searchParams.get("demo") === "true"
+export function History({ demoMode }: { demoMode: boolean }) {
+  const devMode = useContext(DevModeContext)
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -93,7 +84,7 @@ export default function History() {
     exportJSONToCSV(data)
   }
 
-  if (loadingData || !data) {
+  if (loadingData || !data || devMode) {
     return <Skeleton className="w-full h-[680px]" />
   }
 
@@ -140,5 +131,26 @@ export default function History() {
         <RiDownloadLine size={14} /> Download as CSV
       </Button>
     </>
+  )
+}
+
+function PageNavButton({
+  onClick,
+  disabled,
+  children,
+}: {
+  onClick: () => void
+  disabled: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      className="group px-2.5 py-2 text-tremor-default disabled:cursor-not-allowed disabled:opacity-50"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </button>
   )
 }

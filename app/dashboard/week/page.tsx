@@ -21,14 +21,11 @@ import { Input } from "@/components/ui/input"
 import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
-import { useSearchParams } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
-import { DevModeContext } from "@/components/common/providers"
+import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 
 export default function WeekPage() {
-  const searchParams = useSearchParams()
-  const demoMode = searchParams.get("demo") === "true"
-
+  const demoMode = useContext(DemoModeContext)
   return (
     <>
       {demoMode && <DemoCallout />}
@@ -76,7 +73,7 @@ function Week({ demoMode }: { demoMode: boolean }) {
     setUpdatingGoal(false)
   }
 
-  if (goalIsLoading || dataIsLoading || devMode) {
+  if (goalIsLoading || dataIsLoading || !data || devMode) {
     return <LoadingSkeleton />
   }
 

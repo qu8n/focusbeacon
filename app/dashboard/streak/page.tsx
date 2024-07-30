@@ -9,19 +9,16 @@ import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Text } from "@/components/ui/text"
 import { Card } from "@/components/ui/card"
-import HistoryTable, { columns } from "@/components/charts/history-table"
+import { columns, HistoryTable } from "@/components/charts/history-table"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { useContext, useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { useSearchParams } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
-import { DevModeContext } from "@/components/common/providers"
+import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 
 export default function StreakPage() {
-  const searchParams = useSearchParams()
-  const demoMode = searchParams.get("demo") === "true"
-
+  const demoMode = useContext(DemoModeContext)
   return (
     <>
       {demoMode && <DemoCallout />}
