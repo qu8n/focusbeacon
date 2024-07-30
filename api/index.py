@@ -1,4 +1,5 @@
 
+import random
 from typing import Annotated
 import pandas as pd
 from pydantic import BaseModel
@@ -32,8 +33,8 @@ SessionIdDep = Annotated[str, Depends(get_session_id)]
 
 
 @app.get("/api/py/streak")
-async def streak(session_id: SessionIdDep):
-    profile, sessions = await get_data(session_id, cache)
+async def streak(session_id: SessionIdDep, demo: bool = False):
+    profile, sessions = await get_data(session_id, cache, demo)
 
     all_sessions = sessions.copy()
     sessions = sessions[sessions['completed'] == True]
@@ -53,7 +54,10 @@ async def streak(session_id: SessionIdDep):
 
 
 @app.get("/api/py/goal")
-async def goal(session_id: SessionIdDep):
+async def goal(session_id: SessionIdDep, demo: bool = False):
+    if demo:
+        return 10
+
     profile: dict = cache.get(
         hashkey('profile', session_id))
 
@@ -66,8 +70,8 @@ async def goal(session_id: SessionIdDep):
 
 
 @app.get("/api/py/week")
-async def weekly(session_id: SessionIdDep):
-    profile, sessions = await get_data(session_id, cache)
+async def weekly(session_id: SessionIdDep, demo: bool = False):
+    profile, sessions = await get_data(session_id, cache, demo)
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
@@ -132,8 +136,8 @@ class Item(BaseModel):
 
 
 @app.post("/api/py/history")
-async def streak(session_id: SessionIdDep, item: Item):
-    _, sessions = await get_data(session_id, cache)
+async def streak(session_id: SessionIdDep, item: Item, demo: bool = False):
+    _, sessions = await get_data(session_id, cache, demo)
     data = prep_history_data(sessions)
     return {
         "rows": data[item.page_index * item.page_size:

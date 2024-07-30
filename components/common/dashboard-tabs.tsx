@@ -2,7 +2,7 @@
 
 import { cx } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { useSelectedLayoutSegment } from "next/navigation"
+import { useSearchParams, useSelectedLayoutSegment } from "next/navigation"
 import { useState } from "react"
 import { LinkInternal } from "@/components/ui/link-internal"
 
@@ -10,6 +10,9 @@ const tabNames = ["streak", "week", "month", "year", "lifetime"]
 
 export default function DashboardTabs({ className }: { className?: string }) {
   const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
+
+  const searchParams = useSearchParams()
+  const demoMode = searchParams.get("demo") === "true"
 
   return (
     <div
@@ -41,7 +44,7 @@ export default function DashboardTabs({ className }: { className?: string }) {
           <LinkInternal
             prefetch={false}
             className="capitalize z-20 hover:text-stone-600"
-            href={`/dashboard/${tabName}`}
+            href={`/dashboard/${tabName}${demoMode ? "?demo=true" : ""}`}
             onClick={() => setCurrTab(tabName)}
           >
             {tabName}

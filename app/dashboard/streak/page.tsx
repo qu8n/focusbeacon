@@ -15,6 +15,7 @@ import { RiArrowRightSLine } from "@remixicon/react"
 import { useMemo, useState } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { DevModeButton } from "@/components/common/dev-mode-button"
+import { useSearchParams } from "next/navigation"
 
 export default function StreakPage() {
   const [devMode, setDevMode] = useState(false)
@@ -31,10 +32,13 @@ export default function StreakPage() {
 function Streak({ devMode }: { devMode: boolean }) {
   const { isBelowSm } = useBreakpoint("sm")
 
+  const searchParams = useSearchParams()
+  const demoMode = searchParams.get("demo") === "true"
+
   const { isLoading: loadingData, data } = useQuery({
-    queryKey: ["streak"],
+    queryKey: ["streak", demoMode],
     queryFn: async () => {
-      const response = await fetch(`/api/py/streak`)
+      const response = await fetch(`/api/py/streak?demo=${demoMode}`)
       const data = await response.json()
       return data
     },
@@ -98,7 +102,10 @@ function Streak({ devMode }: { devMode: boolean }) {
 
       <Card title="Recent sessions" className="sm:col-span-2">
         <HistoryTable rows={table.getRowModel().rows} />
-        <LinkInternal href="/history" className="inline-flex items-center">
+        <LinkInternal
+          href={`/history${demoMode ? "?demo=true" : ""}`}
+          className="inline-flex items-center"
+        >
           <Text>View all</Text>
           <RiArrowRightSLine color="gray" size={15} />
         </LinkInternal>

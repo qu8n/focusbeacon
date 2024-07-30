@@ -1,9 +1,9 @@
 export const hero = {
-  title: "Unlock your Focusmate stats",
+  title: "Be more productive on Focusmate",
   features: [
+    "Unlock insights on your session history",
     "Discover your most productive times",
     "Stay motivated with daily streak tracker",
-    "Unlock insights on your session history",
   ],
   buttonText: "View your dashboard",
 }
@@ -80,5 +80,15 @@ export const reviews = {
 export const cta = {
   titleBefore: "Join our international community across",
   titleUnderlined: "16 time zones",
-  titleAfter: "who are using FocusBeacon to boost their productivity",
+  titleAfter: "using Focusbeacon to boost their productivity",
+}
+
+export const dialog = {
+  title: "Have you already signed into Focusmate?",
+  description_normal:
+    "Ensure that you have already signed in to Focusmate on your browser.",
+  description_underlined:
+    "If not, please do so first, then come back to this window.",
+  cancel: "Cancel",
+  continue: "Yes, I'm ready to continue",
 }

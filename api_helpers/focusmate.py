@@ -5,7 +5,7 @@ from cachetools.keys import hashkey
 import pandas as pd
 import json
 import http.client
-from api_helpers.faker import generate_fake_sessions
+from api_helpers.faker import generate_fake_profile, generate_fake_sessions
 from api_helpers.request import get_access_token
 from api_helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt
 import os
@@ -158,7 +158,21 @@ def fetch_focusmate_profile(endpoint: str, access_token: str):
     return data_as_obj
 
 
-async def get_data(session_id: str, cache: TTLCache):
+async def get_data(session_id: str, cache: TTLCache, demo: bool = False):
+    if demo:
+        profile = generate_fake_profile()
+        user_id = profile.get("userId")
+        cached_sessions: pd.DataFrame = cache.get(
+            hashkey('sessions', user_id))
+        if cached_sessions is not None:
+            return profile, cached_sessions
+
+        local_timezone = profile.get("timeZone")
+        sessions = generate_fake_sessions()
+        sessions = sessions_ls_to_df(sessions, profile.get("timeZone"))
+        cache[hashkey('sessions', user_id)] = sessions
+        return profile, sessions
+
     cached_profile: dict = cache.get(
         hashkey('profile', session_id))
     cached_sessions: pd.DataFrame = cache.get(
@@ -173,9 +187,8 @@ async def get_data(session_id: str, cache: TTLCache):
     local_timezone: str = profile.get("timeZone")
     member_since: str = profile.get("memberSince")
 
-    # sessions = await fetch_all_focusmate_sessions(
-    #     fm_api_sessions_endpoint, access_token, member_since)
-    sessions = generate_fake_sessions()
+    sessions = await fetch_all_focusmate_sessions(
+        fm_api_sessions_endpoint, access_token, member_since)
     sessions = sessions_ls_to_df(sessions, local_timezone)
 
     cache[hashkey('profile', session_id)] = profile

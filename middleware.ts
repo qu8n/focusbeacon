@@ -21,7 +21,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
-  if (request.nextUrl.pathname.includes("dashboard")) {
+  if (
+    request.nextUrl.pathname.includes("dashboard") &&
+    request.nextUrl.searchParams.get("demo") !== "true"
+  ) {
     const sessionId = request.cookies.get("sessionId")?.value
     if (!sessionId) {
       return NextResponse.redirect(new URL("/home", request.url))

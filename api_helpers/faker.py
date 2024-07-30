@@ -1,3 +1,6 @@
+# Generate fake data returned from the Focusmate API for demo and testing
+# We're not using the Faker lib due to Vercel serverless function size limit
+
 import random
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -20,8 +23,6 @@ def random_date(start, end):
 
 
 def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
-    '''Generate fake sessions in a format that mimics data returned from the
-    Focusmate API for demo and testing purposes'''
     sessions = []
     datetime_start = datetime(START_YEAR, 1, 1, tzinfo=timezone.utc)
     datetime_end = datetime.now(timezone.utc)
@@ -70,3 +71,12 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
         sessions.append(session)
 
     return sessions
+
+
+def generate_fake_profile():
+    return {
+        "userId": USER_ID,
+        "name": "John Doe",
+        "totalSessionCount": NUM_SESSIONS,
+        "timeZone": "Etc/UTC",  # for simplicity
+    }

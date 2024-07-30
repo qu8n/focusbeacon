@@ -22,6 +22,7 @@ import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DevModeButton } from "@/components/common/dev-mode-button"
+import { useSearchParams } from "next/navigation"
 
 export default function WeekPage() {
   const [devMode, setDevMode] = useState(false)
@@ -40,14 +41,20 @@ function Week({ devMode }: { devMode: boolean }) {
   const [updatingGoal, setUpdatingGoal] = useState(false)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
+  const searchParams = useSearchParams()
+  const demoMode = searchParams.get("demo") === "true"
+
   const {
     isLoading: goalIsLoading,
     data: currGoal,
     refetch: refetchGoal,
   } = useQuery({
-    queryKey: ["goal"],
+    queryKey: ["goal", demoMode],
     queryFn: async () => {
-      const response = await fetch(`/api/py/goal`, { next: { tags: ["goal"] } })
+      // Tag the request so updateGoal() can invalidate it
+      const response = await fetch(`/api/py/goal?demo=${demoMode}`, {
+        next: { tags: ["goal"] },
+      })
       const goal = await response.json()
       setGoal(goal)
       return goal
@@ -55,9 +62,9 @@ function Week({ devMode }: { devMode: boolean }) {
   })
 
   const { isLoading: dataIsLoading, data } = useQuery({
-    queryKey: ["weekly"],
+    queryKey: ["weekly", demoMode],
     queryFn: async () => {
-      const response = await fetch(`/api/py/week`)
+      const response = await fetch(`/api/py/week?demo=${demoMode}`)
       return await response.json()
     },
   })

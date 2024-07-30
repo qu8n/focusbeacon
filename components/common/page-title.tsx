@@ -5,9 +5,13 @@ import { Heading } from "../ui/heading"
 
 export function PageTitle() {
   let currPage = useSelectedLayoutSegment()
+  console.log(currPage)
 
   switch (currPage) {
     case "home":
+      currPage = null
+      break
+    case "oauth":
       currPage = null
       break
     case "/_not-found":

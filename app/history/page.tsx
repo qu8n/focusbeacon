@@ -18,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { exportJSONToCSV } from "@/lib/export"
 import { Card } from "@/components/ui/card"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 
 const PageNavButton = ({
   onClick,
@@ -42,15 +42,18 @@ const PageNavButton = ({
 }
 
 export default function History() {
+  const searchParams = useSearchParams()
+  const demoMode = searchParams.get("demo") === "true"
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   })
 
   const { isLoading: loadingData, data } = useQuery({
-    queryKey: ["history", pagination],
+    queryKey: ["history", pagination, demoMode],
     queryFn: async () => {
-      const response = await fetch(`/api/py/history`, {
+      const response = await fetch(`/api/py/history?demo=${demoMode}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
