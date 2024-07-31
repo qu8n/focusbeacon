@@ -1,11 +1,9 @@
 "use client"
 
 import { DashboardTabs } from "@/components/common/dashboard-tabs"
-import {
-  DemoModeContext,
-  SignInStatusContext,
-} from "@/components/common/providers"
+import { DemoModeContext } from "@/components/common/providers"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 import { useRouter } from "next/navigation"
 import { useContext, useEffect } from "react"
 
@@ -16,7 +14,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter()
   const demoMode = useContext(DemoModeContext)
-  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
+  const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus()
 
   useEffect(() => {
     if (router && !demoMode && !isCheckingSignInStatus && !isSignedIn) {
