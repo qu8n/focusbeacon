@@ -5,7 +5,6 @@ import { Heading } from "../ui/heading"
 
 export function PageTitle() {
   let currPage = useSelectedLayoutSegment()
-  console.log(currPage)
 
   switch (currPage) {
     case "home":

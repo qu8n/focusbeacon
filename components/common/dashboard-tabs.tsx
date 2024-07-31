@@ -2,17 +2,16 @@
 
 import { cx } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { useSearchParams, useSelectedLayoutSegment } from "next/navigation"
-import { useState } from "react"
+import { useSelectedLayoutSegment } from "next/navigation"
+import { useContext, useState } from "react"
 import { LinkInternal } from "@/components/ui/link-internal"
+import { DemoModeContext } from "@/components/common/providers"
 
 const tabNames = ["streak", "week", "month", "year", "lifetime"]
 
 export function DashboardTabs({ className }: { className?: string }) {
   const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
-
-  const searchParams = useSearchParams()
-  const demoMode = searchParams.get("demo") === "true"
+  const demoMode = useContext(DemoModeContext)
 
   return (
     <div

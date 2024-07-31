@@ -33,7 +33,7 @@ export default function HistoryPage() {
   )
 }
 
-export function History({ demoMode }: { demoMode: boolean }) {
+function History({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
 
   const [pagination, setPagination] = useState<PaginationState>({

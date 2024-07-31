@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button"
 import { LinkInternal } from "../ui/link-internal"
-import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 import { SigninButton } from "./signin-button"
+import { useContext } from "react"
+import { SignInStatusContext } from "@/components/common/providers"
 
 export function NavbarClient() {
-  const { isLoading, isSignedIn } = useGetSigninStatus(["navbar"])
+  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
 
-  if (isLoading || !isSignedIn) {
+  if (isCheckingSignInStatus || !isSignedIn) {
     return <SigninButton text="Sign in" />
   }
 

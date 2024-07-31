@@ -7,12 +7,12 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useState } from "react"
-import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
+import { useContext, useState } from "react"
 import { useRouter } from "next/navigation"
 import { LinkExternal } from "@/components/ui/link-external"
 import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 import { dialog } from "@/app/home/components/config"
+import { SignInStatusContext } from "@/components/common/providers"
 
 export function SigninButton({
   text,
@@ -23,12 +23,12 @@ export function SigninButton({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
-  const { isLoading, isSignedIn } = useGetSigninStatus(["signinButton"])
+  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
 
   return (
     <>
       <Button
-        disabled={isLoading}
+        disabled={isCheckingSignInStatus}
         color="orange"
         type="button"
         onClick={() => {
