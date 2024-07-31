@@ -19,19 +19,6 @@ export function Navbar({
   )
 }
 
-export function NavbarDivider({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  return (
-    <div
-      aria-hidden="true"
-      {...props}
-      className={clsx(className, "h-6 w-px bg-stone-950/10")}
-    />
-  )
-}
-
 export function NavbarSection({
   className,
   ...props
@@ -115,10 +102,3 @@ export const NavbarItem = React.forwardRef(function NavbarItem(
     </span>
   )
 })
-
-export function NavbarLabel({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"span">) {
-  return <span {...props} className={clsx(className, "truncate")} />
-}

@@ -9,7 +9,7 @@ import {
   NavbarSpacer,
 } from "@/components/ui/navbar"
 import { PageTitle } from "@/components/common/page-title"
-import { Logo } from "@/components/ui/logo"
+import { Logo } from "@/components/common/logo"
 import { NavbarClient } from "@/components/common/navbar-client"
 import { Providers } from "@/components/common/providers"
 import { Metadata } from "next"
