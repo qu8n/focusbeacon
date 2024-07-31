@@ -141,6 +141,7 @@ function Week({ demoMode }: { demoMode: boolean }) {
             {...(currGoal && { outline: true })}
             {...(!currGoal && { color: "orange" })}
             onClick={() => setDialogIsOpen(true)}
+            disabled={demoMode}
           >
             {currGoal ? "Edit goal" : "Set goal"}
           </Button>

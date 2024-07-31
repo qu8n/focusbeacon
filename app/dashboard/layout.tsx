@@ -5,6 +5,7 @@ import {
   DemoModeContext,
   SignInStatusContext,
 } from "@/components/common/providers"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useRouter } from "next/navigation"
 import { useContext, useEffect } from "react"
 
@@ -24,7 +25,7 @@ export default function DashboardLayout({
   }, [router, demoMode, isCheckingSignInStatus, isSignedIn])
 
   if (!demoMode && (isCheckingSignInStatus || !isSignedIn)) {
-    return <></>
+    return <Skeleton className="h-[45px] w-full" />
   }
 
   return (

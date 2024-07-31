@@ -127,7 +127,12 @@ function History({ demoMode }: { demoMode: boolean }) {
         </div>
       </Card>
 
-      <Button className="mt-4" outline onClick={handleDownload}>
+      <Button
+        className="mt-4"
+        outline
+        onClick={handleDownload}
+        disabled={demoMode}
+      >
         <RiDownloadLine size={14} /> Download as CSV
       </Button>
     </>

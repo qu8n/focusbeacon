@@ -5,7 +5,7 @@ from cachetools.keys import hashkey
 import pandas as pd
 import json
 import http.client
-from api_helpers.faker import generate_fake_profile, generate_fake_sessions
+from api_helpers.faker import fake_profile, generate_fake_sessions
 from api_helpers.request import get_access_token
 from api_helpers.time import dt_to_fm_time_str, fm_time_str_to_local_dt
 import os
@@ -158,24 +158,26 @@ def fetch_focusmate_profile(endpoint: str, access_token: str):
     return data_as_obj
 
 
-async def get_data(session_id: str, cache: TTLCache, demo: bool = False):
+async def get_data(
+        session_id: str,
+        user_data_cache: TTLCache,
+        demo_data_cache: TTLCache,
+        demo: bool = False):
     if demo:
-        profile = generate_fake_profile()
-        user_id = profile.get("userId")
-        cached_sessions: pd.DataFrame = cache.get(
-            hashkey('sessions', user_id))
+        user_id = fake_profile.get("userId")
+        cached_sessions: pd.DataFrame = demo_data_cache.get(user_id)
         if cached_sessions is not None:
-            return profile, cached_sessions
+            return fake_profile, cached_sessions
 
-        local_timezone = profile.get("timeZone")
-        sessions = generate_fake_sessions()
-        sessions = sessions_ls_to_df(sessions, profile.get("timeZone"))
-        cache[hashkey('sessions', user_id)] = sessions
-        return profile, sessions
+        local_timezone = fake_profile.get("timeZone")
+        fake_sessions = generate_fake_sessions()
+        fake_sessions = sessions_ls_to_df(fake_sessions, local_timezone)
+        demo_data_cache[user_id] = fake_sessions
+        return fake_profile, fake_sessions
 
-    cached_profile: dict = cache.get(
+    cached_profile: dict = user_data_cache.get(
         hashkey('profile', session_id))
-    cached_sessions: pd.DataFrame = cache.get(
+    cached_sessions: pd.DataFrame = user_data_cache.get(
         hashkey('sessions', session_id))
     if (cached_profile is not None) and (cached_sessions is not None):
         return cached_profile, cached_sessions
@@ -191,7 +193,7 @@ async def get_data(session_id: str, cache: TTLCache, demo: bool = False):
         fm_api_sessions_endpoint, access_token, member_since)
     sessions = sessions_ls_to_df(sessions, local_timezone)
 
-    cache[hashkey('profile', session_id)] = profile
-    cache[hashkey('sessions', session_id)] = sessions
+    user_data_cache[hashkey('profile', session_id)] = profile
+    user_data_cache[hashkey('sessions', session_id)] = sessions
 
     return profile, sessions

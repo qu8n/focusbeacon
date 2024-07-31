@@ -1,5 +1,4 @@
 
-import random
 from typing import Annotated
 import pandas as pd
 from pydantic import BaseModel
@@ -23,7 +22,8 @@ ssl._create_default_https_context = ssl._create_stdlib_context
 
 app = FastAPI()
 load_dotenv()
-cache = TTLCache(maxsize=100, ttl=60)
+user_data_cache = TTLCache(maxsize=100, ttl=60)
+demo_data_cache = TTLCache(maxsize=100, ttl=86400)
 
 
 fm_api_profile_endpoint = os.getenv("NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT")
@@ -34,7 +34,8 @@ SessionIdDep = Annotated[str, Depends(get_session_id)]
 
 @app.get("/api/py/streak")
 async def streak(session_id: SessionIdDep, demo: bool = False):
-    profile, sessions = await get_data(session_id, cache, demo)
+    profile, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
 
     all_sessions = sessions.copy()
     sessions = sessions[sessions['completed'] == True]
@@ -58,7 +59,7 @@ async def goal(session_id: SessionIdDep, demo: bool = False):
     if demo:
         return 10
 
-    profile: dict = cache.get(
+    profile: dict = user_data_cache.get(
         hashkey('profile', session_id))
 
     if profile is None:
@@ -70,8 +71,9 @@ async def goal(session_id: SessionIdDep, demo: bool = False):
 
 
 @app.get("/api/py/week")
-async def weekly(session_id: SessionIdDep, demo: bool = False):
-    profile, sessions = await get_data(session_id, cache, demo)
+async def week(session_id: SessionIdDep, demo: bool = False):
+    profile, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
@@ -136,8 +138,9 @@ class Item(BaseModel):
 
 
 @app.post("/api/py/history")
-async def streak(session_id: SessionIdDep, item: Item, demo: bool = False):
-    _, sessions = await get_data(session_id, cache, demo)
+async def history(session_id: SessionIdDep, item: Item, demo: bool = False):
+    _, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
     data = prep_history_data(sessions)
     return {
         "rows": data[item.page_index * item.page_size:
@@ -147,6 +150,7 @@ async def streak(session_id: SessionIdDep, item: Item, demo: bool = False):
 
 
 @app.get("/api/py/history-all")
-async def streak(session_id: SessionIdDep):
-    _, sessions = await get_data(session_id, cache)
+async def history_all(session_id: SessionIdDep):
+    _, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache)
     return prep_history_data(sessions)

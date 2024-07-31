@@ -5,7 +5,7 @@ import random
 import uuid
 from datetime import datetime, timedelta, timezone
 
-NUM_SESSIONS = 2000
+NUM_SESSIONS = 1500
 USER_ID = "5edcf2e5-539c-4250-966a-468a7ddfa38d"  # example from FM API docs
 DURATION_OPTIONS = [1500000, 3000000, 4500000]
 HOURS = list(range(24))
@@ -73,10 +73,9 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
     return sessions
 
 
-def generate_fake_profile():
-    return {
-        "userId": USER_ID,
-        "name": "John Doe",
-        "totalSessionCount": NUM_SESSIONS,
-        "timeZone": "Etc/UTC",  # for simplicity
-    }
+fake_profile = {
+    "userId": USER_ID,
+    "name": "John Doe",
+    "totalSessionCount": NUM_SESSIONS,
+    "timeZone": "Etc/UTC",  # for simplicity
+}
