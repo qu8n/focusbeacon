@@ -1,3 +1,5 @@
+"use client"
+
 import { DashboardTabs } from "@/components/common/dashboard-tabs"
 
 export default function DashboardLayout({

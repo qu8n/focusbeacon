@@ -1,7 +1,7 @@
 "use client"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { createContext, useState } from "react"
+import { createContext, Suspense, useState } from "react"
 import { DevModeButton } from "@/components/common/dev-mode-button"
 import { useSearchParams } from "next/navigation"
 import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
@@ -17,7 +17,9 @@ export const SignInStatusContext = createContext({
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <CustomProviders>{children}</CustomProviders>
+      <Suspense>
+        <CustomProviders>{children}</CustomProviders>
+      </Suspense>
     </QueryClientProvider>
   )
 }
