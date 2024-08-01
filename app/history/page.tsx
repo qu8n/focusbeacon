@@ -20,11 +20,17 @@ import { exportJSONToCSV } from "@/lib/export"
 import { Card } from "@/components/ui/card"
 import { usePathname } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
-import { DemoModeContext, DevModeContext } from "@/components/common/providers"
+import { DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
+import { useProtectRoute } from "@/hooks/use-protect-route"
 
 export default function HistoryPage() {
-  const demoMode = useContext(DemoModeContext)
+  const { demoMode, isCheckingSignInStatus, isSignedIn } = useProtectRoute()
+
+  if (!demoMode && (isCheckingSignInStatus || !isSignedIn)) {
+    return <Skeleton className="h-[45px] w-full" />
+  }
+
   return (
     <>
       {demoMode && <DemoCallout />}
