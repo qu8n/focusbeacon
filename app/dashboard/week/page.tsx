@@ -23,6 +23,7 @@ import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
+import { ZeroSessions } from "@/components/common/zero-sessions"
 
 export default function WeekPage() {
   const demoMode = useContext(DemoModeContext)
@@ -75,6 +76,10 @@ function Week({ demoMode }: { demoMode: boolean }) {
 
   if (goalIsLoading || dataIsLoading || !data || devMode) {
     return <LoadingSkeleton />
+  }
+
+  if (data.zero_sessions) {
+    return <ZeroSessions />
   }
 
   const progressPercent =

@@ -37,6 +37,11 @@ async def streak(session_id: SessionIdDep, demo: bool = False):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
+    if profile.get("totalSessionCount") == 0:
+        return {
+            "zero_sessions": True
+        }
+
     all_sessions = sessions.copy()
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
@@ -74,6 +79,12 @@ async def goal(session_id: SessionIdDep, demo: bool = False):
 async def week(session_id: SessionIdDep, demo: bool = False):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
+
+    if profile.get("totalSessionCount") == 0:
+        return {
+            "zero_sessions": True
+        }
+
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
@@ -139,8 +150,14 @@ class Item(BaseModel):
 
 @app.post("/api/py/history")
 async def history(session_id: SessionIdDep, item: Item, demo: bool = False):
-    _, sessions = await get_data(
+    profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
+
+    if profile.get("totalSessionCount") == 0:
+        return {
+            "zero_sessions": True
+        }
+
     data = prep_history_data(sessions)
     return {
         "rows": data[item.page_index * item.page_size:

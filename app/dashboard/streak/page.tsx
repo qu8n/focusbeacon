@@ -16,6 +16,7 @@ import { useContext, useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
+import { ZeroSessions } from "@/components/common/zero-sessions"
 
 export default function StreakPage() {
   const demoMode = useContext(DemoModeContext)
@@ -49,6 +50,10 @@ function Streak({ demoMode }: { demoMode: boolean }) {
 
   if (loadingData || !data || devMode) {
     return <LoadingSkeleton />
+  }
+
+  if (data.zero_sessions) {
+    return <ZeroSessions />
   }
 
   return (

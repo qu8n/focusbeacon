@@ -21,6 +21,7 @@ import { Card } from "@/components/ui/card"
 import { usePathname } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
+import { ZeroSessions } from "@/components/common/zero-sessions"
 
 export default function HistoryPage() {
   const demoMode = useContext(DemoModeContext)
@@ -86,6 +87,10 @@ function History({ demoMode }: { demoMode: boolean }) {
 
   if (loadingData || !data || devMode) {
     return <Skeleton className="w-full h-[680px]" />
+  }
+
+  if (data.zero_sessions) {
+    return <ZeroSessions />
   }
 
   return (

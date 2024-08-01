@@ -63,16 +63,16 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
         rows.append(row)
 
     df = pd.DataFrame(rows)
+    if not df.empty:
+        df['session_id'] = df['session_id'].astype(str)
+        df['duration'] = df['duration'].astype(int)
+        df['completed'] = df['completed'].astype(bool)
+        df['session_title'] = df['session_title'].astype(str)
+        df['partner_id'] = df['partner_id'].astype(str)
 
-    df['session_id'] = df['session_id'].astype(str)
-    df['duration'] = df['duration'].astype(int)
-    df['completed'] = df['completed'].astype(bool)
-    df['session_title'] = df['session_title'].astype(str)
-    df['partner_id'] = df['partner_id'].astype(str)
-
-    df['start_time'] = df['start_time'].dt.tz_localize(None)
-    df['requested_at'] = df['requested_at'].dt.tz_localize(None)
-    df['joined_at'] = df['joined_at'].dt.tz_localize(None)
+        df['start_time'] = df['start_time'].dt.tz_localize(None)
+        df['requested_at'] = df['requested_at'].dt.tz_localize(None)
+        df['joined_at'] = df['joined_at'].dt.tz_localize(None)
 
     return df
 
