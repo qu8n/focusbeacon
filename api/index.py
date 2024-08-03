@@ -2,6 +2,7 @@
 import asyncio
 from contextlib import asynccontextmanager
 from typing import Annotated
+from fastapi.responses import JSONResponse
 import pandas as pd
 from pydantic import BaseModel
 from api_utils.faker import get_fake_data
@@ -12,11 +13,10 @@ from api_utils.metric import calc_max_daily_streak, \
     prep_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
 from api_utils.time import get_curr_week_start, ms_to_h
-from api_utils.request import get_access_token, get_session_id
-from api_utils.focusmate import fetch_focusmate_profile, get_data
-from fastapi import Depends, FastAPI, BackgroundTasks
+from api_utils.request import get_session_id
+from api_utils.focusmate import get_data
+from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
 from cachetools import TTLCache
-from cachetools.keys import hashkey
 import ssl
 
 
@@ -42,6 +42,22 @@ async def lifespan(app: FastAPI):
     background_tasks.add_task(auto_refresh_demo_data_cache)
     await background_tasks()
     yield
+
+
+@app.get("/api/py/signin-status")
+async def get_signin_status(session_id: SessionIdDep):
+    if not session_id:
+        raise HTTPException(status_code=400, detail="No session ID found")
+
+    profile, _ = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo=False)
+
+    if not profile:
+        raise HTTPException(
+            status_code=400, detail="No user found in database")
+
+    return JSONResponse(content={"message": "User has a valid session ID"},
+                        status_code=200)
 
 
 @app.get("/api/py/streak")

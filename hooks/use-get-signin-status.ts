@@ -5,7 +5,7 @@ export function useGetSigninStatus() {
     {
       queryKey: ["signinStatus"],
       queryFn: async () => {
-        const response = await fetch(`/api/signin-status`)
+        const response = await fetch(`/api/py/signin-status`)
         if (!response.ok) throw Error
         return response.status
       },
