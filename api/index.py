@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 import pandas as pd
 from pydantic import BaseModel
-from api_utils.config import FM_API_PROFILE_ENDPOINT
 from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, \
@@ -82,8 +81,7 @@ async def goal(session_id: SessionIdDep, demo: bool = False):
 
     if profile is None:
         access_token = get_access_token(session_id)
-        profile = fetch_focusmate_profile(
-            FM_API_PROFILE_ENDPOINT, access_token).get("user")
+        profile = fetch_focusmate_profile(access_token).get("user")
 
     return get_weekly_goal(profile.get("userId"))
 

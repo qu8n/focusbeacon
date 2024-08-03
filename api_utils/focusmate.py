@@ -12,7 +12,6 @@ import aiohttp
 import certifi
 import asyncio
 import ssl
-
 from api_utils.faker import get_fake_data
 from api_utils.lst_to_df import sessions_ls_to_df
 from api_utils.request import get_access_token
@@ -21,24 +20,20 @@ ssl_context = ssl.create_default_context(cafile=certifi.where())
 fm_api_domain = urlparse(FM_API_URL).netloc
 
 
-def fetch_focusmate_profile(endpoint: str, access_token: str):
+def fetch_focusmate_profile(access_token: str):
     conn = http.client.HTTPSConnection(fm_api_domain)
-
     headers = {'Authorization': 'Bearer ' + access_token}
 
-    conn.request("GET", endpoint, headers=headers)
-
+    conn.request("GET", FM_API_PROFILE_ENDPOINT, headers=headers)
     response = conn.getresponse()
     data_as_str = response.read().decode("utf-8")
     data_as_obj: dict = json.loads(data_as_str)
-
     conn.close()
 
     return data_as_obj
 
 
-async def fetch_focusmate_sessions(
-        endpoint: str, access_token: str, member_since: str):
+async def fetch_focusmate_sessions(access_token: str, member_since: str):
     headers = {'Authorization': 'Bearer ' + access_token}
 
     curr_year = datetime.now(timezone.utc).year
@@ -52,7 +47,7 @@ async def fetch_focusmate_sessions(
 
         # Split the request into yearly chunks per the API's rules
         for year in range(first_year, curr_year + 1):
-            api_endpoint_with_year = f"{FM_API_URL}{endpoint}?start={
+            api_endpoint_with_year = f"{FM_API_URL}{FM_API_SESSIONS_ENDPOINT}?start={
                 year}-01-01T00:00:00Z&end={year}-12-31T23:59:59Z"
 
             tasks.append(fetch_focusmate_sessions_by_year(
@@ -91,13 +86,11 @@ async def get_data(
 
     access_token = get_access_token(session_id)
 
-    profile: dict = fetch_focusmate_profile(
-        FM_API_PROFILE_ENDPOINT, access_token).get("user")
+    profile: dict = fetch_focusmate_profile(access_token).get("user")
     local_timezone: str = profile.get("timeZone")
     member_since: str = profile.get("memberSince")
 
-    sessions = await fetch_focusmate_sessions(
-        FM_API_SESSIONS_ENDPOINT, access_token, member_since)
+    sessions = await fetch_focusmate_sessions(access_token, member_since)
     sessions = sessions_ls_to_df(sessions, local_timezone)
 
     user_data_cache[hashkey('profile', session_id)] = profile

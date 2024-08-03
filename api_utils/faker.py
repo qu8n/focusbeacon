@@ -5,13 +5,13 @@ import random
 import uuid
 from datetime import datetime, timedelta, timezone
 import pandas as pd
+from api_utils.config import DEMO_USER_ID
 from api_utils.lst_to_df import sessions_ls_to_df
 
 
-USER_ID = "5edcf2e5-539c-4250-966a-468a7ddfa38d"  # example from FM API docs
 NUM_SESSIONS = 1500
 FAKE_PROFILE = {
-    "userId": USER_ID,
+    "userId": DEMO_USER_ID,
     "name": "John Doe",
     "totalSessionCount": NUM_SESSIONS,
     "timeZone": "Etc/UTC",
@@ -64,7 +64,7 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
             "startTime": start_time.isoformat(),
             "users": [
                 {
-                    "userId": USER_ID,
+                    "userId": DEMO_USER_ID,
                     "sessionTitle": "",
                     "requestedAt": requested_at.isoformat(),
                     "joinedAt": joined_at.isoformat() if joined_at else None,
