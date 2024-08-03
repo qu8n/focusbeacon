@@ -10,9 +10,9 @@ import {
 import { useContext, useState } from "react"
 import { useRouter } from "next/navigation"
 import { LinkExternal } from "@/components/ui/link-external"
-import { fmOAuthForAuthCodeUrl } from "@/lib/oauth"
 import { dialog } from "@/app/home/components/config"
 import { SignInStatusContext } from "@/components/common/providers"
+import { FM_OAUTH_FOR_AUTH_CODE_URL } from "@/lib/config"
 
 export function SigninButton({
   text,
@@ -56,7 +56,10 @@ export function SigninButton({
           </Button>
 
           <Button color="orange">
-            <LinkExternal href={fmOAuthForAuthCodeUrl} openInNewTab={false}>
+            <LinkExternal
+              href={FM_OAUTH_FOR_AUTH_CODE_URL}
+              openInNewTab={false}
+            >
               <span className={className}>{dialog.continue}</span>
             </LinkExternal>
           </Button>

@@ -1,19 +1,18 @@
 import {
-  fmApiDomain,
-  fmApiOAuthTokenEndpoint,
-  fmApiProfileEndpoint,
-  fmOAuthClientID,
-  fmOAuthClientSecret,
-  oauthRedirectUri,
-  siteUrl,
-} from "@/lib/oauth"
+  FM_API_URL,
+  FM_API_OAUTH_TOKEN_ENDPOINT,
+  FM_API_PROFILE_ENDPOINT,
+  FM_OAUTH_CLIENT_ID,
+  FM_OAUTH_CLIENT_SECRET,
+  OAUTH_REDIRECT_URL,
+  FOCUSBEACON_SITE_URL,
+  SESSION_COOKIE_NAME,
+} from "@/lib/config"
 import { serialize } from "cookie"
-import { encrypt, generateSessionId } from "@/lib/crypto"
+import { encrypt, generateSessionId } from "@/lib/encryption"
 import { supabaseClient } from "@/lib/supabase"
 import { FmProfile, FmUser } from "@/types/focusmate"
 import { TablesInsert } from "@/types/supabase"
-
-const sessionCookieName = process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME as string
 
 export async function POST(request: Request) {
   const { authorizationCode } = await request.json()
@@ -30,7 +29,7 @@ export async function POST(request: Request) {
       status: 200,
       headers: {
         "Set-Cookie": serialize(
-          sessionCookieName,
+          SESSION_COOKIE_NAME,
           sessionId,
           buildCookieOptions()
         ),
@@ -46,17 +45,17 @@ export async function POST(request: Request) {
 
 async function fetchAccessToken(authorizationCode: string) {
   try {
-    const response = await fetch(fmApiDomain + fmApiOAuthTokenEndpoint, {
+    const response = await fetch(FM_API_URL + FM_API_OAUTH_TOKEN_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        client_id: fmOAuthClientID,
-        client_secret: fmOAuthClientSecret,
+        client_id: FM_OAUTH_CLIENT_ID,
+        client_secret: FM_OAUTH_CLIENT_SECRET,
         grant_type: "authorization_code",
         code: authorizationCode,
-        redirect_uri: oauthRedirectUri,
+        redirect_uri: OAUTH_REDIRECT_URL,
       }),
     })
     if (!response.ok) {
@@ -70,7 +69,7 @@ async function fetchAccessToken(authorizationCode: string) {
 }
 
 async function fetchProfileData(accessToken: string): Promise<FmProfile> {
-  const response = await fetch(fmApiDomain + fmApiProfileEndpoint, {
+  const response = await fetch(FM_API_URL + FM_API_PROFILE_ENDPOINT, {
     headers: new Headers({
       Authorization: `Bearer ${accessToken}`,
     }),
@@ -86,7 +85,7 @@ async function fetchProfileData(accessToken: string): Promise<FmProfile> {
 function buildCookieOptions() {
   if (process.env.NODE_ENV === "production") {
     return {
-      domain: new URL(siteUrl).hostname,
+      domain: new URL(FOCUSBEACON_SITE_URL).hostname,
       secure: true,
       httpOnly: true,
       // Typing as `const` to avoid a TS error that generalizes the type of sameSite
