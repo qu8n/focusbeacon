@@ -154,13 +154,14 @@ async def week(session_id: SessionIdDep, demo: bool = False):
     }
 
 
-class Item(BaseModel):
+class Pagination(BaseModel):
     page_index: int
     page_size: int
 
 
 @app.post("/api/py/history")
-async def history(session_id: SessionIdDep, item: Item, demo: bool = False):
+async def history(session_id: SessionIdDep,
+                  pagination: Pagination, demo: bool = False):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
@@ -171,8 +172,8 @@ async def history(session_id: SessionIdDep, item: Item, demo: bool = False):
 
     data = prep_history_data(sessions)
     return {
-        "rows": data[item.page_index * item.page_size:
-                     (item.page_index + 1) * item.page_size],
+        "rows": data[pagination.page_index * pagination.page_size:
+                     (pagination.page_index + 1) * pagination.page_size],
         "row_count": len(data)
     }
 
