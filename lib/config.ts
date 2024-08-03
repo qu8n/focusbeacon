@@ -36,3 +36,6 @@ export const FM_OAUTH_FOR_AUTH_CODE_URL = `${process.env.NEXT_PUBLIC_FM_OAUTH_BA
 export const SUPABASE_PROJECT_URL = process.env.SUPABASE_PROJECT_URL as string
 export const SUPABASE_SERVICE_ROLE_KEY = process.env
   .SUPABASE_SERVICE_ROLE_KEY as string
+
+export const DEFAULT_PHOTO_URL =
+  "https://app.focusmate.com/assets/images/blank_profile.png"

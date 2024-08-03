@@ -32,7 +32,7 @@ function Streak({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
   const { isBelowSm } = useBreakpoint("sm")
 
-  const { isLoading: loadingData, data } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["streak", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak?demo=${demoMode}`)
@@ -49,7 +49,7 @@ function Streak({ demoMode }: { demoMode: boolean }) {
     getCoreRowModel: getCoreRowModel(),
   })
 
-  if (loadingData || !data || devMode) {
+  if (isLoading || !data || devMode) {
     return <LoadingSkeleton />
   }
 

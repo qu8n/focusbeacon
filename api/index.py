@@ -60,8 +60,16 @@ async def get_signin_status(session_id: SessionIdDep):
                         status_code=200)
 
 
+@app.get("/api/py/profile-photo")
+async def get_profile_photo(session_id: SessionIdDep):
+    profile, _ = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo=False)
+
+    return JSONResponse(content={"photo_url": profile.get("photoUrl")})
+
+
 @app.get("/api/py/streak")
-async def streak(session_id: SessionIdDep, demo: bool = False):
+async def get_streak(session_id: SessionIdDep, demo: bool = False):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
@@ -108,7 +116,7 @@ async def set_goal(session_id: SessionIdDep, goal: Goal):
 
 
 @app.get("/api/py/week")
-async def week(session_id: SessionIdDep, demo: bool = False):
+async def get_week(session_id: SessionIdDep, demo: bool = False):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
@@ -181,8 +189,8 @@ class Pagination(BaseModel):
 
 
 @app.post("/api/py/history")
-async def history(session_id: SessionIdDep,
-                  pagination: Pagination, demo: bool = False):
+async def get_history_paginated(session_id: SessionIdDep,
+                                pagination: Pagination, demo: bool = False):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
@@ -200,7 +208,7 @@ async def history(session_id: SessionIdDep,
 
 
 @app.get("/api/py/history-all")
-async def history_all(session_id: SessionIdDep):
+async def get_history_all(session_id: SessionIdDep):
     _, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache)
     return prep_history_data(sessions)

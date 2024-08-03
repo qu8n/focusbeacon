@@ -5,7 +5,6 @@ import {
   FM_OAUTH_CLIENT_ID,
   FM_OAUTH_CLIENT_SECRET,
   OAUTH_REDIRECT_URL,
-  FOCUSBEACON_SITE_URL,
   SESSION_COOKIE_NAME,
 } from "@/lib/config"
 import { serialize } from "cookie"
@@ -13,6 +12,7 @@ import { encrypt, generateSessionId } from "@/lib/encryption"
 import { supabaseClient } from "@/lib/supabase"
 import { FmProfile, FmUser } from "@/types/focusmate"
 import { TablesInsert } from "@/types/supabase"
+import { buildCookieOptions } from "@/lib/cookie"
 
 export async function POST(request: Request) {
   const { authorizationCode } = await request.json()
@@ -80,26 +80,6 @@ async function fetchProfileData(accessToken: string): Promise<FmProfile> {
     throw new Error("Failed to get profile data")
   }
   return response.json()
-}
-
-function buildCookieOptions() {
-  if (process.env.NODE_ENV === "production") {
-    return {
-      domain: new URL(FOCUSBEACON_SITE_URL).hostname,
-      secure: true,
-      httpOnly: true,
-      // Typing as `const` to avoid a TS error that generalizes the type of sameSite
-      sameSite: "strict" as const,
-      path: "/",
-    }
-  } else {
-    return {
-      secure: false,
-      httpOnly: true,
-      path: "/",
-      sameSite: "strict" as const,
-    }
-  }
 }
 
 async function saveProfileDataToDb(
