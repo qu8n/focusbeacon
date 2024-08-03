@@ -1,13 +1,8 @@
+from api_utils.config import SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY
 from supabase import create_client, Client
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-supabase_project_url = os.getenv("SUPABASE_PROJECT_URL")
-supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 supabase_client: Client = create_client(
-    supabase_project_url, supabase_service_role_key)
+    SUPABASE_PROJECT_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 
 def update_daily_streak(user_id: str, daily_streak: int):

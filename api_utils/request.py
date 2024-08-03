@@ -1,16 +1,12 @@
 from fastapi import Request
-import os
-from dotenv import load_dotenv
-from api_helpers.crypto import decrypt
-from api_helpers.supabase import supabase_client
-
-load_dotenv()
+from api_utils.config import SESSION_COOKIE_NAME
+from api_utils.encryption import decrypt
+from api_utils.supabase import supabase_client
 
 
 def get_session_id(request: Request):
     cookies = request.cookies
-    cookie_name = os.getenv("NEXT_PUBLIC_SESSION_COOKIE_NAME")
-    session_id = cookies.get(cookie_name)
+    session_id = cookies.get(SESSION_COOKIE_NAME)
     return session_id
 
 

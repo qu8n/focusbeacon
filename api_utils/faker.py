@@ -4,9 +4,18 @@
 import random
 import uuid
 from datetime import datetime, timedelta, timezone
+import pandas as pd
+from api_utils.lst_to_df import sessions_ls_to_df
 
-NUM_SESSIONS = 1500
+
 USER_ID = "5edcf2e5-539c-4250-966a-468a7ddfa38d"  # example from FM API docs
+NUM_SESSIONS = 1500
+FAKE_PROFILE = {
+    "userId": USER_ID,
+    "name": "John Doe",
+    "totalSessionCount": NUM_SESSIONS,
+    "timeZone": "Etc/UTC",
+}
 DURATION_OPTIONS = [1500000, 3000000, 4500000]
 HOURS = list(range(24))
 HOUR_WEIGHTS = [1 if 9 <= hour <= 18 else 0.05 for hour in HOURS]
@@ -73,9 +82,19 @@ def generate_fake_sessions(num_sessions: int = NUM_SESSIONS) -> list:
     return sessions
 
 
-fake_profile = {
-    "userId": USER_ID,
-    "name": "John Doe",
-    "totalSessionCount": NUM_SESSIONS,
-    "timeZone": "Etc/UTC",  # for simplicity
-}
+def get_fake_data(demo_data_cache: dict):
+    """Return fake profile and sessions data for demo and testing. If the data
+    is already cached, return the cached data instead of generating new data.
+    Otherwise, generate new fake data and cache it for future requests."""
+
+    user_id = FAKE_PROFILE.get("userId")
+    cached_sessions: pd.DataFrame = demo_data_cache.get(user_id)
+    if cached_sessions is not None:
+        return FAKE_PROFILE, cached_sessions
+
+    local_timezone = FAKE_PROFILE.get("timeZone")
+    fake_sessions = generate_fake_sessions()
+    fake_sessions = sessions_ls_to_df(fake_sessions, local_timezone)
+    demo_data_cache[user_id] = fake_sessions
+
+    return FAKE_PROFILE, fake_sessions

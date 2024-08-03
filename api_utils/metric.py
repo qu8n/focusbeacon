@@ -2,8 +2,7 @@ import warnings
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
-
-from api_helpers.time import m_to_ms
+from api_utils.time import m_to_ms
 
 
 def calc_repeat_partners(sessions: pd.DataFrame) -> int:

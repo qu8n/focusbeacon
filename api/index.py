@@ -1,35 +1,48 @@
 
+import asyncio
+from contextlib import asynccontextmanager
 from typing import Annotated
 import pandas as pd
 from pydantic import BaseModel
-from api_helpers.metric import calc_max_daily_streak, \
+from api_utils.config import FM_API_PROFILE_ENDPOINT
+from api_utils.faker import get_fake_data
+from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, \
     prep_punctuality_pie_data, prep_chart_data_by_past_range, \
     prep_chart_data_by_time, prep_heatmap_data, prep_history_data, \
     prep_chart_data_by_range
-from api_helpers.supabase import get_weekly_goal, update_daily_streak
-from api_helpers.time import get_curr_week_start, ms_to_h
-from api_helpers.request import get_access_token, get_session_id
-from api_helpers.focusmate import fetch_focusmate_profile, get_data
-import os
-from fastapi import Depends, FastAPI
-from dotenv import load_dotenv
+from api_utils.supabase import get_weekly_goal, update_daily_streak
+from api_utils.time import get_curr_week_start, ms_to_h
+from api_utils.request import get_access_token, get_session_id
+from api_utils.focusmate import fetch_focusmate_profile, get_data
+from fastapi import Depends, FastAPI, BackgroundTasks
 from cachetools import TTLCache
 from cachetools.keys import hashkey
 import ssl
+
+
 ssl._create_default_https_context = ssl._create_stdlib_context
-
-
 app = FastAPI()
-load_dotenv()
 user_data_cache = TTLCache(maxsize=100, ttl=60)
 demo_data_cache = TTLCache(maxsize=100, ttl=86400)
-
-
-fm_api_profile_endpoint = os.getenv("NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT")
-fm_api_sessions_endpoint = os.getenv("NEXT_PUBLIC_FM_API_SESSIONS_ENDPOINT")
-
 SessionIdDep = Annotated[str, Depends(get_session_id)]
+
+
+async def auto_refresh_demo_data_cache():
+    """Refresh the demo data cache automatically instead of waiting for a
+    request after ttl expires to trigger the refresh."""
+    while True:
+        get_fake_data(demo_data_cache)
+        await asyncio.sleep(86400)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # The code before `yield` gets executed before the rest of the app starts
+    background_tasks = BackgroundTasks()
+    background_tasks.add_task(auto_refresh_demo_data_cache)
+    await background_tasks()
+    yield
 
 
 @app.get("/api/py/streak")
@@ -70,7 +83,7 @@ async def goal(session_id: SessionIdDep, demo: bool = False):
     if profile is None:
         access_token = get_access_token(session_id)
         profile = fetch_focusmate_profile(
-            fm_api_profile_endpoint, access_token).get("user")
+            FM_API_PROFILE_ENDPOINT, access_token).get("user")
 
     return get_weekly_goal(profile.get("userId"))
 
