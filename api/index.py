@@ -10,7 +10,7 @@ from api_utils.metric import calc_max_daily_streak, \
     prep_punctuality_pie_data, prep_chart_data_by_past_range, \
     prep_chart_data_by_time, prep_heatmap_data, prep_history_data, \
     prep_chart_data_by_range
-from api_utils.supabase import get_weekly_goal, update_daily_streak
+from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
 from api_utils.time import get_curr_week_start, ms_to_h
 from api_utils.request import get_access_token, get_session_id
 from api_utils.focusmate import fetch_focusmate_profile, get_data
@@ -72,18 +72,23 @@ async def streak(session_id: SessionIdDep, demo: bool = False):
 
 
 @app.get("/api/py/goal")
-async def goal(session_id: SessionIdDep, demo: bool = False):
+async def get_goal(session_id: SessionIdDep, demo: bool = False):
     if demo:
         return 10
-
-    profile: dict = user_data_cache.get(
-        hashkey('profile', session_id))
-
-    if profile is None:
-        access_token = get_access_token(session_id)
-        profile = fetch_focusmate_profile(access_token).get("user")
-
+    profile, _ = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
     return get_weekly_goal(profile.get("userId"))
+
+
+class Goal(BaseModel):
+    goal: int
+
+
+@app.post("/api/py/goal")
+async def set_goal(session_id: SessionIdDep, goal: Goal):
+    profile, _ = await get_data(
+        session_id, user_data_cache, demo_data_cache)
+    return update_weekly_goal(profile.get("userId"), goal.goal)
 
 
 @app.get("/api/py/week")

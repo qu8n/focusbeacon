@@ -61,6 +61,7 @@ function History({ demoMode }: { demoMode: boolean }) {
           page_size: pagination.pageSize,
         }),
       })
+      if (!response.ok) throw new Error("Failed to fetch history data")
       const data = await response.json()
       return data
     },

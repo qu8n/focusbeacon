@@ -11,7 +11,7 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
         duration = session['duration']
         start_time = session['startTime']
 
-        user = session['users'][0]
+        user: dict = session['users'][0]
         session_title = user.get('sessionTitle')
         requested_at = user.get('requestedAt')
         joined_at = user.get('joinedAt')

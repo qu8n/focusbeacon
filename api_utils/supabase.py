@@ -14,3 +14,9 @@ def get_weekly_goal(user_id: str):
     response = supabase_client.table("profile").select(
         "weekly_goal").eq("user_id", user_id).execute()
     return response.data[0]["weekly_goal"]
+
+
+def update_weekly_goal(user_id: str, weekly_goal: int):
+    response = supabase_client.table("profile").update(
+        {"weekly_goal": weekly_goal}).eq("user_id", user_id).execute()
+    return response.data[0]["weekly_goal"]

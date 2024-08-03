@@ -36,6 +36,7 @@ function Streak({ demoMode }: { demoMode: boolean }) {
     queryKey: ["streak", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak?demo=${demoMode}`)
+      if (!response.ok) throw new Error("Failed to fetch streak data")
       const data = await response.json()
       return data
     },

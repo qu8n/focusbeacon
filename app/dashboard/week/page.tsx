@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Stat } from "@/components/ui/stat"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
-import { updateGoal } from "@/app/actions/updateGoal"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoCallout } from "@/components/common/demo-callout"
@@ -37,21 +36,15 @@ export default function WeekPage() {
 
 function Week({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
+  const queryClient = useQueryClient()
   const [goal, setGoal] = useState(0)
-  const [updatingGoal, setUpdatingGoal] = useState(false)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
-  const {
-    isLoading: goalIsLoading,
-    data: currGoal,
-    refetch: refetchGoal,
-  } = useQuery({
+  const { isLoading: goalIsLoading, data: currGoal } = useQuery({
     queryKey: ["goal", demoMode],
     queryFn: async () => {
-      // Tag the request so updateGoal() can invalidate it
-      const response = await fetch(`/api/py/goal?demo=${demoMode}`, {
-        next: { tags: ["goal"] },
-      })
+      const response = await fetch(`/api/py/goal?demo=${demoMode}`)
+      if (!response.ok) throw new Error("Failed to fetch goal")
       const goal = await response.json()
       setGoal(goal)
       return goal
@@ -62,17 +55,25 @@ function Week({ demoMode }: { demoMode: boolean }) {
     queryKey: ["weekly", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/week?demo=${demoMode}`)
+      if (!response.ok) throw new Error("Failed to fetch weekly data")
       return await response.json()
     },
   })
 
-  async function handleUpdateGoal() {
-    setUpdatingGoal(true)
-    await updateGoal(goal)
-    await refetchGoal()
-    setDialogIsOpen(false)
-    setUpdatingGoal(false)
-  }
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (goal: number) => {
+      const response = await fetch(`/api/py/goal`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal }),
+      })
+      if (!response.ok) throw new Error("Failed to update goal")
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["goal", demoMode] })
+      setDialogIsOpen(false)
+    },
+  })
 
   if (goalIsLoading || dataIsLoading || !data || devMode) {
     return <LoadingSkeleton />
@@ -102,7 +103,7 @@ function Week({ demoMode }: { demoMode: boolean }) {
               onChange={(e) => setGoal(Number(e.target.value))}
               value={goal ?? ""}
               onKeyUp={(e: { key: string }) =>
-                e.key === "Enter" && handleUpdateGoal()
+                e.key === "Enter" && mutate(goal)
               }
             />
           </Field>
@@ -112,11 +113,11 @@ function Week({ demoMode }: { demoMode: boolean }) {
             Cancel
           </Button>
           <Button
-            onClick={handleUpdateGoal}
-            disabled={updatingGoal}
+            onClick={() => mutate(goal)}
+            disabled={isPending}
             color="orange"
           >
-            {updatingGoal ? (
+            {isPending ? (
               <div className="inline-flex items-center">
                 <LoaderIcon />
                 Submitting<span className="tracking-wider">...</span>
@@ -415,7 +416,7 @@ function LoaderIcon() {
         cy="12"
         r="10"
         stroke="currentColor"
-        stroke-width="4"
+        strokeWidth="4"
       ></circle>
       <path
         className="opacity-75"
