@@ -1,6 +1,7 @@
 "use client"
 
 import { CONTACT_URL } from "@/components/common/footer"
+import { LoaderIcon } from "@/components/common/loader-icon"
 import { SigninButton } from "@/components/common/signin-button"
 import { LinkExternal } from "@/components/ui/link-external"
 import { LinkInternal } from "@/components/ui/link-internal"
@@ -43,7 +44,13 @@ export default function Callback() {
   }, [router, authorizationCode])
 
   if (authorizationCode) {
-    return "Loading..."
+    return (
+      <div className="inline-flex items-center">
+        <LoaderIcon />
+        Processing your accounting information
+        <span className="tracking-wider">...</span>
+      </div>
+    )
   } else {
     return (
       <div className="flex flex-col mt-10 text-left items-start">
