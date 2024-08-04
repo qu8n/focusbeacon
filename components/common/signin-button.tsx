@@ -38,8 +38,9 @@ export function SigninButton({
             setIsOpen(true)
           }
         }}
+        className={className}
       >
-        <span className={className}>{text}</span>
+        {text}
       </Button>
 
       <Dialog open={isOpen} onClose={setIsOpen}>
@@ -60,7 +61,7 @@ export function SigninButton({
               href={FM_OAUTH_FOR_AUTH_CODE_URL}
               openInNewTab={false}
             >
-              <span className={className}>{dialog.continue}</span>
+              {dialog.continue}
             </LinkExternal>
           </Button>
         </DialogActions>

@@ -1,3 +1,4 @@
+import { LinkInternal } from "@/components/ui/link-internal"
 import { Text, TextLink } from "@/components/ui/text"
 
 export default function NotFound() {
@@ -5,7 +6,11 @@ export default function NotFound() {
     <div className="mt-4">
       <Text>Sorry, this page does not exist.</Text>
       <Text>
-        Click <TextLink href="/home">here</TextLink> to return home.
+        Click{" "}
+        <LinkInternal href="/home">
+          <TextLink>here</TextLink>{" "}
+        </LinkInternal>
+        to return home.
       </Text>
     </div>
   )

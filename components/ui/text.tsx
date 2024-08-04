@@ -1,5 +1,4 @@
 import { clsx } from "clsx"
-import { LinkInternal } from "@/components/ui/link-internal"
 
 export function Text({
   className,
@@ -35,16 +34,13 @@ export function Footnote({
 
 export function TextLink({
   className,
-  href,
   ...props
 }: {
   className?: string
-  href: string
   children: React.ReactNode
 }) {
   return (
-    <LinkInternal
-      href={href}
+    <span
       {...props}
       className={clsx(
         className,
