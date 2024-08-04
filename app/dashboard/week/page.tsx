@@ -25,7 +25,7 @@ import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
 
-export default function WeekPage() {
+export default function WeekTab() {
   const demoMode = useContext(DemoModeContext)
   return (
     <>
