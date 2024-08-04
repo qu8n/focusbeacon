@@ -272,14 +272,56 @@ def prep_chart_data_by_range(sessions: pd.DataFrame,
     return pivot_df.to_dict(orient='records')
 
 
+# def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
+#     sessions = sessions.copy()
+
+#     sessions['start_time_str'] = sessions['start_time'].dt.strftime(
+#         '%I:%M %p')
+
+#     pivot_df: pd.DataFrame = pd.pivot_table(sessions,
+#                                             index='start_time_str',
+#                                             columns='duration',
+#                                             aggfunc='size',
+#                                             fill_value=0)
+#     pivot_df = pivot_df.reset_index()
+#     pivot_df.columns.name = None
+
+#     # Add columns for durations that had no sessions
+#     for duration in [1500000, 3000000, 4500000]:
+#         if duration not in pivot_df.columns:
+#             pivot_df[duration] = 0
+#     pivot_df.rename(columns={1500000: '25m',
+#                              3000000: '50m',
+#                              4500000: '75m'}, inplace=True)
+
+#     # Add rows for missing %I:%M %p that had no sessions
+#     today = pd.Timestamp('today').normalize()
+#     time_range = pd.date_range(start=today, end=today + pd.Timedelta(
+#         days=1) - pd.Timedelta(minutes=1), freq='15min').strftime('%I:%M %p')
+#     missing_times = [time for time in time_range
+#                      if time not in pivot_df['start_time_str'].values]
+#     missing_time_df = pd.DataFrame({'start_time_str': missing_times})
+#     pivot_df = pd.concat([pivot_df, missing_time_df],
+#                          ignore_index=True).fillna(0)
+
+#     # Sort smartly
+#     pivot_df['start_time_str'] = pd.to_datetime(
+#         pivot_df['start_time_str'], format='%I:%M %p').dt.strftime('%I:%M %p')
+#     pivot_df['start_time_str'] = pd.Categorical(
+#         pivot_df['start_time_str'], time_range)
+#     pivot_df = pivot_df.sort_values('start_time_str')
+
+#     return pivot_df.to_dict(orient='records')
+
 def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
 
-    sessions['start_time_str'] = sessions['start_time'].dt.strftime(
-        '%I:%M %p')
+    # Format start_time to hourly intervals
+    sessions['start_time_hour'] = sessions['start_time'].dt.strftime(
+        '%I %p').str.lstrip('0')
 
     pivot_df: pd.DataFrame = pd.pivot_table(sessions,
-                                            index='start_time_str',
+                                            index='start_time_hour',
                                             columns='duration',
                                             aggfunc='size',
                                             fill_value=0)
@@ -294,22 +336,22 @@ def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
                              3000000: '50m',
                              4500000: '75m'}, inplace=True)
 
-    # Add rows for missing %I:%M %p that had no sessions
+    # Add rows for missing hourly intervals that had no sessions
     today = pd.Timestamp('today').normalize()
     time_range = pd.date_range(start=today, end=today + pd.Timedelta(
-        days=1) - pd.Timedelta(minutes=1), freq='15min').strftime('%I:%M %p')
+        days=1) - pd.Timedelta(minutes=1), freq='H').strftime('%I %p').str.lstrip('0')
     missing_times = [time for time in time_range
-                     if time not in pivot_df['start_time_str'].values]
-    missing_time_df = pd.DataFrame({'start_time_str': missing_times})
+                     if time not in pivot_df['start_time_hour'].values]
+    missing_time_df = pd.DataFrame({'start_time_hour': missing_times})
     pivot_df = pd.concat([pivot_df, missing_time_df],
                          ignore_index=True).fillna(0)
 
     # Sort smartly
-    pivot_df['start_time_str'] = pd.to_datetime(
-        pivot_df['start_time_str'], format='%I:%M %p').dt.strftime('%I:%M %p')
-    pivot_df['start_time_str'] = pd.Categorical(
-        pivot_df['start_time_str'], time_range)
-    pivot_df = pivot_df.sort_values('start_time_str')
+    pivot_df['start_time_hour'] = pd.to_datetime(
+        pivot_df['start_time_hour'], format='%I %p').dt.strftime('%I %p').str.lstrip('0')
+    pivot_df['start_time_hour'] = pd.Categorical(
+        pivot_df['start_time_hour'], time_range)
+    pivot_df = pivot_df.sort_values('start_time_hour')
 
     return pivot_df.to_dict(orient='records')
 

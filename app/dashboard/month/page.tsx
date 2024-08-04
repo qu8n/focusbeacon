@@ -193,9 +193,9 @@ function Month({ demoMode }: { demoMode: boolean }) {
         </div>
       </Card>
 
-      <Card title="Sessions by starting time" className="sm:col-span-6">
+      <Card title="Sessions by hour of the day" className="sm:col-span-6">
         <BarChart
-          index="start_time_str"
+          index="start_time_hour"
           categories={["25m", "50m", "75m"]}
           type="stacked"
           data={data.prev_weeks.time}
@@ -262,7 +262,7 @@ function LoadingSkeleton() {
         <Skeleton className="h-[165px] w-full" />
       </Card>
 
-      <Card title="Sessions by starting time" className="sm:col-span-6">
+      <Card title="Sessions by hour of the day" className="sm:col-span-6">
         <Skeleton className="h-[320px] w-full" />
       </Card>
     </div>
