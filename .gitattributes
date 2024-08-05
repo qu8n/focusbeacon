@@ -1,0 +1,4 @@
+# Exlude these directories from GitHub Linguist as they mostly contain
+# reusable components from TailwindUI, Tremor, and shadcn/ui.
+app/** linguist-vendored
+components/** linguist-vendored
