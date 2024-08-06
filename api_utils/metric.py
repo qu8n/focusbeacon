@@ -200,15 +200,9 @@ def prep_chart_data_by_past_range(sessions: pd.DataFrame,
     if period == "week":
         period_format = 'W'
         strftime_format = '%b %d'
-    elif period == "month":
+    else:  # month or year
         period_format = 'M'
         strftime_format = '%b %Y'
-    elif period == "year":
-        period_format = 'Y'
-        strftime_format = '%Y'
-    else:
-        raise ValueError(
-            "Invalid period. Choose from 'week', 'month', or 'year'.")
 
     # Format the start_time to the specified period
     sessions['start_period'] = sessions['start_time'].dt.to_period(
@@ -222,8 +216,6 @@ def prep_chart_data_by_past_range(sessions: pd.DataFrame,
                                             aggfunc='size',
                                             fill_value=0)
 
-    print(pivot_df)
-
     pivot_df = pivot_df.reset_index()
     pivot_df.columns.name = None
 
@@ -234,8 +226,6 @@ def prep_chart_data_by_past_range(sessions: pd.DataFrame,
     pivot_df.rename(columns={1500000: '25m',
                              3000000: '50m',
                              4500000: '75m'}, inplace=True)
-
-    print(pivot_df)
 
     # Add rows for periods that had no sessions
     period_range = pd.period_range(
@@ -297,6 +287,9 @@ def prep_chart_data_by_range(sessions: pd.DataFrame,
     elif period == "month":
         pivot_df['start_date_str'] = pd.to_datetime(
             pivot_df['start_date_str']).dt.strftime('%-d')
+    elif period == "year":
+        pivot_df['start_date_str'] = pd.to_datetime(
+            pivot_df['start_date_str']).dt.strftime('%b')
 
     return pivot_df.to_dict(orient='records')
 

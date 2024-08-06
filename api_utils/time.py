@@ -42,23 +42,21 @@ def dt_to_fm_time_str(datetime_obj: datetime):
 def get_curr_week_start(local_timezone: str):
     today = get_naive_local_today(local_timezone)
     monday = today - timedelta(days=today.weekday())
-    curr_week_start = monday.replace(hour=0, minute=0, second=0, microsecond=0)
-    # with warnings.catch_warnings():
-    #     warnings.simplefilter("ignore", UserWarning)
-    #     curr_week_start_dt64 = np.datetime64(curr_week_start)
-    # return curr_week_start_dt64
-    return curr_week_start
+    return monday.replace(hour=0, minute=0, second=0, microsecond=0)
 
 
 def get_curr_month_start(local_timezone: str):
     today = get_naive_local_today(local_timezone)
-    first_day = today.replace(day=1)
-    curr_month_start = first_day.replace(
+    first_day_of_month = today.replace(day=1)
+    return first_day_of_month.replace(
         hour=0, minute=0, second=0, microsecond=0)
-    # with warnings.catch_warnings():
-    #     warnings.simplefilter("ignore", UserWarning)
-    #     curr_month_start_dt64 = np.datetime64(curr_month_start)
-    return curr_month_start
+
+
+def get_curr_year_start(local_timezone: str):
+    today = get_naive_local_today(local_timezone)
+    first_day_of_year = today.replace(day=1, month=1)
+    return first_day_of_year.replace(
+        hour=0, minute=0, second=0, microsecond=0)
 
 
 def get_naive_local_today(local_timezone):

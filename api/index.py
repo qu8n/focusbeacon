@@ -12,7 +12,7 @@ from api_utils.metric import calc_max_daily_streak, \
     prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, \
     prep_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
-from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, ms_to_h
+from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
@@ -148,7 +148,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
     date_label_format = "%A, %b %d"
 
     return {
-        "curr_week": {
+        "curr_period": {
             "start_label": format_date_label(curr_week_start, date_label_format),
             "end_label": format_date_label(curr_week_end, date_label_format),
             "sessions_total": len(curr_week_sessions),
@@ -161,7 +161,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
             "chart_data": prep_chart_data_by_range(
                 curr_week_sessions, curr_week_start, curr_week_end, "week"),
         },
-        "prev_weeks": {
+        "prev_period": {
             "start_label": format_date_label(l4w_start, date_label_format),
             "end_label": format_date_label(l4w_end, date_label_format),
             "sessions_total": len(l4w_sessions),
@@ -206,7 +206,7 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
     date_format = "%B %Y"
 
     return {
-        "curr_month": {
+        "curr_period": {
             "start_label": format_date_label(curr_month_start, date_format),
             "sessions_total": len(curr_month_sessions),
             "sessions_delta": len(curr_month_sessions) - len(prev_month_sessions),
@@ -218,7 +218,7 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
             "chart_data": prep_chart_data_by_range(
                 curr_month_sessions, curr_month_start, curr_month_end, "month"),
         },
-        "prev_months": {
+        "prev_period": {
             "start_label": format_date_label(l6m_start, date_format),
             "end_label": format_date_label(l6m_end, date_format),
             "sessions_total": len(l6m_sessions),
@@ -227,6 +227,58 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
             "punctuality": prep_punctuality_pie_data(l6m_sessions),
             "duration": prep_duration_pie_data(l6m_sessions),
             "time": prep_chart_data_by_hour(l6m_sessions)
+        }
+    }
+
+
+@app.get("/api/py/year")
+async def get_year(session_id: SessionIdDep, demo: bool = False):
+    profile, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
+
+    if profile.get("totalSessionCount") == 0:
+        return {
+            "zero_sessions": True
+        }
+
+    sessions = sessions[sessions['completed'] == True]
+    local_timezone: str = profile.get("timeZone")
+
+    curr_year_start = get_curr_year_start(local_timezone)
+    curr_year_end = curr_year_start + pd.DateOffset(years=1, days=-1)
+    prev_year_start = curr_year_start - pd.DateOffset(years=1)
+    prev_year_end = curr_year_end - pd.DateOffset(years=1)
+
+    curr_year_sessions = sessions[sessions['start_time'] >= curr_year_start]
+    prev_year_sessions = sessions[
+        (sessions['start_time'] >= prev_year_start) &
+        (sessions['start_time'] < curr_year_start)
+    ]
+
+    date_format = "%B %Y"
+
+    return {
+        "curr_period": {
+            "start_label": format_date_label(curr_year_start, date_format),
+            "sessions_total": len(curr_year_sessions),
+            "sessions_delta": len(curr_year_sessions) - len(prev_year_sessions),
+            "hours_total": ms_to_h(curr_year_sessions['duration'].sum()),
+            "hours_delta": ms_to_h(curr_year_sessions['duration'].sum() -
+                                   prev_year_sessions['duration'].sum()),
+            "partners_total": len(curr_year_sessions['partner_id'].unique()),
+            "partners_repeat": calc_repeat_partners(curr_year_sessions),
+            "chart_data": prep_chart_data_by_range(
+                curr_year_sessions, curr_year_start, curr_year_end, "year"),
+        },
+        "prev_period": {
+            "start_label": format_date_label(prev_year_start, date_format),
+            "end_label": format_date_label(prev_year_end, date_format),
+            "sessions_total": len(prev_year_sessions),
+            "year": prep_chart_data_by_past_range(
+                prev_year_sessions, prev_year_start, prev_year_end, "year"),
+            "punctuality": prep_punctuality_pie_data(prev_year_sessions),
+            "duration": prep_duration_pie_data(prev_year_sessions),
+            "time": prep_chart_data_by_hour(prev_year_sessions)
         }
     }
 
