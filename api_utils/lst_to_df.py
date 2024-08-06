@@ -48,6 +48,9 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
         df['session_title'] = df['session_title'].astype(str)
         df['partner_id'] = df['partner_id'].astype(str)
 
+        # Times are saved in the local time without timezone info
+        # (e.g. 2pm EST is simply saved as 2pm)
+        # This enables more simple operations and comparisons
         df['start_time'] = df['start_time'].dt.tz_localize(None)
         df['requested_at'] = df['requested_at'].dt.tz_localize(None)
         df['joined_at'] = df['joined_at'].dt.tz_localize(None)

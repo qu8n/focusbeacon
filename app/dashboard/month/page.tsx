@@ -29,7 +29,7 @@ function Month({ demoMode }: { demoMode: boolean }) {
   const { isLoading: dataIsLoading, data } = useQuery({
     queryKey: ["month", demoMode],
     queryFn: async () => {
-      const response = await fetch(`/api/py/week?demo=${demoMode}`)
+      const response = await fetch(`/api/py/month?demo=${demoMode}`)
       if (!response.ok) throw new Error("Failed to fetch monthly data")
       return await response.json()
     },
@@ -47,30 +47,30 @@ function Month({ demoMode }: { demoMode: boolean }) {
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
       <DateSubheading
         title="Current month"
-        dateRange={`${data.curr_week.start_date} - ${data.curr_week.end_date}`}
+        dateRange={`${data.curr_month.start_label}`}
         className="sm:col-span-6"
       />
 
       <Card title="Total sessions" className="sm:col-span-2">
         <Stat
-          value={data.curr_week.sessions_total}
-          changeVal={data.curr_week.sessions_delta}
+          value={data.curr_month.sessions_total}
+          changeVal={data.curr_month.sessions_delta}
           changeText="vs. previous month"
         />
       </Card>
 
       <Card title="Total hours" className="sm:col-span-2">
         <Stat
-          value={data.curr_week.hours_total}
-          changeVal={data.curr_week.hours_delta}
+          value={data.curr_month.hours_total}
+          changeVal={data.curr_month.hours_delta}
           changeText="vs. previous month"
         />
       </Card>
 
       <Card title="Total partners" className="sm:col-span-2">
         <Stat
-          value={data.curr_week.partners_total}
-          changeText={`${data.curr_week.partners_repeat} repeat`}
+          value={data.curr_month.partners_total}
+          changeText={`${data.curr_month.partners_repeat} repeat`}
         />
       </Card>
 
@@ -79,7 +79,7 @@ function Month({ demoMode }: { demoMode: boolean }) {
           index="start_date_str"
           categories={["25m", "50m", "75m"]}
           type="stacked"
-          data={data.curr_week.chart_data}
+          data={data.curr_month.chart_data}
           colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}
@@ -89,16 +89,16 @@ function Month({ demoMode }: { demoMode: boolean }) {
 
       <DateSubheading
         title="Previous months"
-        dateRange={`${data.prev_weeks.start_date} - ${data.prev_weeks.end_date}`}
+        dateRange={`${data.prev_months.start_label} - ${data.prev_months.end_label}`}
         className="sm:col-span-6 mt-4"
       />
 
       <Card title="Sessions by month" className="sm:col-span-6">
         <BarChart
-          index="start_week_str"
+          index="start_period_str"
           categories={["25m", "50m", "75m"]}
           type="stacked"
-          data={data.prev_weeks.week}
+          data={data.prev_months.month}
           colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}
@@ -114,25 +114,25 @@ function Month({ demoMode }: { demoMode: boolean }) {
 
         <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
-            data={data.prev_weeks.punctuality.data}
+            data={data.prev_months.punctuality.data}
             variant="pie"
             category="punctuality"
             value="amount"
             colors={["custom-4", "custom-5"]}
             valueFormatter={(value) =>
-              `${value} (${Math.round((value / data.prev_weeks.sessions_total) * 100)}%)`
+              `${value} (${Math.round((value / data.prev_months.sessions_total) * 100)}%)`
             }
             className="ml-4"
           />
 
           <div className="flex flex-col">
             <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>{data.prev_weeks.punctuality.data[0].punctuality}</span>
+              <span>{data.prev_months.punctuality.data[0].punctuality}</span>
               <span>
-                {data.prev_weeks.punctuality.data[0].amount} (
+                {data.prev_months.punctuality.data[0].amount} (
                 {Math.round(
-                  (data.prev_weeks.punctuality.data[0].amount /
-                    data.prev_weeks.sessions_total) *
+                  (data.prev_months.punctuality.data[0].amount /
+                    data.prev_months.sessions_total) *
                     100
                 )}
                 %)
@@ -140,11 +140,11 @@ function Month({ demoMode }: { demoMode: boolean }) {
             </Text>
             <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>Average</span>
-              <span>{data.prev_weeks.punctuality.avg}</span>
+              <span>{data.prev_months.punctuality.avg}</span>
             </Text>
             <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
               <span>Median</span>
-              <span>{data.prev_weeks.punctuality.median}</span>
+              <span>{data.prev_months.punctuality.median}</span>
             </Text>
           </div>
         </div>
@@ -158,19 +158,19 @@ function Month({ demoMode }: { demoMode: boolean }) {
 
         <div className="grid grid-cols-2 items-center mt-3">
           <DonutChart
-            data={data.prev_weeks.duration}
+            data={data.prev_months.duration}
             variant="pie"
             category="duration"
             value="amount"
             colors={["custom-1", "custom-2", "custom-3"]}
             valueFormatter={(value) =>
-              `${value} (${Math.round((value / data.prev_weeks.sessions_total) * 100)}%)`
+              `${value} (${Math.round((value / data.prev_months.sessions_total) * 100)}%)`
             }
             className="ml-4"
           />
 
           <div className="flex flex-col">
-            {data.prev_weeks.duration.map(
+            {data.prev_months.duration.map(
               (item: { duration: string; amount: number }) => {
                 return (
                   <Text
@@ -181,7 +181,7 @@ function Month({ demoMode }: { demoMode: boolean }) {
                     <span>
                       {item.amount} (
                       {Math.round(
-                        (item.amount / data.prev_weeks.sessions_total) * 100
+                        (item.amount / data.prev_months.sessions_total) * 100
                       )}
                       %)
                     </span>
@@ -198,7 +198,7 @@ function Month({ demoMode }: { demoMode: boolean }) {
           index="start_time_hour"
           categories={["25m", "50m", "75m"]}
           type="stacked"
-          data={data.prev_weeks.time}
+          data={data.prev_months.time}
           colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}

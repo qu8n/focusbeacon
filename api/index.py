@@ -9,10 +9,10 @@ from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, \
     prep_punctuality_pie_data, prep_chart_data_by_past_range, \
-    prep_chart_data_by_time, prep_heatmap_data, prep_history_data, \
+    prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, \
     prep_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
-from api_utils.time import get_curr_week_start, ms_to_h
+from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, ms_to_h
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
@@ -145,21 +145,12 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
         (sessions['start_time'] < curr_week_start)
     ]
 
-    # Date end labels are calculated separately to avoid timezone issues
-    date_format = "%A, %b %d"
-    curr_week_start_date = pd.to_datetime(
-        str(curr_week_start)).strftime(date_format)
-    curr_week_end_date = pd.to_datetime(
-        str(curr_week_start + pd.DateOffset(days=6))).strftime(date_format)
-    prev_weeks_start_date = pd.to_datetime(
-        str(l4w_start)).strftime(date_format)
-    prev_weeks_end_date = pd.to_datetime(
-        str(l4w_start + pd.DateOffset(days=4*7-1))).strftime(date_format)
+    date_label_format = "%A, %b %d"
 
     return {
         "curr_week": {
-            "start_date": curr_week_start_date,
-            "end_date": curr_week_end_date,
+            "start_label": format_date_label(curr_week_start, date_label_format),
+            "end_label": format_date_label(curr_week_end, date_label_format),
             "sessions_total": len(curr_week_sessions),
             "sessions_delta": len(curr_week_sessions) - len(prev_week_sessions),
             "hours_total": ms_to_h(curr_week_sessions['duration'].sum()),
@@ -171,14 +162,71 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
                 curr_week_sessions, curr_week_start, curr_week_end),
         },
         "prev_weeks": {
-            "start_date": prev_weeks_start_date,
-            "end_date": prev_weeks_end_date,
+            "start_label": format_date_label(l4w_start, date_label_format),
+            "end_label": format_date_label(l4w_end, date_label_format),
             "sessions_total": len(l4w_sessions),
             "week": prep_chart_data_by_past_range(
-                l4w_sessions, l4w_start, l4w_end),
+                l4w_sessions, l4w_start, l4w_end, "week"),
             "punctuality": prep_punctuality_pie_data(l4w_sessions),
             "duration": prep_duration_pie_data(l4w_sessions),
-            "time": prep_chart_data_by_time(l4w_sessions)
+            "time": prep_chart_data_by_hour(l4w_sessions)
+        }
+    }
+
+
+@app.get("/api/py/month")
+async def get_month(session_id: SessionIdDep, demo: bool = False):
+    profile, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
+
+    if profile.get("totalSessionCount") == 0:
+        return {
+            "zero_sessions": True
+        }
+
+    sessions = sessions[sessions['completed'] == True]
+    local_timezone: str = profile.get("timeZone")
+
+    curr_month_start = get_curr_month_start(local_timezone)
+    curr_month_end = curr_month_start + pd.DateOffset(months=1, days=-1)
+    prev_month_start = curr_month_start - pd.DateOffset(months=1)
+    l6m_start = curr_month_start - pd.DateOffset(months=6)
+    l6m_end = curr_month_end - pd.DateOffset(months=1)
+
+    curr_month_sessions = sessions[sessions['start_time'] >= curr_month_start]
+    prev_month_sessions = sessions[
+        (sessions['start_time'] >= prev_month_start) &
+        (sessions['start_time'] < curr_month_start)
+    ]
+    l6m_sessions = sessions[
+        (sessions['start_time'] >= l6m_start) &
+        (sessions['start_time'] < curr_month_start)
+    ]
+
+    date_format = "%B %Y"
+
+    return {
+        "curr_month": {
+            "start_label": format_date_label(curr_month_start, date_format),
+            "sessions_total": len(curr_month_sessions),
+            "sessions_delta": len(curr_month_sessions) - len(prev_month_sessions),
+            "hours_total": ms_to_h(curr_month_sessions['duration'].sum()),
+            "hours_delta": ms_to_h(curr_month_sessions['duration'].sum() -
+                                   prev_month_sessions['duration'].sum()),
+            "partners_total": len(curr_month_sessions['partner_id'].unique()),
+            "partners_repeat": calc_repeat_partners(curr_month_sessions),
+            "chart_data": prep_chart_data_by_range(
+                curr_month_sessions, curr_month_start, curr_month_end),
+        },
+        "prev_months": {
+            "start_label": format_date_label(l6m_start, date_format),
+            "end_label": format_date_label(l6m_end, date_format),
+            "sessions_total": len(l6m_sessions),
+            "month": prep_chart_data_by_past_range(
+                l6m_sessions, l6m_start, l6m_end, "month"),
+            "punctuality": prep_punctuality_pie_data(l6m_sessions),
+            "duration": prep_duration_pie_data(l6m_sessions),
+            "time": prep_chart_data_by_hour(l6m_sessions)
         }
     }
 

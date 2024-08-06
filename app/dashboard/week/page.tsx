@@ -132,7 +132,7 @@ function Week({ demoMode }: { demoMode: boolean }) {
 
       <DateSubheading
         title="Current week"
-        dateRange={`${data.curr_week.start_date} - ${data.curr_week.end_date}`}
+        dateRange={`${data.curr_week.start_label} - ${data.curr_week.end_label}`}
         className="sm:col-span-6"
       />
 
@@ -203,13 +203,13 @@ function Week({ demoMode }: { demoMode: boolean }) {
 
       <DateSubheading
         title="Previous weeks"
-        dateRange={`${data.prev_weeks.start_date} - ${data.prev_weeks.end_date}`}
+        dateRange={`${data.prev_weeks.start_label} - ${data.prev_weeks.end_label}`}
         className="sm:col-span-6 mt-4"
       />
 
       <Card title="Sessions by week" className="sm:col-span-6">
         <BarChart
-          index="start_week_str"
+          index="start_period_str"
           categories={["25m", "50m", "75m"]}
           type="stacked"
           data={data.prev_weeks.week}

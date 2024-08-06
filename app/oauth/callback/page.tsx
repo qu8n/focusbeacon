@@ -47,7 +47,7 @@ export default function Callback() {
     return (
       <div className="inline-flex items-center">
         <LoaderIcon />
-        Processing your accounting information
+        Processing your account information
         <span className="tracking-wider">...</span>
       </div>
     )
