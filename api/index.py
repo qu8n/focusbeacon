@@ -159,7 +159,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
             "partners_total": len(curr_week_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_week_sessions),
             "chart_data": prep_chart_data_by_range(
-                curr_week_sessions, curr_week_start, curr_week_end),
+                curr_week_sessions, curr_week_start, curr_week_end, "week"),
         },
         "prev_weeks": {
             "start_label": format_date_label(l4w_start, date_label_format),
@@ -216,7 +216,7 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
             "partners_total": len(curr_month_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_month_sessions),
             "chart_data": prep_chart_data_by_range(
-                curr_month_sessions, curr_month_start, curr_month_end),
+                curr_month_sessions, curr_month_start, curr_month_end, "month"),
         },
         "prev_months": {
             "start_label": format_date_label(l6m_start, date_format),

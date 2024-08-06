@@ -1,4 +1,3 @@
-import warnings
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
@@ -191,45 +190,6 @@ def prep_heatmap_data(sessions: pd.DataFrame) -> dict:
     }
 
 
-# def prep_chart_data_by_past_range(sessions: pd.DataFrame,
-#                                   start_date: np.datetime64,
-#                                   end_date: np.datetime64) -> List[Dict[str, Any]]:
-#     sessions = sessions.copy()
-#     sessions['start_week_str'] = sessions['start_time'].dt.to_period(
-#         'W').apply(lambda r: r.start_time.strftime('%Y-%m-%d'))
-
-#     pivot_df: pd.DataFrame = pd.pivot_table(sessions,
-#                                             index='start_week_str',
-#                                             columns='duration',
-#                                             aggfunc='size',
-#                                             fill_value=0)
-#     pivot_df = pivot_df.reset_index()
-#     pivot_df.columns.name = None
-
-#     # Add columns for durations that had no sessions
-#     for duration in [1500000, 3000000, 4500000]:
-#         if duration not in pivot_df.columns:
-#             pivot_df[duration] = 0
-#     pivot_df.rename(columns={1500000: '25m',
-#                              3000000: '50m',
-#                              4500000: '75m'}, inplace=True)
-
-#     # Add rows for weeks that had no sessions
-#     week_range = pd.date_range(
-#         start=start_date, end=end_date, freq='W-MON').strftime('%Y-%m-%d')
-#     missing_weeks = [week for week in week_range
-#                      if week not in pivot_df['start_week_str'].values]
-#     missing_week_df = pd.DataFrame({'start_week_str': missing_weeks})
-#     pivot_df = pd.concat([pivot_df, missing_week_df],
-#                          ignore_index=True).fillna(0)
-
-#     pivot_df = pivot_df.sort_values('start_week_str')
-
-#     pivot_df['start_week_str'] = pd.to_datetime(
-#         pivot_df['start_week_str']).dt.strftime('%b %d')
-
-#     return pivot_df.to_dict(orient='records')
-
 def prep_chart_data_by_past_range(sessions: pd.DataFrame,
                                   start_date: np.datetime64,
                                   end_date: np.datetime64,
@@ -239,15 +199,12 @@ def prep_chart_data_by_past_range(sessions: pd.DataFrame,
     # Determine the period format and frequency
     if period == "week":
         period_format = 'W'
-        freq = 'W-MON'
         strftime_format = '%b %d'
     elif period == "month":
         period_format = 'M'
-        freq = 'M'
         strftime_format = '%b %Y'
     elif period == "year":
         period_format = 'Y'
-        freq = 'Y'
         strftime_format = '%Y'
     else:
         raise ValueError(
@@ -296,13 +253,13 @@ def prep_chart_data_by_past_range(sessions: pd.DataFrame,
     pivot_df['start_period_str'] = pd.to_datetime(
         pivot_df['start_period_str']).dt.strftime(strftime_format)
 
-    print(pivot_df.to_dict(orient='records'))
     return pivot_df.to_dict(orient='records')
 
 
 def prep_chart_data_by_range(sessions: pd.DataFrame,
                              start_date: np.datetime64,
-                             end_date: np.datetime64) -> List[Dict[str, Any]]:
+                             end_date: np.datetime64,
+                             period: str) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
     sessions['start_date_str'] = sessions['start_time'].dt.strftime(
         '%Y-%m-%d')
@@ -333,52 +290,16 @@ def prep_chart_data_by_range(sessions: pd.DataFrame,
                          ignore_index=True).fillna(0)
 
     pivot_df = pivot_df.sort_values('start_date_str')
-    pivot_df['start_date_str'] = pd.to_datetime(
-        pivot_df['start_date_str']).dt.day_name().str[:3]
+
+    if period == "week":
+        pivot_df['start_date_str'] = pd.to_datetime(
+            pivot_df['start_date_str']).dt.day_name().str[:3]
+    elif period == "month":
+        pivot_df['start_date_str'] = pd.to_datetime(
+            pivot_df['start_date_str']).dt.strftime('%-d')
 
     return pivot_df.to_dict(orient='records')
 
-
-# def prep_chart_data_by_time(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
-#     sessions = sessions.copy()
-
-#     sessions['start_time_str'] = sessions['start_time'].dt.strftime(
-#         '%I:%M %p')
-
-#     pivot_df: pd.DataFrame = pd.pivot_table(sessions,
-#                                             index='start_time_str',
-#                                             columns='duration',
-#                                             aggfunc='size',
-#                                             fill_value=0)
-#     pivot_df = pivot_df.reset_index()
-#     pivot_df.columns.name = None
-
-#     # Add columns for durations that had no sessions
-#     for duration in [1500000, 3000000, 4500000]:
-#         if duration not in pivot_df.columns:
-#             pivot_df[duration] = 0
-#     pivot_df.rename(columns={1500000: '25m',
-#                              3000000: '50m',
-#                              4500000: '75m'}, inplace=True)
-
-#     # Add rows for missing %I:%M %p that had no sessions
-#     today = pd.Timestamp('today').normalize()
-#     time_range = pd.date_range(start=today, end=today + pd.Timedelta(
-#         days=1) - pd.Timedelta(minutes=1), freq='15min').strftime('%I:%M %p')
-#     missing_times = [time for time in time_range
-#                      if time not in pivot_df['start_time_str'].values]
-#     missing_time_df = pd.DataFrame({'start_time_str': missing_times})
-#     pivot_df = pd.concat([pivot_df, missing_time_df],
-#                          ignore_index=True).fillna(0)
-
-#     # Sort smartly
-#     pivot_df['start_time_str'] = pd.to_datetime(
-#         pivot_df['start_time_str'], format='%I:%M %p').dt.strftime('%I:%M %p')
-#     pivot_df['start_time_str'] = pd.Categorical(
-#         pivot_df['start_time_str'], time_range)
-#     pivot_df = pivot_df.sort_values('start_time_str')
-
-#     return pivot_df.to_dict(orient='records')
 
 def prep_chart_data_by_hour(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
