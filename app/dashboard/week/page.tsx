@@ -190,7 +190,7 @@ function Week({ demoMode }: { demoMode: boolean }) {
 
       <Card title="Sessions by day of the week" className="sm:col-span-6">
         <BarChart
-          index="start_date_str"
+          index="start_period_str"
           categories={["25m", "50m", "75m"]}
           type="stacked"
           data={data.curr_period.chart_data}

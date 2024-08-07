@@ -255,7 +255,7 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
         (sessions['start_time'] < curr_year_start)
     ]
 
-    date_format = "%B %Y"
+    date_format = "%Y"
 
     return {
         "curr_period": {
@@ -272,7 +272,6 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
         },
         "prev_period": {
             "start_label": format_date_label(prev_year_start, date_format),
-            "end_label": format_date_label(prev_year_end, date_format),
             "sessions_total": len(prev_year_sessions),
             "year": prep_chart_data_by_past_range(
                 prev_year_sessions, prev_year_start, prev_year_end, "year"),
