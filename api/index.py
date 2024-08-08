@@ -7,12 +7,12 @@ import pandas as pd
 from pydantic import BaseModel
 from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
-    calc_curr_streak, calc_repeat_partners, prep_cumulative_sessions_chart, prep_duration_pie_data, \
+    calc_curr_streak, calc_repeat_partners, get_daily_record, prep_cumulative_sessions_chart, prep_duration_pie_data, \
     prep_punctuality_pie_data, prep_chart_data_by_past_range, \
     prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, \
     prep_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
-from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h
+from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
@@ -294,14 +294,15 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
 
     sessions = sessions[sessions['completed'] == True]
 
-    cumulative_sessions = prep_cumulative_sessions_chart(sessions)
-
     return {
         "sessions_total": len(sessions),
         "hours_total": ms_to_h(sessions['duration'].sum()),
         "partners_total": len(sessions['partner_id'].unique()),
         "partners_repeat": calc_repeat_partners(sessions),
-        "sessions_cumulative": cumulative_sessions
+        "sessions_cumulative": prep_cumulative_sessions_chart(sessions),
+        "first_session_date": format_date_label(sessions['start_time'].min(), "%B %-d, %Y"),
+        "average_duration": ms_to_m(sessions['duration'].mean()),
+        "daily_record": get_daily_record(sessions)
     }
 
 

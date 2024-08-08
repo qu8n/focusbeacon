@@ -61,6 +61,21 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
         />
       </Card>
 
+      <Card title="First session" className="sm:col-span-2">
+        <Stat value={data.first_session_date} />
+      </Card>
+
+      <Card title="Average session (minutes)" className="sm:col-span-2">
+        <Stat value={data.average_duration} />
+      </Card>
+
+      <Card title="Daily record (hours)" className="sm:col-span-2">
+        <Stat
+          value={data.daily_record.duration}
+          changeText={data.daily_record.date}
+        />
+      </Card>
+
       <Card title="Cumulative sessions over time" className="sm:col-span-6">
         <LineChart
           data={data.sessions_cumulative}

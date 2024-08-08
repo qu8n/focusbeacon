@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
-from api_utils.time import get_naive_local_today, m_to_ms
+from api_utils.time import get_naive_local_today, m_to_ms, ms_to_h
 
 
 def calc_repeat_partners(sessions: pd.DataFrame) -> int:
@@ -481,3 +481,13 @@ def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any
     sessions.drop(columns=['count'], inplace=True)
 
     return sessions.to_dict(orient='records')
+
+
+def get_daily_record(sessions: pd.DataFrame) -> Dict[str, Any]:
+    sessions = sessions.copy()
+    sessions['start_date'] = sessions['start_time'].dt.date
+    daily_duration = sessions.groupby('start_date')['duration'].sum()
+    return {
+        'date': daily_duration.idxmax().strftime('%b %-d, %Y'),
+        'duration': ms_to_h(daily_duration.max())
+    }
