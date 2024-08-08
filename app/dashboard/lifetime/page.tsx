@@ -12,6 +12,7 @@ import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
+import { LineChart } from "@/components/charts/line-chart"
 
 export default function LifetimeTab() {
   const demoMode = useContext(DemoModeContext)
@@ -57,6 +58,17 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
         <Stat
           value={data.partners_total}
           changeText={`${data.partners_repeat.toLocaleString()} repeat`}
+        />
+      </Card>
+
+      <Card title="Cumulative sessions over time" className="sm:col-span-6">
+        <LineChart
+          data={data.sessions_cumulative}
+          index="start_date"
+          categories={["Cumulative sessions"]}
+          showLegend={false}
+          valueFormatter={(value) => value.toLocaleString()}
+          startEndOnly
         />
       </Card>
     </div>

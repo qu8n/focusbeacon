@@ -7,7 +7,7 @@ import pandas as pd
 from pydantic import BaseModel
 from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
-    calc_curr_streak, calc_repeat_partners, prep_duration_pie_data, \
+    calc_curr_streak, calc_repeat_partners, prep_cumulative_sessions_chart, prep_duration_pie_data, \
     prep_punctuality_pie_data, prep_chart_data_by_past_range, \
     prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, \
     prep_chart_data_by_range
@@ -294,11 +294,14 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
 
     sessions = sessions[sessions['completed'] == True]
 
+    cumulative_sessions = prep_cumulative_sessions_chart(sessions)
+
     return {
         "sessions_total": len(sessions),
         "hours_total": ms_to_h(sessions['duration'].sum()),
         "partners_total": len(sessions['partner_id'].unique()),
         "partners_repeat": calc_repeat_partners(sessions),
+        "sessions_cumulative": cumulative_sessions
     }
 
 

@@ -460,3 +460,24 @@ def format_seconds(seconds: float) -> str:
     minutes = seconds // 60
     seconds = round(seconds % 60)
     return f"{minutes}m {seconds}s {punctuality}"
+
+
+def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
+    sessions = sessions.copy()
+
+    sessions['start_date'] = sessions['start_time'].dt.date
+    sessions = sessions.groupby('start_date').size().reset_index(name='count')
+
+    full_date_range = pd.date_range(start=sessions['start_date'].min(),
+                                    end=sessions['start_date'].max())
+    sessions = sessions.set_index('start_date').reindex(
+        full_date_range, fill_value=0).reset_index()
+    sessions.columns = ['start_date', 'count']
+
+    sessions['start_date'] = pd.to_datetime(
+        sessions['start_date']).dt.strftime('%b %-d, %Y')
+
+    sessions['Cumulative sessions'] = sessions['count'].cumsum()
+    sessions.drop(columns=['count'], inplace=True)
+
+    return sessions.to_dict(orient='records')
