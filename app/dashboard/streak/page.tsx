@@ -16,27 +16,17 @@ import {
   RiAwardLine,
   RiCalendar2Line,
   RiCalendarCheckLine,
-  RiMedalLine,
   RiStackLine,
 } from "@remixicon/react"
 import { useContext, useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 
-export default function StreakPage() {
+export default function Streak() {
   const demoMode = useContext(DemoModeContext)
-  return (
-    <>
-      {demoMode && <DemoCallout />}
-      <Streak demoMode={demoMode} />
-    </>
-  )
-}
-
-function Streak({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
+
   const { isBelowSm } = useBreakpoint("sm")
 
   const { isLoading, data } = useQuery({

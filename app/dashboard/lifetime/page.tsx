@@ -8,23 +8,13 @@ import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { Text } from "@/components/ui/text"
 import { useContext } from "react"
 import { DonutChart } from "@/components/charts/donut-chart"
-import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { AreaChart } from "@/components/charts/area-chart"
 import { RiFlag2Line, RiTimer2Line, RiTimerFlashLine } from "@remixicon/react"
 
-export default function LifetimeTab() {
+export default function Lifetime() {
   const demoMode = useContext(DemoModeContext)
-  return (
-    <>
-      {demoMode && <DemoCallout />}
-      <Lifetime demoMode={demoMode} />
-    </>
-  )
-}
-
-function Lifetime({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
 
   const { isLoading: dataIsLoading, data } = useQuery({

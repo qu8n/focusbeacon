@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardTabs } from "@/components/common/dashboard-tabs"
+import { DemoCallout } from "@/components/common/demo-callout"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProtectRoute } from "@/hooks/use-protect-route"
 
@@ -19,6 +20,7 @@ export default function DashboardLayout({
     <section className="flex flex-col gap-9">
       <DashboardTabs />
       {children}
+      {demoMode && <DemoCallout />}
     </section>
   )
 }

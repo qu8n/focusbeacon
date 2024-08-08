@@ -20,23 +20,13 @@ import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
-import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
 import { RiTimeLine, RiUser3Line, RiVideoOnLine } from "@remixicon/react"
 
-export default function WeekTab() {
+export default function Week() {
   const demoMode = useContext(DemoModeContext)
-  return (
-    <>
-      {demoMode && <DemoCallout />}
-      <Week demoMode={demoMode} />
-    </>
-  )
-}
-
-function Week({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
 
   const [goal, setGoal] = useState(0)

@@ -9,21 +9,11 @@ import { Text } from "@/components/ui/text"
 import { useContext } from "react"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
-import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 
-export default function MonthTab() {
+export default function Month() {
   const demoMode = useContext(DemoModeContext)
-  return (
-    <>
-      {demoMode && <DemoCallout />}
-      <Month demoMode={demoMode} />
-    </>
-  )
-}
-
-function Month({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
 
   const { isLoading: dataIsLoading, data } = useQuery({
