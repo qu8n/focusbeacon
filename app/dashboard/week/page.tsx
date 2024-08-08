@@ -24,12 +24,7 @@ import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
-import {
-  RiClockwiseLine,
-  RiTimeLine,
-  RiUser3Line,
-  RiVideoOnLine,
-} from "@remixicon/react"
+import { RiTimeLine, RiUser3Line, RiVideoOnLine } from "@remixicon/react"
 
 export default function WeekTab() {
   const demoMode = useContext(DemoModeContext)
@@ -43,7 +38,7 @@ export default function WeekTab() {
 
 function Week({ demoMode }: { demoMode: boolean }) {
   const devMode = useContext(DevModeContext)
-  const queryClient = useQueryClient()
+
   const [goal, setGoal] = useState(0)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
@@ -67,21 +62,6 @@ function Week({ demoMode }: { demoMode: boolean }) {
     },
   })
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (goal: number) => {
-      const response = await fetch(`/api/py/goal`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal }),
-      })
-      if (!response.ok) throw new Error("Failed to update goal")
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["goal", demoMode] })
-      setDialogIsOpen(false)
-    },
-  })
-
   if (goalIsLoading || dataIsLoading || !data || devMode) {
     return <LoadingSkeleton />
   }
@@ -95,46 +75,13 @@ function Week({ demoMode }: { demoMode: boolean }) {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
-      <Dialog open={dialogIsOpen} onClose={setDialogIsOpen}>
-        <DialogTitle>Weekly session goal</DialogTitle>
-        <DialogDescription>
-          How many sessions would you like to achieve this week? You can change
-          this number at any time. 0 means no goal.
-        </DialogDescription>
-        <DialogBody>
-          <Field>
-            <Input
-              name="weekly session goal"
-              placeholder="10"
-              autoFocus
-              onChange={(e) => setGoal(Number(e.target.value))}
-              value={goal ?? ""}
-              onKeyUp={(e: { key: string }) =>
-                e.key === "Enter" && mutate(goal)
-              }
-            />
-          </Field>
-        </DialogBody>
-        <DialogActions>
-          <Button plain onClick={() => setDialogIsOpen(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => mutate(goal)}
-            disabled={isPending}
-            color="orange"
-          >
-            {isPending ? (
-              <div className="inline-flex items-center">
-                <LoaderIcon />
-                Submitting<span className="tracking-wider">...</span>
-              </div>
-            ) : (
-              <span>Submit</span>
-            )}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <GoalUpdateDialog
+        dialogIsOpen={dialogIsOpen}
+        setDialogIsOpen={setDialogIsOpen}
+        goal={goal}
+        setGoal={setGoal}
+        demoMode={demoMode}
+      />
 
       <DateSubheading
         title="Current week"
@@ -419,4 +366,76 @@ function buildProgressLabel(
   if (!progressPercent) return "N/A"
   const progressPercentStr = Math.round(progressPercent).toString() + "%"
   return `${sessions} / ${goal} (${progressPercentStr})`
+}
+
+function GoalUpdateDialog({
+  dialogIsOpen,
+  setDialogIsOpen,
+  goal,
+  setGoal,
+  demoMode,
+}: {
+  dialogIsOpen: boolean
+  setDialogIsOpen: (isOpen: boolean) => void
+  goal: number
+  setGoal: (goal: number) => void
+  demoMode: boolean
+}) {
+  const queryClient = useQueryClient()
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (goal: number) => {
+      const response = await fetch(`/api/py/goal`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal }),
+      })
+      if (!response.ok) throw new Error("Failed to update goal")
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["goal", demoMode] })
+      setDialogIsOpen(false)
+    },
+  })
+
+  return (
+    <Dialog open={dialogIsOpen} onClose={setDialogIsOpen}>
+      <DialogTitle>Weekly session goal</DialogTitle>
+      <DialogDescription>
+        How many sessions would you like to achieve this week? You can change
+        this number at any time. 0 means no goal.
+      </DialogDescription>
+      <DialogBody>
+        <Field>
+          <Input
+            name="weekly session goal"
+            placeholder="10"
+            autoFocus
+            onChange={(e) => setGoal(Number(e.target.value))}
+            value={goal ?? ""}
+            onKeyUp={(e: { key: string }) => e.key === "Enter" && mutate(goal)}
+          />
+        </Field>
+      </DialogBody>
+      <DialogActions>
+        <Button plain onClick={() => setDialogIsOpen(false)}>
+          Cancel
+        </Button>
+        <Button
+          onClick={() => mutate(goal)}
+          disabled={isPending}
+          color="orange"
+        >
+          {isPending ? (
+            <div className="inline-flex items-center">
+              <LoaderIcon />
+              Submitting<span className="tracking-wider">...</span>
+            </div>
+          ) : (
+            <span>Submit</span>
+          )}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
