@@ -305,6 +305,7 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
         "daily_record": get_daily_record(sessions),
         "duration": prep_duration_pie_data(sessions),
         "punctuality": prep_punctuality_pie_data(sessions),
+        "time": prep_chart_data_by_hour(sessions)
     }
 
 

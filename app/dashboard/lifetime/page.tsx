@@ -8,7 +8,6 @@ import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { Text } from "@/components/ui/text"
 import { useContext } from "react"
 import { DonutChart } from "@/components/charts/donut-chart"
-import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
@@ -61,6 +60,18 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
         />
       </Card>
 
+      <Card title="Cumulative sessions over time" className="sm:col-span-6">
+        <AreaChart
+          data={data.sessions_cumulative}
+          index="start_date"
+          categories={["25m", "50m", "75m"]}
+          colors={["custom-1", "custom-2", "custom-3"]}
+          valueFormatter={(value) => value.toLocaleString()}
+          startEndOnly
+          type="stacked"
+        />
+      </Card>
+
       <Card title="First session" className="sm:col-span-2">
         <Stat value={data.first_session_date} />
       </Card>
@@ -73,18 +84,6 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
         <Stat
           value={data.daily_record.duration}
           changeText={data.daily_record.date}
-        />
-      </Card>
-
-      <Card title="Cumulative sessions over time" className="sm:col-span-6">
-        <AreaChart
-          data={data.sessions_cumulative}
-          index="start_date"
-          categories={["25m", "50m", "75m"]}
-          colors={["custom-1", "custom-2", "custom-3"]}
-          valueFormatter={(value) => value.toLocaleString()}
-          startEndOnly
-          type="stacked"
         />
       </Card>
 
@@ -167,6 +166,20 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
             })}
           </div>
         </div>
+      </Card>
+
+      <Card title="Sessions by hour of the day" className="sm:col-span-6">
+        <BarChart
+          index="start_time_hour"
+          categories={["25m", "50m", "75m"]}
+          type="stacked"
+          data={data.time}
+          colors={["custom-1", "custom-2", "custom-3"]}
+          allowDecimals={false}
+          showYAxis={false}
+          tickGap={28}
+          legendPosition="left"
+        />
       </Card>
     </div>
   )
