@@ -302,7 +302,9 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
         "sessions_cumulative": prep_cumulative_sessions_chart(sessions),
         "first_session_date": format_date_label(sessions['start_time'].min(), "%B %-d, %Y"),
         "average_duration": ms_to_m(sessions['duration'].mean()),
-        "daily_record": get_daily_record(sessions)
+        "daily_record": get_daily_record(sessions),
+        "duration": prep_duration_pie_data(sessions),
+        "punctuality": prep_punctuality_pie_data(sessions),
     }
 
 

@@ -20,7 +20,7 @@ DURATION_OPTIONS = [1500000, 3000000, 4500000]
 HOURS = list(range(24))
 HOUR_WEIGHTS = [1 if 9 <= hour <= 18 else 0.05 for hour in HOURS]
 MINUTE_OPTIONS = [0, 15, 30, 45]
-START_YEAR = datetime.now().year - 2
+START_YEAR = datetime.now().year - 1
 COMPLETED_WEIGHTS = [1, 0.05]
 
 

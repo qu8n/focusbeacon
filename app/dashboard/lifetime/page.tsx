@@ -86,6 +86,87 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
           startEndOnly
         />
       </Card>
+
+      <Card title="Sessions by punctuality" className="sm:col-span-3">
+        <Legend
+          categories={["Early", "Late"]}
+          colors={["custom-4", "custom-5"]}
+        />
+
+        <div className="grid grid-cols-2 items-center mt-3">
+          <DonutChart
+            data={data.punctuality.data}
+            variant="pie"
+            category="punctuality"
+            value="amount"
+            colors={["custom-4", "custom-5"]}
+            valueFormatter={(value) =>
+              `${value} (${Math.round((value / data.sessions_total) * 100)}%)`
+            }
+            className="ml-4"
+          />
+
+          <div className="flex flex-col">
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>{data.punctuality.data[0].punctuality}</span>
+              <span>
+                {data.punctuality.data[0].amount} (
+                {Math.round(
+                  (data.punctuality.data[0].amount / data.sessions_total) * 100
+                )}
+                %)
+              </span>
+            </Text>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>Average</span>
+              <span>{data.punctuality.avg}</span>
+            </Text>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>Median</span>
+              <span>{data.punctuality.median}</span>
+            </Text>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="Sessions by duration" className="sm:col-span-3">
+        <Legend
+          categories={["25m", "50m", "75m"]}
+          colors={["custom-1", "custom-2", "custom-3"]}
+        />
+
+        <div className="grid grid-cols-2 items-center mt-3">
+          <DonutChart
+            data={data.duration}
+            variant="pie"
+            category="duration"
+            value="amount"
+            colors={["custom-1", "custom-2", "custom-3"]}
+            valueFormatter={(value) =>
+              `${value} (${Math.round((value / data.sessions_total) * 100)}%)`
+            }
+            className="ml-4"
+          />
+
+          <div className="flex flex-col">
+            {data.duration.map((item: { duration: string; amount: number }) => {
+              return (
+                <Text
+                  key={item.duration}
+                  className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
+                >
+                  <span>{item.duration}</span>
+                  <span>
+                    {item.amount} (
+                    {Math.round((item.amount / data.sessions_total) * 100)}
+                    %)
+                  </span>
+                </Text>
+              )
+            })}
+          </div>
+        </div>
+      </Card>
     </div>
   )
 }
