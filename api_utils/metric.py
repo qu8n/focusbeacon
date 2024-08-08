@@ -462,25 +462,64 @@ def format_seconds(seconds: float) -> str:
     return f"{minutes}m {seconds}s {punctuality}"
 
 
+# def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
+#     sessions = sessions.copy()
+
+#     sessions['start_date'] = sessions['start_time'].dt.date
+#     sessions = sessions.groupby('start_date').size().reset_index(name='count')
+
+#     full_date_range = pd.date_range(start=sessions['start_date'].min(),
+#                                     end=sessions['start_date'].max())
+#     sessions = sessions.set_index('start_date').reindex(
+#         full_date_range, fill_value=0).reset_index()
+#     sessions.columns = ['start_date', 'count']
+
+#     sessions['start_date'] = pd.to_datetime(
+#         sessions['start_date']).dt.strftime('%b %-d, %Y')
+
+#     sessions['Cumulative sessions'] = sessions['count'].cumsum()
+#     sessions.drop(columns=['count'], inplace=True)
+
+#     return sessions.to_dict(orient='records')
+
 def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
 
+    # Extract the date part from start_time
     sessions['start_date'] = sessions['start_time'].dt.date
-    sessions = sessions.groupby('start_date').size().reset_index(name='count')
 
-    full_date_range = pd.date_range(start=sessions['start_date'].min(),
-                                    end=sessions['start_date'].max())
-    sessions = sessions.set_index('start_date').reindex(
+    # Pivot the DataFrame to have durations as columns
+    pivot_df = pd.pivot_table(sessions,
+                              index='start_date',
+                              columns='duration',
+                              aggfunc='size',
+                              fill_value=0)
+    pivot_df = pivot_df.reset_index()
+    pivot_df.columns.name = None
+
+    # Create a full date range
+    full_date_range = pd.date_range(start=pivot_df['start_date'].min(),
+                                    end=pivot_df['start_date'].max())
+
+    # Reindex to include all dates in the range, filling missing dates with 0
+    pivot_df = pivot_df.set_index('start_date').reindex(
         full_date_range, fill_value=0).reset_index()
-    sessions.columns = ['start_date', 'count']
+    pivot_df.rename(columns={'index': 'start_date'}, inplace=True)
 
-    sessions['start_date'] = pd.to_datetime(
-        sessions['start_date']).dt.strftime('%b %-d, %Y')
+    # Format the start_date for display
+    pivot_df['start_date'] = pd.to_datetime(
+        pivot_df['start_date']).dt.strftime('%b %-d, %Y')
 
-    sessions['Cumulative sessions'] = sessions['count'].cumsum()
-    sessions.drop(columns=['count'], inplace=True)
+    # Calculate cumulative sum for each duration column
+    for duration in pivot_df.columns[1:]:
+        pivot_df[duration] = pivot_df[duration].cumsum()
 
-    return sessions.to_dict(orient='records')
+    # rename the duration columns
+    pivot_df.rename(columns={1500000: '25m',
+                             3000000: '50m',
+                             4500000: '75m'}, inplace=True)
+
+    return pivot_df.to_dict(orient='records')
 
 
 def get_daily_record(sessions: pd.DataFrame) -> Dict[str, Any]:
