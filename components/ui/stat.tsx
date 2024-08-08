@@ -24,7 +24,9 @@ export function Stat({
       {children}
 
       <div className="flex flex-row items-center gap-4">
-        <div className="font-semibold text-3xl/8 sm:text-2xl/8">{value}</div>
+        <div className="font-semibold text-3xl/8 sm:text-2xl/8">
+          {value?.toLocaleString()}
+        </div>
 
         <div className="text-sm/6 sm:text-xs/6">
           {changeStr && <Badge color={changeBadgeColor}>{changeStr}</Badge>}{" "}

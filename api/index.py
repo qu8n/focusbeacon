@@ -282,6 +282,26 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
     }
 
 
+@app.get("/api/py/lifetime")
+async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
+    profile, sessions = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
+
+    if profile.get("totalSessionCount") == 0:
+        return {
+            "zero_sessions": True
+        }
+
+    sessions = sessions[sessions['completed'] == True]
+
+    return {
+        "sessions_total": len(sessions),
+        "hours_total": ms_to_h(sessions['duration'].sum()),
+        "partners_total": len(sessions['partner_id'].unique()),
+        "partners_repeat": calc_repeat_partners(sessions),
+    }
+
+
 class Pagination(BaseModel):
     page_index: int
     page_size: int
