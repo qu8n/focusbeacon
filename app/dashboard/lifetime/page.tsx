@@ -12,6 +12,7 @@ import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { AreaChart } from "@/components/charts/area-chart"
+import { RiFlag2Line, RiTimer2Line, RiTimerFlashLine } from "@remixicon/react"
 
 export default function LifetimeTab() {
   const demoMode = useContext(DemoModeContext)
@@ -72,15 +73,27 @@ function Lifetime({ demoMode }: { demoMode: boolean }) {
         />
       </Card>
 
-      <Card title="First session" className="sm:col-span-2">
+      <Card
+        icon={<RiFlag2Line size={16} className="opacity-40" />}
+        title="First session"
+        className="sm:col-span-2"
+      >
         <Stat value={data.first_session_date} />
       </Card>
 
-      <Card title="Average session (minutes)" className="sm:col-span-2">
+      <Card
+        icon={<RiTimer2Line size={16} className="opacity-40" />}
+        title="Average session (minutes)"
+        className="sm:col-span-2"
+      >
         <Stat value={data.average_duration} />
       </Card>
 
-      <Card title="Daily record (hours)" className="sm:col-span-2">
+      <Card
+        icon={<RiTimerFlashLine size={16} className="opacity-40" />}
+        title="Daily record (hours)"
+        className="sm:col-span-2"
+      >
         <Stat
           value={data.daily_record.duration}
           changeText={data.daily_record.date}

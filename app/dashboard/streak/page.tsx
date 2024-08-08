@@ -11,7 +11,14 @@ import { Text } from "@/components/ui/text"
 import { Card } from "@/components/ui/card"
 import { columns, HistoryTable } from "@/components/charts/history-table"
 import { LinkInternal } from "@/components/ui/link-internal"
-import { RiArrowRightSLine } from "@remixicon/react"
+import {
+  RiArrowRightSLine,
+  RiAwardLine,
+  RiCalendar2Line,
+  RiCalendarCheckLine,
+  RiMedalLine,
+  RiStackLine,
+} from "@remixicon/react"
 import { useContext, useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { DemoCallout } from "@/components/common/demo-callout"
@@ -59,7 +66,10 @@ function Streak({ demoMode }: { demoMode: boolean }) {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <Card title="Daily streak">
+      <Card
+        icon={<RiStackLine size={16} className="opacity-40" />}
+        title="Daily streak"
+      >
         <Stat>
           <div className="flex flex-row items-center gap-1">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
@@ -70,7 +80,10 @@ function Streak({ demoMode }: { demoMode: boolean }) {
         </Stat>
       </Card>
 
-      <Card title="Record daily streak">
+      <Card
+        icon={<RiAwardLine size={16} className="opacity-40" />}
+        title="Record daily streak"
+      >
         <Stat>
           <div className="flex flex-row items-center gap-4">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
@@ -86,11 +99,17 @@ function Streak({ demoMode }: { demoMode: boolean }) {
         </Stat>
       </Card>
 
-      <Card title="Weekly streak">
+      <Card
+        icon={<RiCalendar2Line size={16} className="opacity-40" />}
+        title="Weekly streak"
+      >
         <Stat value={data.weekly_streak} />
       </Card>
 
-      <Card title="Monthly streak">
+      <Card
+        icon={<RiCalendarCheckLine size={16} className="opacity-40" />}
+        title="Monthly streak"
+      >
         <Stat value={data.monthly_streak} />
       </Card>
 
@@ -109,7 +128,7 @@ function Streak({ demoMode }: { demoMode: boolean }) {
           className="inline-flex items-center"
         >
           <Text>View all</Text>
-          <RiArrowRightSLine color="gray" size={15} />
+          <RiArrowRightSLine className="opacity-40" size={15} />
         </LinkInternal>
       </Card>
     </div>

@@ -1,18 +1,19 @@
 // Tremor Raw Card [v0.0.0]
 
-import React from "react"
+import { forwardRef, ReactNode } from "react"
 import { Slot } from "@radix-ui/react-slot"
 
 import { cx } from "@/lib/utils"
 import { Text, Strong } from "@/components/ui/text"
 interface CardProps extends React.ComponentPropsWithoutRef<"div"> {
   asChild?: boolean
+  icon?: ReactNode
   title?: string
   subtitle?: string
 }
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, asChild, title, subtitle, ...props }, forwardedRef) => {
+const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ className, asChild, icon, title, subtitle, ...props }, forwardedRef) => {
     const Component = asChild ? Slot : "div"
     return (
       <Component
@@ -26,10 +27,13 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         {...props}
       >
         {title && (
-          <Text className="mb-3 flex flex-col">
-            <Strong>{title}</Strong>
-            <span>{subtitle}</span>
-          </Text>
+          <div className="mb-3 flex flex-row gap-1 items-center">
+            {icon}
+            <Text className="flex flex-col">
+              <Strong>{title}</Strong>
+              <span>{subtitle}</span>
+            </Text>
+          </div>
         )}
         {props.children}
       </Component>

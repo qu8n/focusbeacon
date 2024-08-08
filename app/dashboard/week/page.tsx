@@ -24,6 +24,12 @@ import { DemoCallout } from "@/components/common/demo-callout"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
+import {
+  RiClockwiseLine,
+  RiTimeLine,
+  RiUser3Line,
+  RiVideoOnLine,
+} from "@remixicon/react"
 
 export default function WeekTab() {
   const demoMode = useContext(DemoModeContext)
@@ -165,7 +171,11 @@ function Week({ demoMode }: { demoMode: boolean }) {
         />
       </Card>
 
-      <Card title="Total sessions" className="sm:col-span-2">
+      <Card
+        icon={<RiVideoOnLine size={16} className="opacity-40" />}
+        title="Total sessions"
+        className="sm:col-span-2"
+      >
         <Stat
           value={data.curr_period.sessions_total}
           changeVal={data.curr_period.sessions_delta}
@@ -173,7 +183,11 @@ function Week({ demoMode }: { demoMode: boolean }) {
         />
       </Card>
 
-      <Card title="Total hours" className="sm:col-span-2">
+      <Card
+        icon={<RiTimeLine size={16} className="opacity-40" />}
+        title="Total hours"
+        className="sm:col-span-2"
+      >
         <Stat
           value={data.curr_period.hours_total}
           changeVal={data.curr_period.hours_delta}
@@ -181,7 +195,11 @@ function Week({ demoMode }: { demoMode: boolean }) {
         />
       </Card>
 
-      <Card title="Total partners" className="sm:col-span-2">
+      <Card
+        icon={<RiUser3Line size={16} className="opacity-40" />}
+        title="Total partners"
+        className="sm:col-span-2"
+      >
         <Stat
           value={data.curr_period.partners_total}
           changeText={`${data.curr_period.partners_repeat} repeat`}
