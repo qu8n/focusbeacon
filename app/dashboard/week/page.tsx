@@ -69,7 +69,7 @@ export default function Week() {
     currGoal && (data.curr_period.sessions_total / currGoal) * 100
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+    <>
       <DateSubheading
         title="Current week"
         dateRange={`${data.curr_period.start_label} - ${data.curr_period.end_label}`}
@@ -142,7 +142,7 @@ export default function Week() {
       />
 
       <SessionsByHour data={data} />
-    </div>
+    </>
   )
 }
 

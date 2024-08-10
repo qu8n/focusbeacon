@@ -40,7 +40,7 @@ export default function Lifetime() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+    <>
       <TotalSessions data={data} />
 
       <TotalHours data={data} />
@@ -97,7 +97,7 @@ export default function Lifetime() {
       />
 
       <SessionsByHour data={data} />
-    </div>
+    </>
   )
 }
 

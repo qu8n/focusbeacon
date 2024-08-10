@@ -19,7 +19,7 @@ export default function DashboardLayout({
   return (
     <section className="flex flex-col gap-9">
       <DashboardTabs />
-      {children}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">{children}</div>
       {demoMode && <DemoCallout />}
     </section>
   )

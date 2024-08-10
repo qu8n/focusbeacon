@@ -39,7 +39,7 @@ export default function Month() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+    <>
       <DateSubheading
         title="Current month"
         dateRange={`${data.curr_period.start_label}`}
@@ -79,7 +79,7 @@ export default function Month() {
       />
 
       <SessionsByHour data={data} />
-    </div>
+    </>
   )
 }
 
