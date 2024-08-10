@@ -148,7 +148,6 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
     date_label_format = "%A, %b %d"
 
     return {
-        "period_type": "week",
         "curr_period": {
             "start_label": format_date_label(curr_week_start, date_label_format),
             "end_label": format_date_label(curr_week_end, date_label_format),
@@ -159,18 +158,21 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
                                    prev_week_sessions['duration'].sum()),
             "partners_total": len(curr_week_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_week_sessions),
-            "chart_data": prep_chart_data_by_range(
-                curr_week_sessions, curr_week_start, curr_week_end, "week"),
+            "period_type": "week",
         },
         "prev_period": {
             "start_label": format_date_label(l4w_start, date_label_format),
             "end_label": format_date_label(l4w_end, date_label_format),
             "sessions_total": len(l4w_sessions),
-            "week": prep_chart_data_by_past_range(
+        },
+        "charts": {
+            "curr_period": prep_chart_data_by_range(
+                curr_week_sessions, curr_week_start, curr_week_end, "week"),
+            "prev_period": prep_chart_data_by_past_range(
                 l4w_sessions, l4w_start, l4w_end, "week"),
             "punctuality": prep_punctuality_pie_data(l4w_sessions),
             "duration": prep_duration_pie_data(l4w_sessions),
-            "time": prep_chart_data_by_hour(l4w_sessions)
+            "hour": prep_chart_data_by_hour(l4w_sessions)
         }
     }
 
@@ -207,7 +209,6 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
     date_format = "%B %Y"
 
     return {
-        "period_type": "month",
         "curr_period": {
             "start_label": format_date_label(curr_month_start, date_format),
             "sessions_total": len(curr_month_sessions),
@@ -217,18 +218,21 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
                                    prev_month_sessions['duration'].sum()),
             "partners_total": len(curr_month_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_month_sessions),
-            "chart_data": prep_chart_data_by_range(
-                curr_month_sessions, curr_month_start, curr_month_end, "month"),
+            "period_type": "month",
         },
         "prev_period": {
             "start_label": format_date_label(l6m_start, date_format),
             "end_label": format_date_label(l6m_end, date_format),
             "sessions_total": len(l6m_sessions),
-            "month": prep_chart_data_by_past_range(
+        },
+        "charts": {
+            "curr_period": prep_chart_data_by_range(
+                curr_month_sessions, curr_month_start, curr_month_end, "month"),
+            "prev_period": prep_chart_data_by_past_range(
                 l6m_sessions, l6m_start, l6m_end, "month"),
             "punctuality": prep_punctuality_pie_data(l6m_sessions),
             "duration": prep_duration_pie_data(l6m_sessions),
-            "time": prep_chart_data_by_hour(l6m_sessions)
+            "hour": prep_chart_data_by_hour(l6m_sessions)
         }
     }
 
@@ -260,7 +264,6 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
     date_format = "%Y"
 
     return {
-        "period_type": "year",
         "curr_period": {
             "start_label": format_date_label(curr_year_start, date_format),
             "sessions_total": len(curr_year_sessions),
@@ -270,17 +273,20 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
                                    prev_year_sessions['duration'].sum()),
             "partners_total": len(curr_year_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_year_sessions),
-            "chart_data": prep_chart_data_by_range(
-                curr_year_sessions, curr_year_start, curr_year_end, "year"),
+            "period_type": "year",
         },
         "prev_period": {
             "start_label": format_date_label(prev_year_start, date_format),
             "sessions_total": len(prev_year_sessions),
-            "year": prep_chart_data_by_past_range(
+        },
+        "charts": {
+            "curr_period": prep_chart_data_by_range(
+                curr_year_sessions, curr_year_start, curr_year_end, "year"),
+            "prev_period": prep_chart_data_by_past_range(
                 prev_year_sessions, prev_year_start, prev_year_end, "year"),
             "punctuality": prep_punctuality_pie_data(prev_year_sessions),
             "duration": prep_duration_pie_data(prev_year_sessions),
-            "time": prep_chart_data_by_hour(prev_year_sessions)
+            "hour": prep_chart_data_by_hour(prev_year_sessions)
         }
     }
 
@@ -303,14 +309,17 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
             "hours_total": ms_to_h(sessions['duration'].sum()),
             "partners_total": len(sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(sessions),
+            "first_session_date": format_date_label(
+                sessions['start_time'].min(), "%B %-d, %Y"),
+            "average_duration": ms_to_m(sessions['duration'].mean()),
+            "daily_record": get_daily_record(sessions),
         },
-        "sessions_cumulative": prep_cumulative_sessions_chart(sessions),
-        "first_session_date": format_date_label(sessions['start_time'].min(), "%B %-d, %Y"),
-        "average_duration": ms_to_m(sessions['duration'].mean()),
-        "daily_record": get_daily_record(sessions),
-        "duration": prep_duration_pie_data(sessions),
-        "punctuality": prep_punctuality_pie_data(sessions),
-        "time": prep_chart_data_by_hour(sessions)
+        "charts": {
+            "sessions_cumulative": prep_cumulative_sessions_chart(sessions),
+            "duration": prep_duration_pie_data(sessions),
+            "punctuality": prep_punctuality_pie_data(sessions),
+            "hour": prep_chart_data_by_hour(sessions)
+        },
     }
 
 

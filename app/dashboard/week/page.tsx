@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
-import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { Text, Strong } from "@/components/ui/text"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { Button } from "@/components/ui/button"
@@ -17,12 +16,15 @@ import {
 } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
-import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
 import {
+  SessionsByDuration,
+  SessionsByHour,
+  SessionsByPeriod,
+  SessionsByPunctuality,
   TotalHours,
   TotalPartners,
   TotalSessions,
@@ -68,14 +70,6 @@ export default function Week() {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
-      <GoalUpdateDialog
-        dialogIsOpen={dialogIsOpen}
-        setDialogIsOpen={setDialogIsOpen}
-        goal={goal}
-        setGoal={setGoal}
-        demoMode={demoMode}
-      />
-
       <DateSubheading
         title="Current week"
         dateRange={`${data.curr_period.start_label} - ${data.curr_period.end_label}`}
@@ -110,143 +104,44 @@ export default function Week() {
           )}
         />
       </Card>
+      <GoalUpdateDialog
+        dialogIsOpen={dialogIsOpen}
+        setDialogIsOpen={setDialogIsOpen}
+        goal={goal}
+        setGoal={setGoal}
+        demoMode={demoMode}
+      />
 
       <TotalSessions data={data} />
+
       <TotalHours data={data} />
+
       <TotalPartners data={data} />
 
-      <Card title="Sessions by day of the week" className="sm:col-span-6">
-        <BarChart
-          index="start_period_str"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.curr_period.chart_data}
-          colors={["custom-1", "custom-2", "custom-3"]}
-          allowDecimals={false}
-          showYAxis={false}
-          legendPosition="left"
-        />
-      </Card>
+      <SessionsByPeriod
+        periodType="day of the week"
+        chartData={data.charts.curr_period}
+      />
 
       <DateSubheading
-        title="Previous weeks"
+        title="Previous four weeks"
         dateRange={`${data.prev_period.start_label} - ${data.prev_period.end_label}`}
         className="sm:col-span-6 mt-4"
       />
 
-      <Card title="Sessions by week" className="sm:col-span-6">
-        <BarChart
-          index="start_period_str"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.prev_period.week}
-          colors={["custom-1", "custom-2", "custom-3"]}
-          allowDecimals={false}
-          showYAxis={false}
-          legendPosition="left"
-        />
-      </Card>
+      <SessionsByPeriod periodType="week" chartData={data.charts.prev_period} />
 
-      <Card title="Sessions by punctuality" className="sm:col-span-3">
-        <Legend
-          categories={["Early", "Late"]}
-          colors={["custom-4", "custom-5"]}
-        />
+      <SessionsByPunctuality
+        data={data}
+        totalSessions={data.prev_period.sessions_total}
+      />
 
-        <div className="grid grid-cols-2 items-center mt-3">
-          <DonutChart
-            data={data.prev_period.punctuality.data}
-            variant="pie"
-            category="punctuality"
-            value="amount"
-            colors={["custom-4", "custom-5"]}
-            valueFormatter={(value) =>
-              `${value} (${Math.round((value / data.prev_period.sessions_total) * 100)}%)`
-            }
-            className="ml-4"
-          />
+      <SessionsByDuration
+        data={data}
+        totalSessions={data.prev_period.sessions_total}
+      />
 
-          <div className="flex flex-col">
-            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>{data.prev_period.punctuality.data[0].punctuality}</span>
-              <span>
-                {data.prev_period.punctuality.data[0].amount} (
-                {Math.round(
-                  (data.prev_period.punctuality.data[0].amount /
-                    data.prev_period.sessions_total) *
-                    100
-                )}
-                %)
-              </span>
-            </Text>
-            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>Average</span>
-              <span>{data.prev_period.punctuality.avg}</span>
-            </Text>
-            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-              <span>Median</span>
-              <span>{data.prev_period.punctuality.median}</span>
-            </Text>
-          </div>
-        </div>
-      </Card>
-
-      <Card title="Sessions by duration" className="sm:col-span-3">
-        <Legend
-          categories={["25m", "50m", "75m"]}
-          colors={["custom-1", "custom-2", "custom-3"]}
-        />
-
-        <div className="grid grid-cols-2 items-center mt-3">
-          <DonutChart
-            data={data.prev_period.duration}
-            variant="pie"
-            category="duration"
-            value="amount"
-            colors={["custom-1", "custom-2", "custom-3"]}
-            valueFormatter={(value) =>
-              `${value} (${Math.round((value / data.prev_period.sessions_total) * 100)}%)`
-            }
-            className="ml-4"
-          />
-
-          <div className="flex flex-col">
-            {data.prev_period.duration.map(
-              (item: { duration: string; amount: number }) => {
-                return (
-                  <Text
-                    key={item.duration}
-                    className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
-                  >
-                    <span>{item.duration}</span>
-                    <span>
-                      {item.amount} (
-                      {Math.round(
-                        (item.amount / data.prev_period.sessions_total) * 100
-                      )}
-                      %)
-                    </span>
-                  </Text>
-                )
-              }
-            )}
-          </div>
-        </div>
-      </Card>
-
-      <Card title="Sessions by hour of the day" className="sm:col-span-6">
-        <BarChart
-          index="start_time_hour"
-          categories={["25m", "50m", "75m"]}
-          type="stacked"
-          data={data.prev_period.time}
-          colors={["custom-1", "custom-2", "custom-3"]}
-          allowDecimals={false}
-          showYAxis={false}
-          tickGap={28}
-          legendPosition="left"
-        />
-      </Card>
+      <SessionsByHour data={data} />
     </div>
   )
 }
