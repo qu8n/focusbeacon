@@ -27,7 +27,7 @@ export default function HistoryPage() {
   const { demoMode, isCheckingSignInStatus, isSignedIn } = useProtectRoute()
 
   if (!demoMode && (isCheckingSignInStatus || !isSignedIn)) {
-    return <Skeleton className="h-[45px] w-full" />
+    return <Skeleton className="h-[783px] w-full mt-6" />
   }
 
   return (
