@@ -10,7 +10,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Text } from "@/components/ui/text"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { HistoryTable, columns } from "@/components/charts/history-table"
@@ -20,7 +20,6 @@ import { exportJSONToCSV } from "@/lib/export"
 import { Card } from "@/components/ui/card"
 import { usePathname } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
-import { DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { useProtectRoute } from "@/hooks/use-protect-route"
 
@@ -41,14 +40,12 @@ export default function HistoryPage() {
 }
 
 function History({ demoMode }: { demoMode: boolean }) {
-  const devMode = useContext(DevModeContext)
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   })
 
-  const { isLoading: loadingData, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["history", pagination, demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/history?demo=${demoMode}`, {
@@ -92,58 +89,60 @@ function History({ demoMode }: { demoMode: boolean }) {
     exportJSONToCSV(data)
   }
 
-  if (loadingData || !data || devMode) {
-    return <Skeleton className="w-full h-[680px]" />
-  }
-
-  if (data.zero_sessions) {
+  if (data?.zero_sessions) {
     return <ZeroSessions />
   }
 
   return (
     <>
       <Card>
-        <HistoryTable rows={table.getRowModel().rows} />
+        {data ? (
+          <>
+            <HistoryTable rows={table.getRowModel().rows} />
 
-        <div className="mt-6 flex items-center justify-between">
-          <Text className="tabular-nums">
-            Page{" "}
-            <span className="font-medium">
-              {table.getState().pagination.pageIndex + 1}
-            </span>{" "}
-            of{" "}
-            <span className="font-medium">
-              {table.getPageCount().toLocaleString()}
-            </span>
-          </Text>
+            <div className="mt-6 flex items-center justify-between">
+              <Text className="tabular-nums">
+                Page{" "}
+                <span className="font-medium">
+                  {table.getState().pagination.pageIndex + 1}
+                </span>{" "}
+                of{" "}
+                <span className="font-medium">
+                  {table.getPageCount().toLocaleString()}
+                </span>
+              </Text>
 
-          <div className="inline-flex items-center border rounded-md">
-            <PageNavButton
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Previous</span>
-              <RiArrowLeftSLine className="h-5 w-5" aria-hidden={true} />
-            </PageNavButton>
+              <div className="inline-flex items-center border rounded-md">
+                <PageNavButton
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <span className="sr-only">Previous</span>
+                  <RiArrowLeftSLine className="h-5 w-5" aria-hidden={true} />
+                </PageNavButton>
 
-            <span className="h-5 border-r" aria-hidden={true} />
+                <span className="h-5 border-r" aria-hidden={true} />
 
-            <PageNavButton
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Next</span>
-              <RiArrowRightSLine className="h-5 w-5" aria-hidden={true} />
-            </PageNavButton>
-          </div>
-        </div>
+                <PageNavButton
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Next</span>
+                  <RiArrowRightSLine className="h-5 w-5" aria-hidden={true} />
+                </PageNavButton>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Skeleton className="w-full h-[681px]" />
+        )}
       </Card>
 
       <Button
         className="mt-4"
         outline
         onClick={handleDownload}
-        disabled={demoMode}
+        disabled={!data || demoMode}
       >
         <RiDownloadLine size={14} /> Download as CSV
       </Button>

@@ -17,7 +17,7 @@ export function DashboardTabs({ className }: { className?: string }) {
     <div
       className={cx(
         className,
-        "shadow-inner -mt-6 w-fit rounded-md p-2 bg-[#EAE7DC] border border-stone-200"
+        "shadow-inner mt-6 w-fit rounded-md p-2 bg-[#EAE7DC] border border-stone-200"
       )}
     >
       {tabNames.map((tabName) => (

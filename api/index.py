@@ -149,8 +149,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
 
     return {
         "curr_period": {
-            "start_label": format_date_label(curr_week_start, date_label_format),
-            "end_label": format_date_label(curr_week_end, date_label_format),
+            "subheading": f"{format_date_label(curr_week_start, date_label_format)} - {format_date_label(curr_week_end, date_label_format)}",
             "sessions_total": len(curr_week_sessions),
             "sessions_delta": len(curr_week_sessions) - len(prev_week_sessions),
             "hours_total": ms_to_h(curr_week_sessions['duration'].sum()),
@@ -161,8 +160,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
             "period_type": "week",
         },
         "prev_period": {
-            "start_label": format_date_label(l4w_start, date_label_format),
-            "end_label": format_date_label(l4w_end, date_label_format),
+            "subheading": f"{format_date_label(l4w_start, date_label_format)} - {format_date_label(l4w_end, date_label_format)}",
             "sessions_total": len(l4w_sessions),
         },
         "charts": {
@@ -210,7 +208,7 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
 
     return {
         "curr_period": {
-            "start_label": format_date_label(curr_month_start, date_format),
+            "subheading": format_date_label(curr_month_start, date_format),
             "sessions_total": len(curr_month_sessions),
             "sessions_delta": len(curr_month_sessions) - len(prev_month_sessions),
             "hours_total": ms_to_h(curr_month_sessions['duration'].sum()),
@@ -221,8 +219,7 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
             "period_type": "month",
         },
         "prev_period": {
-            "start_label": format_date_label(l6m_start, date_format),
-            "end_label": format_date_label(l6m_end, date_format),
+            "subheading": f"{format_date_label(l6m_start, date_format)} - {format_date_label(l6m_end, date_format)}",
             "sessions_total": len(l6m_sessions),
         },
         "charts": {
@@ -265,7 +262,7 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
 
     return {
         "curr_period": {
-            "start_label": format_date_label(curr_year_start, date_format),
+            "subheading": format_date_label(curr_year_start, date_format),
             "sessions_total": len(curr_year_sessions),
             "sessions_delta": len(curr_year_sessions) - len(prev_year_sessions),
             "hours_total": ms_to_h(curr_year_sessions['duration'].sum()),
@@ -276,7 +273,7 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
             "period_type": "year",
         },
         "prev_period": {
-            "start_label": format_date_label(prev_year_start, date_format),
+            "subheading": format_date_label(prev_year_start, date_format),
             "sessions_total": len(prev_year_sessions),
         },
         "charts": {

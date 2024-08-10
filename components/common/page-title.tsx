@@ -21,7 +21,7 @@ export function PageTitle() {
   return (
     <>
       {currPage && (
-        <div className="flex flex-col mt-4 mb-12">
+        <div className="flex flex-col mt-4">
           <Heading>{currPage}</Heading>
         </div>
       )}

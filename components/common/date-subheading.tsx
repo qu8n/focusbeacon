@@ -1,4 +1,5 @@
 import { Strong, Text } from "@/components/ui/text"
+import { Skeleton } from "../ui/skeleton"
 
 export function DateSubheading({
   title,
@@ -6,21 +7,19 @@ export function DateSubheading({
   className,
 }: {
   title: string
-  dateRange: string | React.ReactNode
+  dateRange: string
   className?: string
 }) {
   return (
     <div className={className}>
       <Strong className="text-base">{title}</Strong>
 
-      <div className="relative flex items-center">
-        <div className="flex-shrink mr-4">
-          {typeof dateRange === "string" || dateRange instanceof String ? (
-            <Text>{dateRange}</Text>
-          ) : (
-            dateRange
-          )}
-        </div>
+      <div className="relative flex items-center gap-3">
+        {dateRange ? (
+          <Text>{dateRange}</Text>
+        ) : (
+          <Skeleton className="h-[24px] w-[210px]" />
+        )}
 
         {/* Horizontal line */}
         <div className="flex-grow border-t border-stone-300 border-dashed" />

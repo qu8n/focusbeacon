@@ -90,7 +90,7 @@ export type SessionDetails = {
 
 export function HistoryTable({ rows }: { rows: Row<SessionDetails>[] }) {
   return (
-    <TableRoot className="mb-4">
+    <TableRoot>
       <Table>
         <TableHead>
           <TableRow>

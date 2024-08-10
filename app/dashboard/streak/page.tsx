@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Heatmap } from "@/components/charts/heatmap"
@@ -20,16 +21,14 @@ import {
 } from "@remixicon/react"
 import { useContext, useMemo } from "react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import { DemoModeContext, DevModeContext } from "@/components/common/providers"
+import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
+import { ThirdWidthCardSkeleton } from "@/components/common/dashboard-cards"
 
 export default function Streak() {
   const demoMode = useContext(DemoModeContext)
-  const devMode = useContext(DevModeContext)
 
-  const { isBelowSm } = useBreakpoint("sm")
-
-  const { isLoading, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["streak", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak?demo=${demoMode}`)
@@ -39,27 +38,30 @@ export default function Streak() {
     },
   })
 
-  const defaultData = useMemo(() => [], [])
-  const table = useReactTable({
-    data: data?.history_data ?? defaultData,
-    columns: columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
-
-  if (isLoading || !data || devMode) {
-    return <LoadingSkeleton />
-  }
-
-  if (data.zero_sessions) {
+  if (data?.zero_sessions) {
     return <ZeroSessions />
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <Card
-        icon={<RiStackLine size={16} className="opacity-40" />}
-        title="Daily streak"
-      >
+    <>
+      <DailyStreak data={data} />
+      <RecordDailyStreak data={data} />
+      <WeeklyStreak data={data} />
+      <MonthlyStreak data={data} />
+      <SessionsHeatmap data={data} />
+      <RecentSessions data={data} demoMode={demoMode} />
+    </>
+  )
+}
+
+function DailyStreak({ data }: { data: any }) {
+  return (
+    <Card
+      icon={<RiStackLine size={16} className="opacity-40" />}
+      title="Daily streak"
+      className="sm:col-span-3"
+    >
+      {data ? (
         <Stat>
           <div className="flex flex-row items-center gap-1">
             <span className="font-semibold text-3xl/8 sm:text-2xl/8">
@@ -68,94 +70,10 @@ export default function Streak() {
             {data.daily_streak > 1 && <FireIcon />}
           </div>
         </Stat>
-      </Card>
-
-      <Card
-        icon={<RiAwardLine size={16} className="opacity-40" />}
-        title="Record daily streak"
-      >
-        <Stat>
-          <div className="flex flex-row items-center gap-4">
-            <span className="font-semibold text-3xl/8 sm:text-2xl/8">
-              {data.max_daily_streak.count}
-            </span>
-
-            <Footnote className="font-normal">
-              {getFormattedDate(data.max_daily_streak.date_range[0]) +
-                " - " +
-                getFormattedDate(data.max_daily_streak.date_range[1])}
-            </Footnote>
-          </div>
-        </Stat>
-      </Card>
-
-      <Card
-        icon={<RiCalendar2Line size={16} className="opacity-40" />}
-        title="Weekly streak"
-      >
-        <Stat value={data.weekly_streak} />
-      </Card>
-
-      <Card
-        icon={<RiCalendarCheckLine size={16} className="opacity-40" />}
-        title="Monthly streak"
-      >
-        <Stat value={data.monthly_streak} />
-      </Card>
-
-      <Card
-        title="Sessions heatmap"
-        subtitle={`${data.heatmap_data.past_year_sessions.toLocaleString()} sessions in the last year`}
-        className="sm:col-span-2"
-      >
-        <Heatmap data={data.heatmap_data} isBelowSm={isBelowSm} />
-      </Card>
-
-      <Card title="Recent sessions" className="sm:col-span-2">
-        <HistoryTable rows={table.getRowModel().rows} />
-        <LinkInternal
-          href={`/history${demoMode ? "?demo=true" : ""}`}
-          className="inline-flex items-center"
-        >
-          <Text>View all</Text>
-          <RiArrowRightSLine className="opacity-40" size={15} />
-        </LinkInternal>
-      </Card>
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      <Card title="Daily streak">
-        <Skeleton className="h-[32px] w-[25px]" />
-      </Card>
-
-      <Card title="Record daily streak">
-        <div className="flex flex-row gap-4">
-          <Skeleton className="h-[32px] w-[25px]" />
-          <Skeleton className="h-[32px] w-[190px]" />
-        </div>
-      </Card>
-
-      <Card title="Weekly streak">
-        <Skeleton className="h-[32px] w-[25px]" />
-      </Card>
-
-      <Card title="Monthly streak">
-        <Skeleton className="h-[32px] w-[25px]" />
-      </Card>
-
-      <Card title="Sessions heatmap" className="sm:col-span-2">
-        <Skeleton className="-mt-2 w-[180px] h-[20px]" />
-        <Skeleton className="mt-6 w-full h-[143px]" />
-      </Card>
-
-      <Card title="Recent sessions" className="sm:col-span-2">
-        <Skeleton className="mt-6 w-full h-[247px]" />
-      </Card>
-    </div>
+      ) : (
+        <ThirdWidthCardSkeleton />
+      )}
+    </Card>
   )
 }
 
@@ -170,5 +88,108 @@ function FireIcon() {
     >
       <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15" />
     </svg>
+  )
+}
+
+function RecordDailyStreak({ data }: { data: any }) {
+  return (
+    <Card
+      icon={<RiAwardLine size={16} className="opacity-40" />}
+      title="Record daily streak"
+      className="sm:col-span-3"
+    >
+      {data ? (
+        <Stat>
+          <div className="flex flex-row items-center gap-4">
+            <span className="font-semibold text-3xl/8 sm:text-2xl/8">
+              {data.max_daily_streak.count}
+            </span>
+
+            <Footnote className="font-normal">
+              {getFormattedDate(data.max_daily_streak.date_range[0]) +
+                " - " +
+                getFormattedDate(data.max_daily_streak.date_range[1])}
+            </Footnote>
+          </div>
+        </Stat>
+      ) : (
+        <ThirdWidthCardSkeleton />
+      )}
+    </Card>
+  )
+}
+
+function WeeklyStreak({ data }: { data: any }) {
+  return (
+    <Card
+      icon={<RiCalendar2Line size={16} className="opacity-40" />}
+      title="Weekly streak"
+      className="sm:col-span-3"
+    >
+      {data ? <Stat value={data.weekly_streak} /> : <ThirdWidthCardSkeleton />}
+    </Card>
+  )
+}
+
+function MonthlyStreak({ data }: { data: any }) {
+  return (
+    <Card
+      icon={<RiCalendarCheckLine size={16} className="opacity-40" />}
+      title="Monthly streak"
+      className="sm:col-span-3"
+    >
+      {data ? <Stat value={data.monthly_streak} /> : <ThirdWidthCardSkeleton />}
+    </Card>
+  )
+}
+
+function SessionsHeatmap({ data }: { data: any }) {
+  const { isBelowSm } = useBreakpoint("sm")
+  return (
+    <Card
+      title="Sessions heatmap"
+      subtitle={
+        data &&
+        `${data.heatmap_data.past_year_sessions.toLocaleString()} sessions in the last year`
+      }
+      className="sm:col-span-6"
+    >
+      {data ? (
+        <Heatmap data={data.heatmap_data} isBelowSm={isBelowSm} />
+      ) : (
+        <>
+          <Skeleton className="w-[180px] h-[18px]" />
+          <Skeleton className="mt-6 w-full h-[138px]" />
+        </>
+      )}
+    </Card>
+  )
+}
+
+function RecentSessions({ demoMode, data }: { demoMode: boolean; data: any }) {
+  const defaultData = useMemo(() => [], [])
+  const table = useReactTable({
+    data: data?.history_data ?? defaultData,
+    columns: columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
+  return (
+    <Card title="Recent sessions" className="sm:col-span-6">
+      {data ? (
+        <>
+          <LinkInternal
+            href={`/history${demoMode ? "?demo=true" : ""}`}
+            className="inline-flex items-center"
+          >
+            <Text>View all</Text>
+            <RiArrowRightSLine className="opacity-40" size={15} />
+          </LinkInternal>
+          <HistoryTable rows={table.getRowModel().rows} />
+        </>
+      ) : (
+        <Skeleton className="mt-6 w-full h-[247px]" />
+      )}
+    </Card>
   )
 }

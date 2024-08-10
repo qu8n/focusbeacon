@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -17,7 +18,7 @@ import {
 import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { DateSubheading } from "@/components/common/date-subheading"
-import { DemoModeContext, DevModeContext } from "@/components/common/providers"
+import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
 import {
@@ -32,12 +33,10 @@ import {
 
 export default function Week() {
   const demoMode = useContext(DemoModeContext)
-  const devMode = useContext(DevModeContext)
-
   const [goal, setGoal] = useState(0)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
-  const { isLoading: goalIsLoading, data: currGoal } = useQuery({
+  const { data: currGoal } = useQuery({
     queryKey: ["goal", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/goal?demo=${demoMode}`)
@@ -48,7 +47,7 @@ export default function Week() {
     },
   })
 
-  const { isLoading: dataIsLoading, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["weekly", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/week?demo=${demoMode}`)
@@ -57,53 +56,25 @@ export default function Week() {
     },
   })
 
-  if (goalIsLoading || dataIsLoading || !data || devMode) {
-    return <LoadingSkeleton />
-  }
-
-  if (data.zero_sessions) {
+  if (data?.zero_sessions) {
     return <ZeroSessions />
   }
-
-  const progressPercent =
-    currGoal && (data.curr_period.sessions_total / currGoal) * 100
 
   return (
     <>
       <DateSubheading
         title="Current week"
-        dateRange={`${data.curr_period.start_label} - ${data.curr_period.end_label}`}
+        dateRange={data?.curr_period?.subheading}
         className="sm:col-span-6"
       />
 
-      <Card className="sm:col-span-6">
-        <div className="-mt-5 mb-3 inline-flex justify-between w-full items-center">
-          <Text>
-            <Strong>Progress to goal</Strong>
-          </Text>
+      <WeeklyGoal
+        data={data}
+        currGoal={currGoal}
+        setDialogIsOpen={setDialogIsOpen}
+        demoMode={demoMode}
+      />
 
-          <Button
-            type="button"
-            className="scale-90 -mr-2"
-            {...(currGoal && { outline: true })}
-            {...(!currGoal && { color: "orange" })}
-            onClick={() => setDialogIsOpen(true)}
-            disabled={demoMode}
-          >
-            {currGoal ? "Edit goal" : "Set goal"}
-          </Button>
-        </div>
-
-        <ProgressBar
-          value={progressPercent || 0}
-          variant={progressPercent ? "success" : "neutral"}
-          label={buildProgressLabel(
-            progressPercent,
-            data.curr_period.sessions_total,
-            currGoal
-          )}
-        />
-      </Card>
       <GoalUpdateDialog
         dialogIsOpen={dialogIsOpen}
         setDialogIsOpen={setDialogIsOpen}
@@ -120,25 +91,28 @@ export default function Week() {
 
       <SessionsByPeriod
         periodType="day of the week"
-        chartData={data.charts.curr_period}
+        chartData={data?.charts?.curr_period}
       />
 
       <DateSubheading
         title="Previous four weeks"
-        dateRange={`${data.prev_period.start_label} - ${data.prev_period.end_label}`}
+        dateRange={data?.prev_period?.subheading}
         className="sm:col-span-6 mt-4"
       />
 
-      <SessionsByPeriod periodType="week" chartData={data.charts.prev_period} />
+      <SessionsByPeriod
+        periodType="week"
+        chartData={data?.charts?.prev_period}
+      />
 
       <SessionsByPunctuality
         data={data}
-        totalSessions={data.prev_period.sessions_total}
+        totalSessions={data?.prev_period?.sessions_total}
       />
 
       <SessionsByDuration
         data={data}
-        totalSessions={data.prev_period.sessions_total}
+        totalSessions={data?.prev_period?.sessions_total}
       />
 
       <SessionsByHour data={data} />
@@ -146,72 +120,55 @@ export default function Week() {
   )
 }
 
-function LoadingSkeleton() {
+function WeeklyGoal({
+  data,
+  currGoal,
+  setDialogIsOpen,
+  demoMode,
+}: {
+  data: any
+  currGoal: any
+  setDialogIsOpen: (isOpen: boolean) => void
+  demoMode: boolean
+}) {
+  const progressPercent =
+    currGoal && (data?.curr_period?.sessions_total / currGoal) * 100
+
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
-      <DateSubheading
-        title="Current week"
-        dateRange={<Skeleton className="w-[210px] h-[25px]" />}
-        className="sm:col-span-6"
-      />
+    <Card className="sm:col-span-6">
+      <div className="-mt-5 mb-3 inline-flex justify-between w-full items-center">
+        <Text>
+          <Strong>Progress to goal</Strong>
+        </Text>
 
-      <Card className="sm:col-span-6">
-        <div className="inline-flex w-full justify-between mb-4 items-center">
-          <Text>
-            <Strong>Progress to goal</Strong>
-          </Text>
-          <Skeleton className="w-[70px] h-[30px]" />
-        </div>
-        <Skeleton className="h-[10px] w-full mb-2" />
-      </Card>
+        <Button
+          type="button"
+          className="scale-90 -mr-2"
+          {...(currGoal && { outline: true })}
+          {...(!currGoal && { color: "orange" })}
+          onClick={() => setDialogIsOpen(true)}
+          disabled={!data || demoMode}
+        >
+          {currGoal ? "Edit goal" : "Set goal"}
+        </Button>
+      </div>
 
-      <Card title="Total sessions" className="sm:col-span-2">
-        <div className="flex flex-row gap-4">
-          <Skeleton className="h-[32px] w-[25px]" />
-          <Skeleton className="h-[32px] w-[125px]" />
-        </div>
-      </Card>
-
-      <Card title="Total hours" className="sm:col-span-2">
-        <div className="flex flex-row gap-4">
-          <Skeleton className="h-[32px] w-[25px]" />
-          <Skeleton className="h-[32px] w-[125px]" />
-        </div>
-      </Card>
-
-      <Card title="Total partners" className="sm:col-span-2">
-        <div className="flex flex-row gap-4">
-          <Skeleton className="h-[32px] w-[25px]" />
-          <Skeleton className="h-[32px] w-[50px]" />
-        </div>
-      </Card>
-
-      <Card title="Sessions by day of the week" className="sm:col-span-6">
-        <Skeleton className="h-[320px] w-full" />
-      </Card>
-
-      <DateSubheading
-        title="Previous weeks"
-        dateRange={<Skeleton className="w-[210px] h-[25px]" />}
-        className="sm:col-span-6 mt-4"
-      />
-
-      <Card title="Sessions by week" className="sm:col-span-6">
-        <Skeleton className="h-[320px] w-full" />
-      </Card>
-
-      <Card title="Sessions by punctuality" className="sm:col-span-3">
-        <Skeleton className="h-[165px] w-full" />
-      </Card>
-
-      <Card title="Sessions by duration" className="sm:col-span-3">
-        <Skeleton className="h-[165px] w-full" />
-      </Card>
-
-      <Card title="Sessions by hour of the day" className="sm:col-span-6">
-        <Skeleton className="h-[320px] w-full" />
-      </Card>
-    </div>
+      {data ? (
+        <>
+          <ProgressBar
+            value={progressPercent || 0}
+            variant={progressPercent ? "success" : "neutral"}
+            label={buildProgressLabel(
+              progressPercent,
+              data.curr_period.sessions_total,
+              currGoal
+            )}
+          />
+        </>
+      ) : (
+        <Skeleton className="h-[10px] w-full mb-2 mt-2" />
+      )}
+    </Card>
   )
 }
 
