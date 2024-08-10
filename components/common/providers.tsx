@@ -1,13 +1,11 @@
 "use client"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { createContext, Suspense, useState } from "react"
-import { DevModeButton } from "@/components/common/dev-mode-button"
+import { createContext, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 
 const queryClient = new QueryClient()
-export const DevModeContext = createContext(false)
 export const DemoModeContext = createContext(false)
 export const SignInStatusContext = createContext({
   isCheckingSignInStatus: true,
@@ -28,7 +26,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
  * We're using another layer of providers to enable the use of React Query
  */
 function CustomProviders({ children }: { children: React.ReactNode }) {
-  const [devMode, setDevMode] = useState(false)
   const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus()
   const searchParams = useSearchParams()
   const demoMode = searchParams.get("demo") === "true"
@@ -38,13 +35,7 @@ function CustomProviders({ children }: { children: React.ReactNode }) {
       value={{ isCheckingSignInStatus, isSignedIn }}
     >
       <DemoModeContext.Provider value={demoMode}>
-        <DevModeContext.Provider value={devMode}>
-          {children}
-
-          {process.env.NODE_ENV === "development" && (
-            <DevModeButton devMode={devMode} setDevMode={setDevMode} />
-          )}
-        </DevModeContext.Provider>
+        {children}
       </DemoModeContext.Provider>
     </SignInStatusContext.Provider>
   )
