@@ -148,6 +148,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
     date_label_format = "%A, %b %d"
 
     return {
+        "period_type": "week",
         "curr_period": {
             "start_label": format_date_label(curr_week_start, date_label_format),
             "end_label": format_date_label(curr_week_end, date_label_format),
@@ -206,6 +207,7 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
     date_format = "%B %Y"
 
     return {
+        "period_type": "month",
         "curr_period": {
             "start_label": format_date_label(curr_month_start, date_format),
             "sessions_total": len(curr_month_sessions),
@@ -258,6 +260,7 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
     date_format = "%Y"
 
     return {
+        "period_type": "year",
         "curr_period": {
             "start_label": format_date_label(curr_year_start, date_format),
             "sessions_total": len(curr_year_sessions),
@@ -295,10 +298,12 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
     sessions = sessions[sessions['completed'] == True]
 
     return {
-        "sessions_total": len(sessions),
-        "hours_total": ms_to_h(sessions['duration'].sum()),
-        "partners_total": len(sessions['partner_id'].unique()),
-        "partners_repeat": calc_repeat_partners(sessions),
+        "curr_period": {
+            "sessions_total": len(sessions),
+            "hours_total": ms_to_h(sessions['duration'].sum()),
+            "partners_total": len(sessions['partner_id'].unique()),
+            "partners_repeat": calc_repeat_partners(sessions),
+        },
         "sessions_cumulative": prep_cumulative_sessions_chart(sessions),
         "first_session_date": format_date_label(sessions['start_time'].min(), "%B %-d, %Y"),
         "average_duration": ms_to_m(sessions['duration'].mean()),

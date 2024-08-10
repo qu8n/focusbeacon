@@ -27,7 +27,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         {...props}
       >
         {title && (
-          <div className="mb-3 flex flex-row gap-1 items-center">
+          <div className="mb-1 flex flex-row gap-1 items-center">
             {icon}
             <Text className="flex flex-col">
               <Strong>{title}</Strong>

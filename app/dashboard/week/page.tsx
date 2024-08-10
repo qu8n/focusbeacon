@@ -1,7 +1,6 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Stat } from "@/components/ui/stat"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
 import { BarChart, Legend } from "@/components/charts/bar-chart"
@@ -23,7 +22,11 @@ import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
-import { RiTimeLine, RiUser3Line, RiVideoOnLine } from "@remixicon/react"
+import {
+  TotalHours,
+  TotalPartners,
+  TotalSessions,
+} from "@/components/common/dashboard-cards"
 
 export default function Week() {
   const demoMode = useContext(DemoModeContext)
@@ -108,40 +111,9 @@ export default function Week() {
         />
       </Card>
 
-      <Card
-        icon={<RiVideoOnLine size={16} className="opacity-40" />}
-        title="Total sessions"
-        className="sm:col-span-2"
-      >
-        <Stat
-          value={data.curr_period.sessions_total}
-          changeVal={data.curr_period.sessions_delta}
-          changeText="vs. previous week"
-        />
-      </Card>
-
-      <Card
-        icon={<RiTimeLine size={16} className="opacity-40" />}
-        title="Total hours"
-        className="sm:col-span-2"
-      >
-        <Stat
-          value={data.curr_period.hours_total}
-          changeVal={data.curr_period.hours_delta}
-          changeText="vs. previous week"
-        />
-      </Card>
-
-      <Card
-        icon={<RiUser3Line size={16} className="opacity-40" />}
-        title="Total partners"
-        className="sm:col-span-2"
-      >
-        <Stat
-          value={data.curr_period.partners_total}
-          changeText={`${data.curr_period.partners_repeat} repeat`}
-        />
-      </Card>
+      <TotalSessions data={data} />
+      <TotalHours data={data} />
+      <TotalPartners data={data} />
 
       <Card title="Sessions by day of the week" className="sm:col-span-6">
         <BarChart

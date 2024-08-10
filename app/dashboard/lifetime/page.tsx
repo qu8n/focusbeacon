@@ -12,6 +12,11 @@ import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { AreaChart } from "@/components/charts/area-chart"
 import { RiFlag2Line, RiTimer2Line, RiTimerFlashLine } from "@remixicon/react"
+import {
+  TotalHours,
+  TotalPartners,
+  TotalSessions,
+} from "@/components/common/dashboard-cards"
 
 export default function Lifetime() {
   const demoMode = useContext(DemoModeContext)
@@ -36,20 +41,9 @@ export default function Lifetime() {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
-      <Card title="Total sessions" className="sm:col-span-2">
-        <Stat value={data.sessions_total} />
-      </Card>
-
-      <Card title="Total hours" className="sm:col-span-2">
-        <Stat value={data.hours_total} />
-      </Card>
-
-      <Card title="Total partners" className="sm:col-span-2">
-        <Stat
-          value={data.partners_total}
-          changeText={`${data.partners_repeat.toLocaleString()} repeat`}
-        />
-      </Card>
+      <TotalSessions data={data} />
+      <TotalHours data={data} />
+      <TotalPartners data={data} />
 
       <Card title="Cumulative sessions over time" className="sm:col-span-6">
         <AreaChart
@@ -104,7 +98,7 @@ export default function Lifetime() {
             value="amount"
             colors={["custom-4", "custom-5"]}
             valueFormatter={(value) =>
-              `${value} (${Math.round((value / data.sessions_total) * 100)}%)`
+              `${value} (${Math.round((value / data.curr_period.sessions_total) * 100)}%)`
             }
             className="ml-4"
           />
@@ -115,7 +109,9 @@ export default function Lifetime() {
               <span>
                 {data.punctuality.data[0].amount} (
                 {Math.round(
-                  (data.punctuality.data[0].amount / data.sessions_total) * 100
+                  (data.punctuality.data[0].amount /
+                    data.curr_period.sessions_total) *
+                    100
                 )}
                 %)
               </span>
@@ -146,7 +142,7 @@ export default function Lifetime() {
             value="amount"
             colors={["custom-1", "custom-2", "custom-3"]}
             valueFormatter={(value) =>
-              `${value} (${Math.round((value / data.sessions_total) * 100)}%)`
+              `${value} (${Math.round((value / data.curr_period.sessions_total) * 100)}%)`
             }
             className="ml-4"
           />
@@ -161,7 +157,9 @@ export default function Lifetime() {
                   <span>{item.duration}</span>
                   <span>
                     {item.amount} (
-                    {Math.round((item.amount / data.sessions_total) * 100)}
+                    {Math.round(
+                      (item.amount / data.curr_period.sessions_total) * 100
+                    )}
                     %)
                   </span>
                 </Text>

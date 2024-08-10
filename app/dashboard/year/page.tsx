@@ -11,6 +11,11 @@ import { DonutChart } from "@/components/charts/donut-chart"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext, DevModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
+import {
+  TotalHours,
+  TotalPartners,
+  TotalSessions,
+} from "@/components/common/dashboard-cards"
 
 export default function Year() {
   const demoMode = useContext(DemoModeContext)
@@ -41,28 +46,9 @@ export default function Year() {
         className="sm:col-span-6"
       />
 
-      <Card title="Total sessions" className="sm:col-span-2">
-        <Stat
-          value={data.curr_period.sessions_total}
-          changeVal={data.curr_period.sessions_delta}
-          changeText="vs. previous year"
-        />
-      </Card>
-
-      <Card title="Total hours" className="sm:col-span-2">
-        <Stat
-          value={data.curr_period.hours_total}
-          changeVal={data.curr_period.hours_delta}
-          changeText="vs. previous year"
-        />
-      </Card>
-
-      <Card title="Total partners" className="sm:col-span-2">
-        <Stat
-          value={data.curr_period.partners_total}
-          changeText={`${data.curr_period.partners_repeat} repeat`}
-        />
-      </Card>
+      <TotalSessions data={data} />
+      <TotalHours data={data} />
+      <TotalPartners data={data} />
 
       <Card title="Sessions by month of the year" className="sm:col-span-6">
         <BarChart
