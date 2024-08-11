@@ -56,7 +56,7 @@ export function Footer() {
           }
         })}
       </div>
-      <Footnote>© FocusBeacon</Footnote>
+      <Footnote>© Focusbeacon</Footnote>
     </div>
   )
 }

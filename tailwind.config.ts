@@ -22,6 +22,8 @@ const config: Config = {
       animation: {
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+        accordionOpen: "accordionOpen 150ms cubic-bezier(0.87, 0, 0.13, 1)",
+        accordionClose: "accordionClose 150ms cubic-bezier(0.87, 0, 0.13, 1)",
       },
       keyframes: {
         marquee: {
@@ -31,6 +33,16 @@ const config: Config = {
         "marquee-vertical": {
           from: { transform: "translateY(0)" },
           to: { transform: "translateY(calc(-100% - var(--gap)))" },
+        },
+        accordionOpen: {
+          from: { height: "0px" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        accordionClose: {
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: { height: "0px" },
         },
       },
     },
