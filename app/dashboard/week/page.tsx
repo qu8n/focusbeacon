@@ -95,7 +95,7 @@ export default function Week() {
       />
 
       <DateSubheading
-        title="Previous four weeks"
+        title="Previous weeks"
         dateRange={data?.prev_period?.subheading}
         className="sm:col-span-6 mt-4"
       />

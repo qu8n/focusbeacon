@@ -1,7 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { LinkInternal } from "../ui/link-internal"
 import { SigninButton } from "./signin-button"
 import { useContext } from "react"
 import { SignInStatusContext } from "@/components/common/providers"
@@ -19,7 +17,7 @@ import { useRouter } from "next/navigation"
 export function NavbarClient() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
+  const { isSignedIn } = useContext(SignInStatusContext)
 
   const { isLoading, data } = useQuery({
     queryKey: ["profilePhoto"],
@@ -56,14 +54,10 @@ export function NavbarClient() {
 
   return (
     <>
-      {isCheckingSignInStatus || !isSignedIn ? (
-        <SigninButton text="Sign in" />
-      ) : (
-        <>
-          <LinkInternal href="/dashboard">
-            <Button outline>Dashboard</Button>
-          </LinkInternal>
+      <SigninButton text="Dashboard" />
 
+      {isSignedIn && (
+        <>
           <Dropdown>
             <DropdownButton
               className="size-8"

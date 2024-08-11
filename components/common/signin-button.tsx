@@ -23,12 +23,15 @@ export function SigninButton({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
-  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
+  const { isSignedIn } = useContext(SignInStatusContext)
+
+  if (router && isOpen && isSignedIn) {
+    router.push("/dashboard")
+  }
 
   return (
     <>
       <Button
-        disabled={isCheckingSignInStatus}
         color="orange"
         type="button"
         onClick={() => {

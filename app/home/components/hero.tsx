@@ -1,9 +1,8 @@
 import { Heading } from "@/components/ui/heading"
 import { hero } from "./config"
 import { RiArrowRightSLine, RiCheckboxCircleLine } from "@remixicon/react"
-import { Text } from "@/components/ui/text"
+import { Strong, Text } from "@/components/ui/text"
 import { SigninButton } from "@/components/common/signin-button"
-import { Button } from "@/components/ui/button"
 import { LinkInternal } from "@/components/ui/link-internal"
 
 export function Hero() {
@@ -25,17 +24,19 @@ export function Hero() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 items-center">
-        <SigninButton className="p-1" text={hero.buttonText} />
+        <SigninButton text={hero.buttonText} />
 
-        <Button outline>
-          <LinkInternal
-            href="/dashboard/streak?demo=true"
-            className="p-1 inline-flex items-center"
-          >
-            View demo
-            <RiArrowRightSLine color="gray" size={15} />
-          </LinkInternal>
-        </Button>
+        {/* <Button outline> */}
+        <LinkInternal
+          href="/dashboard/streak?demo=true"
+          className="inline-flex items-center hover:opacity-90"
+        >
+          <Strong>
+            <Text>View demo</Text>
+          </Strong>
+          <RiArrowRightSLine color="gray" size={15} />
+        </LinkInternal>
+        {/* </Button> */}
       </div>
     </div>
   )

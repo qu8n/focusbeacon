@@ -10,6 +10,9 @@ export function PageTitle() {
     case "home":
       currPage = null
       break
+    case "signin":
+      currPage = "Sign In"
+      break
     case "oauth":
       currPage = null
       break

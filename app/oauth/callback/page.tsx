@@ -55,7 +55,7 @@ export default function Callback() {
     return (
       <div className="flex flex-col mt-10 text-left items-start">
         <Text>
-          Please sign in again and click &quot;Allow&quot; on the new window.
+          Please try again and click &quot;Allow&quot; on the new window.
         </Text>
         <Text>
           If that doesn&apos;t work, let us know{" "}
@@ -69,7 +69,7 @@ export default function Callback() {
             <TextLink>here</TextLink>.
           </LinkInternal>
         </Text>
-        <SigninButton className="mt-2" text="Sign in" />
+        <SigninButton className="mt-2" text="Try again" />
       </div>
     )
   }
