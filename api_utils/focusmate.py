@@ -84,7 +84,11 @@ async def get_data(
     if (cached_profile is not None) and (cached_sessions is not None):
         return cached_profile, cached_sessions
 
-    access_token = get_access_token(session_id)
+    try:
+        access_token = get_access_token(session_id)
+    except Exception as e:
+        print(f"Error getting access token: {e}")
+        return None, None
 
     profile: dict = fetch_focusmate_profile(access_token).get("user")
     local_timezone: str = profile.get("timeZone")

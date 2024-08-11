@@ -13,6 +13,10 @@ def get_session_id(request: Request):
 def get_access_token(session_id: str):
     response = supabase_client.table('profile').select(
         "access_token_encrypted").eq('session_id', session_id).execute()
+
+    if not response.data or 'access_token_encrypted' not in response.data[0]:
+        raise Exception("Access token not found for the given session ID")
+
     access_token_encrypted = response.data[0]['access_token_encrypted']
     access_token = decrypt(access_token_encrypted)
     return access_token

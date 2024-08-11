@@ -9,7 +9,7 @@ export const hero = {
 }
 
 export const reviews = {
-  title: "Loved by Focusmate users 🧡",
+  title: "What Focusmate users are saying",
   footnote: "Source: Focusmate's Facebook group",
   reviews: [
     {
