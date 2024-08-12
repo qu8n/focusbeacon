@@ -83,7 +83,9 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False):
     local_timezone: str = profile.get("timeZone")
 
     daily_streak = calc_curr_streak(sessions, "D", local_timezone)
-    update_daily_streak(profile.get("userId"), daily_streak)
+
+    if not demo:
+        update_daily_streak(profile.get("userId"), daily_streak)
 
     return {
         "daily_streak": daily_streak,

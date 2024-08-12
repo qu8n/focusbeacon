@@ -18,7 +18,7 @@ import manifest from "@/app/manifest"
 
 export const metadata: Metadata = {
   title:
-    "Focusbeacon — Focusmate statistics & productivity dashboard (Unofficial)",
+    "Focusbeacon — Focusmate statistics & productivity dashboard (unofficial)",
   description: manifest().description,
 }
 

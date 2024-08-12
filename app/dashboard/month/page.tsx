@@ -35,7 +35,7 @@ export default function Month() {
     <>
       <DateSubheading
         title="Current month"
-        dateRange={`${data?.curr_period?.subheading}`}
+        dateRange={data?.curr_period?.subheading}
         className="sm:col-span-6"
       />
 
