@@ -1,5 +1,5 @@
 import { Subheading } from "@/components/ui/heading"
-import { cta, hero } from "./config"
+import { cta, hero } from "@/app/home/components/config"
 import { SigninButton } from "@/components/common/signin-button"
 
 export function CallToAction() {

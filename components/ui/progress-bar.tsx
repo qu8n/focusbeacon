@@ -2,9 +2,8 @@
 
 import React from "react"
 import { tv, type VariantProps } from "tailwind-variants"
-
 import { cx } from "@/lib/utils"
-import { Text } from "./text"
+import { Text } from "@/components/ui/text"
 
 const progressBarVariants = tv({
   slots: {

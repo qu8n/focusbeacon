@@ -1,7 +1,7 @@
 import { Hero } from "@/app/home/components/hero"
 import { Reviews } from "@/app/home/components/reviews"
 import { CallToAction } from "@/app/home/components/cta"
-import { FAQ } from "./components/faq"
+import { FAQ } from "@/app/home/components/faq"
 
 export default function Home() {
   return (

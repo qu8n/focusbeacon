@@ -1,7 +1,7 @@
 "use client"
 
 import { useSelectedLayoutSegment } from "next/navigation"
-import { Heading } from "../ui/heading"
+import { Heading } from "@/components/ui/heading"
 
 export function PageTitle() {
   let currPage = useSelectedLayoutSegment()

@@ -4,8 +4,8 @@ import * as Headless from "@headlessui/react"
 import clsx from "clsx"
 import { LayoutGroup, motion } from "framer-motion"
 import React, { useId } from "react"
-import { TouchTarget } from "./button"
-import { LinkInternal } from "./link-internal"
+import { TouchTarget } from "@/components/ui/button"
+import { LinkInternal } from "@/components/ui/link-internal"
 
 export function Navbar({
   className,

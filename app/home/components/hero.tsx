@@ -1,5 +1,5 @@
 import { Heading } from "@/components/ui/heading"
-import { hero } from "./config"
+import { hero } from "@/app/home/components/config"
 import { RiArrowRightSLine, RiCheckboxCircleLine } from "@remixicon/react"
 import { Strong, Text } from "@/components/ui/text"
 import { SigninButton } from "@/components/common/signin-button"

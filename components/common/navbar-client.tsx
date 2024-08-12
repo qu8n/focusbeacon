@@ -1,6 +1,6 @@
 "use client"
 
-import { SigninButton } from "./signin-button"
+import { SigninButton } from "@/components/common/signin-button"
 import { useContext } from "react"
 import { SignInStatusContext } from "@/components/common/providers"
 import {

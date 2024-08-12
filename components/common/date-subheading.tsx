@@ -1,5 +1,5 @@
 import { Strong, Text } from "@/components/ui/text"
-import { Skeleton } from "../ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function DateSubheading({
   title,

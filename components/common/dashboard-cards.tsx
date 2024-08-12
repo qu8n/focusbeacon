@@ -2,12 +2,12 @@
 // This file houses reusable dashboard cards
 
 import { RiTimeLine, RiUser3Line, RiVideoOnLine } from "@remixicon/react"
-import { Card } from "../ui/card"
-import { Stat } from "../ui/stat"
-import { BarChart, Legend } from "../charts/bar-chart"
-import { DonutChart } from "../charts/donut-chart"
+import { Card } from "@/components/ui/card"
+import { Stat } from "@/components/ui/stat"
+import { BarChart, Legend } from "@/components/charts/bar-chart"
+import { DonutChart } from "@/components/charts/donut-chart"
 import { Text } from "@/components/ui/text"
-import { Skeleton } from "../ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ThirdWidthCardSkeleton() {
   return <Skeleton className="h-[32px] w-full" />
