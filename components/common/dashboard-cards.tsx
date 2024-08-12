@@ -133,7 +133,7 @@ export function SessionsByPunctuality({
             categories={["Early", "Late"]}
             colors={["custom-4", "custom-5"]}
           />
-          <div className="grid grid-cols-2 items-center mt-3">
+          <div className="grid md:grid-cols-2 grid-cols-1 items-center mt-3">
             <DonutChart
               data={data.charts.punctuality.data}
               variant="pie"
@@ -143,7 +143,7 @@ export function SessionsByPunctuality({
               valueFormatter={(value) =>
                 `${value} (${Math.round((value / totalSessions) * 100)}%)`
               }
-              className="ml-4"
+              className="md:ml-3 mx-auto"
             />
 
             <div className="flex flex-col">
@@ -192,7 +192,7 @@ export function SessionsByDuration({
             colors={["custom-1", "custom-2", "custom-3"]}
           />
 
-          <div className="grid grid-cols-2 items-center mt-3">
+          <div className="grid md:grid-cols-2 grid-cols-1 items-center mt-3">
             <DonutChart
               data={data.charts.duration}
               variant="pie"
@@ -202,7 +202,7 @@ export function SessionsByDuration({
               valueFormatter={(value) =>
                 `${value} (${Math.round((value / totalSessions) * 100)}%)`
               }
-              className="ml-4"
+              className="mx-auto md:ml-3"
             />
 
             <div className="flex flex-col">
