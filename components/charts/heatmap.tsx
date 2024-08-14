@@ -27,7 +27,6 @@ function DaySvg({ color }: { color: string }) {
 
 export function Heatmap({
   data,
-  isBelowSm,
 }: {
   data: {
     data: CalendarData["data"]
@@ -35,62 +34,56 @@ export function Heatmap({
     to: CalendarData["to"]
     past_year_sessions: number
   }
-  isBelowSm: boolean
 }) {
   return (
     // A parent container with height is required for a Nivo Responsive
     // component to know how much space it should occupy
-    <div
-      style={isBelowSm ? { height: 1600 } : { height: 155 }}
-      className={isBelowSm ? "block sm:hidden" : "hidden sm:block"}
-    >
-      <ResponsiveTimeRange
-        data={data.data}
-        from={data.from}
-        direction={isBelowSm ? "vertical" : "horizontal"}
-        to={data.to}
-        firstWeekday="monday"
-        weekdayTicks={[0, 2, 4]}
-        weekdayLegendOffset={isBelowSm ? 0 : 60}
-        monthLegend={(_year: number, _month: number, date: Date) => {
-          // Manually get the month and year because Nivo can't infer
-          // these values automatically from our data
-          const month = date.toLocaleString("default", { month: "short" })
-          return month
-        }}
-        monthLegendOffset={20}
-        emptyColor="#EBEDF0"
-        colors={["#ffedd5", "#fdba74", "#f97316"]}
-        margin={
-          isBelowSm
-            ? { top: 60, right: 0, bottom: 80, left: 40 }
-            : { top: 50, right: 20, bottom: 0, left: 0 }
-        }
-        dayBorderWidth={3}
-        dayBorderColor="#ffffff"
-        dayRadius={4}
-        tooltip={({ day, value, color }) => {
-          // Can't directly call new Date(day) because day is already in
-          // local time (Date assumes UTC time)
-          const [y, m, d] = day.split("-").map(Number)
-          const date = new Date(y, m - 1, d) // month is 0-indexed
+    <div className="overflow-x-scroll">
+      <div className="h-[155px] w-[780px]">
+        <ResponsiveTimeRange
+          data={data.data}
+          from={data.from}
+          direction={"horizontal"}
+          to={data.to}
+          firstWeekday="monday"
+          weekdayTicks={[0, 2, 4]}
+          weekdayLegendOffset={60}
+          monthLegend={(_year: number, _month: number, date: Date) => {
+            // Manually get the month and year because Nivo can't infer
+            // these values automatically from our data
+            const month = date.toLocaleString("default", { month: "short" })
+            return month
+          }}
+          monthLegendOffset={20}
+          emptyColor="#EBEDF0"
+          colors={["#ffedd5", "#fdba74", "#f97316"]}
+          margin={{ top: 50, right: 20, bottom: 0, left: 0 }}
+          dayBorderWidth={3}
+          dayBorderColor="#ffffff"
+          dayRadius={4}
+          tooltip={({ day, value, color }) => {
+            // Can't directly call new Date(day) because day is already in
+            // local time (Date assumes UTC time)
+            const [y, m, d] = day.split("-").map(Number)
+            const date = new Date(y, m - 1, d) // month is 0-indexed
 
-          return (
-            <div className="py-2 bg-[#FDFDFA] border rounded-md shadow-sm">
-              <Text className="px-4">
-                <Strong>{getFormattedDate(date)}</Strong>
-              </Text>
-              <Divider className="my-2" />
-              <div className="flex px-4 items-center">
-                <DaySvg color={color} />
-                <Text>
-                  {value} session{Number(value) !== 1 && "s"}
+            return (
+              <div className="py-2 bg-[#FDFDFA] border rounded-md shadow-sm">
+                <Text className="px-4">
+                  <Strong>{getFormattedDate(date)}</Strong>
                 </Text>
+                <Divider className="my-2" />
+                <div className="flex px-4 items-center">
+                  <DaySvg color={color} />
+                  <Text>
+                    {value} session{Number(value) !== 1 && "s"}
+                  </Text>
+                </div>
               </div>
-            </div>
-          )
-        }}
-      />
+            )
+          }}
+        />
+      </div>
     </div>
   )
 }

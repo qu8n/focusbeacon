@@ -5,7 +5,6 @@ import { Heatmap } from "@/components/charts/heatmap"
 import { Stat } from "@/components/ui/stat"
 import { Footnote } from "@/components/ui/text"
 import { useQuery } from "@tanstack/react-query"
-import { useBreakpoint } from "@/hooks/use-breakpoint"
 import { getFormattedDate } from "@/lib/date"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Text } from "@/components/ui/text"
@@ -144,7 +143,6 @@ function MonthlyStreak({ data }: { data: any }) {
 }
 
 function SessionsHeatmap({ data }: { data: any }) {
-  const { isBelowSm } = useBreakpoint("sm")
   return (
     <Card
       title="Sessions heatmap"
@@ -155,7 +153,7 @@ function SessionsHeatmap({ data }: { data: any }) {
       className="sm:col-span-6"
     >
       {data ? (
-        <Heatmap data={data.heatmap_data} isBelowSm={isBelowSm} />
+        <Heatmap data={data.heatmap_data} />
       ) : (
         <>
           <Skeleton className="w-[180px] h-[18px]" />
