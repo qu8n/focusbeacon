@@ -8,6 +8,8 @@ import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { Text } from "@/components/ui/text"
 import { Skeleton } from "@/components/ui/skeleton"
+import { AvailableChartColors, AvailableChartColorsKeys } from "@/lib/chart-utils"
+import { ReactNode } from "react"
 
 export function ThirdWidthCardSkeleton() {
   return <Skeleton className="h-[32px] w-full" />
@@ -125,54 +127,40 @@ export function SessionsByPunctuality({
   data: any
   totalSessions: number
 }) {
+  const punctuality = data?.charts?.punctuality
+  const chartData = punctuality?.data
   return (
-    <Card title="Sessions by punctuality" className="sm:col-span-3">
-      {data ? (
+    <PieChartCard
+      chartData={chartData}
+      totalSessions={10}
+      title="Sessions by punctuality"
+      categories={["Early", "Late"]}
+      colors={["custom-4", "custom-5"]}
+      category="punctuality"
+      tableContent={punctuality && (
         <>
-          <Legend
-            categories={["Early", "Late"]}
-            colors={["custom-4", "custom-5"]}
-          />
-          <div className="grid md:grid-cols-2 grid-cols-1 items-center mt-3">
-            <DonutChart
-              data={data.charts.punctuality.data}
-              variant="pie"
-              category="punctuality"
-              value="amount"
-              colors={["custom-4", "custom-5"]}
-              valueFormatter={(value) =>
-                `${value} (${Math.round((value / totalSessions) * 100)}%)`
-              }
-              className="md:ml-3 mx-auto"
-            />
-
-            <div className="flex flex-col">
-              <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-                <span>{data.charts.punctuality.data[0].punctuality}</span>
-                <span>
-                  {data.charts.punctuality.data[0].amount.toLocaleString()} (
-                  {Math.round(
-                    (data.charts.punctuality.data[0].amount / totalSessions) *
-                      100
-                  )}
-                  %)
-                </span>
-              </Text>
-              <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-                <span>Average</span>
-                <span>{data.charts.punctuality.avg}</span>
-              </Text>
-              <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-                <span>Median</span>
-                <span>{data.charts.punctuality.median}</span>
-              </Text>
-            </div>
-          </div>
-        </>
-      ) : (
-        <PieCardSkeleton />
-      )}
-    </Card>
+          <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+            <span>{chartData[0].punctuality}</span>
+            <span>
+              {chartData[0].amount.toLocaleString()} (
+              {Math.round(
+                (chartData[0].amount / totalSessions) *
+                  100
+              )}
+              %)
+            </span>
+          </Text>
+          <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+            <span>Average</span>
+            <span>{punctuality.avg}</span>
+          </Text>
+          <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+            <span>Median</span>
+            <span>{punctuality.median}</span>
+          </Text>
+        </>)
+      }
+    />
   )
 }
 
@@ -183,22 +171,73 @@ export function SessionsByDuration({
   data: any
   totalSessions: number
 }) {
+  const chartData = data?.charts?.duration
   return (
-    <Card title="Sessions by duration" className="sm:col-span-3">
-      {data ? (
+    <PieChartCard
+      chartData={chartData}
+      totalSessions={totalSessions}
+      title="Sessions by duration"
+      categories={["25m", "50m", "75m"]}
+      colors={["custom-1", "custom-2", "custom-3"]}
+      category="duration"
+      tableContent={
+        <>
+          {chartData && chartData.map(
+            (item: { duration: string; amount: number }) => {
+              return (
+                <Text
+                  key={item.duration}
+                  className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
+                >
+                  <span>{item.duration}</span>
+                  <span>
+                    {item.amount.toLocaleString()} (
+                    {Math.round((item.amount / totalSessions) * 100)}
+                    %)
+                  </span>
+                </Text>
+              )
+            }
+          )}
+        </>
+      }
+    />
+  )
+}
+
+function PieChartCard({
+  chartData,
+  totalSessions,
+  title,
+  categories,
+  colors,
+  category,
+  tableContent,
+}: {
+  chartData: any
+  totalSessions: number
+  title: string
+  categories: string[]
+  colors: AvailableChartColorsKeys[]
+  category: string
+  tableContent?: ReactNode
+}) {
+  return (
+    <Card title={title} className="sm:col-span-3">
+      {chartData ? (
         <>
           <Legend
-            categories={["25m", "50m", "75m"]}
-            colors={["custom-1", "custom-2", "custom-3"]}
+            categories={categories}
+            colors={colors}
           />
 
           <div className="grid md:grid-cols-2 grid-cols-1 items-center mt-3">
             <DonutChart
-              data={data.charts.duration}
+              data={chartData}
               variant="pie"
-              category="duration"
+              category={category}
               value="amount"
-              colors={["custom-1", "custom-2", "custom-3"]}
+              colors={colors}
               valueFormatter={(value) =>
                 `${value} (${Math.round((value / totalSessions) * 100)}%)`
               }
@@ -206,23 +245,7 @@ export function SessionsByDuration({
             />
 
             <div className="flex flex-col">
-              {data.charts.duration.map(
-                (item: { duration: string; amount: number }) => {
-                  return (
-                    <Text
-                      key={item.duration}
-                      className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
-                    >
-                      <span>{item.duration}</span>
-                      <span>
-                        {item.amount.toLocaleString()} (
-                        {Math.round((item.amount / totalSessions) * 100)}
-                        %)
-                      </span>
-                    </Text>
-                  )
-                }
-              )}
+              {tableContent}
             </div>
           </div>
         </>
@@ -232,6 +255,7 @@ export function SessionsByDuration({
     </Card>
   )
 }
+
 
 export function SessionsByHour({ data }: { data: any }) {
   return (
