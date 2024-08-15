@@ -43,8 +43,8 @@ export function Heatmap({
         <ResponsiveTimeRange
           data={data.data}
           from={data.from}
-          direction={"horizontal"}
           to={data.to}
+          direction={"horizontal"}
           firstWeekday="monday"
           weekdayTicks={[0, 2, 4]}
           weekdayLegendOffset={60}

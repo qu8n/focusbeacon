@@ -18,14 +18,15 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { exportJSONToCSV } from "@/lib/export"
 import { Card } from "@/components/ui/card"
-import { usePathname } from "next/navigation"
 import { DemoCallout } from "@/components/common/demo-callout"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { useProtectRoute } from "@/hooks/use-protect-route"
+import { useScrollToTop } from "@/hooks/use-scroll-to-top"
 
 export default function HistoryPage() {
-  const { demoMode, isCheckingSignInStatus, isSignedIn } = useProtectRoute()
+  useScrollToTop()
 
+  const { demoMode, isCheckingSignInStatus, isSignedIn } = useProtectRoute()
   if (!demoMode && (isCheckingSignInStatus || !isSignedIn)) {
     return <Skeleton className="h-[783px] w-full mt-6" />
   }
@@ -76,12 +77,6 @@ function History({ demoMode }: { demoMode: boolean }) {
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
   })
-
-  // Temp patch for Next.js bug. See more at https://github.com/vercel/next.js/issues/45187
-  const pathname = usePathname()
-  useEffect(() => {
-    window.scroll(0, 0)
-  }, [pathname])
 
   async function handleDownload() {
     const response = await fetch(`/api/py/history-all`)
