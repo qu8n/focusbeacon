@@ -56,6 +56,12 @@ export default function Year() {
         className="sm:col-span-6 mt-4"
       />
 
+      <TotalSessions data={data} prevPeriod />
+
+      <TotalHours data={data} prevPeriod />
+
+      <TotalPartners data={data} prevPeriod />
+
       <SessionsByPeriod
         periodType="month"
         chartData={data?.charts?.prev_period}

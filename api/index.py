@@ -273,6 +273,10 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
             "period_type": "year",
         },
         "prev_period": {
+            "sessions_total": len(prev_year_sessions),
+            "hours_total": ms_to_h(prev_year_sessions['duration'].sum()),
+            "partners_total": len(prev_year_sessions['partner_id'].unique()),
+            "partners_repeat": calc_repeat_partners(prev_year_sessions),
             "subheading": format_date_label(prev_year_start, date_format),
             "sessions_total": len(prev_year_sessions),
         },
