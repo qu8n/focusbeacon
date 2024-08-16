@@ -8,9 +8,7 @@ from pydantic import BaseModel
 from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, get_daily_record, prep_cumulative_sessions_chart, prep_duration_pie_data, \
-    prep_punctuality_pie_data, prep_chart_data_by_past_range, \
-    prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, \
-    prep_chart_data_by_range
+    prep_punctuality_pie_data, prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, prep_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
 from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m
 from api_utils.request import get_session_id
@@ -167,9 +165,9 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
         },
         "charts": {
             "curr_period": prep_chart_data_by_range(
-                curr_week_sessions, curr_week_start, curr_week_end, "week"),
-            "prev_period": prep_chart_data_by_past_range(
-                l4w_sessions, l4w_start, l4w_end, "week"),
+                curr_week_sessions, curr_week_start, curr_week_end, "D", "%a"),
+            "prev_period": prep_chart_data_by_range(
+                l4w_sessions, l4w_start, l4w_end, "W", "%b %d"),
             "punctuality": prep_punctuality_pie_data(l4w_sessions),
             "duration": prep_duration_pie_data(l4w_sessions),
             "hour": prep_chart_data_by_hour(l4w_sessions)
@@ -226,9 +224,9 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
         },
         "charts": {
             "curr_period": prep_chart_data_by_range(
-                curr_month_sessions, curr_month_start, curr_month_end, "month"),
-            "prev_period": prep_chart_data_by_past_range(
-                l6m_sessions, l6m_start, l6m_end, "month"),
+                curr_month_sessions, curr_month_start, curr_month_end, "D", "%-d"),
+            "prev_period": prep_chart_data_by_range(
+                l6m_sessions, l6m_start, l6m_end, "M", "%b %Y"),
             "punctuality": prep_punctuality_pie_data(l6m_sessions),
             "duration": prep_duration_pie_data(l6m_sessions),
             "hour": prep_chart_data_by_hour(l6m_sessions)
@@ -280,9 +278,9 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
         },
         "charts": {
             "curr_period": prep_chart_data_by_range(
-                curr_year_sessions, curr_year_start, curr_year_end, "year"),
-            "prev_period": prep_chart_data_by_past_range(
-                prev_year_sessions, prev_year_start, prev_year_end, "year"),
+                curr_year_sessions, curr_year_start, curr_year_end, "M", "%b"),
+            "prev_period": prep_chart_data_by_range(
+                prev_year_sessions, prev_year_start, prev_year_end, "M", "%b"), 
             "punctuality": prep_punctuality_pie_data(prev_year_sessions),
             "duration": prep_duration_pie_data(prev_year_sessions),
             "hour": prep_chart_data_by_hour(prev_year_sessions)

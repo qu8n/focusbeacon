@@ -190,83 +190,12 @@ def prep_heatmap_data(sessions: pd.DataFrame) -> dict:
     }
 
 
-def prep_chart_data_by_past_range(sessions: pd.DataFrame,
-                                  start_date: np.datetime64,
-                                  end_date: np.datetime64,
-                                  period: str) -> List[Dict[str, Any]]:
-    sessions = sessions.copy()
-
-    # Determine the period format and frequency
-    if period == "week":
-        period_format = 'W'
-        strftime_format = '%b %d'
-    if period == "month":
-        period_format = 'M'
-        strftime_format = '%b %Y'
-    if period == "year":
-        period_format = 'M'
-        strftime_format = '%b'
-
-    # Format the start_time to the specified period
-    sessions['start_period'] = sessions['start_time'].dt.to_period(
-        period_format)
-    sessions['start_period_str'] = sessions['start_period'].apply(
-        lambda r: r.start_time.strftime('%Y-%m-%d'))
-
-    pivot_df: pd.DataFrame = pd.pivot_table(sessions,
-                                            index='start_period_str',
-                                            columns='duration',
-                                            aggfunc='size',
-                                            fill_value=0)
-
-    pivot_df = pivot_df.reset_index()
-    pivot_df.columns.name = None
-
-    # Add columns for durations that had no sessions
-    for duration in [1500000, 3000000, 4500000]:
-        if duration not in pivot_df.columns:
-            pivot_df[duration] = 0
-    pivot_df.rename(columns={1500000: '25m',
-                             3000000: '50m',
-                             4500000: '75m'}, inplace=True)
-
-    # Add rows for periods that had no sessions
-    period_range = pd.period_range(
-        start=start_date, end=end_date, freq=period_format)
-    period_range_str = period_range.to_timestamp().strftime('%Y-%m-%d')
-    missing_periods = [
-        period for period in period_range_str if period not in pivot_df['start_period_str'].values]
-    missing_period_df = pd.DataFrame({'start_period_str': missing_periods})
-    pivot_df = pd.concat([pivot_df, missing_period_df],
-                         ignore_index=True).fillna(0)
-
-    pivot_df = pivot_df.sort_values('start_period_str')
-
-    # Format the period string for display
-    pivot_df['start_period_str'] = pd.to_datetime(
-        pivot_df['start_period_str']).dt.strftime(strftime_format)
-
-    return pivot_df.to_dict(orient='records')
-
-
 def prep_chart_data_by_range(sessions: pd.DataFrame,
                              start_date: np.datetime64,
                              end_date: np.datetime64,
-                             period: str) -> List[Dict[str, Any]]:
+                             period_format: str,
+                             strftime_format: str) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
-
-    if period == "week":
-        period_format = 'D'
-        strftime_format = '%a'
-    elif period == "month":
-        period_format = 'D'
-        strftime_format = '%-d'
-    elif period == "year":
-        period_format = 'M'
-        strftime_format = '%b'
-    else:
-        raise ValueError(
-            "Invalid period. Choose from 'week', 'month', or 'year'.")
 
     # Format the start_time to the specified period
     sessions['start_period_str'] = sessions['start_time'].dt.to_period(period_format).apply(
@@ -461,26 +390,6 @@ def format_seconds(seconds: float) -> str:
     seconds = round(seconds % 60)
     return f"{minutes}m {seconds}s {punctuality}"
 
-
-# def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
-#     sessions = sessions.copy()
-
-#     sessions['start_date'] = sessions['start_time'].dt.date
-#     sessions = sessions.groupby('start_date').size().reset_index(name='count')
-
-#     full_date_range = pd.date_range(start=sessions['start_date'].min(),
-#                                     end=sessions['start_date'].max())
-#     sessions = sessions.set_index('start_date').reindex(
-#         full_date_range, fill_value=0).reset_index()
-#     sessions.columns = ['start_date', 'count']
-
-#     sessions['start_date'] = pd.to_datetime(
-#         sessions['start_date']).dt.strftime('%b %-d, %Y')
-
-#     sessions['Cumulative sessions'] = sessions['count'].cumsum()
-#     sessions.drop(columns=['count'], inplace=True)
-
-#     return sessions.to_dict(orient='records')
 
 def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
