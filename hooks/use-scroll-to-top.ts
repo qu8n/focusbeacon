@@ -15,7 +15,7 @@ export function useScrollToTop() {
 }
 
 /**
- * For use inside MDX files 
+ * For use inside MDX files
  */
 export function ScrollToTop() {
   useScrollToTop()

@@ -84,7 +84,8 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False):
 
     daily_streak_increased = False
     if not demo:
-        daily_streak_increased = update_daily_streak(profile.get("userId"), daily_streak)
+        daily_streak_increased = update_daily_streak(
+            profile.get("userId"), daily_streak)
 
     return {
         "daily_streak": daily_streak,
@@ -286,7 +287,7 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
             "curr_period": prep_chart_data_by_range(
                 curr_year_sessions, curr_year_start, curr_year_end, "M", "%b"),
             "prev_period": prep_chart_data_by_range(
-                prev_year_sessions, prev_year_start, prev_year_end, "M", "%b"), 
+                prev_year_sessions, prev_year_start, prev_year_end, "M", "%b"),
             "punctuality": prep_punctuality_pie_data(prev_year_sessions),
             "duration": prep_duration_pie_data(prev_year_sessions),
             "hour": prep_chart_data_by_hour(prev_year_sessions)

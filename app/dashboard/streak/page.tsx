@@ -24,7 +24,7 @@ import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { ThirdWidthCardSkeleton } from "@/components/common/dashboard-cards"
 import { useToast } from "@/hooks/use-toast"
-import SlotCounter from 'react-slot-counter';
+import SlotCounter from "react-slot-counter"
 
 export default function Streak() {
   const { toast } = useToast()
@@ -39,7 +39,7 @@ export default function Streak() {
       return data
     },
   })
-  
+
   if (data?.daily_streak_increased) {
     toast({
       description: "Amazing work! You increased your daily streak 🎉",
@@ -74,10 +74,17 @@ function DailyStreak({ data }: { data: any }) {
         <Stat>
           <div className="flex flex-row items-center gap-1">
             <div className="font-semibold text-3xl/8 sm:text-2xl/8">
-              {data.daily_streak_increased ? <SlotCounter
-                value={data.daily_streak}
-                animateOnVisible={{ triggerOnce: true, rootMargin: '0px 0px -100px 0px' }}
-              /> : <span>{data.daily_streak}</span>}
+              {data.daily_streak_increased ? (
+                <SlotCounter
+                  value={data.daily_streak}
+                  animateOnVisible={{
+                    triggerOnce: true,
+                    rootMargin: "0px 0px -100px 0px",
+                  }}
+                />
+              ) : (
+                <span>{data.daily_streak}</span>
+              )}
             </div>
             {data.daily_streak > 1 && <FireIcon />}
           </div>

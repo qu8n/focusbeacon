@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+
 import { LinkInternal } from "@/components/ui/link-internal"
 
 export function Logo() {

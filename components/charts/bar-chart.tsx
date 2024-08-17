@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 // Tremor Raw BarChart [v0.1.2]
 
 "use client"

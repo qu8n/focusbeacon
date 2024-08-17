@@ -38,7 +38,7 @@ export function Heatmap({
   return (
     // A parent container with height is required for a Nivo Responsive
     // component to know how much space it should occupy
-    <div className="overflow-x-scroll">
+    <div className="overflow-x-auto">
       <div className="h-[155px] w-[780px]">
         <ResponsiveTimeRange
           data={data.data}

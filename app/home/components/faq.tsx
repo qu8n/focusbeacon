@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/accordion"
 import { Subheading } from "@/components/ui/heading"
 import { LinkInternal } from "@/components/ui/link-internal"
-import { Strong } from "@/components/ui/text"
 import { ReactNode } from "react"
 
 const faq: { question: string; answer: string | ReactNode }[] = [
@@ -18,8 +17,8 @@ const faq: { question: string; answer: string | ReactNode }[] = [
       <section className="space-y-2">
         <p>Focusbeacon is an unofficial service for Focusmate users.</p>
         <p>
-          However, the Focusbeacon app and our sign-in flow were built in
-          close collaboration with a Focusmate software engineer (shoutout to David).
+          However, the Focusbeacon app and our sign-in flow were built in close
+          collaboration with a Focusmate software engineer (shoutout to David).
         </p>
         <p>
           We are also the first ever non-commercial service to be granted the{" "}

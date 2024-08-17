@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// This file houses reusable dashboard cards
 
 import { RiTimeLine, RiUser3Line, RiVideoOnLine } from "@remixicon/react"
 import { Card } from "@/components/ui/card"
@@ -8,7 +7,7 @@ import { BarChart, Legend } from "@/components/charts/bar-chart"
 import { DonutChart } from "@/components/charts/donut-chart"
 import { Text } from "@/components/ui/text"
 import { Skeleton } from "@/components/ui/skeleton"
-import { AvailableChartColors, AvailableChartColorsKeys } from "@/lib/chart-utils"
+import { AvailableChartColorsKeys } from "@/lib/chart-utils"
 import { ReactNode } from "react"
 
 export function ThirdWidthCardSkeleton() {
@@ -23,7 +22,13 @@ export function FullWidthCardSkeleton() {
   return <Skeleton className="h-[320px] w-full" />
 }
 
-export function TotalSessions({ data, prevPeriod = false }: { data: any; prevPeriod?: boolean }) {
+export function TotalSessions({
+  data,
+  prevPeriod = false,
+}: {
+  data: any
+  prevPeriod?: boolean
+}) {
   let period_type = "curr_period"
   if (prevPeriod) period_type = "prev_period"
   const hasDelta = data?.[period_type]?.sessions_delta
@@ -50,7 +55,13 @@ export function TotalSessions({ data, prevPeriod = false }: { data: any; prevPer
   )
 }
 
-export function TotalHours({ data, prevPeriod = false }: { data: any; prevPeriod?: boolean }) {
+export function TotalHours({
+  data,
+  prevPeriod = false,
+}: {
+  data: any
+  prevPeriod?: boolean
+}) {
   let period_type = "curr_period"
   if (prevPeriod) period_type = "prev_period"
   const hasDelta = data?.[period_type]?.hours_delta
@@ -77,7 +88,13 @@ export function TotalHours({ data, prevPeriod = false }: { data: any; prevPeriod
   )
 }
 
-export function TotalPartners({ data, prevPeriod = false }: { data: any; prevPeriod?: boolean }) {
+export function TotalPartners({
+  data,
+  prevPeriod = false,
+}: {
+  data: any
+  prevPeriod?: boolean
+}) {
   let period_type = "curr_period"
   if (prevPeriod) period_type = "prev_period"
   return (
@@ -143,28 +160,27 @@ export function SessionsByPunctuality({
       categories={["Early", "Late"]}
       colors={["custom-4", "custom-5"]}
       category="punctuality"
-      tableContent={punctuality && (
-        <>
-          <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-            <span>{chartData[0].punctuality}</span>
-            <span>
-              {chartData[0].amount.toLocaleString()} (
-              {Math.round(
-                (chartData[0].amount / totalSessions) *
-                  100
-              )}
-              %)
-            </span>
-          </Text>
-          <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-            <span>Average</span>
-            <span>{punctuality.avg}</span>
-          </Text>
-          <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
-            <span>Median</span>
-            <span>{punctuality.median}</span>
-          </Text>
-        </>)
+      tableContent={
+        punctuality && (
+          <>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>{chartData[0].punctuality}</span>
+              <span>
+                {chartData[0].amount.toLocaleString()} (
+                {Math.round((chartData[0].amount / totalSessions) * 100)}
+                %)
+              </span>
+            </Text>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>Average</span>
+              <span>{punctuality.avg}</span>
+            </Text>
+            <Text className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0">
+              <span>Median</span>
+              <span>{punctuality.median}</span>
+            </Text>
+          </>
+        )
       }
     />
   )
@@ -188,8 +204,8 @@ export function SessionsByDuration({
       category="duration"
       tableContent={
         <>
-          {chartData && chartData.map(
-            (item: { duration: string; amount: number }) => {
+          {chartData &&
+            chartData.map((item: { duration: string; amount: number }) => {
               return (
                 <Text
                   key={item.duration}
@@ -203,8 +219,7 @@ export function SessionsByDuration({
                   </span>
                 </Text>
               )
-            }
-          )}
+            })}
         </>
       }
     />
@@ -232,10 +247,7 @@ function PieChartCard({
     <Card title={title} className="sm:col-span-3">
       {chartData ? (
         <>
-          <Legend
-            categories={categories}
-            colors={colors}
-          />
+          <Legend categories={categories} colors={colors} />
 
           <div className="grid md:grid-cols-2 grid-cols-1 items-center mt-3">
             <DonutChart
@@ -250,9 +262,7 @@ function PieChartCard({
               className="mx-auto md:ml-3"
             />
 
-            <div className="flex flex-col">
-              {tableContent}
-            </div>
+            <div className="flex flex-col">{tableContent}</div>
           </div>
         </>
       ) : (
@@ -261,7 +271,6 @@ function PieChartCard({
     </Card>
   )
 }
-
 
 export function SessionsByHour({ data }: { data: any }) {
   return (

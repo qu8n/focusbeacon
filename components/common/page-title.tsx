@@ -14,7 +14,7 @@ export function PageTitle() {
       currPage = "Sign In"
       break
     case "oauth":
-      currPage = null
+      currPage = "Dashboard"
       break
     case "/_not-found":
       currPage = "Not Found"
