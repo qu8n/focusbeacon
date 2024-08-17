@@ -15,6 +15,7 @@ import { Providers } from "@/components/common/providers"
 import { Metadata } from "next"
 import { Footer } from "@/components/common/footer"
 import manifest from "@/app/manifest"
+import { Toaster } from "@/components/common/toaster"
 
 export const metadata: Metadata = {
   title:
@@ -52,6 +53,7 @@ export default function RootLayout({
           >
             <PageTitle />
             {children}
+            <Toaster />
           </StackedLayout>
         </Providers>
       </body>

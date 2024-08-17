@@ -82,11 +82,13 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False):
 
     daily_streak = calc_curr_streak(sessions, "D", local_timezone)
 
+    daily_streak_increased = False
     if not demo:
-        update_daily_streak(profile.get("userId"), daily_streak)
+        daily_streak_increased = update_daily_streak(profile.get("userId"), daily_streak)
 
     return {
         "daily_streak": daily_streak,
+        "daily_streak_increased": daily_streak_increased,
         "weekly_streak": calc_curr_streak(sessions, "W", local_timezone),
         "monthly_streak": calc_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calc_max_daily_streak(sessions),

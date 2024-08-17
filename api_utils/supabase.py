@@ -6,8 +6,13 @@ supabase_client: Client = create_client(
 
 
 def update_daily_streak(user_id: str, daily_streak: int):
-    supabase_client.table("profile").update(
-        {"daily_streak": daily_streak}).eq("user_id", user_id).execute()
+    prev_daily_streak = supabase_client.table("profile").select(
+        "daily_streak").eq("user_id", user_id).execute().data[0]["daily_streak"]
+    if daily_streak > prev_daily_streak:
+        supabase_client.table("profile").update(
+            {"daily_streak": daily_streak}).eq("user_id", user_id).execute()
+        return True
+    return False
 
 
 def get_weekly_goal(user_id: str):

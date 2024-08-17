@@ -10,7 +10,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Text } from "@/components/ui/text"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { HistoryTable, columns } from "@/components/charts/history-table"
@@ -33,6 +33,7 @@ export default function HistoryPage() {
 
   return (
     <>
+      <br />
       {demoMode && <DemoCallout />}
       <br />
       <History demoMode={demoMode} />
