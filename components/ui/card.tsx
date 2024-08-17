@@ -3,7 +3,7 @@
 import { forwardRef, ReactNode } from "react"
 import { Slot } from "@radix-ui/react-slot"
 
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 import { Text, Strong } from "@/components/ui/text"
 interface CardProps extends React.ComponentPropsWithoutRef<"div"> {
   asChild?: boolean

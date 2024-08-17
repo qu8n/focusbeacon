@@ -1,4 +1,4 @@
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 import "./globals.css"
 import { GeistSans } from "geist/font/sans"
 import { StackedLayout } from "@/components/common/stacked-layout"

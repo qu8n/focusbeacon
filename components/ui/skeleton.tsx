@@ -1,4 +1,4 @@
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 
 export function Skeleton({
   className,

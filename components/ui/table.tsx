@@ -2,7 +2,7 @@
 
 import React from "react"
 
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 
 const TableRoot = React.forwardRef<
   HTMLDivElement,

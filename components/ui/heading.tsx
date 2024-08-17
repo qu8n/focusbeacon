@@ -1,5 +1,5 @@
 import { Fraunces } from "next/font/google"
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 
 const fraunces = Fraunces({
   subsets: ["latin"],

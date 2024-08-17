@@ -1,5 +1,5 @@
 import { Footnote } from "@/components/ui/text"
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 import { Marquee } from "@/components/ui/marquee"
 import { Subheading } from "@/components/ui/heading"
 import { reviews } from "@/app/home/components/config"

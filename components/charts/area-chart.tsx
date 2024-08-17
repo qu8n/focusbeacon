@@ -29,7 +29,7 @@ import {
   hasOnlyOneValueForKey,
 } from "@/lib/chart-utils"
 import { useOnWindowResize } from "@/hooks/use-on-window-resize"
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 
 //#region Legend
 

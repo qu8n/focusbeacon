@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 
 interface MarqueeProps {
   className?: string

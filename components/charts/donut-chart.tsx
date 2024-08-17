@@ -18,7 +18,7 @@ import {
   constructCategoryColors,
   getColorClassName,
 } from "@/lib/chart-utils"
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 
 const sumNumericArray = (arr: number[]): number =>
   arr.reduce((sum, num) => sum + num, 0)

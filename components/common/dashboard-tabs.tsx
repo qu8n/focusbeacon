@@ -1,6 +1,6 @@
 "use client"
 
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 import { motion } from "framer-motion"
 import { useSelectedLayoutSegment } from "next/navigation"
 import { useContext, useState } from "react"

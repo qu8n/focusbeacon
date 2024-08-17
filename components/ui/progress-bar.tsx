@@ -2,7 +2,7 @@
 
 import React from "react"
 import { tv, type VariantProps } from "tailwind-variants"
-import { cx } from "@/lib/utils"
+import { cx } from "@/lib/tw-class-merge"
 import { Text } from "@/components/ui/text"
 
 const progressBarVariants = tv({
