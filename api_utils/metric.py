@@ -136,7 +136,7 @@ def calc_max_daily_streak(sessions: pd.DataFrame,
     }
 
 
-def prep_heatmap_data(sessions: pd.DataFrame) -> dict:
+def calc_heatmap_data(sessions: pd.DataFrame) -> dict:
     '''
     Prepare data for the Nivo TimeRange calendar component
 
@@ -190,7 +190,7 @@ def prep_heatmap_data(sessions: pd.DataFrame) -> dict:
     }
 
 
-def prep_chart_data_by_range(sessions: pd.DataFrame,
+def calc_chart_data_by_range(sessions: pd.DataFrame,
                              start_date: np.datetime64,
                              end_date: np.datetime64,
                              period_format: str,
@@ -236,7 +236,7 @@ def prep_chart_data_by_range(sessions: pd.DataFrame,
     return pivot_df.to_dict(orient='records')
 
 
-def prep_chart_data_by_hour(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
+def calc_chart_data_by_hour(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
 
     # Format start_time to hourly intervals
@@ -279,7 +279,7 @@ def prep_chart_data_by_hour(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     return pivot_df.to_dict(orient='records')
 
 
-def prep_history_data(sessions: pd.DataFrame, head: int = None):
+def calc_history_data(sessions: pd.DataFrame, head: int = None):
     '''Converts the sessions DataFrame into a list of dictionaries containing
     the data for the history table.
 
@@ -335,7 +335,7 @@ def prep_history_data(sessions: pd.DataFrame, head: int = None):
     return sessions.to_dict(orient='records')
 
 
-def prep_duration_pie_data(sessions: pd.DataFrame):
+def calc_duration_pie_data(sessions: pd.DataFrame):
     return [
         {
             "duration": "25m",
@@ -352,7 +352,7 @@ def prep_duration_pie_data(sessions: pd.DataFrame):
     ]
 
 
-def prep_punctuality_pie_data(sessions: pd.DataFrame):
+def calc_punctuality_pie_data(sessions: pd.DataFrame):
     sessions = sessions.copy()
 
     sessions.loc[:, 'join_start_diff'] = (
@@ -391,7 +391,7 @@ def format_seconds(seconds: float) -> str:
     return f"{minutes}m {seconds}s {punctuality}"
 
 
-def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
+def calc_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     sessions = sessions.copy()
 
     # Extract the date part from start_time
@@ -431,7 +431,7 @@ def prep_cumulative_sessions_chart(sessions: pd.DataFrame) -> List[Dict[str, Any
     return pivot_df.to_dict(orient='records')
 
 
-def get_daily_record(sessions: pd.DataFrame) -> Dict[str, Any]:
+def calc_daily_record(sessions: pd.DataFrame) -> Dict[str, Any]:
     sessions = sessions.copy()
     sessions['start_date'] = sessions['start_time'].dt.date
     daily_duration = sessions.groupby('start_date')['duration'].sum()

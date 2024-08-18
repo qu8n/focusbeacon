@@ -7,10 +7,12 @@ import pandas as pd
 from pydantic import BaseModel
 from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
-    calc_curr_streak, calc_repeat_partners, get_daily_record, prep_cumulative_sessions_chart, prep_duration_pie_data, \
-    prep_punctuality_pie_data, prep_chart_data_by_hour, prep_heatmap_data, prep_history_data, prep_chart_data_by_range
-from api_utils.supabase import get_weekly_goal, update_daily_streak, update_weekly_goal
-from api_utils.time import format_date_label, get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m
+    calc_curr_streak, calc_repeat_partners, calc_daily_record, calc_cumulative_sessions_chart, calc_duration_pie_data, \
+    calc_punctuality_pie_data, calc_chart_data_by_hour, calc_heatmap_data, calc_history_data, calc_chart_data_by_range
+from api_utils.supabase import get_weekly_goal, update_daily_streak, \
+    update_weekly_goal
+from api_utils.time import format_date_label, get_curr_month_start, \
+    get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
@@ -27,7 +29,9 @@ SessionIdDep = Annotated[str, Depends(get_session_id)]
 
 async def auto_refresh_demo_data_cache():
     """Refresh the demo data cache automatically instead of waiting for a
-    request after ttl expires to trigger the refresh."""
+    request after ttl expires to trigger the refresh. This saves some compute
+    but isn't very useful because this FastAPI app runs as a serverless
+    function by Vercel and the cache will be cleared on every cold start."""
     while True:
         get_fake_data(demo_data_cache)
         await asyncio.sleep(86400)
@@ -93,8 +97,8 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False):
         "weekly_streak": calc_curr_streak(sessions, "W", local_timezone),
         "monthly_streak": calc_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calc_max_daily_streak(sessions),
-        "heatmap_data": prep_heatmap_data(sessions),
-        "history_data": prep_history_data(all_sessions, head=3)
+        "heatmap_data": calc_heatmap_data(sessions),
+        "history_data": calc_history_data(all_sessions, head=3)
     }
 
 
@@ -167,13 +171,13 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
             "sessions_total": len(l4w_sessions),
         },
         "charts": {
-            "curr_period": prep_chart_data_by_range(
+            "curr_period": calc_chart_data_by_range(
                 curr_week_sessions, curr_week_start, curr_week_end, "D", "%a"),
-            "prev_period": prep_chart_data_by_range(
+            "prev_period": calc_chart_data_by_range(
                 l4w_sessions, l4w_start, l4w_end, "W", "%b %d"),
-            "punctuality": prep_punctuality_pie_data(l4w_sessions),
-            "duration": prep_duration_pie_data(l4w_sessions),
-            "hour": prep_chart_data_by_hour(l4w_sessions)
+            "punctuality": calc_punctuality_pie_data(l4w_sessions),
+            "duration": calc_duration_pie_data(l4w_sessions),
+            "hour": calc_chart_data_by_hour(l4w_sessions)
         }
     }
 
@@ -226,13 +230,13 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
             "sessions_total": len(l6m_sessions),
         },
         "charts": {
-            "curr_period": prep_chart_data_by_range(
+            "curr_period": calc_chart_data_by_range(
                 curr_month_sessions, curr_month_start, curr_month_end, "D", "%-d"),
-            "prev_period": prep_chart_data_by_range(
+            "prev_period": calc_chart_data_by_range(
                 l6m_sessions, l6m_start, l6m_end, "M", "%b %Y"),
-            "punctuality": prep_punctuality_pie_data(l6m_sessions),
-            "duration": prep_duration_pie_data(l6m_sessions),
-            "hour": prep_chart_data_by_hour(l6m_sessions)
+            "punctuality": calc_punctuality_pie_data(l6m_sessions),
+            "duration": calc_duration_pie_data(l6m_sessions),
+            "hour": calc_chart_data_by_hour(l6m_sessions)
         }
     }
 
@@ -284,13 +288,13 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
             "sessions_total": len(prev_year_sessions),
         },
         "charts": {
-            "curr_period": prep_chart_data_by_range(
+            "curr_period": calc_chart_data_by_range(
                 curr_year_sessions, curr_year_start, curr_year_end, "M", "%b"),
-            "prev_period": prep_chart_data_by_range(
+            "prev_period": calc_chart_data_by_range(
                 prev_year_sessions, prev_year_start, prev_year_end, "M", "%b"),
-            "punctuality": prep_punctuality_pie_data(prev_year_sessions),
-            "duration": prep_duration_pie_data(prev_year_sessions),
-            "hour": prep_chart_data_by_hour(prev_year_sessions)
+            "punctuality": calc_punctuality_pie_data(prev_year_sessions),
+            "duration": calc_duration_pie_data(prev_year_sessions),
+            "hour": calc_chart_data_by_hour(prev_year_sessions)
         }
     }
 
@@ -316,13 +320,13 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
             "first_session_date": format_date_label(
                 sessions['start_time'].min(), "%B %-d, %Y"),
             "average_duration": ms_to_m(sessions['duration'].mean()),
-            "daily_record": get_daily_record(sessions),
+            "daily_record": calc_daily_record(sessions),
         },
         "charts": {
-            "sessions_cumulative": prep_cumulative_sessions_chart(sessions),
-            "duration": prep_duration_pie_data(sessions),
-            "punctuality": prep_punctuality_pie_data(sessions),
-            "hour": prep_chart_data_by_hour(sessions)
+            "sessions_cumulative": calc_cumulative_sessions_chart(sessions),
+            "duration": calc_duration_pie_data(sessions),
+            "punctuality": calc_punctuality_pie_data(sessions),
+            "hour": calc_chart_data_by_hour(sessions)
         },
     }
 
@@ -343,7 +347,7 @@ async def get_history_paginated(session_id: SessionIdDep,
             "zero_sessions": True
         }
 
-    data = prep_history_data(sessions)
+    data = calc_history_data(sessions)
     return {
         "rows": data[pagination.page_index * pagination.page_size:
                      (pagination.page_index + 1) * pagination.page_size],
@@ -355,4 +359,4 @@ async def get_history_paginated(session_id: SessionIdDep,
 async def get_history_all(session_id: SessionIdDep):
     _, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache)
-    return prep_history_data(sessions)
+    return calc_history_data(sessions)
