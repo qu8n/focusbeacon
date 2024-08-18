@@ -13,11 +13,12 @@ import { AvatarButton } from "@/components/ui/avatar"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { DEFAULT_PHOTO_URL } from "@/lib/config"
 import { useRouter } from "next/navigation"
+import { FadeIn } from "@/components/common/fade-in"
 
 export function NavbarClient() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { isSignedIn } = useContext(SignInStatusContext)
+  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
 
   const { isLoading, data } = useQuery({
     queryKey: ["profilePhoto"],
@@ -53,24 +54,45 @@ export function NavbarClient() {
   })
 
   return (
-    <>
-      <SigninButton text="Dashboard" />
-
-      {isSignedIn && (
+    <div className="flex flex-row items-center gap-3">
+      {isSignedIn || !isCheckingSignInStatus ? (
         <>
-          <Dropdown>
-            <DropdownButton
-              className="size-8"
-              as={AvatarButton}
-              src={isLoading ? DEFAULT_PHOTO_URL : data.photo_url}
-              aria-label="Account options"
-            />
-            <DropdownMenu>
-              <DropdownItem onClick={() => mutate()}>Sign out</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <FadeIn
+            index={0}
+            initial={{ x: 25 }}
+            animationDefinition={{
+              opacity: 1,
+              x: 0,
+              transition: { duration: 0.5 },
+            }}
+          >
+            <SigninButton text="Dashboard" />
+          </FadeIn>
+
+          <FadeIn
+            index={1}
+            initial={{ opacity: 0 }}
+            animationDefinition={{
+              opacity: 1,
+              transition: { duration: 0.5, delay: 0.5 },
+            }}
+          >
+            <Dropdown>
+              <DropdownButton
+                className="size-8 pt-2"
+                as={AvatarButton}
+                src={isLoading ? DEFAULT_PHOTO_URL : data.photo_url}
+                aria-label="Account options"
+              />
+              <DropdownMenu>
+                <DropdownItem onClick={() => mutate()}>Sign out</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </FadeIn>
         </>
+      ) : (
+        <SigninButton text="Dashboard" />
       )}
-    </>
+    </div>
   )
 }
