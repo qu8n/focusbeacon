@@ -18,7 +18,7 @@ import { FadeIn } from "@/components/common/fade-in"
 export function NavbarClient() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { isCheckingSignInStatus, isSignedIn } = useContext(SignInStatusContext)
+  const { isSignedIn } = useContext(SignInStatusContext)
 
   const { isLoading, data } = useQuery({
     queryKey: ["profilePhoto"],
@@ -55,7 +55,7 @@ export function NavbarClient() {
 
   return (
     <div className="flex flex-row items-center gap-3">
-      {isSignedIn || !isCheckingSignInStatus ? (
+      {data ? (
         <>
           <FadeIn
             index={0}

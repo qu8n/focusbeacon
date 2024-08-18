@@ -1,11 +1,8 @@
-<a name="readme-top"></a>
-
-<br />
 <div align="center">
-  <p style="font-size:2em;">Focus<b>beacon</b></p>
+  <br />
+  <h2>Focus<b>beacon</b></h2>
+  <p>Session statistics & productivity dashboard for Focusmate users</p>
   <p>
-    Session statistics & productivity dashboard for Focusmate users
-    <br />
     <a href="https://www.focusbeacon.com/dashboard/streak?demo=true">View demo</a>
     ·
     <a href="https://github.com/qu8n/focusbeacon/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=">Bug report</a>
@@ -19,8 +16,7 @@
 
 </div>
 
-<br />
-<img src="public/images/focusbeacon-preview.jpg" alt="Focusbeacon preview">
+<img src="public/images/opengraph-image.jpg" alt="Focusbeacon social">
 
 ## Technologies
 
