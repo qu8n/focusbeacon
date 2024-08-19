@@ -6,9 +6,14 @@ supabase_client: Client = create_client(
 
 
 def update_daily_streak(user_id: str, daily_streak: int):
+    """Update the daily streak of a user in the database and return True if the
+    streak was updated, False otherwise.
+    TODO: This function does not currently handle when the user's daily streak
+    remains the same across different days. We should encode the date in the
+    daily streak to handle this case."""
     prev_daily_streak = supabase_client.table("profile").select(
         "daily_streak").eq("user_id", user_id).execute().data[0]["daily_streak"]
-    if daily_streak > prev_daily_streak:
+    if daily_streak != prev_daily_streak:
         supabase_client.table("profile").update(
             {"daily_streak": daily_streak}).eq("user_id", user_id).execute()
         return True
