@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
-import { DateSubheading } from "@/components/common/date-subheading"
+import { DashboardSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
@@ -66,7 +66,7 @@ export default function Week() {
   return (
     <>
       <div className="dashboard-layout" ref={refCurrentWeek}>
-        <DateSubheading
+        <DashboardSubheading
           title="Current week"
           dateRange={data?.curr_period?.subheading}
           takeScreenshot={() => takeScreenshot(refCurrentWeek)}
@@ -103,7 +103,7 @@ export default function Week() {
       <div />
 
       <div className="dashboard-layout" ref={refPreviousWeeks}>
-        <DateSubheading
+        <DashboardSubheading
           title="Previous weeks"
           dateRange={data?.prev_period?.subheading}
           takeScreenshot={() => takeScreenshot(refPreviousWeeks)}

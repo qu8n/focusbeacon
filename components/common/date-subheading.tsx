@@ -5,7 +5,7 @@ import { RiCameraLine } from "@remixicon/react"
 import { InfoPopover } from "./info-popover"
 import { useBreakpoint } from "@/hooks/use-breakpoint"
 
-export function DateSubheading({
+export function DashboardSubheading({
   title,
   dateRange,
   takeScreenshot,

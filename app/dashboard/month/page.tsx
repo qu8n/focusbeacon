@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useContext, useRef } from "react"
-import { DateSubheading } from "@/components/common/date-subheading"
+import { DashboardSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import {
@@ -37,7 +37,7 @@ export default function Month() {
   return (
     <>
       <div className="dashboard-layout" ref={refCurrentMonth}>
-        <DateSubheading
+        <DashboardSubheading
           title="Current month"
           dateRange={data?.curr_period?.subheading}
           takeScreenshot={() => takeScreenshot(refCurrentMonth)}
@@ -59,7 +59,7 @@ export default function Month() {
       <div />
 
       <div className="dashboard-layout" ref={refPreviousMonths}>
-        <DateSubheading
+        <DashboardSubheading
           title="Previous months"
           dateRange={data?.prev_period?.subheading}
           takeScreenshot={() => takeScreenshot(refPreviousMonths)}

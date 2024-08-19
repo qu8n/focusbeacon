@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useContext, useRef } from "react"
-import { DateSubheading } from "@/components/common/date-subheading"
+import { DashboardSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import {
@@ -37,7 +37,7 @@ export default function Year() {
   return (
     <>
       <div className="dashboard-layout" ref={refCurrentYear}>
-        <DateSubheading
+        <DashboardSubheading
           title="Current year"
           dateRange={data?.curr_period?.subheading}
           takeScreenshot={() => takeScreenshot(refCurrentYear)}
@@ -59,7 +59,7 @@ export default function Year() {
       <div />
 
       <div className="dashboard-layout" ref={refPreviousYear}>
-        <DateSubheading
+        <DashboardSubheading
           title="Previous year"
           dateRange={data?.prev_period?.subheading}
           takeScreenshot={() => takeScreenshot(refPreviousYear)}

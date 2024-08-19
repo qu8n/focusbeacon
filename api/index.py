@@ -310,15 +310,17 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
         }
 
     sessions = sessions[sessions['completed'] == True]
+    first_session_date = format_date_label(
+        sessions['start_time'].min(), "%B %-d, %Y")
 
     return {
         "curr_period": {
+            "subheading": f"{first_session_date} - Present",
             "sessions_total": profile.get("totalSessionCount"),
             "hours_total": ms_to_h(sessions['duration'].sum()),
             "partners_total": len(sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(sessions),
-            "first_session_date": format_date_label(
-                sessions['start_time'].min(), "%B %-d, %Y"),
+            "first_session_date": first_session_date,
             "average_duration": ms_to_m(sessions['duration'].mean()),
             "daily_record": calc_daily_record(sessions),
         },

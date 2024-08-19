@@ -24,9 +24,11 @@ import {
   DailyRecordHours,
   FirstSessionDate,
 } from "@/app/dashboard/lifetime/components/individual-stats"
+import { DashboardSubheading } from "@/components/common/date-subheading"
 
 export default function Lifetime() {
-  const ref = useRef<HTMLDivElement>(null)
+  const refTotalStats = useRef<HTMLDivElement>(null)
+  const refOtherStats = useRef<HTMLDivElement>(null)
   const { isAboveSm } = useBreakpoint("sm")
   const demoMode = useContext(DemoModeContext)
 
@@ -43,9 +45,18 @@ export default function Lifetime() {
     return <ZeroSessions />
   }
 
+  console.log(data?.curr_period?.subheading)
+
   return (
     <>
-      <div className="dashboard-layout" ref={ref}>
+      <div className="dashboard-layout" ref={refTotalStats}>
+        <DashboardSubheading
+          title="Total stats"
+          dateRange={data?.curr_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refTotalStats)}
+          popoverContent="Capture an image of your previous weeks' stats"
+        />
+
         <TotalSessions data={data} />
 
         <TotalHours data={data} />
@@ -53,6 +64,15 @@ export default function Lifetime() {
         <TotalPartners data={data} />
 
         <CumulativeSessions data={data} />
+      </div>
+
+      <div className="dashboard-layout" ref={refOtherStats}>
+        <DashboardSubheading
+          title="Additional stats"
+          dateRange={data?.curr_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refOtherStats)}
+          popoverContent="Capture an image of your previous weeks' stats"
+        />
 
         <FirstSessionDate data={data} />
 
@@ -72,16 +92,6 @@ export default function Lifetime() {
 
         <SessionsByHour data={data} />
       </div>
-
-      {isAboveSm && (
-        <div className="flex flex-row gap-1 items-center sm:col-span-6">
-          <Button outline onClick={() => takeScreenshot(ref)} disabled={!data}>
-            <RiCameraLine size={16} />
-          </Button>
-
-          <InfoPopover>Capture an image of your Lifetime stats</InfoPopover>
-        </div>
-      )}
     </>
   )
 }
