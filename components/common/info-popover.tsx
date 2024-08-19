@@ -1,3 +1,6 @@
+// We're using popover instead of tooltip because the tooltip
+// by design (of Radix UI) does not work on mobile devices
+
 import {
   Popover,
   PopoverContent,
@@ -7,7 +10,7 @@ import { Text } from "@/components/ui/text"
 import { RiInformation2Line } from "@remixicon/react"
 import { useEffect, useState } from "react"
 
-const popoverAutoCloseDelay = 2500
+const popoverAutoCloseDelay = 3500
 
 export function InfoPopover({ children }: { children: string }) {
   const [open, setOpen] = useState(false)

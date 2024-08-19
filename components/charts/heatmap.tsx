@@ -53,10 +53,12 @@ export function Heatmap({
           monthLegend={(_year: number, _month: number, date: Date) => {
             // Manually get the month and year because Nivo can't infer
             // these values automatically from our data
-            return date.toLocaleString("default", {
-              month: "short",
-              year: "2-digit",
-            })
+            return date
+              .toLocaleString("default", {
+                month: "short",
+                year: "2-digit",
+              })
+              .replace(" ", "-")
           }}
           monthLegendOffset={20}
           emptyColor="#EBEDF0"

@@ -157,7 +157,8 @@ export function SessionsByPunctuality({
       chartData={chartData}
       totalSessions={10}
       title="Sessions by punctuality"
-      categories={["Early", "Late"]}
+      popoverContent="'On time' are sessions where you joined within 2 minutes after the scheduled start time"
+      categories={["On time", "Late"]}
       colors={["custom-4", "custom-5"]}
       category="punctuality"
       tableContent={
@@ -230,6 +231,7 @@ function PieChartCard({
   chartData,
   totalSessions,
   title,
+  popoverContent,
   categories,
   colors,
   category,
@@ -238,13 +240,18 @@ function PieChartCard({
   chartData: any
   totalSessions: number
   title: string
+  popoverContent?: string
   categories: string[]
   colors: AvailableChartColorsKeys[]
   category: string
   tableContent?: ReactNode
 }) {
   return (
-    <Card title={title} className="sm:col-span-3">
+    <Card
+      title={title}
+      className="sm:col-span-3"
+      popoverContent={popoverContent}
+    >
       {chartData ? (
         <>
           <Legend categories={categories} colors={colors} />
@@ -274,7 +281,11 @@ function PieChartCard({
 
 export function SessionsByHour({ data }: { data: any }) {
   return (
-    <Card title="Sessions by hour of the day" className="sm:col-span-6">
+    <Card
+      title="Sessions by hour of the day"
+      className="sm:col-span-6"
+      popoverContent="Sessions are counted in the hour they start. For example, sessions start at 7:15am are counted in the 7am bar"
+    >
       {data ? (
         <BarChart
           index="start_time_hour"

@@ -6,7 +6,11 @@ import { Card } from "@/components/ui/card"
 
 export function CumulativeSessions({ data }: { data: any }) {
   return (
-    <Card title="Cumulative sessions over time" className="sm:col-span-6">
+    <Card
+      title="Cumulative sessions over time"
+      className="sm:col-span-6"
+      popoverContent="Note: your final total sessions may not match up due to issues in older data that Focusmate tracks"
+    >
       {data ? (
         <AreaChart
           data={data?.charts.sessions_cumulative}

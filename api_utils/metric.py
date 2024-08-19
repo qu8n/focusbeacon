@@ -366,7 +366,7 @@ def calc_punctuality_pie_data(sessions: pd.DataFrame):
     return {
         "data": [
             {
-                "punctuality": "Early",
+                "punctuality": "On time",
                 "amount": len(sessions[sessions['join_start_diff'] <= late_s])
             },
             {

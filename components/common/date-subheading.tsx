@@ -25,7 +25,7 @@ export function DateSubheading({
 
         {isAboveSm && (
           <div className="flex flex-row gap-1 items-center">
-            <Button outline onClick={takeScreenshot}>
+            <Button outline onClick={takeScreenshot} disabled={!dateRange}>
               <RiCameraLine size={16} />
             </Button>
 

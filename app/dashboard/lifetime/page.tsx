@@ -75,7 +75,7 @@ export default function Lifetime() {
 
       {isAboveSm && (
         <div className="flex flex-row gap-1 items-center sm:col-span-6">
-          <Button outline onClick={() => takeScreenshot(ref)}>
+          <Button outline onClick={() => takeScreenshot(ref)} disabled={!data}>
             <RiCameraLine size={16} />
           </Button>
 

@@ -12,11 +12,11 @@ export function Stat({
   changeText?: string
 }) {
   let changeStr
-  let changeBadgeColor: "stone" | "lime" | "pink" | undefined
+  let changeBadgeColor: "stone" | "lime" | "neutral" | undefined
   if (changeVal?.toString()) {
     changeStr = changeVal > 0 ? `+${changeVal}` : `${changeVal}`
     changeBadgeColor =
-      changeVal === 0 ? "stone" : changeVal > 0 ? "lime" : "pink"
+      changeVal === 0 ? "stone" : changeVal > 0 ? "lime" : "neutral"
   }
 
   return (

@@ -68,7 +68,7 @@ export default function Streak() {
 
       {isAboveSm && (
         <div className="flex flex-row gap-1 items-center">
-          <Button outline onClick={() => takeScreenshot(ref)}>
+          <Button outline onClick={() => takeScreenshot(ref)} disabled={!data}>
             <RiCameraLine size={16} />
           </Button>
 

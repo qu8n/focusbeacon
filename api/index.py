@@ -313,7 +313,7 @@ async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
 
     return {
         "curr_period": {
-            "sessions_total": len(sessions),
+            "sessions_total": profile.get("totalSessionCount"),
             "hours_total": ms_to_h(sessions['duration'].sum()),
             "partners_total": len(sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(sessions),

@@ -5,15 +5,20 @@ import { Slot } from "@radix-ui/react-slot"
 
 import { cx } from "@/lib/tw-class-merge"
 import { Text, Strong } from "@/components/ui/text"
+import { InfoPopover } from "../common/info-popover"
 interface CardProps extends React.ComponentPropsWithoutRef<"div"> {
   asChild?: boolean
   icon?: ReactNode
   title?: string
   subtitle?: string
+  popoverContent?: string
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className, asChild, icon, title, subtitle, ...props }, forwardedRef) => {
+  (
+    { className, asChild, icon, title, subtitle, popoverContent, ...props },
+    forwardedRef
+  ) => {
     const Component = asChild ? Slot : "div"
     return (
       <Component
@@ -29,8 +34,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         {title && (
           <div className="mb-1 flex flex-row gap-1 items-center">
             {icon}
-            <Text className="flex flex-col">
-              <Strong>{title}</Strong>
+            <Text className="flex flex-col w-full">
+              <div className="flex flex-row items-center justify-between">
+                <Strong>{title}</Strong>
+                {popoverContent ? (
+                  <InfoPopover>{popoverContent}</InfoPopover>
+                ) : null}
+              </div>
               <span>{subtitle}</span>
             </Text>
           </div>
