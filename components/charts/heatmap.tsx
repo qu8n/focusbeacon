@@ -2,6 +2,7 @@ import { CalendarData, ResponsiveTimeRange } from "@nivo/calendar"
 import { Strong, Text } from "@/components/ui/text"
 import { getFormattedDate } from "@/lib/date"
 import { Divider } from "@/components/ui/divider"
+import { useBreakpoint } from "@/hooks/use-breakpoint"
 
 const svgSizeReduction = 0.05
 
@@ -35,10 +36,11 @@ export function Heatmap({
     past_year_sessions: number
   }
 }) {
+  const { isBelowSm } = useBreakpoint("sm")
   return (
     // A parent container with height is required for a Nivo Responsive
     // component to know how much space it should occupy
-    <div className="overflow-x-auto">
+    <div className={isBelowSm ? "overflow-x-auto" : ""}>
       <div className="h-[155px] w-[780px]">
         <ResponsiveTimeRange
           data={data.data}
@@ -46,13 +48,15 @@ export function Heatmap({
           to={data.to}
           direction={"horizontal"}
           firstWeekday="monday"
-          weekdayTicks={[0, 2, 4]}
+          weekdayTicks={[0, 2, 4, 6]}
           weekdayLegendOffset={60}
           monthLegend={(_year: number, _month: number, date: Date) => {
             // Manually get the month and year because Nivo can't infer
             // these values automatically from our data
-            const month = date.toLocaleString("default", { month: "short" })
-            return month
+            return date.toLocaleString("default", {
+              month: "short",
+              year: "2-digit",
+            })
           }}
           monthLegendOffset={20}
           emptyColor="#EBEDF0"
@@ -68,7 +72,7 @@ export function Heatmap({
             const date = new Date(y, m - 1, d) // month is 0-indexed
 
             return (
-              <div className="py-2 bg-[#FDFDFA] border rounded-md shadow-sm">
+              <div className="py-2 bg-[#FDFDFA] border rounded-md shadow-sm z-50">
                 <Text className="px-4">
                   <Strong>{getFormattedDate(date)}</Strong>
                 </Text>
