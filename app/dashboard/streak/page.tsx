@@ -18,11 +18,13 @@ import { Button } from "@/components/ui/button"
 import { RiCameraLine } from "@remixicon/react"
 import { takeScreenshot } from "@/lib/screenshot"
 import { InfoPopover } from "@/components/common/info-popover"
+import { useBreakpoint } from "@/hooks/use-breakpoint"
 
 export default function Streak() {
   const ref = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const demoMode = useContext(DemoModeContext)
+  const { isAboveSm } = useBreakpoint("sm")
 
   const { data } = useQuery({
     queryKey: ["streak", demoMode],
@@ -64,16 +66,18 @@ export default function Streak() {
         <RecentSessions data={data} demoMode={demoMode} />
       </div>
 
-      <div className="flex flex-row gap-1 items-center">
-        <Button outline onClick={() => takeScreenshot(ref)}>
-          <RiCameraLine size={16} />
-        </Button>
+      {isAboveSm && (
+        <div className="flex flex-row gap-1 items-center">
+          <Button outline onClick={() => takeScreenshot(ref)}>
+            <RiCameraLine size={16} />
+          </Button>
 
-        <InfoPopover>
-          Capture an image of your Streak stats, excluding the &quot;Recent
-          sessions&quot; card
-        </InfoPopover>
-      </div>
+          <InfoPopover>
+            Capture an image of your Streak stats, excluding the &quot;Recent
+            sessions&quot; card
+          </InfoPopover>
+        </div>
+      )}
     </div>
   )
 }

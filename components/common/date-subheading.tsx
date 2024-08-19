@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "../ui/button"
 import { RiCameraLine } from "@remixicon/react"
 import { InfoPopover } from "./info-popover"
+import { useBreakpoint } from "@/hooks/use-breakpoint"
 
 export function DateSubheading({
   title,
@@ -15,18 +16,22 @@ export function DateSubheading({
   takeScreenshot: () => void
   popoverContent: string
 }) {
+  const { isAboveSm } = useBreakpoint("sm")
+
   return (
     <div className="sm:col-span-6">
       <div className="flex flex-row items-center justify-between">
         <Strong className="text-base">{title}</Strong>
 
-        <div className="flex flex-row gap-1 items-center">
-          <Button outline onClick={takeScreenshot}>
-            <RiCameraLine size={16} />
-          </Button>
+        {isAboveSm && (
+          <div className="flex flex-row gap-1 items-center">
+            <Button outline onClick={takeScreenshot}>
+              <RiCameraLine size={16} />
+            </Button>
 
-          <InfoPopover>{popoverContent}</InfoPopover>
-        </div>
+            <InfoPopover>{popoverContent}</InfoPopover>
+          </div>
+        )}
       </div>
 
       <div className="relative flex items-center gap-3">

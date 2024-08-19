@@ -27,9 +27,11 @@ import {
 import { takeScreenshot } from "@/lib/screenshot"
 import { Button } from "@/components/ui/button"
 import { InfoPopover } from "@/components/common/info-popover"
+import { useBreakpoint } from "@/hooks/use-breakpoint"
 
 export default function Lifetime() {
   const ref = useRef<HTMLDivElement>(null)
+  const { isAboveSm } = useBreakpoint("sm")
   const demoMode = useContext(DemoModeContext)
 
   const { data } = useQuery({
@@ -75,13 +77,15 @@ export default function Lifetime() {
         <SessionsByHour data={data} />
       </div>
 
-      <div className="flex flex-row gap-1 items-center sm:col-span-6">
-        <Button outline onClick={() => takeScreenshot(ref)}>
-          <RiCameraLine size={16} />
-        </Button>
+      {isAboveSm && (
+        <div className="flex flex-row gap-1 items-center sm:col-span-6">
+          <Button outline onClick={() => takeScreenshot(ref)}>
+            <RiCameraLine size={16} />
+          </Button>
 
-        <InfoPopover>Capture an image of your Lifetime stats</InfoPopover>
-      </div>
+          <InfoPopover>Capture an image of your Lifetime stats</InfoPopover>
+        </div>
+      )}
     </>
   )
 }
