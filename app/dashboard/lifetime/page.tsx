@@ -4,11 +4,16 @@
 import { useQuery } from "@tanstack/react-query"
 import { Stat } from "@/components/ui/stat"
 import { Card } from "@/components/ui/card"
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { AreaChart } from "@/components/charts/area-chart"
-import { RiFlag2Line, RiTimer2Line, RiTimerFlashLine } from "@remixicon/react"
+import {
+  RiCameraLine,
+  RiFlag2Line,
+  RiTimer2Line,
+  RiTimerFlashLine,
+} from "@remixicon/react"
 import {
   FullWidthCardSkeleton,
   SessionsByDuration,
@@ -19,8 +24,12 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { takeScreenshot } from "@/lib/screenshot"
+import { Button } from "@/components/ui/button"
+import { InfoPopover } from "@/components/common/info-popover"
 
 export default function Lifetime() {
+  const ref = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
 
   const { data } = useQuery({
@@ -38,31 +47,41 @@ export default function Lifetime() {
 
   return (
     <>
-      <TotalSessions data={data} />
+      <div className="dashboard-layout" ref={ref}>
+        <TotalSessions data={data} />
 
-      <TotalHours data={data} />
+        <TotalHours data={data} />
 
-      <TotalPartners data={data} />
+        <TotalPartners data={data} />
 
-      <CumulativeSessions data={data} />
+        <CumulativeSessions data={data} />
 
-      <FirstSessionDate data={data} />
+        <FirstSessionDate data={data} />
 
-      <AverageSessionMinutes data={data} />
+        <AverageSessionMinutes data={data} />
 
-      <DailyRecordHours data={data} />
+        <DailyRecordHours data={data} />
 
-      <SessionsByPunctuality
-        data={data}
-        totalSessions={data?.curr_period?.sessions_total}
-      />
+        <SessionsByPunctuality
+          data={data}
+          totalSessions={data?.curr_period?.sessions_total}
+        />
 
-      <SessionsByDuration
-        data={data}
-        totalSessions={data?.curr_period?.sessions_total}
-      />
+        <SessionsByDuration
+          data={data}
+          totalSessions={data?.curr_period?.sessions_total}
+        />
 
-      <SessionsByHour data={data} />
+        <SessionsByHour data={data} />
+      </div>
+
+      <div className="flex flex-row gap-1 items-center sm:col-span-6">
+        <Button outline onClick={() => takeScreenshot(ref)}>
+          <RiCameraLine size={16} />
+        </Button>
+
+        <InfoPopover>Capture an image of your Lifetime stats</InfoPopover>
+      </div>
     </>
   )
 }

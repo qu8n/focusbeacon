@@ -23,7 +23,7 @@ export function StackedLayout({
       </main>
 
       {/* Footer */}
-      <footer className="mx-6 flex flex-col mt-16">
+      <footer className="mx-6 flex flex-col mt-12">
         <Divider />
         <div className="py-8 text-right flex sm:mx-0 sm:flex-row justify-between">
           {footer}

@@ -1,18 +1,33 @@
 import { Strong, Text } from "@/components/ui/text"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "../ui/button"
+import { RiCameraLine } from "@remixicon/react"
+import { InfoPopover } from "./info-popover"
 
 export function DateSubheading({
   title,
   dateRange,
-  className,
+  takeScreenshot,
+  popoverContent,
 }: {
   title: string
   dateRange: string
-  className?: string
+  takeScreenshot: () => void
+  popoverContent: string
 }) {
   return (
-    <div className={className}>
-      <Strong className="text-base">{title}</Strong>
+    <div className="sm:col-span-6">
+      <div className="flex flex-row items-center justify-between">
+        <Strong className="text-base">{title}</Strong>
+
+        <div className="flex flex-row gap-1 items-center">
+          <Button outline onClick={takeScreenshot}>
+            <RiCameraLine size={16} />
+          </Button>
+
+          <InfoPopover>{popoverContent}</InfoPopover>
+        </div>
+      </div>
 
       <div className="relative flex items-center gap-3">
         {dateRange ? (
@@ -22,7 +37,7 @@ export function DateSubheading({
         )}
 
         {/* Horizontal line */}
-        <div className="flex-grow border-t border-stone-300 border-dashed" />
+        <div className="sm:block hidden flex-grow border-t border-stone-300 border-dashed" />
       </div>
     </div>
   )

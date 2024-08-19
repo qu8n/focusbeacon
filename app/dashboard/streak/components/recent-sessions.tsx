@@ -4,10 +4,10 @@ import { columns, HistoryTable } from "@/components/charts/history-table"
 import { Card } from "@/components/ui/card"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { Skeleton } from "@/components/ui/skeleton"
-import { RiArrowRightSLine } from "@remixicon/react"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { Text } from "@/components/ui/text"
 import { useMemo } from "react"
+import { RiArrowRightSLine } from "@remixicon/react"
 
 export function RecentSessions({
   demoMode,

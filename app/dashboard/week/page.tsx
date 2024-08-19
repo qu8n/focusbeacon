@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Text, Strong } from "@/components/ui/text"
 import { ProgressBar } from "@/components/ui/progress-bar"
 import { Button } from "@/components/ui/button"
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import {
   Dialog,
   DialogActions,
@@ -30,8 +30,11 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { takeScreenshot } from "@/lib/screenshot"
 
 export default function Week() {
+  const refCurrentWeek = useRef<HTMLDivElement>(null)
+  const refPreviousWeeks = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
   const [goal, setGoal] = useState(0)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
@@ -62,60 +65,68 @@ export default function Week() {
 
   return (
     <>
-      <DateSubheading
-        title="Current week"
-        dateRange={data?.curr_period?.subheading}
-        className="sm:col-span-6"
-      />
+      <div className="dashboard-layout" ref={refCurrentWeek}>
+        <DateSubheading
+          title="Current week"
+          dateRange={data?.curr_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refCurrentWeek)}
+          popoverContent="Capture an image of your current week's stats"
+        />
 
-      <WeeklyGoal
-        data={data}
-        currGoal={currGoal}
-        setDialogIsOpen={setDialogIsOpen}
-        demoMode={demoMode}
-      />
+        <WeeklyGoal
+          data={data}
+          currGoal={currGoal}
+          setDialogIsOpen={setDialogIsOpen}
+          demoMode={demoMode}
+        />
 
-      <GoalUpdateDialog
-        dialogIsOpen={dialogIsOpen}
-        setDialogIsOpen={setDialogIsOpen}
-        goal={goal}
-        setGoal={setGoal}
-        demoMode={demoMode}
-      />
+        <GoalUpdateDialog
+          dialogIsOpen={dialogIsOpen}
+          setDialogIsOpen={setDialogIsOpen}
+          goal={goal}
+          setGoal={setGoal}
+          demoMode={demoMode}
+        />
 
-      <TotalSessions data={data} />
+        <TotalSessions data={data} />
 
-      <TotalHours data={data} />
+        <TotalHours data={data} />
 
-      <TotalPartners data={data} />
+        <TotalPartners data={data} />
 
-      <SessionsByPeriod
-        periodType="day of the week"
-        chartData={data?.charts?.curr_period}
-      />
+        <SessionsByPeriod
+          periodType="day of the week"
+          chartData={data?.charts?.curr_period}
+        />
+      </div>
 
-      <DateSubheading
-        title="Previous weeks"
-        dateRange={data?.prev_period?.subheading}
-        className="sm:col-span-6 mt-4"
-      />
+      <div />
 
-      <SessionsByPeriod
-        periodType="week"
-        chartData={data?.charts?.prev_period}
-      />
+      <div className="dashboard-layout" ref={refPreviousWeeks}>
+        <DateSubheading
+          title="Previous weeks"
+          dateRange={data?.prev_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refPreviousWeeks)}
+          popoverContent="Capture an image of your previous weeks' stats"
+        />
 
-      <SessionsByPunctuality
-        data={data}
-        totalSessions={data?.prev_period?.sessions_total}
-      />
+        <SessionsByPeriod
+          periodType="week"
+          chartData={data?.charts?.prev_period}
+        />
 
-      <SessionsByDuration
-        data={data}
-        totalSessions={data?.prev_period?.sessions_total}
-      />
+        <SessionsByPunctuality
+          data={data}
+          totalSessions={data?.prev_period?.sessions_total}
+        />
 
-      <SessionsByHour data={data} />
+        <SessionsByDuration
+          data={data}
+          totalSessions={data?.prev_period?.sessions_total}
+        />
+
+        <SessionsByHour data={data} />
+      </div>
     </>
   )
 }

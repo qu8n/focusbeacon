@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
@@ -14,8 +14,11 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { takeScreenshot } from "@/lib/screenshot"
 
 export default function Month() {
+  const refCurrentMonth = useRef<HTMLDivElement>(null)
+  const refPreviousMonths = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
 
   const { data } = useQuery({
@@ -33,45 +36,53 @@ export default function Month() {
 
   return (
     <>
-      <DateSubheading
-        title="Current month"
-        dateRange={data?.curr_period?.subheading}
-        className="sm:col-span-6"
-      />
+      <div className="dashboard-layout" ref={refCurrentMonth}>
+        <DateSubheading
+          title="Current month"
+          dateRange={data?.curr_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refCurrentMonth)}
+          popoverContent="Capture an image of your current month's stats"
+        />
 
-      <TotalSessions data={data} />
+        <TotalSessions data={data} />
 
-      <TotalHours data={data} />
+        <TotalHours data={data} />
 
-      <TotalPartners data={data} />
+        <TotalPartners data={data} />
 
-      <SessionsByPeriod
-        periodType="day of the month"
-        chartData={data?.charts?.curr_period}
-      />
+        <SessionsByPeriod
+          periodType="day of the month"
+          chartData={data?.charts?.curr_period}
+        />
+      </div>
 
-      <DateSubheading
-        title="Previous months"
-        dateRange={data?.prev_period?.subheading}
-        className="sm:col-span-6 mt-4"
-      />
+      <div />
 
-      <SessionsByPeriod
-        periodType="month"
-        chartData={data?.charts?.prev_period}
-      />
+      <div className="dashboard-layout" ref={refPreviousMonths}>
+        <DateSubheading
+          title="Previous months"
+          dateRange={data?.prev_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refPreviousMonths)}
+          popoverContent="Capture an image of your previous months' stats"
+        />
 
-      <SessionsByPunctuality
-        data={data}
-        totalSessions={data?.prev_period?.sessions_total}
-      />
+        <SessionsByPeriod
+          periodType="month"
+          chartData={data?.charts?.prev_period}
+        />
 
-      <SessionsByDuration
-        data={data}
-        totalSessions={data?.prev_period?.sessions_total}
-      />
+        <SessionsByPunctuality
+          data={data}
+          totalSessions={data?.prev_period?.sessions_total}
+        />
 
-      <SessionsByHour data={data} />
+        <SessionsByDuration
+          data={data}
+          totalSessions={data?.prev_period?.sessions_total}
+        />
+
+        <SessionsByHour data={data} />
+      </div>
     </>
   )
 }

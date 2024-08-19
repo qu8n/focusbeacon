@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .dashboard-layout {
+    @apply grid grid-cols-1 gap-6 sm:grid-cols-6;
+  }
+}

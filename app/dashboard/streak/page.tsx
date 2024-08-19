@@ -2,7 +2,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { useToast } from "@/hooks/use-toast"
@@ -14,8 +14,13 @@ import {
 } from "@/app/dashboard/streak/components/w-m-streak"
 import { SessionsHeatmap } from "@/app/dashboard/streak/components/sessions-heatmap"
 import { RecentSessions } from "@/app/dashboard/streak/components/recent-sessions"
+import { Button } from "@/components/ui/button"
+import { RiCameraLine } from "@remixicon/react"
+import { takeScreenshot } from "@/lib/screenshot"
+import { InfoPopover } from "@/components/common/info-popover"
 
 export default function Streak() {
+  const ref = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const demoMode = useContext(DemoModeContext)
 
@@ -46,13 +51,29 @@ export default function Streak() {
   }
 
   return (
-    <>
-      <DailyStreak data={data} />
-      <RecordDailyStreak data={data} />
-      <WeeklyStreak data={data} />
-      <MonthlyStreak data={data} />
-      <SessionsHeatmap data={data} />
-      <RecentSessions data={data} demoMode={demoMode} />
-    </>
+    <div className="flex flex-col gap-6">
+      <div className="dashboard-layout" ref={ref}>
+        <DailyStreak data={data} />
+        <RecordDailyStreak data={data} />
+        <WeeklyStreak data={data} />
+        <MonthlyStreak data={data} />
+        <SessionsHeatmap data={data} />
+      </div>
+
+      <div className="dashboard-layout">
+        <RecentSessions data={data} demoMode={demoMode} />
+      </div>
+
+      <div className="flex flex-row gap-1 items-center">
+        <Button outline onClick={() => takeScreenshot(ref)}>
+          <RiCameraLine size={16} />
+        </Button>
+
+        <InfoPopover>
+          Capture an image of your Streak stats, excluding the &quot;Recent
+          sessions&quot; card
+        </InfoPopover>
+      </div>
+    </div>
   )
 }

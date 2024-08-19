@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 import { DateSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
@@ -14,8 +14,11 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { takeScreenshot } from "@/lib/screenshot"
 
 export default function Year() {
+  const refCurrentYear = useRef<HTMLDivElement>(null)
+  const refPreviousYear = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
 
   const { data } = useQuery({
@@ -33,51 +36,59 @@ export default function Year() {
 
   return (
     <>
-      <DateSubheading
-        title="Current year"
-        dateRange={data?.curr_period?.subheading}
-        className="sm:col-span-6"
-      />
+      <div className="dashboard-layout" ref={refCurrentYear}>
+        <DateSubheading
+          title="Current year"
+          dateRange={data?.curr_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refCurrentYear)}
+          popoverContent="Capture an image of your current year's stats"
+        />
 
-      <TotalSessions data={data} />
+        <TotalSessions data={data} />
 
-      <TotalHours data={data} />
+        <TotalHours data={data} />
 
-      <TotalPartners data={data} />
+        <TotalPartners data={data} />
 
-      <SessionsByPeriod
-        periodType="month"
-        chartData={data?.charts?.curr_period}
-      />
+        <SessionsByPeriod
+          periodType="month"
+          chartData={data?.charts?.curr_period}
+        />
+      </div>
 
-      <DateSubheading
-        title="Previous year"
-        dateRange={data?.prev_period?.subheading}
-        className="sm:col-span-6 mt-4"
-      />
+      <div />
 
-      <TotalSessions data={data} prevPeriod />
+      <div className="dashboard-layout" ref={refPreviousYear}>
+        <DateSubheading
+          title="Previous year"
+          dateRange={data?.prev_period?.subheading}
+          takeScreenshot={() => takeScreenshot(refPreviousYear)}
+          popoverContent="Capture an image of your previous year's stats"
+        />
 
-      <TotalHours data={data} prevPeriod />
+        <TotalSessions data={data} prevPeriod />
 
-      <TotalPartners data={data} prevPeriod />
+        <TotalHours data={data} prevPeriod />
 
-      <SessionsByPeriod
-        periodType="month"
-        chartData={data?.charts?.prev_period}
-      />
+        <TotalPartners data={data} prevPeriod />
 
-      <SessionsByPunctuality
-        data={data}
-        totalSessions={data?.prev_period?.sessions_total}
-      />
+        <SessionsByPeriod
+          periodType="month"
+          chartData={data?.charts?.prev_period}
+        />
 
-      <SessionsByDuration
-        data={data}
-        totalSessions={data?.prev_period?.sessions_total}
-      />
+        <SessionsByPunctuality
+          data={data}
+          totalSessions={data?.prev_period?.sessions_total}
+        />
 
-      <SessionsByHour data={data} />
+        <SessionsByDuration
+          data={data}
+          totalSessions={data?.prev_period?.sessions_total}
+        />
+
+        <SessionsByHour data={data} />
+      </div>
     </>
   )
 }

@@ -21,13 +21,11 @@ export function PageTitle() {
       break
   }
 
-  return (
-    <>
-      {currPage && (
-        <div className="flex flex-col mt-4">
-          <Heading>{currPage}</Heading>
-        </div>
-      )}
-    </>
-  )
+  if (currPage) {
+    return (
+      <div className="flex flex-col mt-4">
+        <Heading>{currPage}</Heading>
+      </div>
+    )
+  }
 }

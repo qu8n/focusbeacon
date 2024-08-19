@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <section className="flex flex-col gap-6">
       <DashboardTabs />
       {demoMode && <DemoCallout />}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">{children}</div>
+      {children}
     </section>
   )
 }
