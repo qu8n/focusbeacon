@@ -7,21 +7,27 @@ import { LinkExternal } from "@/components/ui/link-external"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { TextLink, Text } from "@/components/ui/text"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export default function Callback() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const hasCalled = useRef(false)
 
   const authorizationCode = searchParams.get("code")
 
   useEffect(() => {
-    if (!authorizationCode) {
+    // Prevents handlePostCallbackFlow being called multiple times
+    if (hasCalled.current) {
+      return
+    } else if (!authorizationCode) {
       console.error("Authorization code not found")
       return
     }
 
     async function handlePostCallbackFlow(authorizationCode: string) {
+      hasCalled.current = true
+
       const response = await fetch("/api/callback", {
         method: "POST",
         headers: {
