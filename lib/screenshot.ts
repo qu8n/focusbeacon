@@ -1,6 +1,6 @@
 import { toPng } from "html-to-image"
 
-export function takeScreenshot(ref: React.RefObject<HTMLElement>) {
+export async function takeScreenshot(ref: React.RefObject<HTMLElement>) {
   if (ref.current === null) {
     return
   }
@@ -34,7 +34,33 @@ export function takeScreenshot(ref: React.RefObject<HTMLElement>) {
     .then((dataUrl) => {
       const newTab = window.open()
       if (newTab) {
-        newTab.document.body.innerHTML = `<img src="${dataUrl}" alt="Focusbeacon screenshot"/>`
+        newTab.document.body.innerHTML = `
+          <br/>
+          <button id="downloadBtn">Download image</button>
+          <br/>
+          <br/>
+          <img src="${dataUrl}" alt="Focusbeacon screenshot"/>
+        `
+        const downloadBtn = newTab.document.getElementById("downloadBtn")
+        if (downloadBtn) {
+          downloadBtn.style.backgroundColor = "#FFC38B"
+          downloadBtn.style.color = "black"
+          downloadBtn.style.borderRadius = "10px"
+          downloadBtn.style.padding = "8px 16px"
+          downloadBtn.style.border = "none"
+          downloadBtn.style.fontFamily = "Arial, sans-serif"
+          downloadBtn.style.fontSize = "14px"
+          downloadBtn.style.cursor = "pointer"
+
+          downloadBtn.addEventListener("click", () => {
+            const link = newTab.document.createElement("a")
+            link.href = dataUrl
+            link.download = "focusbeacon-stats.jpg"
+            newTab.document.body.appendChild(link)
+            link.click()
+            newTab.document.body.removeChild(link)
+          })
+        }
       }
       document.body.removeChild(wrapper)
     })

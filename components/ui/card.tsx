@@ -34,15 +34,19 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         {title && (
           <div className="mb-1 flex flex-row gap-1 items-center">
             {icon}
-            <Text className="flex flex-col w-full">
+            <div className="flex flex-col w-full">
               <div className="flex flex-row items-center justify-between">
-                <Strong>{title}</Strong>
+                <Text>
+                  <Strong>{title}</Strong>
+                </Text>
                 {popoverContent ? (
                   <InfoPopover>{popoverContent}</InfoPopover>
                 ) : null}
               </div>
-              <span>{subtitle}</span>
-            </Text>
+              <Text>
+                <span>{subtitle}</span>
+              </Text>
+            </div>
           </div>
         )}
         {props.children}
