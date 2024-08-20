@@ -1,7 +1,7 @@
 "use client"
 
 import { SigninButton } from "@/components/common/signin-button"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { SignInStatusContext } from "@/components/common/providers"
 import {
   Dropdown,
@@ -19,13 +19,16 @@ export function NavbarClient() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { isSignedIn } = useContext(SignInStatusContext)
+  const [profilePhoto, setProfilePhoto] = useState(null)
 
   const { isLoading, data } = useQuery({
     queryKey: ["profilePhoto"],
     queryFn: async () => {
       const response = await fetch(`/api/py/profile-photo`)
       if (!response.ok) throw new Error("Failed to fetch goal")
-      return await response.json()
+      const data = await response.json()
+      setProfilePhoto(data.photo_url)
+      return data
     },
     enabled: !!isSignedIn,
   })
@@ -35,8 +38,6 @@ export function NavbarClient() {
       const response = await fetch("/api/sign-out", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // Fix for Nextjs/Vercel's bug that prevents cookie from being deleted
-        // Source: https://stackoverflow.com/questions/66747845
         body: JSON.stringify({
           key: "static_key",
         }),
@@ -49,13 +50,20 @@ export function NavbarClient() {
         queryKey: ["profilePhoto"],
         refetchType: "none",
       })
+      setProfilePhoto(null)
       router.push("/home")
     },
   })
 
+  useEffect(() => {
+    if (data) {
+      setProfilePhoto(data.photo_url)
+    }
+  }, [data])
+
   return (
     <div className="flex flex-row items-center gap-3">
-      {data ? (
+      {isSignedIn ? (
         <>
           <FadeIn
             index={0}
@@ -81,7 +89,7 @@ export function NavbarClient() {
               <DropdownButton
                 className="size-8 pt-2"
                 as={AvatarButton}
-                src={isLoading ? DEFAULT_PHOTO_URL : data.photo_url}
+                src={isLoading ? DEFAULT_PHOTO_URL : profilePhoto}
                 aria-label="Account options"
               />
               <DropdownMenu>
