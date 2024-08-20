@@ -5,7 +5,7 @@ export const hero = {
     "Discover your most productive times",
     "Stay motivated with daily streak tracker",
   ],
-  buttonText: "View your dashboard",
+  buttonText: "View your stats for free",
 }
 
 export const reviews = {
