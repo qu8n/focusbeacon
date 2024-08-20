@@ -39,7 +39,7 @@ export function takeScreenshot(ref: React.RefObject<HTMLElement>) {
       document.body.removeChild(wrapper)
     })
     .catch((err) => {
-      console.log(err)
+      console.error(err)
       document.body.removeChild(wrapper)
     })
 }

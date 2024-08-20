@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useContext, useRef } from "react"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
-import { RiCameraLine } from "@remixicon/react"
 import {
   SessionsByDuration,
   SessionsByHour,
@@ -15,9 +14,6 @@ import {
   TotalSessions,
 } from "@/components/common/dashboard-cards"
 import { takeScreenshot } from "@/lib/screenshot"
-import { Button } from "@/components/ui/button"
-import { InfoPopover } from "@/components/common/info-popover"
-import { useBreakpoint } from "@/hooks/use-breakpoint"
 import { CumulativeSessions } from "@/app/dashboard/lifetime/components/cumulative-sessions"
 import {
   AverageSessionMinutes,
@@ -29,7 +25,6 @@ import { DashboardSubheading } from "@/components/common/date-subheading"
 export default function Lifetime() {
   const refTotalStats = useRef<HTMLDivElement>(null)
   const refOtherStats = useRef<HTMLDivElement>(null)
-  const { isAboveSm } = useBreakpoint("sm")
   const demoMode = useContext(DemoModeContext)
 
   const { data } = useQuery({
@@ -44,8 +39,6 @@ export default function Lifetime() {
   if (data?.zero_sessions) {
     return <ZeroSessions />
   }
-
-  console.log(data?.curr_period?.subheading)
 
   return (
     <>

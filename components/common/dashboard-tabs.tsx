@@ -8,7 +8,7 @@ import { LinkInternal } from "@/components/ui/link-internal"
 import { DemoModeContext } from "@/components/common/providers"
 import { useBreakpoint } from "@/hooks/use-breakpoint"
 
-const tabNames = ["streak", "week", "month", "year", "lifetime"]
+const TAB_NAMES = ["streak", "week", "month", "year", "lifetime"]
 
 export function DashboardTabs({ className }: { className?: string }) {
   const [currTab, setCurrTab] = useState(useSelectedLayoutSegment())
@@ -23,8 +23,8 @@ export function DashboardTabs({ className }: { className?: string }) {
         "shadow-inner mt-6 rounded-md p-2 bg-[#EAE7DC] border border-stone-200"
       )}
     >
-      <div className="flex space-x-2">
-        {tabNames.map((tabName) => (
+      <div className="flex">
+        {TAB_NAMES.map((tabName) => (
           <div
             key={tabName}
             className={cx(
