@@ -51,7 +51,7 @@ git clone https://github.com/qu8n/focusbeacon.git
 cd focusbeacon
 ```
 
-3. Ensure the following language versions are used:
+3. Ensure the following language versions are used in your local environment:
 
 - Node.js (v20.x)
 - Python (v3.12)
@@ -62,19 +62,31 @@ cd focusbeacon
 npm install
 ```
 
-5. Install Python dependencies
+5. Create a Python virtual environment
+
+```sh
+python3 -m venv venv
+```
+
+6. Install Python dependencies
 
 ```sh
 pip install -r requirements.txt
 ```
 
-6. Create an `.env` file in the root directory following the `.env.example` template
+7. Create an `.env` file in the root directory following the `.env.example` template and fill in the required values
 
 ```sh
 cp .env.example .env
 ```
 
-7. Run the app in development mode
+8. Activate the Python virtual environment
+
+```sh
+source venv/bin/activate
+```
+
+9. Run the app in development mode. This command will start the FastAPI server and the Next.js server concurrently
 
 ```sh
 npm run dev
