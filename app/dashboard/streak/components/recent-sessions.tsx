@@ -24,17 +24,17 @@ export function RecentSessions({
   })
 
   return (
-    <Card title="Recent sessions" className="sm:col-span-6">
+    <Card className="sm:col-span-6">
       {data ? (
         <>
+          <HistoryTable rows={table.getRowModel().rows} />
           <LinkInternal
             href={`/history${demoMode ? "?demo=true" : ""}`}
-            className="inline-flex items-center"
+            className="inline-flex items-center mt-4"
           >
             <Text>View all</Text>
             <RiArrowRightSLine className="opacity-40" size={15} />
           </LinkInternal>
-          <HistoryTable rows={table.getRowModel().rows} />
         </>
       ) : (
         <Skeleton className="mt-6 w-full h-[247px]" />
