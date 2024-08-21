@@ -2,10 +2,9 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useRef } from "react"
 import { DemoModeContext } from "@/components/common/providers"
 import { ZeroSessions } from "@/components/common/zero-sessions"
-import { useToast } from "@/hooks/use-toast"
 import { RecordDailyStreak } from "@/app/dashboard/streak/components/record-daily-streak"
 import { DailyStreak } from "@/app/dashboard/streak/components/daily-streak"
 import {
@@ -19,7 +18,6 @@ import { DashboardSubheading } from "@/components/common/date-subheading"
 
 export default function Streak() {
   const ref = useRef<HTMLDivElement>(null)
-  const { toast } = useToast()
   const demoMode = useContext(DemoModeContext)
 
   const { data } = useQuery({
@@ -31,18 +29,6 @@ export default function Streak() {
       return data
     },
   })
-
-  useEffect(() => {
-    // Wrap inside useEffect to avoid warning "Cannot update a component (Toaster)
-    // while rendering a different component (Streak)", which occurs when updating
-    // the state of a component during the rendering phase of another component
-    if (data?.daily_streak_increased) {
-      toast({
-        description: "Amazing! You increased your daily streak 🎉",
-        className: "bg-orange-50 border border-orange-600 text-orange-600",
-      })
-    }
-  }, [data, toast])
 
   if (data?.zero_sessions) {
     return <ZeroSessions />

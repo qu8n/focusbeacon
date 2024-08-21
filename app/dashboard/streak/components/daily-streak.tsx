@@ -3,10 +3,55 @@
 import { ThirdWidthCardSkeleton } from "@/components/common/dashboard-cards"
 import { Card } from "@/components/ui/card"
 import { Stat } from "@/components/ui/stat"
+import { useToast } from "@/hooks/use-toast"
 import { RiStackLine } from "@remixicon/react"
+import confetti from "canvas-confetti"
+import { useEffect } from "react"
 import SlotCounter from "react-slot-counter"
 
 export function DailyStreak({ data }: { data: any }) {
+  const { toast } = useToast()
+
+  useEffect(() => {
+    if (data?.daily_streak_increased) {
+      // Wrap inside useEffect to avoid warning "Cannot update a component (Toaster)
+      // while rendering a different component (Streak)", which occurs when updating
+      // the state of a component during the rendering phase of another component
+      setTimeout(() => {
+        toast({
+          description: "Amazing work! You increased your daily streak 🎉",
+          className: "bg-orange-50 border border-orange-400 text-orange-700",
+        })
+      }, 1000)
+
+      setTimeout(() => {
+        const end = Date.now() + 1000 // 1s
+        const colors = ["#E2B352"] // matches custom-1 in tailwind.config.ts
+        const frame = () => {
+          if (Date.now() > end) return
+          confetti({
+            particleCount: 1,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors,
+          })
+          confetti({
+            particleCount: 1,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors,
+          })
+          requestAnimationFrame(frame)
+        }
+        frame()
+      }, 2000)
+    }
+  }, [data, toast])
+
   return (
     <Card
       icon={<RiStackLine size={16} className="opacity-40" />}
