@@ -16,11 +16,13 @@ import { Metadata } from "next"
 import { Footer } from "@/components/common/footer"
 import manifest from "@/app/manifest"
 import { Toaster } from "@/components/common/toaster"
+import { FOCUSBEACON_SITE_URL } from "@/lib/config"
 
 export const metadata: Metadata = {
   title:
     "Focusbeacon — Focusmate statistics & productivity dashboard (unofficial)",
   description: manifest().description,
+  metadataBase: new URL(FOCUSBEACON_SITE_URL),
 }
 
 export default function RootLayout({
