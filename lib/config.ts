@@ -39,3 +39,7 @@ export const SUPABASE_SERVICE_ROLE_KEY = process.env
 
 export const DEFAULT_PHOTO_URL =
   "https://app.focusmate.com/assets/images/blank_profile.png"
+
+// PostHog configuration
+export const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY as string
+export const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST as string
