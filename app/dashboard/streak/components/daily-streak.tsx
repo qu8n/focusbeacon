@@ -5,11 +5,18 @@ import { Card } from "@/components/ui/card"
 import { Stat } from "@/components/ui/stat"
 import { useToast } from "@/hooks/use-toast"
 import { RiStackLine } from "@remixicon/react"
+import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
 import confetti from "canvas-confetti"
 import { useEffect } from "react"
 import SlotCounter from "react-slot-counter"
 
-export function DailyStreak({ data }: { data: any }) {
+export function DailyStreak({
+  data,
+  refetch,
+}: {
+  data: any
+  refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>
+}) {
   const { toast } = useToast()
 
   useEffect(() => {
@@ -22,6 +29,7 @@ export function DailyStreak({ data }: { data: any }) {
           description: "Amazing work! You increased your daily streak 🎉",
           className: "bg-orange-50 border border-orange-400 text-orange-700",
         })
+        refetch()
       }, 1000)
 
       setTimeout(() => {
@@ -50,7 +58,7 @@ export function DailyStreak({ data }: { data: any }) {
         frame()
       }, 2000)
     }
-  }, [data, toast])
+  }, [data, toast, refetch])
 
   return (
     <Card

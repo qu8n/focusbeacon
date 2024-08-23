@@ -20,7 +20,7 @@ export default function Streak() {
   const ref = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["streak", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/streak?demo=${demoMode}`)
@@ -43,7 +43,7 @@ export default function Streak() {
           takeScreenshot={() => takeScreenshot(ref)}
           popoverContent="Capture an image of your streak stats"
         />
-        <DailyStreak data={data} />
+        <DailyStreak data={data} refetch={refetch} />
         <RecordDailyStreak data={data} />
         <WeeklyStreak data={data} />
         <MonthlyStreak data={data} />
