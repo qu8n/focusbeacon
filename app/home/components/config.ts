@@ -1,9 +1,9 @@
 export const hero = {
   title: "Be more productive on Focusmate",
   features: [
-    "Unlock insights on your session history",
+    "100% free for Focusmate users",
+    "Set a weekly goal and track your progress",
     "Discover your most productive times",
-    "Stay motivated with daily streak tracker",
   ],
   buttonText: "View your stats for free",
 }

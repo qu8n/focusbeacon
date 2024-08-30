@@ -1,7 +1,7 @@
 import { Heading } from "@/components/ui/heading"
 import { hero } from "@/app/home/components/config"
 import { RiArrowRightSLine, RiCheckboxCircleLine } from "@remixicon/react"
-import { Strong, Text } from "@/components/ui/text"
+import { Footnote, Strong, Text } from "@/components/ui/text"
 import { SigninButton } from "@/components/common/signin-button"
 import { LinkInternal } from "@/components/ui/link-internal"
 
@@ -15,8 +15,8 @@ export function Hero() {
       <div className="flex flex-col items-center">
         {hero.features.map((feature) => {
           return (
-            <div key={feature} className="inline-flex items-center gap-2">
-              <RiCheckboxCircleLine className="text-stone-700" size={14} />
+            <div key={feature} className="inline-flex items-center gap-1">
+              <RiCheckboxCircleLine className="text-stone-600" size={12} />
               <Text>{feature}</Text>
             </div>
           )
@@ -24,12 +24,15 @@ export function Hero() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 items-center">
-        <SigninButton text={hero.buttonText} />
+        <div className="flex flex-col items-center">
+          <SigninButton text={hero.buttonText} />
+          <Footnote>No email nor credit card needed</Footnote>
+        </div>
 
         {/* <Button outline> */}
         <LinkInternal
           href="/dashboard/streak?demo=true"
-          className="inline-flex items-center hover:opacity-90"
+          className="inline-flex items-center sm:mb-6 mb-0 hover:opacity-90"
         >
           <Strong>
             <Text>View demo</Text>
