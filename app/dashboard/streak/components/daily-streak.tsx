@@ -65,6 +65,7 @@ export function DailyStreak({
       icon={<RiStackLine size={16} className="opacity-40" />}
       title="Daily streak"
       className="sm:col-span-3"
+      popoverContent="The number of consecutive days you've completed a session. Sessions on the weekend count, but skipping the weekend doesn't break your streak."
     >
       {data ? (
         <Stat>

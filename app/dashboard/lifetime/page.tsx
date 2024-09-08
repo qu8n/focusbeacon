@@ -47,7 +47,7 @@ export default function Lifetime() {
           title="Total stats"
           dateRange={data?.curr_period?.subheading}
           takeScreenshot={() => takeScreenshot(refTotalStats)}
-          popoverContent="Capture an image of your previous weeks' stats"
+          popoverContent="Capture an image of your total lifetime stats"
         />
 
         <TotalSessions data={data} />
@@ -64,7 +64,7 @@ export default function Lifetime() {
           title="Additional stats"
           dateRange={data?.curr_period?.subheading}
           takeScreenshot={() => takeScreenshot(refOtherStats)}
-          popoverContent="Capture an image of your previous weeks' stats"
+          popoverContent="Capture an image of your additional lifetime stats"
         />
 
         <FirstSessionDate data={data} />
