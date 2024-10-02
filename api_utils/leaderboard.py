@@ -13,7 +13,6 @@ def generate_rank(session_counts):
     list_of_streaks = df.to_dict(orient='records')  # convert data fram to list of dicts
     sorted_list_of_streaks = sorted(list_of_streaks, key=lambda x: x['daily_streak'], reverse=True) # sort by streak
 
-    # initialize ranking vars
     rank = 1
     skip_rank = 0   # counter for ties, used to determine following rank after a tie
 
@@ -27,7 +26,3 @@ def generate_rank(session_counts):
         sorted_list_of_streaks[i]['rank'] = rank
 
     return sorted_list_of_streaks
-
-# output = generate_rank('profile_rows.csv')
-#
-# print(output)
