@@ -157,7 +157,7 @@ export function SessionsByPunctuality({
       chartData={chartData}
       totalSessions={10}
       title="Sessions by punctuality"
-      popoverContent="'On time' are sessions where you joined within 2 minutes after the scheduled start time"
+      popoverContent="'On time' are sessions where you joined within 1 minute after the scheduled start time"
       categories={["On time", "Late"]}
       colors={["custom-4", "custom-5"]}
       category="punctuality"

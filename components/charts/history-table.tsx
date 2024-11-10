@@ -45,7 +45,7 @@ export const columns: ColumnDef<SessionDetails>[] = [
     },
     meta: {
       popoverContent:
-        "Sessions where you joined within 2 minutes after the scheduled start time",
+        "Sessions where you joined within 1 minute after the scheduled start time",
     },
   },
   {
