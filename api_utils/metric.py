@@ -380,6 +380,9 @@ def calc_punctuality_pie_data(sessions: pd.DataFrame):
 
 
 def format_seconds(seconds: float) -> str:
+    if pd.isna(seconds):
+        return "N/A"
+
     seconds = round(seconds)
     punctuality = "early" if seconds <= 0 else "late"
     seconds = abs(seconds)
