@@ -20,6 +20,7 @@ export function CumulativeSessions({ data }: { data: any }) {
           valueFormatter={(value) => value.toLocaleString()}
           startEndOnly
           type="stacked"
+          fill="solid"
         />
       ) : (
         <FullWidthCardSkeleton />
