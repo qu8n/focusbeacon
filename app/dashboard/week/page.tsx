@@ -50,7 +50,7 @@ export default function Week() {
     },
   })
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["weekly", demoMode],
     queryFn: async () => {
       const response = await fetch(`/api/py/week?demo=${demoMode}`)
@@ -77,7 +77,7 @@ export default function Week() {
           data={data}
           currGoal={currGoal}
           setDialogIsOpen={setDialogIsOpen}
-          demoMode={demoMode}
+          disabled={isLoading || demoMode}
         />
 
         <GoalUpdateDialog
@@ -135,12 +135,12 @@ function WeeklyGoal({
   data,
   currGoal,
   setDialogIsOpen,
-  demoMode,
+  disabled,
 }: {
   data: any
   currGoal: any
   setDialogIsOpen: (isOpen: boolean) => void
-  demoMode: boolean
+  disabled: boolean
 }) {
   const progressPercent =
     currGoal && (data?.curr_period?.sessions_total / currGoal) * 100
@@ -158,7 +158,7 @@ function WeeklyGoal({
           {...(currGoal && { outline: true })}
           {...(!currGoal && { color: "orange" })}
           onClick={() => setDialogIsOpen(true)}
-          disabled={!data || demoMode}
+          disabled={disabled}
         >
           {currGoal ? "Edit goal" : "Set goal"}
         </Button>

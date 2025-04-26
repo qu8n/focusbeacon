@@ -1,7 +1,7 @@
 <div align="center">
   <br />
   <h2>Focus<b>beacon</b></h2>
-  <p>Session statistics & productivity dashboard for Focusmate users</p>
+  <p>Focusmate session statistics & productivity dashboard</p>
   <p>
     <a href="https://www.focusbeacon.com/dashboard/streak?demo=true">View demo</a>
     ·
@@ -20,22 +20,25 @@
 
 ## Technologies
 
-Focusbeacon uses the [Backend for Frontend (BFF) pattern](https://stackoverflow.com/a/76849791) for user authentication using OAuth 2.0, with Focusmate as the identity provider (IDP), and for handling data processing.
-
 **Backend**
 
-- Python with Pandas (data processing)
-- FastAPI (API endpoints)
-- Supabase (Postgres database)
-- Vercel (hosting)
+- **Python** for data processing
+- **FastAPI** for the REST API
+- **Supabase** for the PostgreSQL database
+- **Vercel** for hosting
+- **PostHog** for logging
 
 **Frontend**
 
-- TypeScript (static typing)
-- React.js (UI library)
-- Next.js App Router (server-side rendering)
-- TailwindCSS (styling)
-- Tremor.so and shadcn/ui (pre-built UI components)
+- **TypeScript** for type safety
+- **React.js** for the UI
+- **Next.js App Router** for routing
+- **TailwindCSS** for styling
+
+For authentication, we use the
+[Backend for Frontend pattern](https://stackoverflow.com/a/76849791)
+with Focusmate as the identity provider via OAuth 2.0. Focusbeacon is the first
+and only non-commercial app to be approved by Focusmate for this purpose!
 
 ## Getting started locally
 
@@ -74,7 +77,8 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-7. Create an `.env` file in the root directory following the `.env.example` template and fill in the required values
+7. Create an `.env` file in the root directory following the `.env.example`
+template and fill in the required values
 
 ```sh
 cp .env.example .env
@@ -86,17 +90,12 @@ cp .env.example .env
 source venv/bin/activate
 ```
 
-9. Run the app in development mode. This command will start the FastAPI server and the Next.js server concurrently
+9. Run the app in development mode. This command will start the FastAPI server
+and the Next.js server concurrently
 
 ```sh
 npm run dev
 ```
-
-## Contributing
-
-By default, contributors will not have access to the Focusmate OAuth login nor production database. If your contributions require access to these, please reach out to me [here](https://docs.google.com/forms/d/e/1FAIpQLSe_RQHoYkOT_zlF423xyZdIO5dBehJp6i0uY-bjoSFfN62zNQ/viewform). Meanwhile, you can still use the demo view to test your changes.
-
-If you have a suggestion that would make this better, feel free to fork the repo and create a pull request. I'm also happy to chat over a Focusmate session to get you started with the codebase.
 
 ## Update Supabase types using the CLI
 
@@ -115,4 +114,16 @@ This will create a `supabase` directory in your project.
 npm run supabase-typegen
 ```
 
-Note that this script only works on Linux/MacOS because of the way it accesses `.env` file.
+Note that this script only works on Linux/MacOS because of the way it accesses`
+.env` file.
+
+## Contributing
+
+By default, contributors will not have access to the Focusmate OAuth login nor
+production database. If your contributions require access to these, please reach
+out to me [here](https://docs.google.com/forms/d/e/1FAIpQLSe_RQHoYkOT_zlF423xyZdIO5dBehJp6i0uY-bjoSFfN62zNQ/viewform).
+Meanwhile, you can still use the demo view to test your changes.
+
+If you have a suggestion that would make this better, feel free to fork the repo
+and create a pull request. I'm also happy to chat over a Focusmate session to get
+you started with the codebase.
