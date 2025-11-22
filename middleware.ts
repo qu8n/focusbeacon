@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server"
 import { supabaseClient } from "@/lib/supabase"
 import { SESSION_COOKIE_NAME } from "@/lib/config"
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/") {
     const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value
     if (!sessionId) {
