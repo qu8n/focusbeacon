@@ -6,7 +6,7 @@
     "fastapi-dev": "uv sync && uv run uvicorn api.index:app --reload",
     "next-dev": "next dev",
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "supabase-typegen": "source .env && npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > types/supabase.ts"
@@ -15,7 +15,7 @@
     "@headlessui/react": "^2.0.4",
     "@mdx-js/loader": "^3.0.1",
     "@mdx-js/react": "^3.0.1",
-    "@next/mdx": "^14.2.4",
+    "@next/mdx": "^16.0.3",
     "@nivo/calendar": "^0.87.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-popover": "^1.1.1",
