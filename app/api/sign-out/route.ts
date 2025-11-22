@@ -4,7 +4,7 @@ import { serialize } from "cookie"
 import { cookies } from "next/headers"
 
 export async function POST() {
-  const cookieStore = await cookies()
+  const cookieStore = cookies()
   const sessionId = cookieStore.get("sessionId")?.value
   const cookieOptions = {
     ...buildCookieOptions(),
