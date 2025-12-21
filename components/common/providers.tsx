@@ -7,6 +7,7 @@ import { useGetSigninStatus } from "@/hooks/use-get-signin-status"
 import posthog from "posthog-js"
 import { PostHogProvider } from "posthog-js/react"
 import { POSTHOG_HOST, POSTHOG_KEY } from "@/lib/config"
+import { WeekStartProvider } from "@/contexts/week-start-context"
 
 const queryClient = new QueryClient()
 
@@ -46,7 +47,9 @@ function CustomProviders({ children }: { children: React.ReactNode }) {
       value={{ isCheckingSignInStatus, isSignedIn }}
     >
       <DemoModeContext.Provider value={demoMode}>
-        {children}
+        <WeekStartProvider>
+          {children}
+        </WeekStartProvider>
       </DemoModeContext.Provider>
     </SignInStatusContext.Provider>
   )

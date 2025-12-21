@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta
+from typing import Literal
 from dateutil import tz, parser
 import pandas as pd
 
 fm_datetime_str_format = '%Y-%m-%dT%H:%M:%SZ'
+
+WeekStartDay = Literal["sunday", "monday"]
 
 
 def utc_dt_to_local_dt(utc_time: datetime, local_timezone: str):
@@ -39,10 +42,16 @@ def dt_to_fm_time_str(datetime_obj: datetime):
     return fm_time_str
 
 
-def get_curr_week_start(local_timezone: str):
+def get_curr_week_start(local_timezone: str,
+                        week_start: WeekStartDay = "monday"):
     today = get_naive_local_today(local_timezone)
-    monday = today - timedelta(days=today.weekday())
-    return monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    if week_start == "sunday":
+        # Sunday = 6 in weekday(), shift so Sunday = 0
+        days_since_week_start = (today.weekday() + 1) % 7
+    else:  # monday
+        days_since_week_start = today.weekday()
+    week_start_date = today - timedelta(days=days_since_week_start)
+    return week_start_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
 
 def get_curr_month_start(local_timezone: str):

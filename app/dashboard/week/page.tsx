@@ -19,6 +19,8 @@ import { Field } from "@/components/ui/fieldset"
 import { Input } from "@/components/ui/input"
 import { DashboardSubheading } from "@/components/common/date-subheading"
 import { DemoModeContext } from "@/components/common/providers"
+import { useWeekStart } from "@/contexts/week-start-context"
+import { WeekStartToggle } from "@/components/common/week-start-toggle"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { LoaderIcon } from "@/components/common/loader-icon"
 import {
@@ -36,6 +38,7 @@ export default function Week() {
   const refCurrentWeek = useRef<HTMLDivElement>(null)
   const refPreviousWeeks = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
+  const { weekStart } = useWeekStart()
   const [goal, setGoal] = useState(0)
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
@@ -51,9 +54,11 @@ export default function Week() {
   })
 
   const { data, isLoading } = useQuery({
-    queryKey: ["weekly", demoMode],
+    queryKey: ["weekly", demoMode, weekStart],
     queryFn: async () => {
-      const response = await fetch(`/api/py/week?demo=${demoMode}`)
+      const response = await fetch(
+        `/api/py/week?demo=${demoMode}&week_start=${weekStart}`
+      )
       if (!response.ok) throw new Error("Failed to fetch weekly data")
       return await response.json()
     },
@@ -71,6 +76,7 @@ export default function Week() {
           dateRange={data?.curr_period?.subheading}
           takeScreenshot={() => takeScreenshot(refCurrentWeek)}
           popoverContent="Capture an image of your current week's stats"
+          extraControls={<WeekStartToggle />}
         />
 
         <WeeklyGoal

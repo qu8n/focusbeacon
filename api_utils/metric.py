@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
-from api_utils.time import get_naive_local_today, m_to_ms, ms_to_h
+from api_utils.time import get_naive_local_today, m_to_ms, ms_to_h, WeekStartDay
 
 
 def calc_repeat_partners(sessions: pd.DataFrame) -> int:
@@ -12,7 +12,8 @@ def calc_repeat_partners(sessions: pd.DataFrame) -> int:
 def calc_curr_streak(sessions: pd.DataFrame,
                      period_type: Literal["D", "W", "M"],
                      local_timezone: str,
-                     weekend_breaks_daily_streak: bool = False) \
+                     weekend_breaks_daily_streak: bool = False,
+                     week_start: WeekStartDay = "monday") \
         -> int:
     '''
     Calculate either daily, weekly, or monthly session streak in recent
@@ -29,6 +30,8 @@ def calc_curr_streak(sessions: pd.DataFrame,
     period : Literal["D", "W", "M"]
         The period to calculate the streak for. D for daily, W for weekly, M
         for monthly.
+    week_start : WeekStartDay
+        Only used for weekly streaks. Either "sunday" or "monday".
 
     Returns
     -------
@@ -37,15 +40,24 @@ def calc_curr_streak(sessions: pd.DataFrame,
     '''
     sessions = sessions.copy()
 
-    sessions['period'] = sessions['start_time'].dt.to_period(
-        period_type)
+    # For weekly periods, use custom week anchor based on week_start preference
+    if period_type == "W":
+        # W-SUN = week ending Sunday (starts Monday)
+        # W-SAT = week ending Saturday (starts Sunday)
+        week_anchor = "SUN" if week_start == "monday" else "SAT"
+        period_freq = f"W-{week_anchor}"
+        sessions['period'] = sessions['start_time'].dt.to_period(period_freq)
+        curr_period = get_naive_local_today(local_timezone).to_period(period_freq)
+    else:
+        sessions['period'] = sessions['start_time'].dt.to_period(period_type)
+        curr_period = get_naive_local_today(local_timezone).to_period(period_type)
+        period_freq = period_type
 
-    curr_period = get_naive_local_today(local_timezone).to_period(period_type)
     recently_completed_period = (curr_period - 1)
 
     period_range_lifetime = pd.period_range(
         start=sessions['period'].min(), end=recently_completed_period,
-        freq=period_type)
+        freq=period_freq)
 
     periods_with_session = set(sessions['period'])
 
@@ -136,7 +148,8 @@ def calc_max_daily_streak(sessions: pd.DataFrame,
     }
 
 
-def calc_heatmap_data(sessions: pd.DataFrame) -> dict:
+def calc_heatmap_data(sessions: pd.DataFrame,
+                      week_start: WeekStartDay = "monday") -> dict:
     '''
     Prepare data for the Nivo TimeRange calendar component
 
@@ -144,6 +157,9 @@ def calc_heatmap_data(sessions: pd.DataFrame) -> dict:
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
+    week_start : WeekStartDay
+        Either "sunday" or "monday". Determines the first day of the week
+        for the heatmap display.
 
     Returns
     -------
@@ -158,17 +174,21 @@ def calc_heatmap_data(sessions: pd.DataFrame) -> dict:
     tomorrow = pd.Timestamp.today() + pd.DateOffset(days=1)
     tomorrow_str = tomorrow.strftime('%Y-%m-%d')
 
-    # Nivo TimeRange calendar component begins on Monday, so we need the Monday
-    # of the week one year ago as the 'from' date
+    # Calculate the start of the week one year ago based on week_start preference
     one_year_ago = tomorrow - pd.DateOffset(years=1)
-    one_year_ago_monday = one_year_ago - pd.DateOffset(
-        days=one_year_ago.weekday())
-    one_year_ago_monday_str = one_year_ago_monday.strftime('%Y-%m-%d')
+    if week_start == "sunday":
+        # Sunday = 6 in weekday(), shift so Sunday = 0
+        days_to_week_start = (one_year_ago.weekday() + 1) % 7
+    else:  # monday
+        days_to_week_start = one_year_ago.weekday()
+    one_year_ago_week_start = one_year_ago - pd.DateOffset(
+        days=days_to_week_start)
+    one_year_ago_week_start_str = one_year_ago_week_start.strftime('%Y-%m-%d')
 
     sessions = sessions.copy()
 
     sessions = sessions[
-        (sessions['start_time'] >= one_year_ago_monday) &
+        (sessions['start_time'] >= one_year_ago_week_start) &
         (sessions['start_time'] <= tomorrow)
     ]
 
@@ -183,7 +203,7 @@ def calc_heatmap_data(sessions: pd.DataFrame) -> dict:
     past_year_sessions = len(sessions)
 
     return {
-        "from": one_year_ago_monday_str,
+        "from": one_year_ago_week_start_str,
         "to": tomorrow_str,
         "data": heatmap_data,
         "past_year_sessions": past_year_sessions
@@ -194,19 +214,35 @@ def calc_chart_data_by_range(sessions: pd.DataFrame,
                              start_date: np.datetime64,
                              end_date: np.datetime64,
                              period_format: str,
-                             strftime_format: str) -> List[Dict[str, Any]]:
+                             strftime_format: str,
+                             week_start: WeekStartDay = "monday") -> List[Dict[str, Any]]:
     sessions = sessions.copy()
 
-    # Format the start_time to the specified period
-    sessions['start_period_str'] = sessions['start_time'].dt.to_period(period_format).apply(
-        lambda r: r.start_time.strftime('%Y-%m-%d'))
+    # For weekly periods, use custom week anchor based on week_start preference
+    # W-SUN = week ending Sunday (starts Monday)
+    # W-SAT = week ending Saturday (starts Sunday)
+    if period_format == "W":
+        week_anchor = "SUN" if week_start == "monday" else "SAT"
+        actual_period_format = f"W-{week_anchor}"
+    else:
+        actual_period_format = period_format
 
-    pivot_df: pd.DataFrame = pd.pivot_table(sessions,
-                                            index='start_period_str',
-                                            columns='duration',
-                                            aggfunc='size',
-                                            fill_value=0)
-    pivot_df = pivot_df.reset_index()
+    # Handle empty sessions case
+    if len(sessions) > 0:
+        # Format the start_time to the specified period
+        sessions['start_period_str'] = sessions['start_time'].dt.to_period(actual_period_format).apply(
+            lambda r: r.start_time.strftime('%Y-%m-%d'))
+
+        pivot_df: pd.DataFrame = pd.pivot_table(sessions,
+                                                index='start_period_str',
+                                                columns='duration',
+                                                aggfunc='size',
+                                                fill_value=0)
+        pivot_df = pivot_df.reset_index()
+    else:
+        # Create empty DataFrame with proper structure
+        pivot_df = pd.DataFrame(columns=['start_period_str'])
+
     pivot_df.columns.name = None
 
     # Add columns for durations that had no sessions
@@ -219,10 +255,16 @@ def calc_chart_data_by_range(sessions: pd.DataFrame,
 
     # Add rows for periods that had no sessions
     period_range = pd.period_range(
-        start=start_date, end=end_date, freq=period_format)
+        start=start_date, end=end_date, freq=actual_period_format)
     period_range_str = period_range.to_timestamp().strftime('%Y-%m-%d')
-    missing_periods = [
-        period for period in period_range_str if period not in pivot_df['start_period_str'].values]
+
+    # Safely check for missing periods
+    if 'start_period_str' in pivot_df.columns and len(pivot_df) > 0:
+        missing_periods = [
+            period for period in period_range_str if period not in pivot_df['start_period_str'].values]
+    else:
+        missing_periods = list(period_range_str)
+
     missing_period_df = pd.DataFrame({'start_period_str': missing_periods})
     pivot_df = pd.concat([pivot_df, missing_period_df],
                          ignore_index=True).fillna(0)
