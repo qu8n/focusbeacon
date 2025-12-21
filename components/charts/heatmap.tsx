@@ -3,6 +3,7 @@ import { Strong, Text } from "@/components/ui/text"
 import { getFormattedDate } from "@/lib/date"
 import { Divider } from "@/components/ui/divider"
 import { useBreakpoint } from "@/hooks/use-breakpoint"
+import { useWeekStart } from "@/contexts/week-start-context"
 
 const svgSizeReduction = 0.05
 
@@ -37,6 +38,7 @@ export function Heatmap({
   }
 }) {
   const { isBelowSm } = useBreakpoint("sm")
+  const { weekStart } = useWeekStart()
   return (
     // A parent container with height is required for a Nivo Responsive
     // component to know how much space it should occupy
@@ -47,7 +49,7 @@ export function Heatmap({
           from={data.from}
           to={data.to}
           direction={"horizontal"}
-          firstWeekday="monday"
+          firstWeekday={weekStart}
           weekdayTicks={[0, 2, 4, 6]}
           weekdayLegendOffset={60}
           monthLegend={(_year: number, _month: number, date: Date) => {

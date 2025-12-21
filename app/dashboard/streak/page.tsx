@@ -4,6 +4,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { useContext, useRef } from "react"
 import { DemoModeContext } from "@/components/common/providers"
+import { useWeekStart } from "@/contexts/week-start-context"
+import { WeekStartToggle } from "@/components/common/week-start-toggle"
 import { ZeroSessions } from "@/components/common/zero-sessions"
 import { RecordDailyStreak } from "@/app/dashboard/streak/components/record-daily-streak"
 import { DailyStreak } from "@/app/dashboard/streak/components/daily-streak"
@@ -19,11 +21,14 @@ import { DashboardSubheading } from "@/components/common/date-subheading"
 export default function Streak() {
   const ref = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
+  const { weekStart } = useWeekStart()
 
   const { data, refetch } = useQuery({
-    queryKey: ["streak", demoMode],
+    queryKey: ["streak", demoMode, weekStart],
     queryFn: async () => {
-      const response = await fetch(`/api/py/streak?demo=${demoMode}`)
+      const response = await fetch(
+        `/api/py/streak?demo=${demoMode}&week_start=${weekStart}`
+      )
       if (!response.ok) throw new Error("Failed to fetch streak data")
       const data = await response.json()
       return data
@@ -42,6 +47,7 @@ export default function Streak() {
           dateRange={null}
           takeScreenshot={() => takeScreenshot(ref)}
           popoverContent="Capture an image of your streak stats"
+          extraControls={<WeekStartToggle />}
         />
         <DailyStreak data={data} refetch={refetch} />
         <RecordDailyStreak data={data} />

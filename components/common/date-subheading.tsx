@@ -11,11 +11,13 @@ export function DashboardSubheading({
   dateRange,
   takeScreenshot,
   popoverContent,
+  extraControls,
 }: {
   title: string
   dateRange: string | undefined | null
   takeScreenshot?: () => void
   popoverContent?: string
+  extraControls?: React.ReactNode
 }) {
   const { isAboveSm } = useBreakpoint("sm")
 
@@ -24,19 +26,23 @@ export function DashboardSubheading({
       <div className="flex flex-row items-center justify-between">
         <Strong className="text-base">{title}</Strong>
 
-        {isAboveSm && takeScreenshot && popoverContent && (
-          <div className="flex flex-row gap-1 items-center">
-            <Button
-              outline
-              onClick={takeScreenshot}
-              disabled={dateRange === undefined}
-            >
-              <RiCameraLine size={16} />
-            </Button>
+        <div className="flex flex-row gap-1 items-center">
+          {extraControls}
 
-            <InfoPopover>{popoverContent}</InfoPopover>
-          </div>
-        )}
+          {isAboveSm && takeScreenshot && popoverContent && (
+            <>
+              <Button
+                outline
+                onClick={takeScreenshot}
+                disabled={dateRange === undefined}
+              >
+                <RiCameraLine size={16} />
+              </Button>
+
+              <InfoPopover>{popoverContent}</InfoPopover>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="relative flex items-center gap-3">

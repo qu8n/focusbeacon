@@ -11,7 +11,7 @@ from api_utils.metric import calc_max_daily_streak, \
 from api_utils.supabase import get_weekly_goal, update_daily_streak, \
     update_weekly_goal
 from api_utils.time import format_date_label, get_curr_month_start, \
-    get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m
+    get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m, WeekStartDay
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
@@ -70,7 +70,8 @@ async def get_profile_photo(session_id: SessionIdDep):
 
 
 @app.get("/api/py/streak")
-async def get_streak(session_id: SessionIdDep, demo: bool = False):
+async def get_streak(session_id: SessionIdDep, demo: bool = False,
+                     week_start: WeekStartDay = "monday"):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
@@ -93,10 +94,11 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False):
     return {
         "daily_streak": daily_streak,
         "daily_streak_increased": daily_streak_increased,
-        "weekly_streak": calc_curr_streak(sessions, "W", local_timezone),
+        "weekly_streak": calc_curr_streak(sessions, "W", local_timezone,
+                                          week_start=week_start),
         "monthly_streak": calc_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calc_max_daily_streak(sessions),
-        "heatmap_data": calc_heatmap_data(sessions),
+        "heatmap_data": calc_heatmap_data(sessions, week_start=week_start),
         "history_data": calc_history_data(all_sessions, head=3)
     }
 
@@ -122,7 +124,8 @@ async def set_goal(session_id: SessionIdDep, goal: Goal):
 
 
 @app.get("/api/py/week")
-async def get_week(session_id: SessionIdDep, demo: bool = False):
+async def get_week(session_id: SessionIdDep, demo: bool = False,
+                   week_start: WeekStartDay = "monday"):
     profile, sessions = await get_data(
         session_id, user_data_cache, demo_data_cache, demo)
 
@@ -134,7 +137,7 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
     sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
-    curr_week_start = get_curr_week_start(local_timezone)
+    curr_week_start = get_curr_week_start(local_timezone, week_start)
     curr_week_end = curr_week_start + \
         pd.DateOffset(days=6, hours=23, minutes=59, seconds=59)
     prev_week_start = curr_week_start - pd.DateOffset(weeks=1)
@@ -171,9 +174,10 @@ async def get_week(session_id: SessionIdDep, demo: bool = False):
         },
         "charts": {
             "curr_period": calc_chart_data_by_range(
-                curr_week_sessions, curr_week_start, curr_week_end, "D", "%a"),
+                curr_week_sessions, curr_week_start, curr_week_end, "D", "%a",
+                week_start),
             "prev_period": calc_chart_data_by_range(
-                l4w_sessions, l4w_start, l4w_end, "W", "%b %d"),
+                l4w_sessions, l4w_start, l4w_end, "W", "%b %d", week_start),
             "punctuality": calc_punctuality_pie_data(l4w_sessions),
             "duration": calc_duration_pie_data(l4w_sessions),
             "hour": calc_chart_data_by_hour(l4w_sessions)
