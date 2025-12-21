@@ -14,7 +14,7 @@ npm run dev
 
 # Run servers individually
 npm run next-dev       # Next.js only
-npm run fastapi-dev    # FastAPI only (auto-reloads, installs deps)
+npm run fastapi-dev    # FastAPI only (auto-reloads)
 
 # Build & lint
 npm run build
@@ -24,11 +24,9 @@ npm run lint
 npm run supabase-typegen
 ```
 
-**Python setup** (required before running dev):
+**Python setup** (optional - `npm run dev` handles this automatically via `uv`):
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+uv sync  # Install dependencies and create .venv
 ```
 
 ## Architecture
