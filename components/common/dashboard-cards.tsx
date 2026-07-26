@@ -155,7 +155,7 @@ export function SessionsByPunctuality({
   return (
     <PieChartCard
       chartData={chartData}
-      totalSessions={10}
+      totalSessions={totalSessions}
       title="Sessions by punctuality"
       popoverContent="'On time' are sessions where you joined within 1 minute after the scheduled start time"
       categories={["On time", "Late"]}
