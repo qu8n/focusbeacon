@@ -1,9 +1,9 @@
 import asyncio
 from contextlib import asynccontextmanager
-from typing import Annotated
+from typing import Annotated, Literal
 from fastapi.responses import JSONResponse
 import pandas as pd
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, calc_daily_record, calc_cumulative_sessions_chart, calc_duration_pie_data, \
@@ -131,24 +131,52 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False,
     }
 
 
-@app.get("/api/py/goal")
-async def get_goal(session_id: SessionIdDep, demo: bool = False):
-    if demo:
-        return 10
-    profile, _ = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
-    return get_weekly_goal(profile.get("userId"))
+# A week holds 336 half-hour slots and 10,080 minutes. Anything beyond either
+# is a typo rather than an ambitious week. Keyed by goal type as
+# (limit, unit name for the error message).
+GOAL_BOUNDS = {
+    "sessions": (336, "sessions"),
+    "hours": (10080, "minutes"),
+}
+# Sent with every goal response so the client enforces these same bounds
+# without keeping its own copy of the numbers
+GOAL_LIMITS = {
+    "max_sessions": GOAL_BOUNDS["sessions"][0],
+    "max_minutes": GOAL_BOUNDS["hours"][0],
+}
 
 
 class Goal(BaseModel):
-    goal: int
+    """`goal` counts sessions when `goal_type` is "sessions" and minutes when
+    it is "hours". 0 means no goal."""
+    goal: int = Field(ge=0)
+    goal_type: Literal["sessions", "hours"] = "sessions"
+
+    @model_validator(mode="after")
+    def check_goal_within_a_week(self):
+        max_goal, unit = GOAL_BOUNDS[self.goal_type]
+        if self.goal > max_goal:
+            raise ValueError(
+                f"A weekly goal cannot exceed {max_goal} {unit}")
+        return self
+
+
+@app.get("/api/py/goal")
+async def get_goal(session_id: SessionIdDep, demo: bool = False):
+    if demo:
+        return {"goal": 10, "goal_type": "sessions", **GOAL_LIMITS}
+    profile, _ = await get_data(
+        session_id, user_data_cache, demo_data_cache, demo)
+    return {**get_weekly_goal(profile.get("userId")), **GOAL_LIMITS}
 
 
 @app.post("/api/py/goal")
 async def set_goal(session_id: SessionIdDep, goal: Goal):
     profile, _ = await get_data(
         session_id, user_data_cache, demo_data_cache)
-    return update_weekly_goal(profile.get("userId"), goal.goal)
+    saved = update_weekly_goal(
+        profile.get("userId"), goal.goal, goal.goal_type)
+    return {**saved, **GOAL_LIMITS}
 
 
 @app.get("/api/py/week")
@@ -184,14 +212,20 @@ async def get_week(session_id: SessionIdDep, demo: bool = False,
 
     date_label_format = "%A, %b %d"
 
+    # Decimal hours here because an hours goal is measured against this number,
+    # and whole hours would round away up to half an hour of progress
+    curr_week_hours = ms_to_h_decimal(curr_week_sessions['duration'].sum())
+    prev_week_hours = ms_to_h_decimal(prev_week_sessions['duration'].sum())
+
     return {
         "curr_period": {
             "subheading": f"{format_date_label(curr_week_start, date_label_format)} - {format_date_label(curr_week_end, date_label_format)}",
             "sessions_total": len(curr_week_sessions),
             "sessions_delta": len(curr_week_sessions) - len(prev_week_sessions),
-            "hours_total": ms_to_h(curr_week_sessions['duration'].sum()),
-            "hours_delta": ms_to_h(curr_week_sessions['duration'].sum() -
-                                   prev_week_sessions['duration'].sum()),
+            "hours_total": curr_week_hours,
+            # Delta comes off the rounded hours so it reconciles with the two
+            # numbers a user can actually see
+            "hours_delta": round(curr_week_hours - prev_week_hours, 1),
             "partners_total": len(curr_week_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_week_sessions),
             "period_type": "week",

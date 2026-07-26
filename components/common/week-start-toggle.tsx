@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { cx } from "@/lib/tw-class-merge"
+import { SegmentedToggle } from "@/components/ui/segmented-toggle"
 
 export function WeekStartToggle() {
   const { weekStart, setWeekStart } = useWeekStart()
@@ -45,22 +45,11 @@ export function WeekStartToggle() {
           are calculated.
         </DialogDescription>
         <DialogBody>
-          <div className="flex gap-3">
-            {options.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setSelectedDay(option.value)}
-                className={cx(
-                  "flex-1 py-2 px-4 rounded-lg transition-colors text-base/6 sm:text-sm/6",
-                  selectedDay === option.value
-                    ? "bg-orange-300/80 text-orange-950 font-medium shadow-sm"
-                    : "border border-stone-950/10 bg-white text-stone-500 hover:bg-orange-50 hover:text-orange-900"
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+          <SegmentedToggle
+            options={options}
+            value={selectedDay}
+            onChange={setSelectedDay}
+          />
         </DialogBody>
         <DialogActions>
           <Button plain onClick={() => setDialogIsOpen(false)}>
