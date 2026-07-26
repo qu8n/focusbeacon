@@ -54,6 +54,11 @@ def get_curr_week_start(local_timezone: str,
     return week_start_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
 
+def get_curr_day_start(local_timezone: str):
+    today = get_naive_local_today(local_timezone)
+    return today.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
 def get_curr_month_start(local_timezone: str):
     today = get_naive_local_today(local_timezone)
     first_day_of_month = today.replace(day=1)
@@ -83,6 +88,12 @@ def ms_to_m(ms: int):
 
 def ms_to_h(ms: int):
     return int(round(ms / 3600000))
+
+
+def ms_to_h_decimal(ms: int, digits: int = 1):
+    """Hours kept to a decimal place, for periods short enough that rounding to
+    whole hours loses too much (e.g. three 25m sessions in a day)."""
+    return float(round(ms / 3600000, digits))
 
 
 def m_to_ms(minutes: int):

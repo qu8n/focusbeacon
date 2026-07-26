@@ -24,14 +24,14 @@ export function FullWidthCardSkeleton() {
 
 export function TotalSessions({
   data,
-  prevPeriod = false,
+  periodKey = "curr_period",
+  changeText,
 }: {
   data: any
-  prevPeriod?: boolean
+  periodKey?: string
+  changeText?: string
 }) {
-  let period_type = "curr_period"
-  if (prevPeriod) period_type = "prev_period"
-  const hasDelta = data?.[period_type]?.sessions_delta
+  const hasDelta = data?.[periodKey]?.sessions_delta
   return (
     <Card
       icon={<RiVideoOnLine size={16} className="opacity-40" />}
@@ -40,11 +40,11 @@ export function TotalSessions({
     >
       {data ? (
         <Stat
-          value={data[period_type].sessions_total}
+          value={data[periodKey].sessions_total}
           changeVal={hasDelta ? hasDelta : undefined}
           changeText={
             hasDelta
-              ? `vs. previous ${data[period_type].period_type}`
+              ? (changeText ?? `vs. previous ${data[periodKey].period_type}`)
               : undefined
           }
         />
@@ -57,14 +57,14 @@ export function TotalSessions({
 
 export function TotalHours({
   data,
-  prevPeriod = false,
+  periodKey = "curr_period",
+  changeText,
 }: {
   data: any
-  prevPeriod?: boolean
+  periodKey?: string
+  changeText?: string
 }) {
-  let period_type = "curr_period"
-  if (prevPeriod) period_type = "prev_period"
-  const hasDelta = data?.[period_type]?.hours_delta
+  const hasDelta = data?.[periodKey]?.hours_delta
   return (
     <Card
       icon={<RiTimeLine size={16} className="opacity-40" />}
@@ -73,11 +73,11 @@ export function TotalHours({
     >
       {data ? (
         <Stat
-          value={data[period_type].hours_total}
+          value={data[periodKey].hours_total}
           changeVal={hasDelta ? hasDelta : undefined}
           changeText={
             hasDelta
-              ? `vs. previous ${data[period_type].period_type}`
+              ? (changeText ?? `vs. previous ${data[periodKey].period_type}`)
               : undefined
           }
         />
@@ -90,13 +90,11 @@ export function TotalHours({
 
 export function TotalPartners({
   data,
-  prevPeriod = false,
+  periodKey = "curr_period",
 }: {
   data: any
-  prevPeriod?: boolean
+  periodKey?: string
 }) {
-  let period_type = "curr_period"
-  if (prevPeriod) period_type = "prev_period"
   return (
     <Card
       icon={<RiUser3Line size={16} className="opacity-40" />}
@@ -105,8 +103,8 @@ export function TotalPartners({
     >
       {data ? (
         <Stat
-          value={data[period_type].partners_total}
-          changeText={`${data[period_type].partners_repeat.toLocaleString()} repeat`}
+          value={data[periodKey].partners_total}
+          changeText={`${data[periodKey].partners_repeat.toLocaleString()} repeat`}
         />
       ) : (
         <ThirdWidthCardSkeleton />
@@ -279,19 +277,19 @@ function PieChartCard({
   )
 }
 
-export function SessionsByHour({ data }: { data: any }) {
+export function SessionsByHour({ chartData }: { chartData: any }) {
   return (
     <Card
       title="Sessions by hour of the day"
       className="sm:col-span-6"
       popoverContent="Sessions are counted in the hour they start. For example, sessions start at 7:15am are counted in the 7am bar"
     >
-      {data ? (
+      {chartData ? (
         <BarChart
           index="start_time_hour"
           categories={["25m", "50m", "75m"]}
           type="stacked"
-          data={data.charts.hour}
+          data={chartData}
           colors={["custom-1", "custom-2", "custom-3"]}
           allowDecimals={false}
           showYAxis={false}

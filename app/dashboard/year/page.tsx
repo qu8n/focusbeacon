@@ -66,11 +66,11 @@ export default function Year() {
           popoverContent="Capture an image of your previous year's stats"
         />
 
-        <TotalSessions data={data} prevPeriod />
+        <TotalSessions data={data} periodKey="prev_period" />
 
-        <TotalHours data={data} prevPeriod />
+        <TotalHours data={data} periodKey="prev_period" />
 
-        <TotalPartners data={data} prevPeriod />
+        <TotalPartners data={data} periodKey="prev_period" />
 
         <SessionsByPeriod
           periodType="month"
@@ -87,7 +87,7 @@ export default function Year() {
           totalSessions={data?.prev_period?.sessions_total}
         />
 
-        <SessionsByHour data={data} />
+        <SessionsByHour chartData={data?.charts?.hour} />
       </div>
     </>
   )

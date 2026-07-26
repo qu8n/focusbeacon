@@ -81,7 +81,7 @@ export default function Month() {
           totalSessions={data?.prev_period?.sessions_total}
         />
 
-        <SessionsByHour data={data} />
+        <SessionsByHour chartData={data?.charts?.hour} />
       </div>
     </>
   )

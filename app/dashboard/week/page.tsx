@@ -131,7 +131,7 @@ export default function Week() {
           totalSessions={data?.prev_period?.sessions_total}
         />
 
-        <SessionsByHour data={data} />
+        <SessionsByHour chartData={data?.charts?.hour} />
       </div>
     </>
   )

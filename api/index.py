@@ -10,8 +10,9 @@ from api_utils.metric import calc_max_daily_streak, \
     calc_punctuality_pie_data, calc_chart_data_by_hour, calc_heatmap_data, calc_history_data, calc_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, \
     update_weekly_goal
-from api_utils.time import format_date_label, get_curr_month_start, \
-    get_curr_week_start, get_curr_year_start, ms_to_h, ms_to_m, WeekStartDay
+from api_utils.time import format_date_label, get_curr_day_start, \
+    get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h, \
+    ms_to_h_decimal, ms_to_m, WeekStartDay
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
@@ -91,6 +92,18 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False,
         daily_streak_increased = update_daily_streak(
             profile.get("userId"), daily_streak)
 
+    curr_day_start = get_curr_day_start(local_timezone)
+    prev_day_start = curr_day_start - pd.DateOffset(days=1)
+
+    curr_day_sessions = sessions[sessions['start_time'] >= curr_day_start]
+    prev_day_sessions = sessions[
+        (sessions['start_time'] >= prev_day_start) &
+        (sessions['start_time'] < curr_day_start)
+    ]
+
+    curr_day_hours = ms_to_h_decimal(curr_day_sessions['duration'].sum())
+    prev_day_hours = ms_to_h_decimal(prev_day_sessions['duration'].sum())
+
     return {
         "daily_streak": daily_streak,
         "daily_streak_increased": daily_streak_increased,
@@ -99,7 +112,21 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False,
         "monthly_streak": calc_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calc_max_daily_streak(sessions),
         "heatmap_data": calc_heatmap_data(sessions, week_start=week_start),
-        "history_data": calc_history_data(all_sessions, head=3)
+        "history_data": calc_history_data(all_sessions, head=3),
+        "daily": {
+            "subheading": format_date_label(curr_day_start, "%A, %b %d"),
+            "sessions_total": len(curr_day_sessions),
+            "sessions_delta": len(curr_day_sessions) - len(prev_day_sessions),
+            "hours_total": curr_day_hours,
+            # Deltas come off the rounded hours so they always reconcile with
+            # the two numbers a user can actually see
+            "hours_delta": round(curr_day_hours - prev_day_hours, 1),
+            "partners_total": len(curr_day_sessions['partner_id'].unique()),
+            "partners_repeat": calc_repeat_partners(curr_day_sessions),
+        },
+        "charts": {
+            "hour": calc_chart_data_by_hour(curr_day_sessions)
+        }
     }
 
 
