@@ -143,19 +143,26 @@ export function SessionsByPeriod({
   )
 }
 
-export function SessionsByPunctuality({
-  data,
-  totalSessions,
-}: {
-  data: any
-  totalSessions: number
-}) {
+// A pie's percentages have to be relative to the pie itself. Taking the
+// denominator from anywhere else lets it drift from the slices: the lifetime
+// tab used to divide by the profile's total session count while the slices
+// counted only completed sessions, so its percentages summed to ~95%.
+function sumSliceAmounts(chartData: { amount: number }[] | undefined) {
+  return chartData?.reduce((total, slice) => total + slice.amount, 0) ?? 0
+}
+
+// An empty pie makes the denominator 0, which would render "0 (NaN%)".
+function toPercentage(amount: number, total: number) {
+  return total > 0 ? Math.round((amount / total) * 100) : 0
+}
+
+export function SessionsByPunctuality({ data }: { data: any }) {
   const punctuality = data?.charts?.punctuality
   const chartData = punctuality?.data
+  const totalSessions = sumSliceAmounts(chartData)
   return (
     <PieChartCard
       chartData={chartData}
-      totalSessions={totalSessions}
       title="Sessions by punctuality"
       popoverContent="'On time' are sessions where you joined within 1 minute after the scheduled start time"
       categories={["On time", "Late"]}
@@ -168,7 +175,7 @@ export function SessionsByPunctuality({
               <span>{chartData[0].punctuality}</span>
               <span>
                 {chartData[0].amount.toLocaleString()} (
-                {Math.round((chartData[0].amount / totalSessions) * 100)}
+                {toPercentage(chartData[0].amount, totalSessions)}
                 %)
               </span>
             </Text>
@@ -187,18 +194,12 @@ export function SessionsByPunctuality({
   )
 }
 
-export function SessionsByDuration({
-  data,
-  totalSessions,
-}: {
-  data: any
-  totalSessions: number
-}) {
+export function SessionsByDuration({ data }: { data: any }) {
   const chartData = data?.charts?.duration
+  const totalSessions = sumSliceAmounts(chartData)
   return (
     <PieChartCard
       chartData={chartData}
-      totalSessions={totalSessions}
       title="Sessions by duration"
       categories={["25m", "50m", "75m"]}
       colors={["custom-1", "custom-2", "custom-3"]}
@@ -215,7 +216,7 @@ export function SessionsByDuration({
                   <span>{item.duration}</span>
                   <span>
                     {item.amount.toLocaleString()} (
-                    {Math.round((item.amount / totalSessions) * 100)}
+                    {toPercentage(item.amount, totalSessions)}
                     %)
                   </span>
                 </Text>
@@ -229,7 +230,6 @@ export function SessionsByDuration({
 
 function PieChartCard({
   chartData,
-  totalSessions,
   title,
   popoverContent,
   categories,
@@ -238,7 +238,6 @@ function PieChartCard({
   tableContent,
 }: {
   chartData: any
-  totalSessions: number
   title: string
   popoverContent?: string
   categories: string[]
@@ -246,6 +245,7 @@ function PieChartCard({
   category: string
   tableContent?: ReactNode
 }) {
+  const totalSessions = sumSliceAmounts(chartData)
   return (
     <Card
       title={title}
@@ -264,7 +264,7 @@ function PieChartCard({
               value="amount"
               colors={colors}
               valueFormatter={(value) =>
-                `${value} (${Math.round((value / totalSessions) * 100)}%)`
+                `${value} (${toPercentage(value, totalSessions)}%)`
               }
               className="mx-auto md:ml-3"
             />

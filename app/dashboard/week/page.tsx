@@ -121,15 +121,9 @@ export default function Week() {
           chartData={data?.charts?.prev_period}
         />
 
-        <SessionsByPunctuality
-          data={data}
-          totalSessions={data?.prev_period?.sessions_total}
-        />
+        <SessionsByPunctuality data={data} />
 
-        <SessionsByDuration
-          data={data}
-          totalSessions={data?.prev_period?.sessions_total}
-        />
+        <SessionsByDuration data={data} />
 
         <SessionsByHour data={data} />
       </div>

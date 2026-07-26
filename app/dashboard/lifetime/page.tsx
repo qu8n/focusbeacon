@@ -73,15 +73,9 @@ export default function Lifetime() {
 
         <DailyRecordHours data={data} />
 
-        <SessionsByPunctuality
-          data={data}
-          totalSessions={data?.curr_period?.sessions_total}
-        />
+        <SessionsByPunctuality data={data} />
 
-        <SessionsByDuration
-          data={data}
-          totalSessions={data?.curr_period?.sessions_total}
-        />
+        <SessionsByDuration data={data} />
 
         <SessionsByHour data={data} />
       </div>
