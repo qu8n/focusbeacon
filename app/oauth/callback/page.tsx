@@ -1,6 +1,6 @@
 "use client"
 
-import { DashboardSkeleton } from "@/app/dashboard/layout"
+import { DashboardSkeleton } from "@/components/common/dashboard-skeleton"
 import { CONTACT_URL } from "@/components/common/footer"
 import { SigninButton } from "@/components/common/signin-button"
 import { LinkExternal } from "@/components/ui/link-external"
