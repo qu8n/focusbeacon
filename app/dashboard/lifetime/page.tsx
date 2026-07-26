@@ -77,7 +77,7 @@ export default function Lifetime() {
 
         <SessionsByDuration data={data} />
 
-        <SessionsByHour data={data} />
+        <SessionsByHour chartData={data?.charts?.hour} />
       </div>
     </>
   )

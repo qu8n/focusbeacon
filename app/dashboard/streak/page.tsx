@@ -17,9 +17,16 @@ import { SessionsHeatmap } from "@/app/dashboard/streak/components/sessions-heat
 import { RecentSessions } from "@/app/dashboard/streak/components/recent-sessions"
 import { takeScreenshot } from "@/lib/screenshot"
 import { DashboardSubheading } from "@/components/common/date-subheading"
+import {
+  SessionsByHour,
+  TotalHours,
+  TotalPartners,
+  TotalSessions,
+} from "@/components/common/dashboard-cards"
 
 export default function Streak() {
   const ref = useRef<HTMLDivElement>(null)
+  const refDaily = useRef<HTMLDivElement>(null)
   const demoMode = useContext(DemoModeContext)
   const { weekStart } = useWeekStart()
 
@@ -54,6 +61,21 @@ export default function Streak() {
         <WeeklyStreak data={data} />
         <MonthlyStreak data={data} />
         <SessionsHeatmap data={data} />
+      </div>
+
+      <div />
+
+      <div className="dashboard-layout" ref={refDaily}>
+        <DashboardSubheading
+          title="Daily stats"
+          dateRange={data?.daily?.subheading}
+          takeScreenshot={() => takeScreenshot(refDaily)}
+          popoverContent="Capture an image of your daily stats"
+        />
+        <TotalSessions data={data} periodKey="daily" />
+        <TotalHours data={data} periodKey="daily" />
+        <TotalPartners data={data} periodKey="daily" />
+        <SessionsByHour chartData={data?.charts?.hour} />
       </div>
 
       <div />
