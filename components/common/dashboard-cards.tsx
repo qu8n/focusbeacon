@@ -10,6 +10,16 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { AvailableChartColorsKeys } from "@/lib/chart-utils"
 import { ReactNode } from "react"
 
+type PeriodKey = "curr_period" | "prev_period" | "daily"
+
+// Most periods read naturally as "vs. previous <period>", but "vs. previous
+// day" does not, so days get their own phrasing.
+const DELTA_LABELS: Record<string, string> = { day: "vs. yesterday" }
+
+function deltaLabel(periodType: string) {
+  return DELTA_LABELS[periodType] ?? `vs. previous ${periodType}`
+}
+
 export function ThirdWidthCardSkeleton() {
   return <Skeleton className="h-[32px] w-full" />
 }
@@ -25,11 +35,9 @@ export function FullWidthCardSkeleton() {
 export function TotalSessions({
   data,
   periodKey = "curr_period",
-  changeText,
 }: {
   data: any
-  periodKey?: string
-  changeText?: string
+  periodKey?: PeriodKey
 }) {
   const hasDelta = data?.[periodKey]?.sessions_delta
   return (
@@ -43,9 +51,7 @@ export function TotalSessions({
           value={data[periodKey].sessions_total}
           changeVal={hasDelta ? hasDelta : undefined}
           changeText={
-            hasDelta
-              ? (changeText ?? `vs. previous ${data[periodKey].period_type}`)
-              : undefined
+            hasDelta ? deltaLabel(data[periodKey].period_type) : undefined
           }
         />
       ) : (
@@ -58,11 +64,9 @@ export function TotalSessions({
 export function TotalHours({
   data,
   periodKey = "curr_period",
-  changeText,
 }: {
   data: any
-  periodKey?: string
-  changeText?: string
+  periodKey?: PeriodKey
 }) {
   const hasDelta = data?.[periodKey]?.hours_delta
   return (
@@ -76,9 +80,7 @@ export function TotalHours({
           value={data[periodKey].hours_total}
           changeVal={hasDelta ? hasDelta : undefined}
           changeText={
-            hasDelta
-              ? (changeText ?? `vs. previous ${data[periodKey].period_type}`)
-              : undefined
+            hasDelta ? deltaLabel(data[periodKey].period_type) : undefined
           }
         />
       ) : (
@@ -93,7 +95,7 @@ export function TotalPartners({
   periodKey = "curr_period",
 }: {
   data: any
-  periodKey?: string
+  periodKey?: PeriodKey
 }) {
   return (
     <Card

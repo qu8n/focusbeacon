@@ -123,6 +123,7 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False,
             "hours_delta": round(curr_day_hours - prev_day_hours, 1),
             "partners_total": len(curr_day_sessions['partner_id'].unique()),
             "partners_repeat": calc_repeat_partners(curr_day_sessions),
+            "period_type": "day",
         },
         "charts": {
             "hour": calc_chart_data_by_hour(curr_day_sessions)

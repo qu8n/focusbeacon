@@ -72,12 +72,8 @@ export default function Streak() {
           takeScreenshot={() => takeScreenshot(refDaily)}
           popoverContent="Capture an image of your daily stats"
         />
-        <TotalSessions
-          data={data}
-          periodKey="daily"
-          changeText="vs. yesterday"
-        />
-        <TotalHours data={data} periodKey="daily" changeText="vs. yesterday" />
+        <TotalSessions data={data} periodKey="daily" />
+        <TotalHours data={data} periodKey="daily" />
         <TotalPartners data={data} periodKey="daily" />
         <SessionsByHour chartData={data?.charts?.hour} />
       </div>
