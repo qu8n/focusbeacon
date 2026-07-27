@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 
-export function useGetSigninStatus() {
+/**
+ * `enabled` is how demo mode opts out. Demo views read a static fixture, so
+ * this would otherwise be the one call that still wakes the Python function on
+ * a demo page load. A result already in the cache is still returned.
+ */
+export function useGetSigninStatus(enabled = true) {
   const { isLoading: isCheckingSignInStatus, isSuccess: isSignedIn } = useQuery(
     {
       queryKey: ["signinStatus"],
@@ -11,6 +16,7 @@ export function useGetSigninStatus() {
       },
       staleTime: Infinity, // never refetch
       retry: false,
+      enabled,
     }
   )
 

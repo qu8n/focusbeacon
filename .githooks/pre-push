@@ -1,0 +1,7 @@
+#!/bin/sh
+# The demo dashboard is served from a committed fixture, which can silently
+# fall out of step with the API it was generated from. Push is where that
+# starts to matter: Vercel deploys from it and there is no CI behind it.
+#
+# Needs uv on PATH, same as `npm run dev`.
+exec npm run --silent check:demo

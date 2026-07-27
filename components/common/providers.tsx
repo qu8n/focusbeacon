@@ -38,9 +38,9 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "production") {
  * access the React Query Client and use the useQuery hook
  */
 function CustomProviders({ children }: { children: React.ReactNode }) {
-  const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus()
   const searchParams = useSearchParams()
   const demoMode = searchParams.get("demo") === "true"
+  const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus(!demoMode)
 
   const content = (
     <SignInStatusContext.Provider

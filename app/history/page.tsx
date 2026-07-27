@@ -50,7 +50,13 @@ function History({ demoMode }: { demoMode: boolean }) {
   const { data } = useQuery({
     queryKey: ["history", pagination, demoMode],
     queryFn: async () => {
-      const response = await fetch(`/api/py/history?demo=${demoMode}`, {
+      // Demo pages hold every row already, so paging is a slice
+      if (demoMode) {
+        const demo = await import("@/lib/demo")
+        return demo.getDemoHistory(pagination.pageIndex, pagination.pageSize)
+      }
+
+      const response = await fetch(`/api/py/history`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

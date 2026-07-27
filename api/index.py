@@ -1,10 +1,7 @@
-import asyncio
-from contextlib import asynccontextmanager
 from typing import Annotated, Literal
 from fastapi.responses import JSONResponse
 import pandas as pd
 from pydantic import BaseModel, Field, model_validator
-from api_utils.faker import get_fake_data
 from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, calc_daily_record, calc_cumulative_sessions_chart, calc_duration_pie_data, \
     calc_punctuality_pie_data, calc_chart_data_by_hour, calc_heatmap_data, calc_history_data, calc_chart_data_by_range
@@ -15,7 +12,7 @@ from api_utils.time import format_date_label, get_curr_day_start, \
     ms_to_h_decimal, ms_to_m, WeekStartDay
 from api_utils.request import get_session_id
 from api_utils.focusmate import get_data
-from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from cachetools import TTLCache
 import ssl
 
@@ -23,27 +20,7 @@ import ssl
 ssl._create_default_https_context = ssl._create_stdlib_context
 app = FastAPI()
 user_data_cache = TTLCache(maxsize=100, ttl=60)
-demo_data_cache = TTLCache(maxsize=100, ttl=86400)
 SessionIdDep = Annotated[str, Depends(get_session_id)]
-
-
-async def auto_refresh_demo_data_cache():
-    """Refresh the demo data cache automatically instead of waiting for a
-    request after ttl expires to trigger the refresh. This saves some compute
-    but isn't very useful because this FastAPI app runs as a serverless
-    function by Vercel and the cache will be cleared on every cold start."""
-    while True:
-        get_fake_data(demo_data_cache)
-        await asyncio.sleep(86400)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # The code before `yield` gets executed before the rest of the app starts
-    background_tasks = BackgroundTasks()
-    background_tasks.add_task(auto_refresh_demo_data_cache)
-    await background_tasks()
-    yield
 
 
 @app.get("/api/py/signin-status")
@@ -51,8 +28,7 @@ async def get_signin_status(session_id: SessionIdDep):
     if not session_id:
         raise HTTPException(status_code=400, detail="No session ID found")
 
-    profile, _ = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo=False)
+    profile, _ = await get_data(session_id, user_data_cache)
 
     if not profile:
         raise HTTPException(
@@ -64,17 +40,15 @@ async def get_signin_status(session_id: SessionIdDep):
 
 @app.get("/api/py/profile-photo")
 async def get_profile_photo(session_id: SessionIdDep):
-    profile, _ = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo=False)
+    profile, _ = await get_data(session_id, user_data_cache)
 
     return JSONResponse(content={"photo_url": profile.get("photoUrl")})
 
 
 @app.get("/api/py/streak")
-async def get_streak(session_id: SessionIdDep, demo: bool = False,
+async def get_streak(session_id: SessionIdDep,
                      week_start: WeekStartDay = "monday"):
-    profile, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+    profile, sessions = await get_data(session_id, user_data_cache)
 
     if profile.get("totalSessionCount") == 0:
         return {
@@ -87,10 +61,8 @@ async def get_streak(session_id: SessionIdDep, demo: bool = False,
 
     daily_streak = calc_curr_streak(sessions, "D", local_timezone)
 
-    daily_streak_increased = False
-    if not demo:
-        daily_streak_increased = update_daily_streak(
-            profile.get("userId"), daily_streak)
+    daily_streak_increased = update_daily_streak(
+        profile.get("userId"), daily_streak)
 
     curr_day_start = get_curr_day_start(local_timezone)
     prev_day_start = curr_day_start - pd.DateOffset(days=1)
@@ -162,28 +134,23 @@ class Goal(BaseModel):
 
 
 @app.get("/api/py/goal")
-async def get_goal(session_id: SessionIdDep, demo: bool = False):
-    if demo:
-        return {"goal": 10, "goal_type": "sessions", **GOAL_LIMITS}
-    profile, _ = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+async def get_goal(session_id: SessionIdDep):
+    profile, _ = await get_data(session_id, user_data_cache)
     return {**get_weekly_goal(profile.get("userId")), **GOAL_LIMITS}
 
 
 @app.post("/api/py/goal")
 async def set_goal(session_id: SessionIdDep, goal: Goal):
-    profile, _ = await get_data(
-        session_id, user_data_cache, demo_data_cache)
+    profile, _ = await get_data(session_id, user_data_cache)
     saved = update_weekly_goal(
         profile.get("userId"), goal.goal, goal.goal_type)
     return {**saved, **GOAL_LIMITS}
 
 
 @app.get("/api/py/week")
-async def get_week(session_id: SessionIdDep, demo: bool = False,
+async def get_week(session_id: SessionIdDep,
                    week_start: WeekStartDay = "monday"):
-    profile, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+    profile, sessions = await get_data(session_id, user_data_cache)
 
     if profile.get("totalSessionCount") == 0:
         return {
@@ -248,9 +215,8 @@ async def get_week(session_id: SessionIdDep, demo: bool = False,
 
 
 @app.get("/api/py/month")
-async def get_month(session_id: SessionIdDep, demo: bool = False):
-    profile, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+async def get_month(session_id: SessionIdDep):
+    profile, sessions = await get_data(session_id, user_data_cache)
 
     if profile.get("totalSessionCount") == 0:
         return {
@@ -307,9 +273,8 @@ async def get_month(session_id: SessionIdDep, demo: bool = False):
 
 
 @app.get("/api/py/year")
-async def get_year(session_id: SessionIdDep, demo: bool = False):
-    profile, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+async def get_year(session_id: SessionIdDep):
+    profile, sessions = await get_data(session_id, user_data_cache)
 
     if profile.get("totalSessionCount") == 0:
         return {
@@ -365,9 +330,8 @@ async def get_year(session_id: SessionIdDep, demo: bool = False):
 
 
 @app.get("/api/py/lifetime")
-async def get_lifetime(session_id: SessionIdDep, demo: bool = False):
-    profile, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+async def get_lifetime(session_id: SessionIdDep):
+    profile, sessions = await get_data(session_id, user_data_cache)
 
     if profile.get("totalSessionCount") == 0:
         return {
@@ -405,9 +369,8 @@ class Pagination(BaseModel):
 
 @app.post("/api/py/history")
 async def get_history_paginated(session_id: SessionIdDep,
-                                pagination: Pagination, demo: bool = False):
-    profile, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache, demo)
+                                pagination: Pagination):
+    profile, sessions = await get_data(session_id, user_data_cache)
 
     if profile.get("totalSessionCount") == 0:
         return {
@@ -424,6 +387,5 @@ async def get_history_paginated(session_id: SessionIdDep,
 
 @app.get("/api/py/history-all")
 async def get_history_all(session_id: SessionIdDep):
-    _, sessions = await get_data(
-        session_id, user_data_cache, demo_data_cache)
+    _, sessions = await get_data(session_id, user_data_cache)
     return calc_history_data(sessions)

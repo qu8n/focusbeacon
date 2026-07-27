@@ -13,6 +13,7 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { fetchDashboardData } from "@/lib/dashboard-data"
 import { takeScreenshot } from "@/lib/screenshot"
 import { CumulativeSessions } from "@/app/dashboard/lifetime/components/cumulative-sessions"
 import {
@@ -29,11 +30,10 @@ export default function Lifetime() {
 
   const { data } = useQuery({
     queryKey: ["lifetime", demoMode],
-    queryFn: async () => {
-      const response = await fetch(`/api/py/lifetime?demo=${demoMode}`)
-      if (!response.ok) throw new Error("Failed to fetch lifetime data")
-      return await response.json()
-    },
+    queryFn: () =>
+      fetchDashboardData(demoMode, `/api/py/lifetime`, (demo) =>
+        demo.getDemoLifetime()
+      ),
   })
 
   if (data?.zero_sessions) {

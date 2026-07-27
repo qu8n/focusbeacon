@@ -15,6 +15,7 @@ import {
 } from "@/app/dashboard/streak/components/w-m-streak"
 import { SessionsHeatmap } from "@/app/dashboard/streak/components/sessions-heatmap"
 import { RecentSessions } from "@/app/dashboard/streak/components/recent-sessions"
+import { fetchDashboardData } from "@/lib/dashboard-data"
 import { takeScreenshot } from "@/lib/screenshot"
 import { DashboardSubheading } from "@/components/common/date-subheading"
 import {
@@ -32,14 +33,12 @@ export default function Streak() {
 
   const { data, refetch } = useQuery({
     queryKey: ["streak", demoMode, weekStart],
-    queryFn: async () => {
-      const response = await fetch(
-        `/api/py/streak?demo=${demoMode}&week_start=${weekStart}`
-      )
-      if (!response.ok) throw new Error("Failed to fetch streak data")
-      const data = await response.json()
-      return data
-    },
+    queryFn: () =>
+      fetchDashboardData(
+        demoMode,
+        `/api/py/streak?week_start=${weekStart}`,
+        (demo) => demo.getDemoStreak(weekStart)
+      ),
   })
 
   if (data?.zero_sessions) {

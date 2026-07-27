@@ -1,7 +1,8 @@
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
-from api_utils.time import get_naive_local_today, m_to_ms, ms_to_h, WeekStartDay
+from api_utils.time import get_naive_local_today, get_naive_now, m_to_ms, \
+    ms_to_h, WeekStartDay
 
 
 def calc_repeat_partners(sessions: pd.DataFrame) -> int:
@@ -171,7 +172,7 @@ def calc_heatmap_data(sessions: pd.DataFrame,
 
     # Nivo TimeRange calendar component's 'to' date is exclusive, so we need to
     # add one day to the current date
-    tomorrow = pd.Timestamp.today() + pd.DateOffset(days=1)
+    tomorrow = get_naive_now() + pd.DateOffset(days=1)
     tomorrow_str = tomorrow.strftime('%Y-%m-%d')
 
     # Calculate the start of the week one year ago based on week_start preference
@@ -358,7 +359,7 @@ def calc_history_data(sessions: pd.DataFrame, head: int = None):
     sessions['date'] = sessions['start_time'].dt.strftime(
         '%a, %b %d, %Y')
     sessions = sessions[sessions['start_time']
-                        < pd.Timestamp.now()]
+                        < get_naive_now()]
 
     if head:
         sessions = sessions.head(head)

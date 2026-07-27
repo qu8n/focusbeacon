@@ -14,6 +14,7 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { fetchDashboardData } from "@/lib/dashboard-data"
 import { takeScreenshot } from "@/lib/screenshot"
 
 export default function Month() {
@@ -23,11 +24,10 @@ export default function Month() {
 
   const { data } = useQuery({
     queryKey: ["month", demoMode],
-    queryFn: async () => {
-      const response = await fetch(`/api/py/month?demo=${demoMode}`)
-      if (!response.ok) throw new Error("Failed to fetch monthly data")
-      return await response.json()
-    },
+    queryFn: () =>
+      fetchDashboardData(demoMode, `/api/py/month`, (demo) =>
+        demo.getDemoMonth()
+      ),
   })
 
   if (data?.zero_sessions) {

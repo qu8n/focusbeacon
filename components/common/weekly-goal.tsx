@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Strong, Text } from "@/components/ui/text"
 import { LoaderIcon } from "@/components/common/loader-icon"
 import { DemoModeContext } from "@/components/common/providers"
+import { fetchDashboardData } from "@/lib/dashboard-data"
 import { useToast } from "@/hooks/use-toast"
 
 export type GoalType = "sessions" | "hours"
@@ -69,11 +70,10 @@ export function WeeklyGoal({
 
   const { data: currGoal } = useQuery<WeeklyGoalPayload>({
     queryKey: ["goal", demoMode],
-    queryFn: async () => {
-      const response = await fetch(`/api/py/goal?demo=${demoMode}`)
-      if (!response.ok) throw new Error("Failed to fetch goal")
-      return await response.json()
-    },
+    queryFn: () =>
+      fetchDashboardData(demoMode, `/api/py/goal`, (demo) =>
+        demo.getDemoGoal()
+      ),
     // The dialog below is the only thing that changes a goal, and it writes
     // the saved value straight back into this cache
     staleTime: Infinity,

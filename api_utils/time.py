@@ -7,6 +7,24 @@ fm_datetime_str_format = '%Y-%m-%dT%H:%M:%SZ'
 
 WeekStartDay = Literal["sunday", "monday"]
 
+_now_override: pd.Timestamp | None = None
+
+
+def set_now_override(now: pd.Timestamp | None):
+    """Freeze the clock every helper in this module reads. Only the demo
+    fixture generator calls this, so that it can compute payloads for a known
+    date. Left unset, nothing here behaves differently."""
+    global _now_override
+    _now_override = now
+
+
+def get_naive_now():
+    """Now without timezone info, to compare against the session dataframe's
+    timestamps, which are localized and then stripped of their timezone."""
+    if _now_override is not None:
+        return _now_override
+    return pd.Timestamp.now()
+
 
 def utc_dt_to_local_dt(utc_time: datetime, local_timezone: str):
     local_timezone_obj = tz.gettz(local_timezone)
@@ -77,6 +95,8 @@ def get_naive_local_today(local_timezone):
     """Get today in local timezone without timezone info. This enables
     simplification and lets us work with the dates in the sessions dataframe
     that have also been localized and stripped of timezone info."""
+    if _now_override is not None:
+        return _now_override
     today_local = pd.Timestamp.now(tz.gettz(local_timezone))
     today_naive = today_local.replace(tzinfo=None)
     return today_naive

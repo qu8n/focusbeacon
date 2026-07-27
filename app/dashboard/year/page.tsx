@@ -14,6 +14,7 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { fetchDashboardData } from "@/lib/dashboard-data"
 import { takeScreenshot } from "@/lib/screenshot"
 
 export default function Year() {
@@ -23,11 +24,10 @@ export default function Year() {
 
   const { data } = useQuery({
     queryKey: ["year", demoMode],
-    queryFn: async () => {
-      const response = await fetch(`/api/py/year?demo=${demoMode}`)
-      if (!response.ok) throw new Error("Failed to fetch yearly data")
-      return await response.json()
-    },
+    queryFn: () =>
+      fetchDashboardData(demoMode, `/api/py/year`, (demo) =>
+        demo.getDemoYear()
+      ),
   })
 
   if (data?.zero_sessions) {

@@ -12,7 +12,6 @@ import aiohttp
 import certifi
 import asyncio
 import ssl
-from api_utils.faker import get_fake_data
 from api_utils.lst_to_df import sessions_ls_to_df
 from api_utils.request import get_access_token
 
@@ -69,14 +68,7 @@ async def fetch_focusmate_sessions_by_year(
         return data.get("sessions", [])
 
 
-async def get_data(
-        session_id: str,
-        user_data_cache: TTLCache,
-        demo_data_cache: TTLCache,
-        demo: bool = False):
-    if demo:
-        return get_fake_data(demo_data_cache)
-
+async def get_data(session_id: str, user_data_cache: TTLCache):
     cached_profile: dict = user_data_cache.get(
         hashkey('profile', session_id))
     cached_sessions: pd.DataFrame = user_data_cache.get(

@@ -8,7 +8,7 @@ export function useProtectRoute() {
   const router = useRouter()
 
   // Re-check the sign-in status instead of getting it from the context
-  const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus()
+  const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus(!demoMode)
 
   useEffect(() => {
     if (router && !demoMode && !isCheckingSignInStatus && !isSignedIn) {

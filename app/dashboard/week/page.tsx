@@ -18,6 +18,7 @@ import {
   TotalPartners,
   TotalSessions,
 } from "@/components/common/dashboard-cards"
+import { fetchDashboardData } from "@/lib/dashboard-data"
 import { takeScreenshot } from "@/lib/screenshot"
 
 export default function Week() {
@@ -28,13 +29,12 @@ export default function Week() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["weekly", demoMode, weekStart],
-    queryFn: async () => {
-      const response = await fetch(
-        `/api/py/week?demo=${demoMode}&week_start=${weekStart}`
-      )
-      if (!response.ok) throw new Error("Failed to fetch weekly data")
-      return await response.json()
-    },
+    queryFn: () =>
+      fetchDashboardData(
+        demoMode,
+        `/api/py/week?week_start=${weekStart}`,
+        (demo) => demo.getDemoWeek(weekStart)
+      ),
   })
 
   if (data?.zero_sessions) {
