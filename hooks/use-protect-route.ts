@@ -8,13 +8,29 @@ export function useProtectRoute() {
   const router = useRouter()
 
   // Re-check the sign-in status instead of getting it from the context
-  const { isCheckingSignInStatus, isSignedIn } = useGetSigninStatus(!demoMode)
+  const { isCheckingSignInStatus, isSignedIn, isSignInStatusUnknown } =
+    useGetSigninStatus(!demoMode)
 
   useEffect(() => {
-    if (router && !demoMode && !isCheckingSignInStatus && !isSignedIn) {
+    // Redirect only on a definite "no session". If the check timed out or the
+    // backend faulted we don't know, and throwing a signed-in user out to the
+    // marketing page is the worse of the two mistakes.
+    if (
+      router &&
+      !demoMode &&
+      !isCheckingSignInStatus &&
+      !isSignInStatusUnknown &&
+      !isSignedIn
+    ) {
       router.push("/home")
     }
-  }, [router, demoMode, isCheckingSignInStatus, isSignedIn])
+  }, [
+    router,
+    demoMode,
+    isCheckingSignInStatus,
+    isSignInStatusUnknown,
+    isSignedIn,
+  ])
 
   return { demoMode, isCheckingSignInStatus, isSignedIn }
 }

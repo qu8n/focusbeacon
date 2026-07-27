@@ -115,9 +115,11 @@ export function WeeklyGoal({
         </div>
 
         {data ? (
+          // `variant` keys on the goal, matching the label: a goal with no
+          // progress yet is still a goal, not the unset state
           <ProgressBar
             value={progressPercent}
-            variant={progressPercent ? "success" : "neutral"}
+            variant={target ? "success" : "neutral"}
             label={buildProgressLabel(
               progressPercent,
               achieved,
@@ -165,7 +167,9 @@ function buildProgressLabel(
   target: number,
   goalType: GoalType
 ) {
-  if (!progressPercent) return "N/A"
+  // Gate on the goal, not the percentage: progressPercent is also 0 when a
+  // goal is set and nothing has been logged yet, which is every user's Monday
+  if (!target) return "N/A"
   const progressPercentStr = Math.round(progressPercent).toString() + "%"
   if (goalType === "hours") {
     return `${formatHours(achieved)} / ${formatHours(

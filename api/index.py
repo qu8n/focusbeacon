@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated, Literal
 from fastapi.responses import JSONResponse
 import pandas as pd
@@ -10,17 +11,30 @@ from api_utils.supabase import get_weekly_goal, update_daily_streak, \
 from api_utils.time import format_date_label, get_curr_day_start, \
     get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h, \
     ms_to_h_decimal, ms_to_m, WeekStartDay
-from api_utils.request import get_session_id
+from api_utils.request import get_session_id, get_access_token, SessionNotFound
 from api_utils.focusmate import get_data
 from fastapi import Depends, FastAPI, HTTPException
 from cachetools import TTLCache
-import ssl
 
 
-ssl._create_default_https_context = ssl._create_stdlib_context
 app = FastAPI()
 user_data_cache = TTLCache(maxsize=100, ttl=60)
 SessionIdDep = Annotated[str, Depends(get_session_id)]
+
+
+async def load_user_data(session_id: str):
+    """Same as get_data, but rejects a session it can't resolve instead of
+    handing back None. get_data returns (None, None) for a cleared cookie, a
+    deleted profile row, or a token it can't decrypt, and every route below
+    reads off `profile` immediately -- so without this the user gets an
+    AttributeError and a 500 where they should get a 401."""
+    profile, sessions = await get_data(session_id, user_data_cache)
+
+    if not profile:
+        raise HTTPException(
+            status_code=401, detail="Invalid or expired session")
+
+    return profile, sessions
 
 
 @app.get("/api/py/signin-status")
@@ -28,9 +42,14 @@ async def get_signin_status(session_id: SessionIdDep):
     if not session_id:
         raise HTTPException(status_code=400, detail="No session ID found")
 
-    profile, _ = await get_data(session_id, user_data_cache)
-
-    if not profile:
+    # Resolve the session and nothing else. This used to call get_data, which
+    # fetches the Focusmate profile and every year of session history before it
+    # could answer -- so the client's route guard paid for a full sync on every
+    # page load, and any Focusmate hiccup came back non-2xx and read to the
+    # client as "signed out", bouncing a valid user to /home.
+    try:
+        await asyncio.to_thread(get_access_token, session_id)
+    except SessionNotFound:
         raise HTTPException(
             status_code=400, detail="No user found in database")
 
@@ -40,7 +59,7 @@ async def get_signin_status(session_id: SessionIdDep):
 
 @app.get("/api/py/profile-photo")
 async def get_profile_photo(session_id: SessionIdDep):
-    profile, _ = await get_data(session_id, user_data_cache)
+    profile, _ = await load_user_data(session_id)
 
     return JSONResponse(content={"photo_url": profile.get("photoUrl")})
 
@@ -48,21 +67,28 @@ async def get_profile_photo(session_id: SessionIdDep):
 @app.get("/api/py/streak")
 async def get_streak(session_id: SessionIdDep,
                      week_start: WeekStartDay = "monday"):
-    profile, sessions = await get_data(session_id, user_data_cache)
+    profile, sessions = await load_user_data(session_id)
 
-    if profile.get("totalSessionCount") == 0:
+    all_sessions = sessions.copy()
+    sessions = sessions[sessions['completed'] == True]
+
+    # Guard on completed sessions rather than profile.totalSessionCount, which
+    # counts bookings: a user who booked and never showed up clears that check
+    # and then hits min()/mean()/idxmax() on an empty frame
+    if sessions.empty:
         return {
             "zero_sessions": True
         }
 
-    all_sessions = sessions.copy()
-    sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
     daily_streak = calc_curr_streak(sessions, "D", local_timezone)
 
-    daily_streak_increased = update_daily_streak(
-        profile.get("userId"), daily_streak)
+    # Blocking Supabase client, same as get_access_token: off the event loop so
+    # one slow round trip doesn't stall every other request sharing this
+    # instance
+    daily_streak_increased = await asyncio.to_thread(
+        update_daily_streak, profile.get("userId"), daily_streak)
 
     curr_day_start = get_curr_day_start(local_timezone)
     prev_day_start = curr_day_start - pd.DateOffset(days=1)
@@ -83,8 +109,10 @@ async def get_streak(session_id: SessionIdDep,
                                           week_start=week_start),
         "monthly_streak": calc_curr_streak(sessions, "M", local_timezone),
         "max_daily_streak": calc_max_daily_streak(sessions),
-        "heatmap_data": calc_heatmap_data(sessions, week_start=week_start),
-        "history_data": calc_history_data(all_sessions, head=3),
+        "heatmap_data": calc_heatmap_data(sessions, local_timezone,
+                                          week_start=week_start),
+        "history_data": calc_history_data(
+            all_sessions, local_timezone, head=3),
         "daily": {
             "subheading": format_date_label(curr_day_start, "%A, %b %d"),
             "sessions_total": len(curr_day_sessions),
@@ -93,7 +121,7 @@ async def get_streak(session_id: SessionIdDep,
             # Deltas come off the rounded hours so they always reconcile with
             # the two numbers a user can actually see
             "hours_delta": round(curr_day_hours - prev_day_hours, 1),
-            "partners_total": len(curr_day_sessions['partner_id'].unique()),
+            "partners_total": curr_day_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(curr_day_sessions),
             "period_type": "day",
         },
@@ -135,29 +163,31 @@ class Goal(BaseModel):
 
 @app.get("/api/py/goal")
 async def get_goal(session_id: SessionIdDep):
-    profile, _ = await get_data(session_id, user_data_cache)
-    return {**get_weekly_goal(profile.get("userId")), **GOAL_LIMITS}
+    profile, _ = await load_user_data(session_id)
+    goal = await asyncio.to_thread(get_weekly_goal, profile.get("userId"))
+    return {**goal, **GOAL_LIMITS}
 
 
 @app.post("/api/py/goal")
 async def set_goal(session_id: SessionIdDep, goal: Goal):
-    profile, _ = await get_data(session_id, user_data_cache)
-    saved = update_weekly_goal(
-        profile.get("userId"), goal.goal, goal.goal_type)
+    profile, _ = await load_user_data(session_id)
+    saved = await asyncio.to_thread(
+        update_weekly_goal, profile.get("userId"), goal.goal, goal.goal_type)
     return {**saved, **GOAL_LIMITS}
 
 
 @app.get("/api/py/week")
 async def get_week(session_id: SessionIdDep,
                    week_start: WeekStartDay = "monday"):
-    profile, sessions = await get_data(session_id, user_data_cache)
+    profile, sessions = await load_user_data(session_id)
 
-    if profile.get("totalSessionCount") == 0:
+    sessions = sessions[sessions['completed'] == True]
+
+    if sessions.empty:
         return {
             "zero_sessions": True
         }
 
-    sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
     curr_week_start = get_curr_week_start(local_timezone, week_start)
@@ -193,7 +223,7 @@ async def get_week(session_id: SessionIdDep,
             # Delta comes off the rounded hours so it reconciles with the two
             # numbers a user can actually see
             "hours_delta": round(curr_week_hours - prev_week_hours, 1),
-            "partners_total": len(curr_week_sessions['partner_id'].unique()),
+            "partners_total": curr_week_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(curr_week_sessions),
             "period_type": "week",
         },
@@ -216,14 +246,15 @@ async def get_week(session_id: SessionIdDep,
 
 @app.get("/api/py/month")
 async def get_month(session_id: SessionIdDep):
-    profile, sessions = await get_data(session_id, user_data_cache)
+    profile, sessions = await load_user_data(session_id)
 
-    if profile.get("totalSessionCount") == 0:
+    sessions = sessions[sessions['completed'] == True]
+
+    if sessions.empty:
         return {
             "zero_sessions": True
         }
 
-    sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
     curr_month_start = get_curr_month_start(local_timezone)
@@ -252,7 +283,7 @@ async def get_month(session_id: SessionIdDep):
             "hours_total": ms_to_h(curr_month_sessions['duration'].sum()),
             "hours_delta": ms_to_h(curr_month_sessions['duration'].sum() -
                                    prev_month_sessions['duration'].sum()),
-            "partners_total": len(curr_month_sessions['partner_id'].unique()),
+            "partners_total": curr_month_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(curr_month_sessions),
             "period_type": "month",
         },
@@ -274,14 +305,15 @@ async def get_month(session_id: SessionIdDep):
 
 @app.get("/api/py/year")
 async def get_year(session_id: SessionIdDep):
-    profile, sessions = await get_data(session_id, user_data_cache)
+    profile, sessions = await load_user_data(session_id)
 
-    if profile.get("totalSessionCount") == 0:
+    sessions = sessions[sessions['completed'] == True]
+
+    if sessions.empty:
         return {
             "zero_sessions": True
         }
 
-    sessions = sessions[sessions['completed'] == True]
     local_timezone: str = profile.get("timeZone")
 
     curr_year_start = get_curr_year_start(local_timezone)
@@ -305,14 +337,14 @@ async def get_year(session_id: SessionIdDep):
             "hours_total": ms_to_h(curr_year_sessions['duration'].sum()),
             "hours_delta": ms_to_h(curr_year_sessions['duration'].sum() -
                                    prev_year_sessions['duration'].sum()),
-            "partners_total": len(curr_year_sessions['partner_id'].unique()),
+            "partners_total": curr_year_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(curr_year_sessions),
             "period_type": "year",
         },
         "prev_period": {
             "sessions_total": len(prev_year_sessions),
             "hours_total": ms_to_h(prev_year_sessions['duration'].sum()),
-            "partners_total": len(prev_year_sessions['partner_id'].unique()),
+            "partners_total": prev_year_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(prev_year_sessions),
             "subheading": format_date_label(prev_year_start, date_format),
             "sessions_total": len(prev_year_sessions),
@@ -331,14 +363,15 @@ async def get_year(session_id: SessionIdDep):
 
 @app.get("/api/py/lifetime")
 async def get_lifetime(session_id: SessionIdDep):
-    profile, sessions = await get_data(session_id, user_data_cache)
+    profile, sessions = await load_user_data(session_id)
 
-    if profile.get("totalSessionCount") == 0:
+    sessions = sessions[sessions['completed'] == True]
+
+    if sessions.empty:
         return {
             "zero_sessions": True
         }
 
-    sessions = sessions[sessions['completed'] == True]
     first_session_date = format_date_label(
         sessions['start_time'].min(), "%B %-d, %Y")
 
@@ -347,7 +380,7 @@ async def get_lifetime(session_id: SessionIdDep):
             "subheading": f"{first_session_date} - Present",
             "sessions_total": profile.get("totalSessionCount"),
             "hours_total": ms_to_h(sessions['duration'].sum()),
-            "partners_total": len(sessions['partner_id'].unique()),
+            "partners_total": sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(sessions),
             "first_session_date": first_session_date,
             "average_duration": ms_to_m(sessions['duration'].mean()),
@@ -370,14 +403,14 @@ class Pagination(BaseModel):
 @app.post("/api/py/history")
 async def get_history_paginated(session_id: SessionIdDep,
                                 pagination: Pagination):
-    profile, sessions = await get_data(session_id, user_data_cache)
+    profile, sessions = await load_user_data(session_id)
 
-    if profile.get("totalSessionCount") == 0:
+    if sessions.empty:
         return {
             "zero_sessions": True
         }
 
-    data = calc_history_data(sessions)
+    data = calc_history_data(sessions, profile.get("timeZone"))
     return {
         "rows": data[pagination.page_index * pagination.page_size:
                      (pagination.page_index + 1) * pagination.page_size],
@@ -387,5 +420,5 @@ async def get_history_paginated(session_id: SessionIdDep,
 
 @app.get("/api/py/history-all")
 async def get_history_all(session_id: SessionIdDep):
-    _, sessions = await get_data(session_id, user_data_cache)
-    return calc_history_data(sessions)
+    profile, sessions = await load_user_data(session_id)
+    return calc_history_data(sessions, profile.get("timeZone"))

@@ -1,8 +1,9 @@
 import base64
+import os
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from api_utils.config import ENCRYPTION_AES_IV, ENCRYPTION_KEY_STR
+from api_utils.config import ENCRYPTION_KEY_STR
 
 
 # Configuration for AES encryption
@@ -12,7 +13,11 @@ backend = default_backend()
 
 
 def encrypt(text: str) -> str:
-    iv = bytes.fromhex(ENCRYPTION_AES_IV)
+    # A fresh 16-byte IV per message. Reusing one makes CBC deterministic, so
+    # identical tokens encrypt to identical ciphertext and shared prefixes stay
+    # visible. decrypt() reads the IV back off the stored value, so tokens
+    # written under the old fixed IV still decrypt.
+    iv = os.urandom(16)
 
     cipher = Cipher(
         algorithm(ENCRYPTION_KEY_BYTES), modes.CBC(iv), backend=backend)

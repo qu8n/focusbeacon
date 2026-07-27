@@ -1,11 +1,20 @@
 import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
-from api_utils.time import get_naive_local_today, get_naive_now, m_to_ms, \
+from api_utils.time import get_naive_local_today, m_to_ms, \
     ms_to_h, WeekStartDay
+
+# How late you can join and still count as on time. One definition shared by
+# the history table and the punctuality chart -- they used to disagree (2
+# minutes vs 60s), so the same session could read "On time: Yes" in history
+# while the chart counted it Late. 60s is what the punctuality card's popover
+# tells users.
+ON_TIME_GRACE_SECONDS = 60
 
 
 def calc_repeat_partners(sessions: pd.DataFrame) -> int:
+    # value_counts() drops nulls, so unmatched sessions can't group together
+    # into one phantom repeat partner
     partner_session_counts = sessions['partner_id'].value_counts()
     return len(partner_session_counts[partner_session_counts > 1])
 
@@ -150,6 +159,7 @@ def calc_max_daily_streak(sessions: pd.DataFrame,
 
 
 def calc_heatmap_data(sessions: pd.DataFrame,
+                      local_timezone: str,
                       week_start: WeekStartDay = "monday") -> dict:
     '''
     Prepare data for the Nivo TimeRange calendar component
@@ -158,6 +168,9 @@ def calc_heatmap_data(sessions: pd.DataFrame,
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
+    local_timezone : str
+        The user's IANA timezone, used to anchor the one-year window to their
+        calendar days.
     week_start : WeekStartDay
         Either "sunday" or "monday". Determines the first day of the week
         for the heatmap display.
@@ -170,9 +183,15 @@ def calc_heatmap_data(sessions: pd.DataFrame,
         sessions in the past year.
     '''
 
+    # start_time is naive local, so the window has to be anchored to the user's
+    # day. pd.Timestamp.today() is the server's clock -- UTC on Vercel -- which
+    # both slides the window for anyone outside that timezone and, because it
+    # keeps the current time of day, clips sessions earlier on the first day
+    today = get_naive_local_today(local_timezone).normalize()
+
     # Nivo TimeRange calendar component's 'to' date is exclusive, so we need to
     # add one day to the current date
-    tomorrow = get_naive_now() + pd.DateOffset(days=1)
+    tomorrow = today + pd.DateOffset(days=1)
     tomorrow_str = tomorrow.strftime('%Y-%m-%d')
 
     # Calculate the start of the week one year ago based on week_start preference
@@ -322,7 +341,8 @@ def calc_chart_data_by_hour(sessions: pd.DataFrame) -> List[Dict[str, Any]]:
     return pivot_df.to_dict(orient='records')
 
 
-def calc_history_data(sessions: pd.DataFrame, head: int = None):
+def calc_history_data(sessions: pd.DataFrame, local_timezone: str,
+                      head: int = None):
     '''Converts the sessions DataFrame into a list of dictionaries containing
     the data for the history table.
 
@@ -330,6 +350,9 @@ def calc_history_data(sessions: pd.DataFrame, head: int = None):
     ----------
     sessions : pd.DataFrame
         A DataFrame containing all completed sessions.
+    local_timezone : str
+        The user's IANA timezone, used to decide which sessions are still in
+        the future.
 
     Returns
     -------
@@ -345,21 +368,27 @@ def calc_history_data(sessions: pd.DataFrame, head: int = None):
         duration_minutes: int
             The duration of the session in minutes.
         on_time: bool
-            Whether the session started on time, i.e., joined_at is within 2
-            minutes of start_time. 
+            Whether the session started on time, i.e., joined_at is within
+            ON_TIME_GRACE_SECONDS of start_time.
         completed: bool
             Whether the session was completed.
         session_title: str
             The title of the session.
     '''
+    if sessions.empty:
+        return []
+
     sessions = sessions.copy()
 
     sessions = sessions.sort_values('start_time', ascending=False)
 
     sessions['date'] = sessions['start_time'].dt.strftime(
         '%a, %b %d, %Y')
+    # start_time is naive local time, so "now" has to be the user's local now.
+    # pd.Timestamp.now() is the server's clock -- UTC on Vercel -- which hides
+    # just-finished sessions east of UTC and shows unstarted ones west of it
     sessions = sessions[sessions['start_time']
-                        < get_naive_now()]
+                        < get_naive_local_today(local_timezone)]
 
     if head:
         sessions = sessions.head(head)
@@ -368,7 +397,7 @@ def calc_history_data(sessions: pd.DataFrame, head: int = None):
     sessions['duration_minutes'] = sessions['duration'] / 60000
     sessions['on_time'] = (
         sessions['joined_at'] - sessions['start_time']) \
-        <= pd.Timedelta(minutes=2)
+        <= pd.Timedelta(seconds=ON_TIME_GRACE_SECONDS)
     sessions['session_title'] = sessions['session_title'].replace(
         to_replace='^$|^None$', value='N/A', regex=True)
 
@@ -404,7 +433,7 @@ def calc_punctuality_pie_data(sessions: pd.DataFrame):
     avg_join_start_diff = sessions['join_start_diff'].mean()
     median_join_start_diff = sessions['join_start_diff'].median()
 
-    late_s = 60
+    late_s = ON_TIME_GRACE_SECONDS
 
     return {
         "data": [

@@ -7,14 +7,21 @@ import { LinkExternal } from "@/components/ui/link-external"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { TextLink, Text } from "@/components/ui/text"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export default function Callback() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const hasCalled = useRef(false)
+  // A code can be present and still fail to exchange -- a stale or mismatched
+  // OAuth state, or a Focusmate error. Without this the page sits on the
+  // loading skeleton forever with no way back
+  const [failed, setFailed] = useState(false)
 
   const authorizationCode = searchParams.get("code")
+  // Echoed back by Focusmate; /api/callback checks it against the HttpOnly
+  // nonce set when sign-in started
+  const state = searchParams.get("state")
 
   useEffect(() => {
     // Prevents handlePostCallbackFlow being called multiple times
@@ -35,6 +42,7 @@ export default function Callback() {
         },
         body: JSON.stringify({
           authorizationCode: authorizationCode,
+          state: state,
         }),
       })
       if (!response.ok) {
@@ -46,10 +54,13 @@ export default function Callback() {
 
     handlePostCallbackFlow(authorizationCode)
       .then(() => router.push("/dashboard"))
-      .catch((error) => console.error(error))
-  }, [router, authorizationCode])
+      .catch((error) => {
+        console.error(error)
+        setFailed(true)
+      })
+  }, [router, authorizationCode, state])
 
-  if (authorizationCode) {
+  if (authorizationCode && !failed) {
     return <DashboardSkeleton />
   } else {
     return (

@@ -4,10 +4,13 @@ import { randomBytes, createCipheriv, createDecipheriv } from "crypto"
 const algorithm = "aes-256-cbc"
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY as string
 const encryptionKeyAsBuffer = Buffer.from(ENCRYPTION_KEY, "hex")
-const ENCRYPTION_AES_IV = process.env.ENCRYPTION_AES_IV as string
 
 export function encrypt(text: string): string {
-  const iv = Buffer.from(ENCRYPTION_AES_IV, "hex")
+  // A fresh 16-byte IV per message. Reusing one makes CBC deterministic, so
+  // identical tokens encrypt to identical ciphertext and shared prefixes stay
+  // visible. decrypt() reads the IV back off the stored value, so tokens
+  // written under the old fixed IV still decrypt.
+  const iv = randomBytes(16)
   const cipher = createCipheriv(algorithm, encryptionKeyAsBuffer, iv)
   let encrypted = cipher.update(text, "utf8", "base64")
   encrypted += cipher.final("base64")

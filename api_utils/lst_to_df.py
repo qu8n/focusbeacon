@@ -2,6 +2,9 @@
 import pandas as pd
 from api_utils.time import fm_time_str_to_local_dt
 
+SESSION_COLUMNS = ['session_id', 'duration', 'start_time', 'requested_at',
+                   'joined_at', 'completed', 'session_title', 'partner_id']
+
 
 def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
     rows = []
@@ -40,13 +43,18 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
 
         rows.append(row)
 
-    df = pd.DataFrame(rows)
+    # Named columns even when there are no rows, so callers can filter on
+    # `completed` without a KeyError on a brand-new account
+    df = pd.DataFrame(rows, columns=SESSION_COLUMNS)
     if not df.empty:
         df['session_id'] = df['session_id'].astype(str)
         df['duration'] = df['duration'].astype(int)
         df['completed'] = df['completed'].astype(bool)
         df['session_title'] = df['session_title'].astype(str)
-        df['partner_id'] = df['partner_id'].astype(str)
+        # Not .astype(str): that turns an unmatched session's None into the
+        # string "None", and every such session then looks like the same
+        # partner -- inflating both the partner total and the repeat count
+        df['partner_id'] = df['partner_id'].astype('string')
 
         # Times are saved in the local time without timezone info
         # (e.g. 2pm EST is simply saved as 2pm)

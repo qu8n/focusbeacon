@@ -13,10 +13,14 @@ def update_daily_streak(user_id: str, daily_streak: int):
     daily streak to handle this case."""
     prev_daily_streak = supabase_client.table("profile").select(
         "daily_streak").eq("user_id", user_id).execute().data[0]["daily_streak"]
+    prev_daily_streak = prev_daily_streak or 0
     if daily_streak != prev_daily_streak and daily_streak > 0:
         supabase_client.table("profile").update(
             {"daily_streak": daily_streak}).eq("user_id", user_id).execute()
-        return True
+        # Report only a genuine increase. A broken streak picked back up drops
+        # the stored value (10 -> 1), which still needs persisting, but the
+        # client fires confetti off this flag and a reset is not a win.
+        return daily_streak > prev_daily_streak
     return False
 
 

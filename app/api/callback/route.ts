@@ -5,17 +5,27 @@ import {
   FM_OAUTH_CLIENT_ID,
   FM_OAUTH_CLIENT_SECRET,
   OAUTH_REDIRECT_URL,
+  OAUTH_STATE_COOKIE_NAME,
   SESSION_COOKIE_NAME,
 } from "@/lib/config"
 import { serialize } from "cookie"
+import { cookies } from "next/headers"
 import { encrypt, generateSessionId } from "@/lib/encryption"
 import { supabaseClient } from "@/lib/supabase"
 import { FmProfile, FmUser } from "@/types/focusmate"
 import { TablesInsert } from "@/types/supabase"
-import { buildCookieOptions } from "@/lib/cookie"
+import { buildCookieOptions, buildOauthStateCookieOptions } from "@/lib/cookie"
 
 export async function POST(request: Request) {
-  const { authorizationCode } = await request.json()
+  const { authorizationCode, state } = await request.json()
+
+  // Only exchange a code this browser actually asked for. Skipping the check
+  // lets anyone lure a user to /oauth/callback with an authorization code for
+  // someone else's Focusmate account and sign them in as that person.
+  const expectedState = cookies().get(OAUTH_STATE_COOKIE_NAME)?.value
+  if (!expectedState || !state || state !== expectedState) {
+    return new Response("Invalid OAuth state", { status: 400 })
+  }
 
   try {
     const accessToken = await fetchAccessToken(authorizationCode)
@@ -25,16 +35,22 @@ export async function POST(request: Request) {
     await saveProfileDataToDb(user, accessToken, sessionId)
 
     // Set HTTPOnly cookie with user's session ID
-    return new Response("Cookie set", {
-      status: 200,
-      headers: {
-        "Set-Cookie": serialize(
-          SESSION_COOKIE_NAME,
-          sessionId,
-          buildCookieOptions()
-        ),
-      },
-    })
+    const headers = new Headers()
+    headers.append(
+      "Set-Cookie",
+      serialize(SESSION_COOKIE_NAME, sessionId, buildCookieOptions())
+    )
+    // The nonce covers one sign-in, so retire it rather than leaving it
+    // available for a replayed code
+    headers.append(
+      "Set-Cookie",
+      serialize(OAUTH_STATE_COOKIE_NAME, "", {
+        ...buildOauthStateCookieOptions(),
+        maxAge: -1,
+      })
+    )
+
+    return new Response("Cookie set", { status: 200, headers })
   } catch (error) {
     console.error(error)
     return new Response(`Error: ${error}`, {
@@ -95,5 +111,13 @@ async function saveProfileDataToDb(
     session_id: sessionId,
   }
 
-  await supabaseClient.from("profile").upsert(dbUser)
+  // Same reason as the sign-out revoke: supabase-js reports failures through
+  // `error` instead of throwing. Unchecked, a rejected upsert still let the
+  // caller set a session cookie whose ID the Python API cannot resolve, so the
+  // user landed on a dashboard that 401s on every request.
+  const { error } = await supabaseClient.from("profile").upsert(dbUser)
+
+  if (error) {
+    throw new Error(`Failed to save profile: ${error.message}`)
+  }
 }

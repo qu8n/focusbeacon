@@ -15,6 +15,11 @@ import {
   DurationKey,
   emptyCounts,
 } from "./sessions"
+
+// Mirrors ON_TIME_GRACE_SECONDS in api_utils/metric.py. History and the
+// punctuality chart used to disagree here -- 2 minutes vs 60s -- so the same
+// session read "On time: Yes" in the table and Late in the chart.
+const ON_TIME_GRACE_SECONDS = 60
 import {
   addDays,
   addMonths,
@@ -201,16 +206,16 @@ export function calcHeatmapData(
   now: Date,
   weekStart: WeekStartDay = "monday"
 ) {
-  // The Nivo calendar's "to" is exclusive, hence tomorrow rather than today
-  const tomorrow = addDays(now, 1)
+  // The Nivo calendar's "to" is exclusive, hence tomorrow rather than today.
+  // Anchored to midnight, matching calc_heatmap_data: carrying the time of day
+  // pushed the week-start day out of the window, leaving the first column
+  // empty, and dropped sessions earlier in the day than the current time.
+  const tomorrow = addDays(startOfDay(now), 1)
   const oneYearAgo = addYears(tomorrow, -1)
   const daysToWeekStart =
     weekStart === "sunday" ? oneYearAgo.getDay() : pyWeekday(oneYearAgo)
   const windowStart = addDays(oneYearAgo, -daysToWeekStart)
 
-  // windowStart keeps the time of day, so the week-start day itself falls
-  // outside the window. That is what Python does, and the heatmap's first
-  // column is empty because of it.
   const inWindow = sessions.filter(
     (session) => session.start >= windowStart && session.start <= tomorrow
   )
@@ -321,7 +326,9 @@ export function calcHistoryData(
     date: strftime(session.start, "%a, %b %d, %Y"),
     time: strftime(session.start, "%I:%M %p"),
     duration_minutes: session.durationMs / 60000,
-    on_time: session.joinDelta !== null && session.joinDelta <= 120,
+    on_time:
+      session.joinDelta !== null &&
+      session.joinDelta <= ON_TIME_GRACE_SECONDS,
   }))
 }
 
@@ -361,7 +368,7 @@ export function calcPunctualityPieData(sessions: DemoSession[]) {
       ? sorted[middle]
       : (sorted[middle - 1] + sorted[middle]) / 2
 
-  const lateSeconds = 60
+  const lateSeconds = ON_TIME_GRACE_SECONDS
   return {
     data: [
       {

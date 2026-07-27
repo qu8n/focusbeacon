@@ -14,10 +14,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { DEFAULT_PHOTO_URL } from "@/lib/config"
 import { useRouter } from "next/navigation"
 import { FadeIn } from "@/components/common/fade-in"
+import { useToast } from "@/hooks/use-toast"
 
 export function NavbarClient() {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const { toast } = useToast()
   const { isSignedIn } = useContext(SignInStatusContext)
   const [profilePhoto, setProfilePhoto] = useState(null)
 
@@ -52,6 +54,17 @@ export function NavbarClient() {
       })
       setProfilePhoto(null)
       router.push("/home")
+    },
+    // Sign-out answers 5xx when it cannot revoke the session server-side, and
+    // the cookie is deliberately left in place in that case. Without this the
+    // click just does nothing -- the user walks away from a shared machine
+    // believing they signed out while the session is still live.
+    onError: () => {
+      toast({
+        description:
+          "We couldn't sign you out. Your session may still be active — please try again.",
+        className: "bg-red-50 border border-red-400 text-red-700",
+      })
     },
   })
 

@@ -20,17 +20,25 @@ export const FM_OAUTH_CLIENT_ID = process.env
 export const FM_OAUTH_CLIENT_SECRET = process.env
   .FM_OAUTH_CLIENT_SECRET as string
 
-// Build the OAuth URL for exchanging the authorization code for an access token
-const urlParamsObj = {
-  client_id: FM_OAUTH_CLIENT_ID,
-  response_type: "code", // authorization code
-  scope: process.env.NEXT_PUBLIC_FM_OAUTH_SCOPE as string,
-  redirect_uri: OAUTH_REDIRECT_URL,
+// Holds the anti-CSRF nonce between the redirect out to Focusmate and the
+// callback coming back
+export const OAUTH_STATE_COOKIE_NAME = "oauthState"
+
+// Built per sign-in rather than once at module load, since every attempt
+// carries its own `state` nonce for /api/callback to check
+export function buildAuthorizeUrl(state: string) {
+  const urlParamsObj = {
+    client_id: FM_OAUTH_CLIENT_ID,
+    response_type: "code", // authorization code
+    scope: process.env.NEXT_PUBLIC_FM_OAUTH_SCOPE as string,
+    redirect_uri: OAUTH_REDIRECT_URL,
+    state,
+  }
+  const urlParamsStr = Object.entries(urlParamsObj)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join("&")
+  return `${process.env.NEXT_PUBLIC_FM_OAUTH_BASE_URL as string}?${urlParamsStr}`
 }
-const urlParamsStr = Object.entries(urlParamsObj)
-  .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-  .join("&")
-export const FM_OAUTH_FOR_AUTH_CODE_URL = `${process.env.NEXT_PUBLIC_FM_OAUTH_BASE_URL as string}?${urlParamsStr}`
 
 // Supabase
 export const SUPABASE_PROJECT_URL = process.env.SUPABASE_PROJECT_URL as string

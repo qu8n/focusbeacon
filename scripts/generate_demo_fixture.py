@@ -90,7 +90,10 @@ def session_rows(sessions: pd.DataFrame, anchor: pd.Timestamp) -> list:
         join_delta = None
         if pd.notna(session.joined_at):
             join_delta = int((session.joined_at - start).total_seconds())
-        partner = (-1 if session.partner_id == "None"
+        # An unmatched session carries a real null now, not the string "None"
+        # that .astype(str) used to produce -- comparing pd.NA to a string
+        # yields NA, which raises the moment it is used as a bool
+        partner = (-1 if pd.isna(session.partner_id)
                    else int(session.partner_id.rsplit("-", 1)[1]))
 
         rows.append([
