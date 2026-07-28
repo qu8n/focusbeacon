@@ -71,10 +71,6 @@ export function msToM(ms: number): number {
   return pyRound(ms / 60000)
 }
 
-export function msToH(ms: number): number {
-  return pyRound(ms / 3600000)
-}
-
 /** Hours to one decimal, for periods short enough that whole hours would round
  * away most of the progress. */
 export function msToHDecimal(ms: number): number {

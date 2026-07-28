@@ -207,21 +207,23 @@ export function SessionsByDuration({ data }: { data: any }) {
       tableContent={
         <>
           {chartData &&
-            chartData.map((item: { duration: string; amount: number }) => {
-              return (
-                <Text
-                  key={item.duration}
-                  className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
-                >
-                  <span>{item.duration}</span>
-                  <span>
-                    {item.amount.toLocaleString()} (
-                    {toPercentage(item.amount, totalSessions)}
-                    %)
-                  </span>
-                </Text>
-              )
-            })}
+            chartData.map(
+              (item: { duration: string; amount: number; hours: number }) => {
+                return (
+                  <Text
+                    key={item.duration}
+                    className="flex justify-between border-b border-stone-200 last:border-none py-2 last:pb-0"
+                  >
+                    <span>{item.duration}</span>
+                    <span>
+                      {item.amount.toLocaleString()} (
+                      {toPercentage(item.amount, totalSessions)}
+                      %) &middot; {item.hours}h
+                    </span>
+                  </Text>
+                )
+              }
+            )}
         </>
       }
     />

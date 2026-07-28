@@ -29,13 +29,14 @@ function DaySvg({ color }: { color: string }) {
 
 export function Heatmap({
   data,
+  valueLabel = (value) => `${value} session${value !== 1 ? "s" : ""}`,
 }: {
   data: {
     data: CalendarData["data"]
     from: CalendarData["from"]
     to: CalendarData["to"]
-    past_year_sessions: number
   }
+  valueLabel?: (value: number) => string
 }) {
   const { isBelowSm } = useBreakpoint("sm")
   const { weekStart } = useWeekStart()
@@ -83,9 +84,7 @@ export function Heatmap({
                 <Divider className="my-2" />
                 <div className="flex px-4 items-center">
                   <DaySvg color={color} />
-                  <Text>
-                    {value} session{Number(value) !== 1 && "s"}
-                  </Text>
+                  <Text>{valueLabel(Number(value))}</Text>
                 </div>
               </div>
             )

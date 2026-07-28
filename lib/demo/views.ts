@@ -15,6 +15,7 @@ import {
   calcDurationPieData,
   calcHeatmapData,
   calcHistoryData,
+  calcTimeHeatmapData,
   calcMaxDailyStreak,
   calcPunctualityPieData,
   calcRepeatPartners,
@@ -37,7 +38,6 @@ import {
   getCurrMonthStart,
   getCurrWeekStart,
   getCurrYearStart,
-  msToH,
   msToHDecimal,
   msToM,
   pyRound1,
@@ -68,6 +68,7 @@ export function buildStreak(now: Date, weekStart: WeekStartDay) {
     monthly_streak: calcCurrStreak(sessions, "M", now),
     max_daily_streak: calcMaxDailyStreak(sessions),
     heatmap_data: calcHeatmapData(sessions, now, weekStart),
+    time_heatmap_data: calcTimeHeatmapData(sessions, now, weekStart),
     history_data: calcHistoryData(allSessions, now, 3),
     daily: {
       subheading: formatDateLabel(currDayStart, DATE_LABEL),
@@ -158,16 +159,16 @@ export function buildMonth(now: Date) {
   const l6mSessions = between(sessions, l6mStart, currMonthStart)
 
   const dateFormat = "%B %Y"
-  const currMonthMs = totalDurationMs(currMonthSessions)
-  const prevMonthMs = totalDurationMs(prevMonthSessions)
+  const currMonthHours = msToHDecimal(totalDurationMs(currMonthSessions))
+  const prevMonthHours = msToHDecimal(totalDurationMs(prevMonthSessions))
 
   return {
     curr_period: {
       subheading: formatDateLabel(currMonthStart, dateFormat),
       sessions_total: currMonthSessions.length,
       sessions_delta: currMonthSessions.length - prevMonthSessions.length,
-      hours_total: msToH(currMonthMs),
-      hours_delta: msToH(currMonthMs - prevMonthMs),
+      hours_total: currMonthHours,
+      hours_delta: pyRound1(currMonthHours - prevMonthHours),
       partners_total: countPartners(currMonthSessions),
       partners_repeat: calcRepeatPartners(currMonthSessions),
       period_type: "month",
@@ -210,16 +211,16 @@ export function buildYear(now: Date) {
   const prevYearSessions = between(sessions, prevYearStart, currYearStart)
 
   const dateFormat = "%Y"
-  const currYearMs = totalDurationMs(currYearSessions)
-  const prevYearMs = totalDurationMs(prevYearSessions)
+  const currYearHours = msToHDecimal(totalDurationMs(currYearSessions))
+  const prevYearHours = msToHDecimal(totalDurationMs(prevYearSessions))
 
   return {
     curr_period: {
       subheading: formatDateLabel(currYearStart, dateFormat),
       sessions_total: currYearSessions.length,
       sessions_delta: currYearSessions.length - prevYearSessions.length,
-      hours_total: msToH(currYearMs),
-      hours_delta: msToH(currYearMs - prevYearMs),
+      hours_total: currYearHours,
+      hours_delta: pyRound1(currYearHours - prevYearHours),
       partners_total: countPartners(currYearSessions),
       partners_repeat: calcRepeatPartners(currYearSessions),
       period_type: "year",
@@ -227,7 +228,7 @@ export function buildYear(now: Date) {
     prev_period: {
       subheading: formatDateLabel(prevYearStart, dateFormat),
       sessions_total: prevYearSessions.length,
-      hours_total: msToH(prevYearMs),
+      hours_total: prevYearHours,
       partners_total: countPartners(prevYearSessions),
       partners_repeat: calcRepeatPartners(prevYearSessions),
     },
@@ -266,7 +267,7 @@ export function buildLifetime(now: Date) {
     curr_period: {
       subheading: `${firstSessionDate} - Present`,
       sessions_total: DEMO_PROFILE.total_session_count,
-      hours_total: msToH(totalDurationMs(sessions)),
+      hours_total: msToHDecimal(totalDurationMs(sessions)),
       partners_total: countPartners(sessions),
       partners_repeat: calcRepeatPartners(sessions),
       first_session_date: firstSessionDate,

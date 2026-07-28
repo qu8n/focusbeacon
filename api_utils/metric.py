@@ -2,7 +2,7 @@ import pandas as pd
 from typing import Any, Dict, List, Literal
 import numpy as np
 from api_utils.time import get_naive_local_today, m_to_ms, \
-    ms_to_h, WeekStartDay
+    ms_to_h_decimal, WeekStartDay
 
 # How late you can join and still count as on time. One definition shared by
 # the history table and the punctuality chart -- they used to disagree (2
@@ -158,6 +158,41 @@ def calc_max_daily_streak(sessions: pd.DataFrame,
     }
 
 
+def _one_year_calendar_window(local_timezone: str,
+                              week_start: WeekStartDay) -> tuple:
+    '''
+    The Nivo TimeRange calendar's one-year window: from the start of the week
+    containing "one year ago" through tomorrow (Nivo's "to" is exclusive).
+    Shared by calc_heatmap_data and calc_time_heatmap_data so the two
+    calendars always cover the same days.
+
+    Returns
+    -------
+    tuple
+        (window_start, tomorrow), both tz-naive local timestamps.
+    '''
+    # start_time is naive local, so the window has to be anchored to the user's
+    # day. pd.Timestamp.today() is the server's clock -- UTC on Vercel -- which
+    # both slides the window for anyone outside that timezone and, because it
+    # keeps the current time of day, clips sessions earlier on the first day
+    today = get_naive_local_today(local_timezone).normalize()
+
+    # Nivo TimeRange calendar component's 'to' date is exclusive, so we need to
+    # add one day to the current date
+    tomorrow = today + pd.DateOffset(days=1)
+
+    # Calculate the start of the week one year ago based on week_start preference
+    one_year_ago = tomorrow - pd.DateOffset(years=1)
+    if week_start == "sunday":
+        # Sunday = 6 in weekday(), shift so Sunday = 0
+        days_to_week_start = (one_year_ago.weekday() + 1) % 7
+    else:  # monday
+        days_to_week_start = one_year_ago.weekday()
+    window_start = one_year_ago - pd.DateOffset(days=days_to_week_start)
+
+    return window_start, tomorrow
+
+
 def calc_heatmap_data(sessions: pd.DataFrame,
                       local_timezone: str,
                       week_start: WeekStartDay = "monday") -> dict:
@@ -182,33 +217,13 @@ def calc_heatmap_data(sessions: pd.DataFrame,
         the Nivo TimeRange calendar component, as well as the total number of
         sessions in the past year.
     '''
-
-    # start_time is naive local, so the window has to be anchored to the user's
-    # day. pd.Timestamp.today() is the server's clock -- UTC on Vercel -- which
-    # both slides the window for anyone outside that timezone and, because it
-    # keeps the current time of day, clips sessions earlier on the first day
-    today = get_naive_local_today(local_timezone).normalize()
-
-    # Nivo TimeRange calendar component's 'to' date is exclusive, so we need to
-    # add one day to the current date
-    tomorrow = today + pd.DateOffset(days=1)
-    tomorrow_str = tomorrow.strftime('%Y-%m-%d')
-
-    # Calculate the start of the week one year ago based on week_start preference
-    one_year_ago = tomorrow - pd.DateOffset(years=1)
-    if week_start == "sunday":
-        # Sunday = 6 in weekday(), shift so Sunday = 0
-        days_to_week_start = (one_year_ago.weekday() + 1) % 7
-    else:  # monday
-        days_to_week_start = one_year_ago.weekday()
-    one_year_ago_week_start = one_year_ago - pd.DateOffset(
-        days=days_to_week_start)
-    one_year_ago_week_start_str = one_year_ago_week_start.strftime('%Y-%m-%d')
+    window_start, tomorrow = _one_year_calendar_window(
+        local_timezone, week_start)
 
     sessions = sessions.copy()
 
     sessions = sessions[
-        (sessions['start_time'] >= one_year_ago_week_start) &
+        (sessions['start_time'] >= window_start) &
         (sessions['start_time'] <= tomorrow)
     ]
 
@@ -223,10 +238,63 @@ def calc_heatmap_data(sessions: pd.DataFrame,
     past_year_sessions = len(sessions)
 
     return {
-        "from": one_year_ago_week_start_str,
-        "to": tomorrow_str,
+        "from": window_start.strftime('%Y-%m-%d'),
+        "to": tomorrow.strftime('%Y-%m-%d'),
         "data": heatmap_data,
         "past_year_sessions": past_year_sessions
+    }
+
+
+def calc_time_heatmap_data(sessions: pd.DataFrame,
+                           local_timezone: str,
+                           week_start: WeekStartDay = "monday") -> dict:
+    '''
+    Same as calc_heatmap_data, but each day's value is the total time spent in
+    sessions that day (in decimal hours) rather than a session count.
+
+    Parameters
+    ----------
+    sessions : pd.DataFrame
+        A DataFrame containing all completed sessions.
+    local_timezone : str
+        The user's IANA timezone, used to anchor the one-year window to their
+        calendar days.
+    week_start : WeekStartDay
+        Either "sunday" or "monday". Determines the first day of the week
+        for the heatmap display.
+
+    Returns
+    -------
+    dict
+        A dictionary containing data for the "from", "to", and "data" props of
+        the Nivo TimeRange calendar component, as well as the total hours
+        spent in sessions in the past year.
+    '''
+    window_start, tomorrow = _one_year_calendar_window(
+        local_timezone, week_start)
+
+    sessions = sessions.copy()
+
+    sessions = sessions[
+        (sessions['start_time'] >= window_start) &
+        (sessions['start_time'] <= tomorrow)
+    ]
+
+    sessions['start_date_str'] = \
+        sessions['start_time'].dt.strftime('%Y-%m-%d')
+    daily_duration = sessions.groupby('start_date_str')['duration'].sum()
+    heatmap_data = daily_duration.reset_index()
+    heatmap_data.columns = ['day', 'value']  # expected by Nivo calendar
+    heatmap_data['value'] = heatmap_data['value'].apply(ms_to_h_decimal)
+    heatmap_data = heatmap_data.to_dict(orient='records')
+
+    past_year_hours = ms_to_h_decimal(sessions['duration'].sum())
+
+    return {
+        "from": window_start.strftime('%Y-%m-%d'),
+        "to": tomorrow.strftime('%Y-%m-%d'),
+        "data": heatmap_data,
+        "past_year_hours": past_year_hours
     }
 
 
@@ -410,17 +478,15 @@ def calc_history_data(sessions: pd.DataFrame, local_timezone: str,
 def calc_duration_pie_data(sessions: pd.DataFrame):
     return [
         {
-            "duration": "25m",
-            "amount": len(sessions[sessions['duration'] == m_to_ms(25)])
-        },
-        {
-            "duration": "50m",
-            "amount": len(sessions[sessions['duration'] == m_to_ms(50)])
-        },
-        {
-            "duration": "75m",
-            "amount": len(sessions[sessions['duration'] == m_to_ms(75)])
+            "duration": label,
+            "amount": len(bucket),
+            "hours": ms_to_h_decimal(bucket['duration'].sum()),
         }
+        for label, bucket in (
+            ("25m", sessions[sessions['duration'] == m_to_ms(25)]),
+            ("50m", sessions[sessions['duration'] == m_to_ms(50)]),
+            ("75m", sessions[sessions['duration'] == m_to_ms(75)]),
+        )
     ]
 
 
@@ -512,5 +578,5 @@ def calc_daily_record(sessions: pd.DataFrame) -> Dict[str, Any]:
     daily_duration = sessions.groupby('start_date')['duration'].sum()
     return {
         'date': daily_duration.idxmax().strftime('%b %-d, %Y'),
-        'duration': ms_to_h(daily_duration.max())
+        'duration': ms_to_h_decimal(daily_duration.max())
     }

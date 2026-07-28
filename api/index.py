@@ -5,11 +5,12 @@ import pandas as pd
 from pydantic import BaseModel, Field, model_validator
 from api_utils.metric import calc_max_daily_streak, \
     calc_curr_streak, calc_repeat_partners, calc_daily_record, calc_cumulative_sessions_chart, calc_duration_pie_data, \
-    calc_punctuality_pie_data, calc_chart_data_by_hour, calc_heatmap_data, calc_history_data, calc_chart_data_by_range
+    calc_punctuality_pie_data, calc_chart_data_by_hour, calc_heatmap_data, \
+    calc_time_heatmap_data, calc_history_data, calc_chart_data_by_range
 from api_utils.supabase import get_weekly_goal, update_daily_streak, \
     update_weekly_goal
 from api_utils.time import format_date_label, get_curr_day_start, \
-    get_curr_month_start, get_curr_week_start, get_curr_year_start, ms_to_h, \
+    get_curr_month_start, get_curr_week_start, get_curr_year_start, \
     ms_to_h_decimal, ms_to_m, WeekStartDay
 from api_utils.request import get_session_id, get_access_token, SessionNotFound
 from api_utils.focusmate import get_data
@@ -111,6 +112,8 @@ async def get_streak(session_id: SessionIdDep,
         "max_daily_streak": calc_max_daily_streak(sessions),
         "heatmap_data": calc_heatmap_data(sessions, local_timezone,
                                           week_start=week_start),
+        "time_heatmap_data": calc_time_heatmap_data(sessions, local_timezone,
+                                                    week_start=week_start),
         "history_data": calc_history_data(
             all_sessions, local_timezone, head=3),
         "daily": {
@@ -275,14 +278,18 @@ async def get_month(session_id: SessionIdDep):
 
     date_format = "%B %Y"
 
+    curr_month_hours = ms_to_h_decimal(curr_month_sessions['duration'].sum())
+    prev_month_hours = ms_to_h_decimal(prev_month_sessions['duration'].sum())
+
     return {
         "curr_period": {
             "subheading": format_date_label(curr_month_start, date_format),
             "sessions_total": len(curr_month_sessions),
             "sessions_delta": len(curr_month_sessions) - len(prev_month_sessions),
-            "hours_total": ms_to_h(curr_month_sessions['duration'].sum()),
-            "hours_delta": ms_to_h(curr_month_sessions['duration'].sum() -
-                                   prev_month_sessions['duration'].sum()),
+            "hours_total": curr_month_hours,
+            # Delta comes off the rounded hours so it reconciles with the two
+            # numbers a user can actually see
+            "hours_delta": round(curr_month_hours - prev_month_hours, 1),
             "partners_total": curr_month_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(curr_month_sessions),
             "period_type": "month",
@@ -329,21 +336,25 @@ async def get_year(session_id: SessionIdDep):
 
     date_format = "%Y"
 
+    curr_year_hours = ms_to_h_decimal(curr_year_sessions['duration'].sum())
+    prev_year_hours = ms_to_h_decimal(prev_year_sessions['duration'].sum())
+
     return {
         "curr_period": {
             "subheading": format_date_label(curr_year_start, date_format),
             "sessions_total": len(curr_year_sessions),
             "sessions_delta": len(curr_year_sessions) - len(prev_year_sessions),
-            "hours_total": ms_to_h(curr_year_sessions['duration'].sum()),
-            "hours_delta": ms_to_h(curr_year_sessions['duration'].sum() -
-                                   prev_year_sessions['duration'].sum()),
+            "hours_total": curr_year_hours,
+            # Delta comes off the rounded hours so it reconciles with the two
+            # numbers a user can actually see
+            "hours_delta": round(curr_year_hours - prev_year_hours, 1),
             "partners_total": curr_year_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(curr_year_sessions),
             "period_type": "year",
         },
         "prev_period": {
             "sessions_total": len(prev_year_sessions),
-            "hours_total": ms_to_h(prev_year_sessions['duration'].sum()),
+            "hours_total": prev_year_hours,
             "partners_total": prev_year_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(prev_year_sessions),
             "subheading": format_date_label(prev_year_start, date_format),
@@ -379,7 +390,7 @@ async def get_lifetime(session_id: SessionIdDep):
         "curr_period": {
             "subheading": f"{first_session_date} - Present",
             "sessions_total": profile.get("totalSessionCount"),
-            "hours_total": ms_to_h(sessions['duration'].sum()),
+            "hours_total": ms_to_h_decimal(sessions['duration'].sum()),
             "partners_total": sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(sessions),
             "first_session_date": first_session_date,
