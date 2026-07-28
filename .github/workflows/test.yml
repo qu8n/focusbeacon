@@ -112,4 +112,17 @@ jobs:
         # Regenerates the fixture and replays every endpoint payload against
         # the TypeScript rebuild at eight anchor dates. Needs both toolchains,
         # which is why it is its own job.
+        #
+        # The generator imports api.index, so api_utils.config and the
+        # Supabase client are built at import time and need settings to exist.
+        # Locally those come from .env; here they are fakes, and nothing in
+        # this path makes a network call. Same values as tests/conftest.py.
+        env:
+          SUPABASE_PROJECT_URL: https://test.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: test-service-role-key
+          ENCRYPTION_KEY: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+          NEXT_PUBLIC_SESSION_COOKIE_NAME: sessionId
+          NEXT_PUBLIC_FM_API_URL: https://api.focusmate.test
+          NEXT_PUBLIC_FM_API_PROFILE_ENDPOINT: /v1/me
+          NEXT_PUBLIC_FM_API_SESSIONS_ENDPOINT: /v1/sessions
         run: npm run check:demo

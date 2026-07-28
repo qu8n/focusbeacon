@@ -26,7 +26,16 @@ export const SignInStatusContext = createContext({
   isCheckingSignInStatus: true,
   isSignedIn: false,
 })
-if (typeof window !== "undefined" && process.env.NODE_ENV === "production") {
+// The key is optional, per .env.example -- a self-hosted or contributor build
+// has no PostHog project. Initializing without one does no telemetry and logs
+// "PostHog was initialized without a token" to the console on every page load,
+// so gate on it rather than calling init unconditionally.
+const posthogEnabled =
+  typeof window !== "undefined" &&
+  process.env.NODE_ENV === "production" &&
+  Boolean(POSTHOG_KEY)
+
+if (posthogEnabled) {
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
     person_profiles: "always", // creates profiles for anon users as well
@@ -54,7 +63,9 @@ function CustomProviders({ children }: { children: React.ReactNode }) {
     </SignInStatusContext.Provider>
   )
 
-  return process.env.NODE_ENV === "production" ? (
+  // Keyed off the same condition as init above, so the provider is never
+  // wrapped around an uninitialized client
+  return posthogEnabled ? (
     <PostHogProvider client={posthog}>{content}</PostHogProvider>
   ) : (
     content
