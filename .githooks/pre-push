@@ -1,7 +1,14 @@
 #!/bin/sh
-# The demo dashboard is served from a committed fixture, which can silently
-# fall out of step with the API it was generated from. Push is where that
-# starts to matter: Vercel deploys from it and there is no CI behind it.
+# Fast feedback before a push. CI (.github/workflows/test.yml) runs all of
+# this plus lint, typecheck and the Playwright suite; this hook covers the
+# parts quick enough not to be annoying -- together about two seconds.
+#
+# The demo fixture check is the slow one and stays because it is the only
+# thing standing between a stale fixture and a Vercel deploy.
 #
 # Needs uv on PATH, same as `npm run dev`.
-exec npm run --silent check:demo
+set -e
+
+uv run --group dev pytest -q
+npm test --silent
+npm run --silent check:demo

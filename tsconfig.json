@@ -9,7 +9,10 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    // "bundler" rather than "node": the test tooling (Vitest, its plugins,
+    // Playwright) ships ESM-only packages whose types resolve solely through
+    // "exports" maps, which classic node resolution does not read
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -24,5 +27,10 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // vitest.config.ts is excluded, not overlooked. It is the only file that
+  // imports @vitejs/plugin-react, whose type declarations use an export
+  // syntax TypeScript 5.4 cannot parse, and `next build` typechecks every
+  // included file. Vitest fails loudly if the config is wrong, so nothing is
+  // lost by leaving it out. Drop this line once TypeScript moves past 5.4.
+  "exclude": ["node_modules", "vitest.config.ts"]
 }

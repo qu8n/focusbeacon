@@ -59,29 +59,38 @@ export async function POST(request: Request) {
   }
 }
 
+// Errors propagate to the POST handler rather than being caught here. Logging
+// and returning undefined meant the caller carried on to the profile endpoint
+// as "Bearer undefined", so a token-exchange failure was reported to the user
+// as a profile failure -- or, once the undefined token reached encrypt(), as a
+// TypeError out of the crypto layer.
 async function fetchAccessToken(authorizationCode: string) {
-  try {
-    const response = await fetch(FM_API_URL + FM_API_OAUTH_TOKEN_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: FM_OAUTH_CLIENT_ID,
-        client_secret: FM_OAUTH_CLIENT_SECRET,
-        grant_type: "authorization_code",
-        code: authorizationCode,
-        redirect_uri: OAUTH_REDIRECT_URL,
-      }),
-    })
-    if (!response.ok) {
-      throw new Error("Failed to get access token")
-    }
-    const { access_token } = await response.json()
-    return access_token
-  } catch (error) {
-    console.error(error)
+  const response = await fetch(FM_API_URL + FM_API_OAUTH_TOKEN_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: FM_OAUTH_CLIENT_ID,
+      client_secret: FM_OAUTH_CLIENT_SECRET,
+      grant_type: "authorization_code",
+      code: authorizationCode,
+      redirect_uri: OAUTH_REDIRECT_URL,
+    }),
+  })
+  if (!response.ok) {
+    throw new Error(
+      `Failed to get access token: Focusmate returned ${response.status}`
+    )
   }
+
+  const { access_token } = await response.json()
+  // A 200 carrying no token would otherwise be stored as ciphertext of
+  // "undefined" and fail much later, on the user's first dashboard request
+  if (!access_token) {
+    throw new Error("Failed to get access token: response carried none")
+  }
+  return access_token as string
 }
 
 async function fetchProfileData(accessToken: string): Promise<FmProfile> {

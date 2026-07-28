@@ -40,3 +40,5 @@ next-env.d.ts
 __pycache__
 
 /supabase
+test-results/
+playwright-report/

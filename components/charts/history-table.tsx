@@ -10,10 +10,21 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Cell, ColumnDef, Row, flexRender } from "@tanstack/react-table"
+import {
+  Cell,
+  ColumnDef,
+  Row,
+  RowData,
+  flexRender,
+} from "@tanstack/react-table"
 import { InfoPopover } from "@/components/common/info-popover"
 
-declare module "@tanstack/table-core/build/lib/types" {
+// Augments the package's public entry point. This used to name
+// "@tanstack/table-core/build/lib/types", a build-internal path the package's
+// own `exports` map does not expose -- so the augmentation silently stopped
+// applying under any module resolution that honours `exports`, taking the
+// typing of `meta.popoverContent` with it.
+declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
     popoverContent?: string

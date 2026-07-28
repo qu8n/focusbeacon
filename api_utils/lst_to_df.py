@@ -6,6 +6,21 @@ SESSION_COLUMNS = ['session_id', 'duration', 'start_time', 'requested_at',
                    'joined_at', 'completed', 'session_title', 'partner_id']
 
 
+def _to_naive_local(column: pd.Series) -> pd.Series:
+    """Drop the timezone, keeping the local wall clock.
+
+    The conversion has to come first. When every value in the column is null
+    -- someone who booked and no-showed every time, or a new user whose first
+    session has not happened yet -- the DataFrame constructor infers object
+    dtype, and `.dt` does not exist there. That reached the user as a 500 on
+    every dashboard route.
+    """
+    converted = pd.to_datetime(column)
+    if isinstance(converted.dtype, pd.DatetimeTZDtype):
+        return converted.dt.tz_localize(None)
+    return converted
+
+
 def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
     rows = []
 
@@ -59,8 +74,8 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
         # Times are saved in the local time without timezone info
         # (e.g. 2pm EST is simply saved as 2pm)
         # This enables more simple operations and comparisons
-        df['start_time'] = df['start_time'].dt.tz_localize(None)
-        df['requested_at'] = df['requested_at'].dt.tz_localize(None)
-        df['joined_at'] = df['joined_at'].dt.tz_localize(None)
+        df['start_time'] = _to_naive_local(df['start_time'])
+        df['requested_at'] = _to_naive_local(df['requested_at'])
+        df['joined_at'] = _to_naive_local(df['joined_at'])
 
     return df

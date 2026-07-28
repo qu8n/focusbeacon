@@ -64,6 +64,24 @@ function weekdayOfDay(day: number): number {
   return (((day + 3) % 7) + 7) % 7
 }
 
+// Mirrors WEEKEND_BRIDGE_DAYS in api_utils/metric.py. Keyed
+// "previousWeekday-currentWeekday", valued with the gap the bridge may span.
+// Matching on weekday alone made a Friday and a Monday ten days later count
+// as consecutive.
+const WEEKEND_BRIDGE_DAYS: Record<string, number> = {
+  "4-0": 3, // Friday -> Monday, over Saturday and Sunday
+  "5-0": 2, // Saturday -> Monday, over Sunday
+  "4-6": 2, // Friday -> Sunday, over Saturday
+}
+
+function bridgesAWeekend(previousDay: number, currentDay: number): boolean {
+  const expectedGap =
+    WEEKEND_BRIDGE_DAYS[
+      `${weekdayOfDay(previousDay)}-${weekdayOfDay(currentDay)}`
+    ]
+  return expectedGap !== undefined && currentDay - previousDay === expectedGap
+}
+
 function dateOfDay(day: number, reference: Date): Date {
   return addDays(reference, day - dayNumber(reference))
 }
@@ -164,15 +182,10 @@ export function calcMaxDailyStreak(sessions: DemoSession[]): {
   for (let i = 1; i < days.length; i += 1) {
     const currentDate = days[i]
     const previousDate = days[i - 1]
-    const currentDay = weekdayOfDay(currentDate)
-    const previousDay = weekdayOfDay(previousDate)
 
     if (currentDate === previousDate + 1) {
       current += 1
-    } else if (
-      (currentDay === 0 && (previousDay === 4 || previousDay === 5)) ||
-      (currentDay === 6 && previousDay === 4)
-    ) {
+    } else if (bridgesAWeekend(previousDate, currentDate)) {
       current += 1
     } else {
       if (current > maxStreak) {

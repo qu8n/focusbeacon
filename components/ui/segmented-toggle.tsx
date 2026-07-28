@@ -19,6 +19,10 @@ export function SegmentedToggle<T extends string>({
         <button
           key={option.value}
           type="button"
+          // Which option is active was conveyed by background colour alone,
+          // so assistive technology -- and anyone who cannot distinguish the
+          // two shades -- had no way to tell
+          aria-pressed={value === option.value}
           onClick={() => onChange(option.value)}
           className={cx(
             "flex-1 py-2 px-4 rounded-lg transition-colors text-base/6 sm:text-sm/6",

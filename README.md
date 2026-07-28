@@ -97,6 +97,37 @@ and the Next.js server concurrently
 npm run dev
 ```
 
+## Running the tests
+
+```sh
+npm test          # Vitest: lib, hooks, components, route handlers, middleware
+npm run test:py   # pytest: the FastAPI routes and everything under api_utils
+npm run test:e2e  # Playwright: demo-mode smoke tests in a real browser
+npm run typecheck # tsc --noEmit
+```
+
+None of these need credentials. The Python tests set their own fake
+environment before importing anything, and the Playwright suite runs entirely
+against `?demo=true`, which reads a static fixture in the browser — so no
+OAuth, no Supabase and no serverless function is involved.
+
+Playwright needs its browser once:
+
+```sh
+npx playwright install chromium
+```
+
+Two further checks guard the demo dashboard, which is served from a committed
+fixture that can drift from the API it was generated from:
+
+```sh
+npm run check:demo   # regenerate the fixture and replay it against the API
+```
+
+The pre-push hook runs pytest, Vitest and `check:demo` — about five seconds.
+GitHub Actions runs all of it, plus lint, typecheck and Playwright, on every
+push and pull request.
+
 ## Update Supabase types using the CLI
 
 **Initialize a local Supabase project:** (only needs to be done once)

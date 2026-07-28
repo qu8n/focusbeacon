@@ -11,6 +11,24 @@ from api_utils.time import get_naive_local_today, m_to_ms, \
 # tells users.
 ON_TIME_GRACE_SECONDS = 60
 
+# Sessions either side of a weekend still count as consecutive, but only when
+# the gap really is just that weekend. Keyed by (previous weekday, current
+# weekday) with the number of days the bridge is allowed to span. Matching on
+# weekday alone made a Friday and a Monday ten days later consecutive, so one
+# Friday and one Monday a fortnight apart read as a two-day streak.
+WEEKEND_BRIDGE_DAYS = {
+    (4, 0): 3,  # Friday -> Monday, over Saturday and Sunday
+    (5, 0): 2,  # Saturday -> Monday, over Sunday
+    (4, 6): 2,  # Friday -> Sunday, over Saturday
+}
+
+
+def _bridges_a_weekend(previous_date, current_date) -> bool:
+    expected_gap = WEEKEND_BRIDGE_DAYS.get(
+        (previous_date.weekday(), current_date.weekday()))
+    return expected_gap is not None and \
+        (current_date - previous_date).days == expected_gap
+
 
 def calc_repeat_partners(sessions: pd.DataFrame) -> int:
     # value_counts() drops nulls, so unmatched sessions can't group together
@@ -122,8 +140,6 @@ def calc_max_daily_streak(sessions: pd.DataFrame,
     for i in range(1, len(sessions)):
         current_date = sessions['start_date'].iloc[i]
         previous_date = sessions['start_date'].iloc[i - 1]
-        current_day = current_date.weekday()
-        previous_day = previous_date.weekday()
 
         # Increment the streak for consecutive days
         if current_date == previous_date + pd.Timedelta(days=1):
@@ -131,8 +147,7 @@ def calc_max_daily_streak(sessions: pd.DataFrame,
         # If weekend doesn't break the streak, increment the streak if there
         # are sessions on one or none of the weekend days
         elif not weekend_breaks_daily_streak and \
-            ((current_day == 0 and (previous_day == 4 or previous_day == 5))
-             or (current_day == 6 and previous_day == 4)):
+                _bridges_a_weekend(previous_date, current_date):
             current_streak += 1
         else:
             if current_streak > max_streak:

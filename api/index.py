@@ -342,12 +342,11 @@ async def get_year(session_id: SessionIdDep):
             "period_type": "year",
         },
         "prev_period": {
+            "subheading": format_date_label(prev_year_start, date_format),
             "sessions_total": len(prev_year_sessions),
             "hours_total": ms_to_h(prev_year_sessions['duration'].sum()),
             "partners_total": prev_year_sessions['partner_id'].nunique(),
             "partners_repeat": calc_repeat_partners(prev_year_sessions),
-            "subheading": format_date_label(prev_year_start, date_format),
-            "sessions_total": len(prev_year_sessions),
         },
         "charts": {
             "curr_period": calc_chart_data_by_range(
@@ -395,9 +394,17 @@ async def get_lifetime(session_id: SessionIdDep):
     }
 
 
+# The history table asks for 10 rows at a time. The ceiling is generous
+# against that, and only exists so one request cannot ask for an unbounded
+# slice of somebody's history.
+MAX_HISTORY_PAGE_SIZE = 200
+
+
 class Pagination(BaseModel):
-    page_index: int
-    page_size: int
+    """A negative page_index used to slice from the end of the list, so the
+    request quietly returned the wrong rows instead of being rejected."""
+    page_index: int = Field(ge=0)
+    page_size: int = Field(gt=0, le=MAX_HISTORY_PAGE_SIZE)
 
 
 @app.post("/api/py/history")
