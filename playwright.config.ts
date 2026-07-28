@@ -21,7 +21,11 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? [["github"], ["list"]] : "list",
+  // The html reporter is what the CI job uploads on a failure; without it
+  // there is no report directory to collect
+  reporter: process.env.CI
+    ? [["github"], ["list"], ["html", { open: "never" }]]
+    : "list",
   use: {
     baseURL: BASE_URL,
     trace: "on-first-retry",

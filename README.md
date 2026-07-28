@@ -11,7 +11,7 @@
   </p>
 
 [![Made with Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)](https://python.org "Go to Python homepage")
-[![Made with Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js&logoColor=white)](https://nodejs.org "Go to Node.js homepage")
+[![Made with Node.js](https://img.shields.io/badge/Node.js-22.x-green?logo=node.js&logoColor=white)](https://nodejs.org "Go to Node.js homepage")
 ![MIT License](https://img.shields.io/badge/License-MIT-blue)
 
 </div>
@@ -56,7 +56,7 @@ cd focusbeacon
 
 3. Ensure the following language versions are used in your local environment:
 
-- Node.js (v20.x)
+- Node.js (v22.12 or newer)
 - Python (v3.12)
 
 4. Install packages with npm

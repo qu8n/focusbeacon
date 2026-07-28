@@ -2,6 +2,9 @@
   "name": "focusbeacon",
   "version": "0.2.0",
   "private": true,
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
     "fastapi-dev": "uv run uvicorn api.index:app --reload",
     "next-dev": "next dev",
