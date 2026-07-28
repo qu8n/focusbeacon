@@ -7,11 +7,13 @@ import { LinkExternal } from "@/components/ui/link-external"
 import { LinkInternal } from "@/components/ui/link-internal"
 import { TextLink, Text } from "@/components/ui/text"
 import { useSearchParams, useRouter } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useRef, useState } from "react"
 
 export default function Callback() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const hasCalled = useRef(false)
   // A code can be present and still fail to exchange -- a stale or mismatched
   // OAuth state, or a Focusmate error. Without this the page sits on the
@@ -53,12 +55,21 @@ export default function Callback() {
     }
 
     handlePostCallbackFlow(authorizationCode)
-      .then(() => router.push("/dashboard"))
+      .then(() => {
+        // The root layout's sign-in check runs when this page mounts, which is
+        // before the POST above sets the session cookie -- so it answers 400
+        // and caches a definite "signed out". `staleTime: Infinity` means the
+        // push below never re-checks, and the dashboard's route guard reads
+        // that stale answer and bounces the user straight to /home. A 200 here
+        // means the session exists, so record it.
+        queryClient.setQueryData(["signinStatus"], true)
+        router.push("/dashboard")
+      })
       .catch((error) => {
         console.error(error)
         setFailed(true)
       })
-  }, [router, authorizationCode, state])
+  }, [router, queryClient, authorizationCode, state])
 
   if (authorizationCode && !failed) {
     return <DashboardSkeleton />
