@@ -19,7 +19,6 @@ from api_utils.time import (
     get_curr_year_start,
     local_dt_to_utc_dt,
     m_to_ms,
-    ms_to_h,
     ms_to_h_decimal,
     ms_to_m,
     utc_dt_to_local_dt,
@@ -36,18 +35,14 @@ class TestDurationConversions:
     def test_ms_to_m_covers_the_three_session_lengths(self, ms, expected):
         assert ms_to_m(ms) == expected
 
-    def test_ms_to_h_rounds_to_whole_hours(self):
-        assert ms_to_h(3600000) == 1
-        assert ms_to_h(5400000 - 1) == 1  # just under 1h30m rounds down
-        assert ms_to_h(7200000) == 2
-
-    def test_ms_to_h_uses_bankers_rounding_at_a_tie(self):
+    def test_ms_to_m_uses_bankers_rounding_at_a_tie(self):
         # Python's round() breaks ties to even. The demo's TypeScript port
         # reproduces this deliberately (lib/demo/time.ts pyRound), so if this
         # ever changes the two sides of the app stop agreeing.
-        assert ms_to_h(int(1.5 * 3600000)) == 2
-        assert ms_to_h(int(2.5 * 3600000)) == 2
-        assert ms_to_h(int(3.5 * 3600000)) == 4
+        assert ms_to_m(int(0.5 * 60000)) == 0
+        assert ms_to_m(int(1.5 * 60000)) == 2
+        assert ms_to_m(int(2.5 * 60000)) == 2
+        assert ms_to_m(int(3.5 * 60000)) == 4
 
     def test_ms_to_h_decimal_keeps_one_place(self):
         # Three 25-minute sessions: 1.25h, which whole hours would flatten to 1

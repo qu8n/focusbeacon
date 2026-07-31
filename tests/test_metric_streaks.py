@@ -245,7 +245,7 @@ class TestDailyRecord:
         ])
         record = calc_daily_record(sessions)
         assert record["date"] == "Mar 2, 2027"
-        assert record["duration"] == 2  # 150 minutes rounds to 2 hours
+        assert record["duration"] == 2.5  # 150 minutes, to one decimal hour
 
     def test_ties_pick_the_earliest_day(self):
         sessions = make_sessions([

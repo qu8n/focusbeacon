@@ -313,9 +313,9 @@ class TestDurationPie:
             day("2027-03-03", duration=75),
         ])
         assert calc_duration_pie_data(sessions) == [
-            {"duration": "25m", "amount": 2},
-            {"duration": "50m", "amount": 0},
-            {"duration": "75m", "amount": 1},
+            {"duration": "25m", "amount": 2, "hours": 0.8},
+            {"duration": "50m", "amount": 0, "hours": 0.0},
+            {"duration": "75m", "amount": 1, "hours": 1.2},
         ]
 
     def test_empty_frame_gives_three_zeroes(self):

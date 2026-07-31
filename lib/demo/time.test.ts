@@ -23,7 +23,6 @@ import {
   getCurrWeekStart,
   getCurrYearStart,
   isoDate,
-  msToH,
   msToHDecimal,
   msToM,
   pyRound,
@@ -82,10 +81,10 @@ describe("duration conversions", () => {
     expect(msToM(3000000)).toBe(50)
   })
 
-  it("converts to whole hours with banker's rounding", () => {
-    expect(msToH(3600000)).toBe(1)
-    expect(msToH(1.5 * 3600000)).toBe(2)
-    expect(msToH(2.5 * 3600000)).toBe(2)
+  it("converts to whole minutes with banker's rounding", () => {
+    expect(msToM(0.5 * 60000)).toBe(0)
+    expect(msToM(1.5 * 60000)).toBe(2)
+    expect(msToM(2.5 * 60000)).toBe(2)
   })
 
   it("converts to one decimal hour", () => {

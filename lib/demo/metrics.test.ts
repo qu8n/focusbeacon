@@ -445,9 +445,9 @@ describe("calcDurationPieData", () => {
         session("2027-03-03", { duration: "75m" }),
       ])
     ).toEqual([
-      { duration: "25m", amount: 2 },
-      { duration: "50m", amount: 0 },
-      { duration: "75m", amount: 1 },
+      { duration: "25m", amount: 2, hours: 0.8 },
+      { duration: "50m", amount: 0, hours: 0 },
+      { duration: "75m", amount: 1, hours: 1.2 },
     ])
   })
 
@@ -548,7 +548,7 @@ describe("calcDailyRecord", () => {
       session("2027-03-02", { hour: 14, duration: "75m" }),
     ])
     expect(record.date).toBe("Mar 2, 2027")
-    expect(record.duration).toBe(2)
+    expect(record.duration).toBe(2.5) // 150 minutes, to one decimal hour
   })
 
   it("breaks a tie with the earliest day", () => {
