@@ -14,6 +14,7 @@ import {
   WeeklyStreak,
 } from "@/app/dashboard/streak/components/w-m-streak"
 import { SessionsHeatmap } from "@/app/dashboard/streak/components/sessions-heatmap"
+import { TimeHeatmap } from "@/app/dashboard/streak/components/time-heatmap"
 import { RecentSessions } from "@/app/dashboard/streak/components/recent-sessions"
 import { fetchDashboardData } from "@/lib/dashboard-data"
 import { takeScreenshot } from "@/lib/screenshot"
@@ -60,6 +61,7 @@ export default function Streak() {
         <WeeklyStreak data={data} />
         <MonthlyStreak data={data} />
         <SessionsHeatmap data={data} />
+        <TimeHeatmap data={data} />
       </div>
 
       <div />

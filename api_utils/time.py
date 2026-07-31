@@ -106,10 +106,6 @@ def ms_to_m(ms: int):
     return int(round(ms / 60000))
 
 
-def ms_to_h(ms: int):
-    return int(round(ms / 3600000))
-
-
 def ms_to_h_decimal(ms: int):
     """Hours kept to one decimal place, for periods short enough that rounding
     to whole hours loses too much (e.g. three 25m sessions in a day)."""

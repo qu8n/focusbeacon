@@ -14,6 +14,7 @@ import {
   DURATION_KEYS,
   DurationKey,
   emptyCounts,
+  totalDurationMs,
 } from "./sessions"
 
 // Mirrors ON_TIME_GRACE_SECONDS in api_utils/metric.py. History and the
@@ -27,7 +28,7 @@ import {
   dayNumber,
   getCurrWeekStart,
   isoDate,
-  msToH,
+  msToHDecimal,
   pyRound,
   pyWeekday,
   startOfDay,
@@ -214,20 +215,27 @@ export function calcMaxDailyStreak(sessions: DemoSession[]): {
   }
 }
 
-export function calcHeatmapData(
-  sessions: DemoSession[],
-  now: Date,
-  weekStart: WeekStartDay = "monday"
-) {
-  // The Nivo calendar's "to" is exclusive, hence tomorrow rather than today.
-  // Anchored to midnight, matching calc_heatmap_data: carrying the time of day
-  // pushed the week-start day out of the window, leaving the first column
-  // empty, and dropped sessions earlier in the day than the current time.
+// The Nivo calendar's "to" is exclusive, hence tomorrow rather than today.
+// Anchored to midnight, matching _one_year_calendar_window: carrying the time
+// of day pushed the week-start day out of the window, leaving the first
+// column empty, and dropped sessions earlier in the day than the current
+// time. Shared by calcHeatmapData and calcTimeHeatmapData so both calendars
+// cover the same days.
+function oneYearCalendarWindow(now: Date, weekStart: WeekStartDay) {
   const tomorrow = addDays(startOfDay(now), 1)
   const oneYearAgo = addYears(tomorrow, -1)
   const daysToWeekStart =
     weekStart === "sunday" ? oneYearAgo.getDay() : pyWeekday(oneYearAgo)
   const windowStart = addDays(oneYearAgo, -daysToWeekStart)
+  return { windowStart, tomorrow }
+}
+
+export function calcHeatmapData(
+  sessions: DemoSession[],
+  now: Date,
+  weekStart: WeekStartDay = "monday"
+) {
+  const { windowStart, tomorrow } = oneYearCalendarWindow(now, weekStart)
 
   const inWindow = sessions.filter(
     (session) => session.start >= windowStart && session.start <= tomorrow
@@ -248,6 +256,37 @@ export function calcHeatmapData(
     to: isoDate(tomorrow),
     data,
     past_year_sessions: inWindow.length,
+  }
+}
+
+/** Same as calcHeatmapData, but each day's value is the total time spent in
+ * sessions that day (in decimal hours) rather than a session count. */
+export function calcTimeHeatmapData(
+  sessions: DemoSession[],
+  now: Date,
+  weekStart: WeekStartDay = "monday"
+) {
+  const { windowStart, tomorrow } = oneYearCalendarWindow(now, weekStart)
+
+  const inWindow = sessions.filter(
+    (session) => session.start >= windowStart && session.start <= tomorrow
+  )
+
+  const durations: Record<string, number> = {}
+  inWindow.forEach((session) => {
+    const day = isoDate(session.start)
+    durations[day] = (durations[day] || 0) + session.durationMs
+  })
+
+  const data = Object.keys(durations)
+    .sort()
+    .map((day) => ({ day, value: msToHDecimal(durations[day]) }))
+
+  return {
+    from: isoDate(windowStart),
+    to: isoDate(tomorrow),
+    data,
+    past_year_hours: msToHDecimal(totalDurationMs(inWindow)),
   }
 }
 
@@ -346,11 +385,16 @@ export function calcHistoryData(
 }
 
 export function calcDurationPieData(sessions: DemoSession[]) {
-  return DURATION_KEYS.map((duration: DurationKey) => ({
-    duration,
-    amount: sessions.filter((session) => session.durationKey === duration)
-      .length,
-  }))
+  return DURATION_KEYS.map((duration: DurationKey) => {
+    const bucket = sessions.filter(
+      (session) => session.durationKey === duration
+    )
+    return {
+      duration,
+      amount: bucket.length,
+      hours: msToHDecimal(totalDurationMs(bucket)),
+    }
+  })
 }
 
 export function formatSeconds(value: number): string {
@@ -451,6 +495,6 @@ export function calcDailyRecord(sessions: DemoSession[]) {
 
   return {
     date: strftime(dateOfDay(best, sessions[0].start), "%b %-d, %Y"),
-    duration: msToH(perDay[best]),
+    duration: msToHDecimal(perDay[best]),
   }
 }
