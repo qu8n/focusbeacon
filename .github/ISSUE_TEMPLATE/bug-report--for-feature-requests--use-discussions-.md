@@ -1,9 +1,10 @@
 ---
-name: Bug report
+name: Bug report (for feature requests, use Discussions)
 about: Create a report to help us improve
-title: ""
-labels: ""
-assignees: ""
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 **Describe the bug**
