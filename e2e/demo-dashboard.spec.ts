@@ -57,6 +57,55 @@ test.describe("the demo dashboard", () => {
     await page.goto("/dashboard/week?demo=true")
     await expect(page.locator("svg").first()).toBeVisible()
   })
+
+  // A present, correctly sized <svg> is not evidence a chart drew anything.
+  // recharts discovers its series by walking children through react-is, and
+  // when that copy of react-is cannot recognise the running React's element
+  // type it finds none: axes and container still render, the plot area is
+  // empty, and nothing is logged. So assert on the series itself.
+  test("the cumulative sessions chart plots one area per duration", async ({
+    page,
+  }) => {
+    await page.goto("/dashboard/lifetime?demo=true")
+
+    const chart = page
+      .locator(".recharts-wrapper")
+      .filter({ has: page.locator("path.recharts-area-area") })
+      .first()
+
+    // One stacked area per category: 25m, 50m, 75m
+    await expect(chart.locator("path.recharts-area-area")).toHaveCount(3)
+
+    // Each area needs real geometry -- an empty or absent `d` means the
+    // series was discovered but had nothing to plot
+    for (const d of await chart
+      .locator("path.recharts-area-area")
+      .evaluateAll((paths) => paths.map((p) => p.getAttribute("d") ?? ""))) {
+      expect(d.length).toBeGreaterThan(100)
+    }
+
+    // Every fill must resolve to a gradient that actually exists, or the
+    // areas draw transparent
+    const fills = await chart
+      .locator("path.recharts-area-area")
+      .evaluateAll((paths) =>
+        paths.map((p) => p.getAttribute("fill") ?? "")
+      )
+    for (const fill of fills) {
+      const id = fill.match(/^url\(#(.+)\)$/)?.[1]
+      expect(id, `fill should be a gradient reference, got ${fill}`).toBeTruthy()
+      // Attribute selector rather than `#id`: useId() ids are not valid CSS
+      // identifiers, and CSS.escape is a browser global the runner lacks
+      await expect(
+        page.locator(`linearGradient[id="${id}"]`)
+      ).toHaveCount(1)
+    }
+
+    // A y-axis with ticks proves a domain was derived from the data
+    await expect(
+      chart.locator(".recharts-yAxis .recharts-cartesian-axis-tick-value").first()
+    ).toBeVisible()
+  })
 })
 
 test.describe("navigation", () => {
