@@ -808,11 +808,17 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                 }
               />
             ) : null}
-            {categories.map((category) => {
+            {/* flatMap, not a Fragment wrapper: recharts discovers its series
+                by walking children with React.Children and only looks through a
+                Fragment when react-is identifies one. The react-is it bundles
+                predates React 19's element $$typeof, so a Fragment here is
+                opaque to it and every <Area> inside goes undetected -- the chart
+                renders axes and no data, silently. A flat array is traversed
+                natively, so detection never depends on that check. */}
+            {categories.flatMap((category) => {
               const categoryId = `${areaId}-${category.replace(/[^a-zA-Z0-9]/g, "")}`
-              return (
-                <React.Fragment key={category}>
-                  <defs key={category}>
+              return [
+                  <defs key={`defs-${category}`}>
                     <linearGradient
                       key={category}
                       className={cx(
@@ -836,7 +842,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                         category: category,
                       })}
                     </linearGradient>
-                  </defs>
+                  </defs>,
                   <Area
                     className={cx(
                       getColorClassName(
@@ -932,7 +938,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       }
                       return <React.Fragment key={index}></React.Fragment>
                     }}
-                    key={category}
+                    key={`area-${category}`}
                     name={category}
                     type="linear"
                     dataKey={category}
@@ -944,9 +950,8 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                     connectNulls={connectNulls}
                     stackId={stacked ? "stack" : undefined}
                     fill={`url(#${categoryId})`}
-                  />
-                </React.Fragment>
-              )
+                  />,
+              ]
             })}
             {/* hidden lines to increase clickable target area */}
             {onValueChange
