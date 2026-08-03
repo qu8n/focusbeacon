@@ -1,6 +1,9 @@
 import { toPng } from "html-to-image"
 
-export async function takeScreenshot(ref: React.RefObject<HTMLElement>) {
+// `| null` because React 19 types `useRef<T>(null)` as `RefObject<T | null>`
+// rather than quietly asserting the ref is populated. The guard below already
+// handled the null case, so this only makes the signature match the body
+export async function takeScreenshot(ref: React.RefObject<HTMLElement | null>) {
   if (ref.current === null) {
     return
   }

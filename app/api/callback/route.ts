@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   // Only exchange a code this browser actually asked for. Skipping the check
   // lets anyone lure a user to /oauth/callback with an authorization code for
   // someone else's Focusmate account and sign them in as that person.
-  const expectedState = cookies().get(OAUTH_STATE_COOKIE_NAME)?.value
+  const expectedState = (await cookies()).get(OAUTH_STATE_COOKIE_NAME)?.value
   if (!expectedState || !state || state !== expectedState) {
     return new Response("Invalid OAuth state", { status: 400 })
   }

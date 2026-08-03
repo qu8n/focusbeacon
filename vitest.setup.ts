@@ -32,3 +32,10 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => false,
   }),
 })
+
+// Same reason, but only since Headless UI 2.2: it waits on getAnimations() to
+// decide when a transition has finished. jsdom has no Web Animations API, so
+// Headless UI installs its own stub and warns on every render that reaches
+// one. Nothing here asserts on animation, so an empty list is the honest
+// answer and it keeps the warning out of the run.
+Element.prototype.getAnimations = () => []

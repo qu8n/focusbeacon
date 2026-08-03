@@ -3,9 +3,11 @@ import { buildOauthStateCookieOptions } from "@/lib/cookie"
 import { serialize } from "cookie"
 import { randomBytes } from "crypto"
 
-// Next caches GET route handlers by default, which would prerender one nonce
-// at build time and hand every visitor the same one -- exactly the thing the
-// nonce exists to prevent
+// Next 15 stopped caching GET route handlers by default, so this is no longer
+// load-bearing -- but it stays stated rather than inherited. A cached response
+// would prerender one nonce at build time and hand every visitor the same one,
+// exactly the thing the nonce exists to prevent, and that default has already
+// changed once
 export const dynamic = "force-dynamic"
 
 // Sign-in starts here rather than by linking straight at Focusmate, so the

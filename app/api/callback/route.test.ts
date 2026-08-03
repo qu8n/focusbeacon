@@ -3,8 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 const cookieStore = new Map<string, string>()
 const upsert = vi.fn()
 
+// Async since Next 15: the route awaits it, so a synchronous mock would pass
+// here while the real handler resolves a promise
 vi.mock("next/headers", () => ({
-  cookies: () => ({
+  cookies: async () => ({
     get: (name: string) => {
       const value = cookieStore.get(name)
       return value === undefined ? undefined : { name, value }
