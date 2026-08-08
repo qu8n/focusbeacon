@@ -1,3 +1,4 @@
+import typography from "@tailwindcss/typography"
 import type { Config } from "tailwindcss"
 
 const config: Config = {
@@ -7,7 +8,7 @@ const config: Config = {
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "selector",
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [typography],
   theme: {
     extend: {
       colors: {
