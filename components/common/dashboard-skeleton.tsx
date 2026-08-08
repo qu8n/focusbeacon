@@ -1,6 +1,8 @@
-import { LoaderIcon } from "@/components/common/loader-icon"
+"use client"
+
+import { ShimmerText } from "@/components/common/shimmer-text"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Text } from "@/components/ui/text"
+import { ThinkingOrb } from "thinking-orbs"
 
 export function DashboardSkeleton() {
   return (
@@ -10,9 +12,9 @@ export function DashboardSkeleton() {
       <Skeleton className="h-[245px] w-full mt-6" />
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="inline-flex items-center bg-white p-4 rounded shadow-lg">
-          <LoaderIcon />
-          <Text>Loading your stats</Text>
+        <div className="inline-flex items-center gap-2 bg-white px-4 py-3 rounded shadow-lg">
+          <ThinkingOrb state="connecting" size={20} theme="light" />
+          <ShimmerText>Calculating your stats...</ShimmerText>
         </div>
       </div>
     </div>
