@@ -36,10 +36,6 @@ const exclude = ["node_modules/**", ".next/**", "e2e/**"]
 
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
-  // tsconfig.json sets "jsx": "preserve" for Next's own compiler, which would
-  // otherwise leave esbuild emitting classic `React.createElement` calls
-  // against files that never import React
-  esbuild: { jsx: "automatic" },
   test: {
     env: testEnv,
     projects: [
@@ -58,7 +54,6 @@ export default defineConfig({
       },
       {
         plugins: [tsconfigPaths(), react()],
-        esbuild: { jsx: "automatic" },
         test: {
           name: "dom",
           environment: "jsdom",
