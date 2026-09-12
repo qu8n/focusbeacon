@@ -102,6 +102,7 @@ export function TotalPartners({
       icon={<RiUser3Line size={16} className="opacity-40" />}
       title="Total partners"
       className="sm:col-span-2"
+      popoverContent="For group sessions, this metric only counts the host and excludes other group session participants."
     >
       {data ? (
         <Stat

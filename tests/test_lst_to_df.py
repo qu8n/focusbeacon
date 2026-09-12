@@ -148,3 +148,36 @@ class TestMultipleSessions:
     def test_coerces_a_numeric_session_id_to_string(self):
         frame = sessions_ls_to_df([raw_session(session_id=12345)], TZ)
         assert frame.iloc[0]["session_id"] == "12345"
+
+
+class TestGroupSessions:
+    def test_takes_the_title_from_the_session_not_the_deprecated_field(self):
+        # users[0].sessionTitle is always null for a group session, so reading
+        # it rendered every one of them as "N/A" in the history table
+        frame = sessions_ls_to_df(
+            [raw_session(session_type="group", title="Writing group")], TZ)
+        assert frame.iloc[0]["session_title"] == "Writing group"
+
+    def test_falls_back_to_the_deprecated_field_when_there_is_no_title(self):
+        session = raw_session()
+        del session["title"]
+        assert sessions_ls_to_df([session], TZ).iloc[0]["session_title"] \
+            == "Focus"
+
+    def test_counts_the_host_as_the_partner(self):
+        # Group sessions put the host at users[1]; the remaining participants
+        # are dropped, which the "Total partners" card explains to the user
+        frame = sessions_ls_to_df(
+            [raw_session(session_type="group", partner_id="host-1")], TZ)
+        assert frame.iloc[0]["partner_id"] == "host-1"
+
+
+class TestDuplicateSessions:
+    def test_keeps_one_row_per_session_id(self):
+        # Sessions are fetched a year at a time and the API returns everything
+        # overlapping the range, so a session running across New Year midnight
+        # comes back in both years
+        frame = sessions_ls_to_df(
+            [raw_session(start_time="2027-01-01T04:45:00Z"),
+             raw_session(start_time="2027-01-01T04:45:00Z")], TZ)
+        assert len(frame) == 1

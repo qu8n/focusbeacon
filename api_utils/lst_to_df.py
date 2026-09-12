@@ -30,7 +30,11 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
         start_time = session['startTime']
 
         user: dict = session['users'][0]
-        session_title = user.get('sessionTitle')
+        # users[0].sessionTitle is deprecated and always null for group
+        # sessions, which rendered every one of them as "N/A" in history.
+        # The session-level title replaces it; the old field stays as the
+        # fallback until every session in the window carries a title.
+        session_title = session.get('title') or user.get('sessionTitle')
         requested_at = user.get('requestedAt')
         joined_at = user.get('joinedAt')
         completed = user.get('completed')
@@ -61,6 +65,10 @@ def sessions_ls_to_df(fm_raw_sessions: list, local_timezone: str):
     # Named columns even when there are no rows, so callers can filter on
     # `completed` without a KeyError on a brand-new account
     df = pd.DataFrame(rows, columns=SESSION_COLUMNS)
+    # Sessions are fetched a calendar year at a time, and the API returns
+    # every session overlapping the range. One running across New Year
+    # midnight therefore comes back in both years and would be counted twice.
+    df = df.drop_duplicates(subset='session_id')
     if not df.empty:
         df['session_id'] = df['session_id'].astype(str)
         df['duration'] = df['duration'].astype(int)

@@ -128,25 +128,35 @@ def raw_session(
     completed=True,
     title="Focus",
     partner_id="partner-1",
+    session_type="paired",
 ):
     """One session in the shape the Focusmate API returns it.
 
-    The caller's own entry is always `users[0]`; a partner, when there is one,
-    is `users[1]`.
+    The caller's own entry is always `users[0]`; the other users, when there
+    are any, follow. For a group session that is the host and then the other
+    participants, and only the session-level `title` carries the title --
+    `users[0].sessionTitle` is deprecated and comes back null.
     """
+    is_group = session_type == "group"
     users = [{
         "userId": "me",
+        "role": "participant" if is_group else None,
         "requestedAt": requested_at,
         "joinedAt": joined_at,
         "completed": completed,
-        "sessionTitle": title,
+        "sessionTitle": None if is_group else title,
     }]
     if partner_id is not None:
-        users.append({"userId": partner_id})
+        users.append({
+            "userId": partner_id,
+            "role": "host" if is_group else None,
+        })
 
     return {
         "sessionId": session_id,
+        "sessionType": session_type,
         "duration": duration,
         "startTime": start_time,
+        "title": title,
         "users": users,
     }

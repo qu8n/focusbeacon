@@ -23,16 +23,27 @@ export interface FmSessions {
 }
 export interface FmSession {
   sessionId: string
+  sessionType: "paired" | "group"
   duration: number
   startTime: string
-  // If the session is incomplete, aka users[0].completed === false,
-  // then users[1] will be undefined and users[0].joinedAt might be null
+  // May be null. Replaces the deprecated users[0].sessionTitle, which is
+  // always null for group sessions
+  title: string | null
+  // The calling user is always first. For a group session the rest are the
+  // host, then the other participants; for a paired session there is at most
+  // one other user, and none at all when the session was never matched
   users: FmSessionUser[]
 }
 export interface FmSessionUser {
   userId: string
+  // "host" or "participant" for group sessions, null for paired ones
+  role: "host" | "participant" | null
   requestedAt?: string
   joinedAt?: string | null
   completed?: boolean
+  /** @deprecated Use the session-level `title` instead */
   sessionTitle?: string | null
+  // Paired only, null for group sessions
+  activityType?: "anything" | "desk" | "moving" | null
+  isFavorite?: boolean
 }
