@@ -4,6 +4,18 @@ import numpy as np
 from api_utils.time import get_naive_local_today, m_to_ms, \
     ms_to_h_decimal, WeekStartDay
 
+# Focusmate lets you book a slot that has already begun, so the scheduled
+# start is not always the moment joining became possible. Punctuality is
+# measured from whichever came last, the start or the booking: you cannot show
+# up on time for a session that did not exist when its slot opened.
+#
+# These are naive local wall clocks, so inside a DST fall-back hour the two can
+# order wrong. Untouched: the gap it distorts is indistinguishable from a real
+# late booking by then, and fixing it means comparing UTC instants upstream.
+def joinable_from(sessions: pd.DataFrame) -> pd.Series:
+    return sessions[['start_time', 'requested_at']].max(axis=1)
+
+
 # How late you can join and still count as on time. One definition shared by
 # the history table and the punctuality chart -- they used to disagree (2
 # minutes vs 60s), so the same session could read "On time: Yes" in history
@@ -452,7 +464,8 @@ def calc_history_data(sessions: pd.DataFrame, local_timezone: str,
             The duration of the session in minutes.
         on_time: bool
             Whether the session started on time, i.e., joined_at is within
-            ON_TIME_GRACE_SECONDS of start_time.
+            ON_TIME_GRACE_SECONDS of when the session became joinable --
+            its start, or its booking when that came later.
         completed: bool
             Whether the session was completed.
         session_title: str
@@ -479,7 +492,7 @@ def calc_history_data(sessions: pd.DataFrame, local_timezone: str,
     sessions['time'] = sessions['start_time'].dt.strftime('%I:%M %p')
     sessions['duration_minutes'] = sessions['duration'] / 60000
     sessions['on_time'] = (
-        sessions['joined_at'] - sessions['start_time']) \
+        sessions['joined_at'] - joinable_from(sessions)) \
         <= pd.Timedelta(seconds=ON_TIME_GRACE_SECONDS)
     sessions['session_title'] = sessions['session_title'].replace(
         to_replace='^$|^None$', value='N/A', regex=True)
@@ -509,7 +522,7 @@ def calc_punctuality_pie_data(sessions: pd.DataFrame):
     sessions = sessions.copy()
 
     sessions.loc[:, 'join_start_diff'] = (
-        sessions['joined_at'] - sessions['start_time']).dt.total_seconds()
+        sessions['joined_at'] - joinable_from(sessions)).dt.total_seconds()
 
     avg_join_start_diff = sessions['join_start_diff'].mean()
     median_join_start_diff = sessions['join_start_diff'].median()

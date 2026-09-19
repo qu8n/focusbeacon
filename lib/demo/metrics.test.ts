@@ -42,6 +42,7 @@ function session(
     minute?: number
     duration?: DurationKey
     joinDelta?: number | null
+    requestDelta?: number
     completed?: boolean
     partner?: number
   } = {}
@@ -56,6 +57,7 @@ function session(
     durationMs: DURATION_MS[duration],
     durationKey: duration,
     joinDelta: options.joinDelta === undefined ? 0 : options.joinDelta,
+    requestDelta: options.requestDelta ?? -86400,
     completed: options.completed ?? true,
     partnerId: options.partner ?? 1,
   }
@@ -426,6 +428,22 @@ describe("calcHistoryData", () => {
       expect(rows[0].on_time).toBe(expected)
     })
 
+    it.each([
+      [420, 435, true],
+      [420, 480, true],
+      [420, 482, false],
+      [-86400, 435, false],
+    ])(
+      "booked at %ss and joined at %ss reads as %s",
+      (requestDelta, joinDelta, expected) => {
+        const rows = calcHistoryData(
+          [session(MONDAY, { joinDelta, requestDelta })],
+          now
+        )
+        expect(rows[0].on_time).toBe(expected)
+      }
+    )
+
     it("a session never joined is not on time", () => {
       const rows = calcHistoryData(
         [session(MONDAY, { joinDelta: null, completed: false })],
@@ -469,6 +487,26 @@ describe("calcPunctualityPieData", () => {
       { punctuality: "On time", amount: 2 },
       { punctuality: "Late", amount: 1 },
     ])
+  })
+
+  it("judges a late booking from when it was booked", () => {
+    const result = calcPunctualityPieData([
+      session(MONDAY, { joinDelta: 435, requestDelta: 420 }),
+      session("2027-03-02", { joinDelta: 435 }),
+    ])
+    expect(result.data).toEqual([
+      { punctuality: "On time", amount: 1 },
+      { punctuality: "Late", amount: 1 },
+    ])
+  })
+
+  it("does not let a late booking skew the average", () => {
+    const result = calcPunctualityPieData([
+      session(MONDAY, { joinDelta: 10 }),
+      session("2027-03-02", { joinDelta: 430, requestDelta: 420 }),
+    ])
+    expect(result.avg).toBe("10s late")
+    expect(result.median).toBe("10s late")
   })
 
   it("reports the average and median", () => {

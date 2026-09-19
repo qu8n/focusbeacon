@@ -284,6 +284,34 @@ class TestOnTime:
         sessions = make_sessions([day("2027-03-01", joined=joined)])
         assert bool(calc_history_data(sessions, TZ)[0]["on_time"]) is expected
 
+    @pytest.mark.parametrize("requested,joined,expected", [
+        (420, 435, True),    # booked 7m into the slot, joined 15s later
+        (420, 480, True),    # booked 7m in, joined on the grace boundary
+        (420, 482, False),   # booked 7m in, then dawdled past the grace
+        (-86400, 435, False),  # booked a day ahead, so 7m late is late
+    ])
+    def test_a_late_booking_is_judged_from_when_it_was_booked(
+            self, frozen_now, requested, joined, expected):
+        """Focusmate lets you book a slot that has already begun. You cannot
+        show up on time for a session that did not exist at its start, so the
+        clock starts at whichever came last, the start or the booking."""
+        frozen_now("2027-03-10 12:00")
+        sessions = make_sessions([
+            day("2027-03-01", joined=joined, requested=requested)])
+        assert bool(calc_history_data(sessions, TZ)[0]["on_time"]) is expected
+
+    def test_a_missing_booking_time_falls_back_to_the_start(self, frozen_now):
+        """Focusmate does not always report requestedAt, and a null must not
+        drag the reference point out to NaT and swallow the verdict."""
+        frozen_now("2027-03-10 12:00")
+        sessions = make_sessions([
+            day("2027-03-01", joined=10, requested=None),
+            day("2027-03-02", joined=300, requested=None),
+        ])
+        rows = calc_history_data(sessions, TZ)
+        assert {row["session_id"]: bool(row["on_time"]) for row in rows} == {
+            "session-0000": True, "session-0001": False}
+
     def test_never_joined_is_not_on_time(self, frozen_now):
         frozen_now("2027-03-10 12:00")
         sessions = make_sessions([day("2027-03-01", joined=None,
@@ -335,6 +363,31 @@ class TestPunctualityPie:
             {"punctuality": "On time", "amount": 2},
             {"punctuality": "Late", "amount": 1},
         ]
+
+    def test_a_late_booking_counts_from_when_it_was_booked(self):
+        """The mirror of the history table's rule: a session booked into a
+        slot already under way is judged on how fast the user joined once
+        booking made joining possible."""
+        sessions = make_sessions([
+            day("2027-03-01", joined=435, requested=420),
+            day("2027-03-02", joined=435, requested=-86400),
+        ])
+        result = calc_punctuality_pie_data(sessions)
+        assert result["data"] == [
+            {"punctuality": "On time", "amount": 1},
+            {"punctuality": "Late", "amount": 1},
+        ]
+
+    def test_a_late_booking_does_not_skew_the_average(self):
+        """A single booking made 7 minutes into its slot used to weigh as
+        much as seven genuinely late arrivals."""
+        sessions = make_sessions([
+            day("2027-03-01", joined=10, requested=-86400),
+            day("2027-03-02", joined=430, requested=420),
+        ])
+        result = calc_punctuality_pie_data(sessions)
+        assert result["avg"] == "10s late"
+        assert result["median"] == "10s late"
 
     def test_reports_the_average_and_median(self):
         sessions = make_sessions([

@@ -45,6 +45,13 @@ LATE_JOIN_SHARE = 0.12
 EARLY_JOIN_SECONDS = (-600, 60)
 LATE_JOIN_SECONDS = (61, 420)
 
+# Focusmate also lets you book a slot that has already begun. Those sessions
+# join minutes after the scheduled start without the user being late for
+# anything, so the demo carries a slice of them to exercise that rule.
+LATE_BOOKING_SHARE = 0.05
+LATE_BOOKING_SECONDS = (60, 600)
+LATE_BOOKING_JOIN_SECONDS = (5, 120)
+
 
 def partner_pool() -> tuple[list[str], list[int]]:
     ids = [f"demo-partner-{i:04d}"
@@ -88,8 +95,13 @@ def generate_fake_sessions(now: pd.Timestamp,
         hour, minute = _claim_free_slot(start_time.date(), taken_slots)
         start_time = start_time.replace(
             hour=hour, minute=minute, second=0, microsecond=0)
-        requested_at = start_time - timedelta(
-            seconds=random.randint(0, 86400))
+        booked_late = random.random() < LATE_BOOKING_SHARE
+        if booked_late:
+            requested_at = start_time + timedelta(
+                seconds=random.randint(*LATE_BOOKING_SECONDS))
+        else:
+            requested_at = start_time - timedelta(
+                seconds=random.randint(0, 86400))
         completed = random.choices(
             [True, False], weights=COMPLETED_WEIGHTS, k=1)[0]
         duration = random.choices(
@@ -99,13 +111,19 @@ def generate_fake_sessions(now: pd.Timestamp,
 
         joined_at = None
         if completed:
-            if random.random() < LATE_JOIN_SHARE:
-                join_delta = random.randint(*LATE_JOIN_SECONDS)
+            if booked_late:
+                # The clock only starts once the booking exists
+                joined_at = requested_at + timedelta(
+                    seconds=random.randint(*LATE_BOOKING_JOIN_SECONDS))
             else:
-                join_delta = random.randint(*EARLY_JOIN_SECONDS)
-            joined_at = start_time + timedelta(seconds=join_delta)
-            # You cannot join a session before you booked it
-            joined_at = max(joined_at, requested_at)
+                if random.random() < LATE_JOIN_SHARE:
+                    join_delta = random.randint(*LATE_JOIN_SECONDS)
+                else:
+                    join_delta = random.randint(*EARLY_JOIN_SECONDS)
+                joined_at = start_time + timedelta(seconds=join_delta)
+                # You cannot join a session before you booked it, and an early
+                # join reaches further back than the closest bookings do
+                joined_at = max(joined_at, requested_at)
 
         session = {
             "sessionId": f"demo-session-{index:04d}",

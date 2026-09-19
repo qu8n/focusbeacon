@@ -165,7 +165,7 @@ export function SessionsByPunctuality({ data }: { data: any }) {
     <PieChartCard
       chartData={chartData}
       title="Sessions by punctuality"
-      popoverContent="'On time' are sessions where you joined within 1 minute after the scheduled start time"
+      popoverContent="'On time' means you joined within 1 minute of the start time. For a slot you booked after it began, the minute counts from the booking."
       categories={["On time", "Late"]}
       colors={["custom-4", "custom-5"]}
       category="punctuality"

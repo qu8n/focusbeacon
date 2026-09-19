@@ -69,6 +69,10 @@ def make_sessions(specs) -> pd.DataFrame:
         duration     minutes: 25, 50 or 75 (default 25)
         joined       seconds relative to start, negative for early (default 0);
                      None means the session was never joined
+        requested    seconds relative to start at which the session was booked
+                     (default -86400, a day ahead). Positive means it was
+                     booked after its slot had already begun. None means
+                     Focusmate reported no booking time
         completed    default True
         partner      partner id, or None for an unmatched session
         title        session title (default "Focus")
@@ -86,7 +90,10 @@ def make_sessions(specs) -> pd.DataFrame:
             "session_id": spec.get("session_id", f"session-{index:04d}"),
             "duration": DURATION_MS[spec.get("duration", 25)],
             "start_time": start,
-            "requested_at": start - pd.Timedelta(days=1),
+            "requested_at": (
+                pd.NaT if spec.get("requested", -86400) is None
+                else start + pd.Timedelta(
+                    seconds=spec.get("requested", -86400))),
             "joined_at": (pd.NaT if joined is None
                           else start + pd.Timedelta(seconds=joined)),
             "completed": spec.get("completed", True),

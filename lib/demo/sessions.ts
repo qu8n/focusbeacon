@@ -23,6 +23,10 @@ export interface DemoSession {
   /** Seconds between the scheduled start and the join, negative when early.
    * Null when the session was never joined. */
   joinDelta: number | null
+  /** Seconds between the scheduled start and the booking, negative when
+   * booked ahead. Positive means the slot was already under way when the
+   * session was booked, which is what punctuality has to measure from. */
+  requestDelta: number
   completed: boolean
   partnerId: number
 }
@@ -53,8 +57,9 @@ export function buildSessions(now: Date): DemoSession[] {
   if (cached && cached.day === day) return cached.sessions
 
   const sessions = fixture.sessions.map((row, index) => {
-    const [dayOffset, minuteOfDay, durationIndex, joinDelta, completed, partner] =
-      row as [number, number, number, number | null, number, number]
+    const [dayOffset, minuteOfDay, durationIndex, joinDelta, requestDelta,
+      completed, partner] =
+      row as [number, number, number, number | null, number, number, number]
     const start = addDays(today, dayOffset)
     start.setHours(Math.floor(minuteOfDay / 60), minuteOfDay % 60, 0, 0)
 
@@ -64,6 +69,7 @@ export function buildSessions(now: Date): DemoSession[] {
       durationMs: fixture.duration_ms[durationIndex],
       durationKey: DURATION_KEYS[durationIndex],
       joinDelta,
+      requestDelta,
       completed: completed === 1,
       partnerId: partner,
     }

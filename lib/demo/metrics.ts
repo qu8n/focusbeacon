@@ -21,6 +21,14 @@ import {
 // punctuality chart used to disagree here -- 2 minutes vs 60s -- so the same
 // session read "On time: Yes" in the table and Late in the chart.
 const ON_TIME_GRACE_SECONDS = 60
+
+/** Mirrors joinable_from in api_utils/metric.py. Focusmate lets you book a
+ * slot that has already begun, so punctuality counts from whichever came
+ * last, the scheduled start or the booking. */
+function joinDeltaFromJoinable(session: DemoSession): number | null {
+  if (session.joinDelta === null) return null
+  return session.joinDelta - Math.max(0, session.requestDelta)
+}
 import {
   addDays,
   addMonths,
@@ -379,8 +387,8 @@ export function calcHistoryData(
     time: strftime(session.start, "%I:%M %p"),
     duration_minutes: session.durationMs / 60000,
     on_time:
-      session.joinDelta !== null &&
-      session.joinDelta <= ON_TIME_GRACE_SECONDS,
+      joinDeltaFromJoinable(session) !== null &&
+      joinDeltaFromJoinable(session)! <= ON_TIME_GRACE_SECONDS,
   }))
 }
 
@@ -411,7 +419,8 @@ export function formatSeconds(value: number): string {
 export function calcPunctualityPieData(sessions: DemoSession[]) {
   const deltas: number[] = []
   sessions.forEach((session) => {
-    if (session.joinDelta !== null) deltas.push(session.joinDelta)
+    const delta = joinDeltaFromJoinable(session)
+    if (delta !== null) deltas.push(delta)
   })
 
   const sorted = deltas.slice().sort((a, b) => a - b)

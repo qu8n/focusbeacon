@@ -80,8 +80,9 @@ def encode_json(value):
 def session_rows(sessions: pd.DataFrame, anchor: pd.Timestamp) -> list:
     """One compact row per session: how many days before today it starts, the
     minute of the day it starts at, which of the three durations it runs for,
-    how late the join was in seconds, whether it completed, and who the partner
-    was. Everything the dashboard shows is derived from these six numbers."""
+    how late the join was in seconds, how long before the start it was booked,
+    whether it completed, and who the partner was. Everything the dashboard
+    shows is derived from these seven numbers."""
     anchor_date = anchor.normalize()
     rows = []
 
@@ -101,6 +102,7 @@ def session_rows(sessions: pd.DataFrame, anchor: pd.Timestamp) -> list:
             int(start.hour * 60 + start.minute),
             DURATION_OPTIONS.index(int(session.duration)),
             join_delta,
+            int((session.requested_at - start).total_seconds()),
             int(bool(session.completed)),
             partner,
         ])

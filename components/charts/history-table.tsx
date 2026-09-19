@@ -56,7 +56,7 @@ export const columns: ColumnDef<SessionDetails>[] = [
     },
     meta: {
       popoverContent:
-        "Sessions where you joined within 1 minute after the scheduled start time",
+        "Sessions you joined within 1 minute of the start time. For a slot you booked after it began, the minute counts from the booking.",
     },
   },
   {
